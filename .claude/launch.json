@@ -1,0 +1,14 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "flutter-web",
+      "runtimeExecutable": "powershell",
+      "runtimeArgs": [
+        "-Command",
+        "cd frontend; flutter run -d web-server --web-port 5959"
+      ],
+      "port": 5959
+    }
+  ]
+}
