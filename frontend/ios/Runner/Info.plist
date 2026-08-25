@@ -30,6 +30,8 @@
 	<string>ExploreMy uses your camera to take a new profile photo.</string>
 	<key>NSPhotoLibraryUsageDescription</key>
 	<string>ExploreMy uses your photo library to choose a profile photo.</string>
+	<key>NSLocationWhenInUseUsageDescription</key>
+	<string>ExploreMy uses your location to find hidden places near you.</string>
 	<key>UIApplicationSceneManifest</key>
 	<dict>
 		<key>UIApplicationSupportsMultipleScenes</key>

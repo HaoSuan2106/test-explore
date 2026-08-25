@@ -1,10 +1,14 @@
 using ExploreMy.Api.Application.AuthProfile.Authentication;
 using ExploreMy.Api.Application.AuthProfile.Facade;
 using ExploreMy.Api.Application.AuthProfile.ManageProfile;
+using ExploreMy.Api.Application.HiddenPlace.DiscoverHiddenPlace;
+using ExploreMy.Api.Application.HiddenPlace.Facade;
 using ExploreMy.Api.Common.Helpers;
 using ExploreMy.Api.Configuration;
+using ExploreMy.Api.DataAccess.ExternalClients.GooglePlaces;
 using ExploreMy.Api.DataAccess.ExternalClients.SupabaseStorage;
 using ExploreMy.Api.DataAccess.Repositories.AuthProfile;
+using ExploreMy.Api.DataAccess.Repositories.HiddenPlace;
 using ExploreMy.Api.Middleware;
 using ExploreMy.Api.Persistence.DbContext;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -19,6 +23,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.Configure<JwtSettings>(builder.Configuration.GetSection("Jwt"));
 builder.Services.Configure<SmtpSettings>(builder.Configuration.GetSection("Smtp"));
 builder.Services.Configure<SupabaseSettings>(builder.Configuration.GetSection("Supabase"));
+builder.Services.Configure<GoogleApiSettings>(builder.Configuration.GetSection("GoogleApi"));
 var jwtSettings = builder.Configuration.GetSection("Jwt").Get<JwtSettings>()!;
 var supabaseSettings = builder.Configuration.GetSection("Supabase").Get<SupabaseSettings>()!;
 
@@ -44,12 +49,20 @@ builder.Services.AddScoped<IAuthenticationService, AuthenticationService>();
 builder.Services.AddScoped<IAuthProfileService, AuthProfileService>();
 builder.Services.AddSingleton<IJwtTokenGenerator, JwtTokenGenerator>();
 builder.Services.AddScoped<IManageProfileService, ManageProfileService>();
+builder.Services.AddScoped<IDiscoverHiddenPlaceService, DiscoverHiddenPlaceService>();
+builder.Services.AddScoped<IHiddenPlaceRepository, HiddenPlaceMySqlRepository>();
+builder.Services.AddScoped<IHiddenPlaceService, HiddenPlaceService>();
 
 builder.Services.AddHttpClient<IStorageClient, SupabaseStorageClient>(client =>
 {
     client.BaseAddress = new Uri(supabaseSettings.Url);
     client.DefaultRequestHeaders.Add("apikey", supabaseSettings.ServiceRoleKey);
     client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", supabaseSettings.ServiceRoleKey);
+});
+
+builder.Services.AddHttpClient<IPlacesApiClient, GooglePlacesApiClient>(client =>
+{
+    client.BaseAddress = new Uri("https://places.googleapis.com");
 });
 
 // JWT auth (validates tokens on future protected endpoints)

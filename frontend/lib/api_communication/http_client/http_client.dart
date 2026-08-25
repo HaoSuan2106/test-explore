@@ -4,11 +4,19 @@ import 'package:dio/dio.dart';
 import '../secure_storage/secure_storage_service.dart';
 import '../../models/auth_profile/auth_model.dart';
 import '../../models/auth_profile/profile_model.dart';
+import '../../models/hidden_place/hidden_place_model.dart';
 
 class HttpClient {
   HttpClient({required SecureStorageService secureStorage})
       : _secureStorage = secureStorage {
-    _dio = Dio(BaseOptions(baseUrl: baseUrl));
+    _dio = Dio(BaseOptions(
+      baseUrl: baseUrl,
+      // Without these, a backend that's down/unreachable (wrong IP, firewall
+      // silently dropping packets, etc.) can leave requests hanging instead
+      // of failing fast with a DioException the UI can show an error for.
+      connectTimeout: const Duration(seconds: 8),
+      receiveTimeout: const Duration(seconds: 15),
+    ));
 
     _dio.interceptors.add(
       InterceptorsWrapper(
@@ -46,8 +54,24 @@ class HttpClient {
     );
   }
 
-  // host machine's localhost
-  static const baseUrl = 'http://10.0.2.2:5226';
+  // Backend base URL.
+  // - Android EMULATOR: 10.0.2.2 is a special alias the emulator maps to the host
+  //   machine's localhost, so this default works out of the box for `flutter run`
+  //   on an emulator.
+  // - REAL PHONE (USB or same Wi-Fi): 10.0.2.2 does NOT work - it only means
+  //   anything inside the emulator's virtual network. Use the host machine's LAN IP
+  //   instead (Windows: `ipconfig`, look for the Wi-Fi adapter's IPv4 address, e.g.
+  //   192.168.1.23). The phone and the machine running the backend must be on the
+  //   same Wi-Fi network, the backend must be listening on 0.0.0.0 (not just
+  //   localhost - see backend/Properties/launchSettings.json), and Windows Firewall
+  //   must allow inbound connections on port 5226 (it usually prompts for this the
+  //   first time you run the backend).
+  // Override this without editing the file:
+  //   flutter run --dart-define=API_BASE_URL=http://192.168.1.23:5226
+  static const baseUrl = String.fromEnvironment(
+    'API_BASE_URL',
+    defaultValue: 'http://10.0.2.2:5226',
+  );
 
   final SecureStorageService _secureStorage;
   late final Dio _dio;
@@ -137,6 +161,14 @@ class HttpClient {
     return ProfileModel.fromJson(response.data as Map<String, dynamic>);
   }
 
+  Future<void> requestPasswordResetCode() async {
+    await _dio.post('/api/profile/password/reset-code');
+  }
+
+  Future<void> verifyPasswordResetCode(String code) async {
+    await _dio.post('/api/profile/password/reset-code/verify', data: {'code': code});
+  }
+
   Future<ProfileModel> uploadProfilePicture(File file) async {
     final fileName = file.path.split(Platform.pathSeparator).last;
     final formData = FormData.fromMap({
@@ -149,5 +181,28 @@ class HttpClient {
   Future<ProfileModel> removeProfilePicture() async {
     final response = await _dio.delete('/api/profile/picture');
     return ProfileModel.fromJson(response.data as Map<String, dynamic>);
+  }
+
+  /// Fetches hidden-gem places near (latitude, longitude), ranked most-to-least "hidden".
+  /// [types] should be Google Places type strings (e.g. "restaurant", "cafe"); omit to
+  /// let the backend use its default attractions + food mix.
+  Future<List<HiddenPlaceModel>> discoverHiddenPlaces({
+    required double latitude,
+    required double longitude,
+    int radiusMeters = 5000,
+    List<String>? types,
+    int maxResultCount = 20,
+  }) async {
+    final response = await _dio.get('/api/hidden-places/discover', queryParameters: {
+      'latitude': latitude,
+      'longitude': longitude,
+      'radiusMeters': radiusMeters,
+      'maxResultCount': maxResultCount,
+      if (types != null && types.isNotEmpty) 'types': types,
+    });
+    final data = response.data as List<dynamic>;
+    return data
+        .map((item) => HiddenPlaceModel.fromJson(item as Map<String, dynamic>))
+        .toList();
   }
 }

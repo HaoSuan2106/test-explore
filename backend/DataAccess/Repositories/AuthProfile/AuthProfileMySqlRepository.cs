@@ -189,4 +189,70 @@ public class AuthProfileMySqlRepository : IAuthProfileRepository
         }
     }
 
+    public async Task CreatePasswordResetTokenAsync(PasswordResetToken token)
+    {
+        try
+        {
+            _context.PasswordResetTokens.Add(token);
+            await _context.SaveChangesAsync();
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Database error while creating password reset token for user {UserId}.", token.UserId);
+            throw;
+        }
+    }
+
+    public async Task<PasswordResetToken?> GetLatestActivePasswordResetTokenByUserIdAsync(int userId)
+    {
+        try
+        {
+            return await _context.PasswordResetTokens
+                .Where(t => t.UserId == userId && !t.IsUsed && t.ExpiresAt > DateTime.UtcNow)
+                .OrderByDescending(t => t.CreatedAt)
+                .FirstOrDefaultAsync();
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Database error while looking up password reset token for user {UserId}.", userId);
+            throw;
+        }
+    }
+
+    public async Task InvalidateActivePasswordResetTokensAsync(int userId)
+    {
+        try
+        {
+            var activeTokens = await _context.PasswordResetTokens
+                .Where(t => t.UserId == userId && !t.IsUsed)
+                .ToListAsync();
+
+            foreach (var token in activeTokens)
+            {
+                token.IsUsed = true;
+            }
+
+            await _context.SaveChangesAsync();
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Database error while invalidating password reset tokens for user {UserId}.", userId);
+            throw;
+        }
+    }
+
+    public async Task MarkPasswordResetTokenUsedAsync(PasswordResetToken token)
+    {
+        try
+        {
+            token.IsUsed = true;
+            await _context.SaveChangesAsync();
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Database error while marking password reset token {TokenId} used.", token.TokenId);
+            throw;
+        }
+    }
+
 }

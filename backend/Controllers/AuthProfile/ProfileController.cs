@@ -133,6 +133,50 @@ public class ProfileController : ControllerBase
         }
     }
 
+    [HttpPost("password/reset-code")]
+    public async Task<IActionResult> RequestPasswordResetCode()
+    {
+        var userId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
+
+        try
+        {
+            await _manageProfileService.RequestPasswordResetCodeAsync(userId);
+            return Ok(new { message = "Verification code sent." });
+        }
+        catch (NotFoundException ex)
+        {
+            return NotFound(new { message = ex.Message });
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Unexpected error requesting password reset code for user {UserId}.", userId);
+            return StatusCode(StatusCodes.Status500InternalServerError,
+                new { message = "An unexpected error occurred." });
+        }
+    }
+
+    [HttpPost("password/reset-code/verify")]
+    public async Task<IActionResult> VerifyPasswordResetCode([FromBody] VerifyPasswordResetCodeRequestDto request)
+    {
+        var userId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
+
+        try
+        {
+            await _manageProfileService.VerifyPasswordResetCodeAsync(userId, request);
+            return Ok(new { message = "Code verified." });
+        }
+        catch (AuthenticationException ex)
+        {
+            return Unauthorized(new { message = ex.Message });
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Unexpected error verifying password reset code for user {UserId}.", userId);
+            return StatusCode(StatusCodes.Status500InternalServerError,
+                new { message = "An unexpected error occurred." });
+        }
+    }
+
     [HttpPost("picture")]
     [RequestSizeLimit(MaxPictureSizeBytes)]
     public async Task<IActionResult> UpdateProfilePicture(IFormFile? file)

@@ -1,12 +1,16 @@
 import 'dart:async';
-import 'dart:math' as math;
+import 'dart:ui' as ui;
 
 import 'package:flutter/material.dart';
-import 'package:flutter_map/flutter_map.dart';
-import 'package:latlong2/latlong.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:provider/provider.dart';
+
+import '../../api_communication/location_service/device_location_service.dart';
+import '../../models/hidden_place/hidden_place_model.dart';
+import '../../providers/hidden_place/hidden_place_provider.dart';
 
 // =============================================================================
-// COLORS — closer to Google Maps' real palette (not the flat cream mock)
+// COLORS
 // =============================================================================
 class AppColors {
   static const coral = Color(0xFFFF6B4A);
@@ -24,6 +28,26 @@ class AppColors {
 
   static const gmapsBlue = Color(0xFF4285F4);
 }
+
+// A light, minimalist Google Maps style (JSON style array) so the basemap
+// keeps the same soft/clean feel as the original mock instead of the
+// default saturated Google styling.
+const String _lightMapStyle = '''
+[
+  {"elementType": "geometry", "stylers": [{"color": "#f5f3ef"}]},
+  {"elementType": "labels.icon", "stylers": [{"visibility": "off"}]},
+  {"elementType": "labels.text.fill", "stylers": [{"color": "#8a8a94"}]},
+  {"elementType": "labels.text.stroke", "stylers": [{"color": "#f5f3ef"}]},
+  {"featureType": "administrative", "elementType": "geometry", "stylers": [{"visibility": "off"}]},
+  {"featureType": "poi", "stylers": [{"visibility": "off"}]},
+  {"featureType": "road", "elementType": "geometry", "stylers": [{"color": "#ffffff"}]},
+  {"featureType": "road", "elementType": "geometry.stroke", "stylers": [{"color": "#e6e2da"}]},
+  {"featureType": "road.highway", "elementType": "geometry", "stylers": [{"color": "#f6c453"}]},
+  {"featureType": "road.arterial", "elementType": "labels", "stylers": [{"visibility": "simplified"}]},
+  {"featureType": "transit", "stylers": [{"visibility": "off"}]},
+  {"featureType": "water", "elementType": "geometry", "stylers": [{"color": "#dce6ea"}]}
+]
+''';
 
 // =============================================================================
 // DATA
@@ -48,57 +72,147 @@ class PlaceData {
   });
 }
 
-// A little cluster of spots around a shared center point (fictional coords,
-// close together so they all fit on screen at a walking-distance zoom).
+// Fallback origin used until the device's real GPS position comes back (or if location
+// permission is denied / services are off) - keeps the map centered somewhere sensible
+// instead of the middle of the ocean at (0, 0).
 const _center = LatLng(3.1390, 101.6869); // Kuala Lumpur-ish, adjust freely
 
-final _places = <PlaceData>[
-  PlaceData(
-    title: 'Mantap Café',
-    category: 'Restaurant',
-    imageUrl: 'https://images.unsplash.com/photo-1554118811-1e0d58224f24?w=400&q=60',
-    icon: Icons.local_cafe,
-    pinColor: AppColors.pinYellow,
-    position: const LatLng(3.1420, 101.6845),
-    rating: 4.6,
-  ),
-  PlaceData(
-    title: 'RiNG Café',
-    category: 'Restaurant',
-    imageUrl: 'https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=400&q=60',
-    icon: Icons.restaurant,
-    pinColor: AppColors.pinGrey,
-    position: const LatLng(3.1405, 101.6892),
-    rating: 4.3,
-  ),
-  PlaceData(
-    title: 'Teluk Damai',
-    category: 'Nature',
-    imageUrl: 'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=400&q=60',
-    icon: Icons.terrain,
-    pinColor: AppColors.pinGrey,
-    position: const LatLng(3.1368, 101.6820),
-    rating: 4.8,
-  ),
-  PlaceData(
-    title: 'Ocean Flame Seafood',
-    category: 'Restaurant',
-    imageUrl: 'https://images.unsplash.com/photo-1559339352-11d035aa65de?w=400&q=60',
-    icon: Icons.set_meal,
-    pinColor: AppColors.pinGrey,
-    position: const LatLng(3.1355, 101.6900),
-    rating: 4.1,
-  ),
-  PlaceData(
-    title: 'Old Brick Market',
-    category: 'Shopping',
-    imageUrl: 'https://images.unsplash.com/photo-1601599963565-b7f49deb2fac?w=400&q=60',
-    icon: Icons.shopping_bag,
-    pinColor: AppColors.pinGrey,
-    position: const LatLng(3.1348, 101.6838),
-    rating: 4.0,
-  ),
-];
+// The only two search radii the user can pick between - must match the backend's
+// [AllowedValues(5_000, 10_000)] on DiscoverHiddenPlaceRequestDto.RadiusMeters. Keeping this a
+// closed set (rather than a free-form slider) means every search this screen makes lands on one
+// of the two radii the backend's grid cache is actually tuned for - see SearchGridPlanner.
+const List<int> _radiusOptionsMeters = [5000, 10000];
+
+/// Picks a marker icon + color for a place based on its Google Places primary type.
+/// Places API doesn't tell us "nice icon to use", so this is our own mapping.
+({IconData icon, Color color}) _styleForType(String primaryType) {
+  switch (primaryType) {
+    case 'restaurant':
+    case 'meal_takeaway':
+    case 'meal_delivery':
+      return (icon: Icons.restaurant, color: AppColors.pinGrey);
+    case 'cafe':
+    case 'bakery':
+      return (icon: Icons.local_cafe, color: AppColors.pinYellow);
+    case 'tourist_attraction':
+    case 'park':
+    case 'natural_feature':
+      return (icon: Icons.terrain, color: AppColors.pinGrey);
+    case 'museum':
+      return (icon: Icons.museum, color: AppColors.pinGrey);
+    case 'shopping_mall':
+    case 'store':
+      return (icon: Icons.shopping_bag, color: AppColors.pinGrey);
+    default:
+      return (icon: Icons.place, color: AppColors.pinGrey);
+  }
+}
+
+String _humanizeType(String primaryType) {
+  final words = primaryType.split('_');
+  return words.map((w) => w.isEmpty ? w : '${w[0].toUpperCase()}${w.substring(1)}').join(' ');
+}
+
+/// Maps a raw API result (HiddenPlaceModel) to this screen's presentation model (PlaceData).
+/// Places API photos aren't wired up on the backend yet, so imageUrl is left blank and the
+/// UI falls back to a solid color tile (see _PlaceCard/_MiniPlaceCard errorBuilder).
+PlaceData _toPlaceData(HiddenPlaceModel place) {
+  final style = _styleForType(place.primaryType);
+  return PlaceData(
+    title: place.name,
+    category: _humanizeType(place.primaryType),
+    imageUrl: '',
+    icon: style.icon,
+    pinColor: style.color,
+    position: LatLng(place.latitude, place.longitude),
+    rating: place.rating ?? 0.0,
+  );
+}
+
+// =============================================================================
+// MARKER BITMAP GENERATOR
+// Google Maps native markers can't embed arbitrary widgets, so we rasterize
+// a teardrop pin (icon + color) into a PNG and hand it to BitmapDescriptor.
+// =============================================================================
+class _MarkerFactory {
+  static Future<BitmapDescriptor> pin({
+    required IconData icon,
+    required Color color,
+    bool selected = false,
+  }) async {
+    final double size = selected ? 92 : 76;
+    final double tailExtra = 24;
+    final recorder = ui.PictureRecorder();
+    final canvas = Canvas(recorder, Rect.fromLTWH(0, 0, size, size + tailExtra));
+
+    final center = Offset(size / 2, size / 2);
+    final radius = size / 2 - 6;
+
+    // soft drop shadow
+    canvas.drawCircle(
+      center.translate(0, 5),
+      radius,
+      Paint()
+        ..color = Colors.black.withOpacity(0.22)
+        ..maskFilter = const ui.MaskFilter.blur(ui.BlurStyle.normal, 6),
+    );
+
+    // teardrop body = circle unioned with a triangular tail
+    final body = Path()..addOval(Rect.fromCircle(center: center, radius: radius));
+    final tail = Path()
+      ..moveTo(center.dx - radius * 0.55, center.dy + radius * 0.65)
+      ..lineTo(center.dx, size + tailExtra - 6)
+      ..lineTo(center.dx + radius * 0.55, center.dy + radius * 0.65)
+      ..close();
+    final pin = Path.combine(ui.PathOperation.union, body, tail);
+
+    canvas.drawPath(pin, Paint()..color = color);
+    canvas.drawPath(
+      pin,
+      Paint()
+        ..color = Colors.white
+        ..style = PaintingStyle.stroke
+        ..strokeWidth = 4,
+    );
+
+    // inner white disc
+    canvas.drawCircle(center, radius * 0.6, Paint()..color = Colors.white);
+
+    // icon glyph, rendered via the Material icon font
+    final tp = TextPainter(textDirection: TextDirection.ltr);
+    tp.text = TextSpan(
+      text: String.fromCharCode(icon.codePoint),
+      style: TextStyle(
+        fontSize: radius * 0.72,
+        fontFamily: icon.fontFamily,
+        package: icon.fontPackage,
+        color: color,
+      ),
+    );
+    tp.layout();
+    tp.paint(canvas, Offset(center.dx - tp.width / 2, center.dy - tp.height / 2));
+
+    final picture = recorder.endRecording();
+    final image = await picture.toImage(size.toInt(), (size + tailExtra).toInt());
+    final bytes = await image.toByteData(format: ui.ImageByteFormat.png);
+    return BitmapDescriptor.bytes(bytes!.buffer.asUint8List());
+  }
+
+  static Future<BitmapDescriptor> userDot() async {
+    const double size = 46;
+    final recorder = ui.PictureRecorder();
+    final canvas = Canvas(recorder, const Rect.fromLTWH(0, 0, size, size));
+    final center = const Offset(size / 2, size / 2);
+
+    canvas.drawCircle(center, 20, Paint()..color = Colors.white);
+    canvas.drawCircle(center, 16, Paint()..color = AppColors.gmapsBlue);
+
+    final picture = recorder.endRecording();
+    final image = await picture.toImage(size.toInt(), size.toInt());
+    final bytes = await image.toByteData(format: ui.ImageByteFormat.png);
+    return BitmapDescriptor.bytes(bytes!.buffer.asUint8List());
+  }
+}
 
 // =============================================================================
 // SCREEN
@@ -110,28 +224,205 @@ class HiddenPlaceDiscoveryUI extends StatefulWidget {
   State<HiddenPlaceDiscoveryUI> createState() => _HiddenPlaceDiscoveryUIState();
 }
 
-class _HiddenPlaceDiscoveryUIState extends State<HiddenPlaceDiscoveryUI> {
-  String _selectedFilter = 'Radius';
+class _HiddenPlaceDiscoveryUIState extends State<HiddenPlaceDiscoveryUI>
+    with SingleTickerProviderStateMixin {
+  // 'radius' is the internal key for the radius-toggle chip (its label changes at runtime to show
+  // "5km"/"10km", so we can't compare against the label like the other, static chips do).
+  String _selectedFilter = 'radius';
   int _navIndex = 0;
   PlaceData? _selectedPlace;
+  bool _mapReady = false;
 
-  final MapController _mapController = MapController();
+  List<PlaceData> _places = [];
+  bool _isLoadingPlaces = true;
+  String? _placesError;
 
-  final List<_FilterChipData> _filters = const [
-    _FilterChipData('Radius', Icons.radar),
-    _FilterChipData('Nature', Icons.eco),
-    _FilterChipData('Restaurant', Icons.restaurant),
-    _FilterChipData('Viewpoint', Icons.landscape),
-    _FilterChipData('More', Icons.tune),
-  ];
+  // Which of _radiusOptionsMeters is currently active. Defaults to the smaller/first option.
+  int _radiusMeters = _radiusOptionsMeters.first;
+
+  // Starts as the fallback constant; _loadPlaces() overwrites it with the device's
+  // real GPS position when available, before the map/markers are ever built.
+  LatLng _searchOrigin = _center;
+
+  GoogleMapController? _mapController;
+  final Set<Marker> _markers = {};
+  BitmapDescriptor? _userIcon;
+
+  // Marker bitmaps only depend on (icon, color, selected) - not on which specific place they're for -
+  // and there are only a handful of distinct combinations (one per _styleForType category). Caching
+  // them means switching radius (or re-selecting a place) reuses already-rasterized bitmaps instead of
+  // redrawing a canvas + encoding a PNG for every single place on every fetch, which was the main
+  // reason the map felt slow (1-2s) whenever the radius chip was toggled.
+  final Map<String, BitmapDescriptor> _pinIconCache = {};
+  Future<BitmapDescriptor>? _userIconFuture;
+
+  Future<BitmapDescriptor> _pinIconFor(PlaceData place, {required bool selected}) async {
+    final key = '${place.icon.codePoint}_${place.pinColor.value}_$selected';
+    final cached = _pinIconCache[key];
+    if (cached != null) return cached;
+    final icon = await _MarkerFactory.pin(icon: place.icon, color: place.pinColor, selected: selected);
+    _pinIconCache[key] = icon;
+    return icon;
+  }
+
+  late final AnimationController _pulseController =
+  AnimationController(vsync: this, duration: const Duration(seconds: 2))..repeat();
+
+  // Built fresh on every build() rather than kept as a static const list, since the first chip's
+  // label needs to reflect the currently-selected radius (e.g. "5km radius").
+  List<_FilterChipData> get _filters => [
+        _FilterChipData('radius', '${_radiusMeters ~/ 1000}km radius', Icons.radar),
+        const _FilterChipData('nature', 'Nature', Icons.eco),
+        const _FilterChipData('restaurant', 'Restaurant', Icons.restaurant),
+        const _FilterChipData('viewpoint', 'Viewpoint', Icons.landscape),
+        const _FilterChipData('more', 'More', Icons.tune),
+      ];
+
+  @override
+  void initState() {
+    super.initState();
+    _loadPlaces();
+  }
+
+  @override
+  void dispose() {
+    _pulseController.dispose();
+    super.dispose();
+  }
+
+  /// Gets the device's real GPS position (falling back to _center if location is
+  /// unavailable/denied), then fetches nearby hidden-gem places from the backend
+  /// (Google Places API + the hidden-score algorithm) centered on that point, and
+  /// rebuilds the map pins.
+  Future<void> _loadPlaces() async {
+    final position = await const DeviceLocationService().getCurrentPosition();
+    if (mounted && position != null) {
+      setState(() => _searchOrigin = LatLng(position.latitude, position.longitude));
+    }
+    await _fetchPlaces();
+  }
+
+  /// Re-fetches places for the current _searchOrigin + _radiusMeters, without touching GPS -
+  /// used when the user just switches the radius chip and doesn't need a fresh location fix.
+  Future<void> _fetchPlaces() async {
+    if (mounted) {
+      setState(() => _isLoadingPlaces = true);
+    }
+
+    final provider = context.read<HiddenPlaceProvider>();
+    await provider.loadNearby(
+      latitude: _searchOrigin.latitude,
+      longitude: _searchOrigin.longitude,
+      radiusMeters: _radiusMeters,
+    );
+    if (!mounted) return;
+    setState(() {
+      _places = provider.places.map(_toPlaceData).toList();
+      _isLoadingPlaces = false;
+      _placesError = provider.errorMessage;
+    });
+    await _buildMarkers();
+  }
+
+  /// Cycles between the allowed radius options (currently just 5km <-> 10km) and re-fetches.
+  void _toggleRadius() {
+    final currentIndex = _radiusOptionsMeters.indexOf(_radiusMeters);
+    final nextIndex = (currentIndex + 1) % _radiusOptionsMeters.length;
+    setState(() => _radiusMeters = _radiusOptionsMeters[nextIndex]);
+    _fetchPlaces();
+  }
+
+  Future<void> _buildMarkers() async {
+    // The user-location dot never changes, so only ever build it once and reuse the same Future for
+    // every subsequent call (e.g. every radius toggle) instead of re-rasterizing it each time.
+    final userIcon = await (_userIconFuture ??= _MarkerFactory.userDot());
+
+    // Build every place's marker bitmap concurrently (and via the cache in _pinIconFor) instead of
+    // awaiting them one at a time - with ~10-20 places that sequential loop was the main source of the
+    // 1-2s pause whenever the radius chip was switched.
+    final icons = await Future.wait(_places.map((place) => _pinIconFor(place, selected: false)));
+
+    final built = <Marker>{
+      for (var i = 0; i < _places.length; i++)
+        Marker(
+          markerId: MarkerId(_places[i].title),
+          position: _places[i].position,
+          icon: icons[i],
+          anchor: const Offset(0.5, 1.0),
+          onTap: () => _selectPlace(_places[i]),
+        ),
+    };
+
+    built.add(
+      Marker(
+        markerId: const MarkerId('user_location'),
+        position: _searchOrigin,
+        icon: userIcon,
+        anchor: const Offset(0.5, 0.5),
+        zIndex: 10,
+      ),
+    );
+
+    if (!mounted) return;
+    setState(() {
+      _userIcon = userIcon;
+      _markers
+        ..clear()
+        ..addAll(built);
+      _mapReady = true;
+    });
+  }
+
+  /// Rebuilds one place's marker at the given size (selected = big, unselected = normal) and swaps
+  /// it into _markers. Shared by _selectPlace/_deselect so a marker always gets shrunk back down
+  /// the same way it got enlarged, instead of each call site duplicating the marker-rebuild logic.
+  Future<void> _setMarkerSelected(PlaceData place, bool selected) async {
+    final icon = await _pinIconFor(place, selected: selected);
+    if (!mounted) return;
+    setState(() {
+      _markers.removeWhere((m) => m.markerId.value == place.title);
+      _markers.add(
+        Marker(
+          markerId: MarkerId(place.title),
+          position: place.position,
+          icon: icon,
+          anchor: const Offset(0.5, 1.0),
+          onTap: () => _selectPlace(place),
+        ),
+      );
+    });
+  }
+
+  Future<void> _selectPlace(PlaceData place) async {
+    final previouslySelected = _selectedPlace;
+    setState(() => _selectedPlace = place);
+
+    // Shrink whatever was selected before (if it's a different place) back down to normal size -
+    // otherwise it would stay enlarged forever once you tap a second marker.
+    if (previouslySelected != null && previouslySelected.title != place.title) {
+      await _setMarkerSelected(previouslySelected, false);
+    }
+
+    await _setMarkerSelected(place, true);
+  }
+
+  void _deselect() {
+    if (_selectedPlace == null) return;
+    final place = _selectedPlace!;
+    setState(() => _selectedPlace = null);
+    _setMarkerSelected(place, false);
+  }
 
   void _zoomBy(double delta) {
-    final camera = _mapController.camera;
-    _mapController.move(camera.center, camera.zoom + delta);
+    _mapController?.animateCamera(delta > 0 ? CameraUpdate.zoomIn() : CameraUpdate.zoomOut());
   }
 
   void _recenter() {
-    _mapController.move(_center, 15.2);
+    _mapController?.animateCamera(CameraUpdate.newLatLngZoom(_searchOrigin, 15.2));
+  }
+
+  void _flyTo(LatLng position) {
+    _mapController?.animateCamera(CameraUpdate.newLatLngZoom(position, 16));
   }
 
   @override
@@ -149,74 +440,38 @@ class _HiddenPlaceDiscoveryUIState extends State<HiddenPlaceDiscoveryUI> {
               flex: 6,
               child: Stack(
                 children: [
-                  // Real map tiles
-                  FlutterMap(
-                    mapController: _mapController,
-                    options: MapOptions(
-                      initialCenter: _center,
-                      initialZoom: 15.2,
-                      minZoom: 4,
-                      maxZoom: 19,
-                      interactionOptions: const InteractionOptions(
-                        flags: InteractiveFlag.all & ~InteractiveFlag.rotate,
-                      ),
-                      onTap: (_, __) => setState(() => _selectedPlace = null),
-                    ),
-                    children: [
-                      // CartoDB "Positron" — a clean light basemap, closer
-                      // in spirit to the cream/soft palette of the mock than
-                      // stock OSM tiles.
-                      TileLayer(
-                        urlTemplate:
-                        'https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png',
-                        subdomains: const ['a', 'b', 'c', 'd'],
-                        userAgentPackageName: 'com.example.explore_my',
-                      ),
-                      // Place markers
-                      MarkerLayer(
-                        markers: [
-                          for (final place in _places)
-                            Marker(
-                              point: place.position,
-                              width: 46,
-                              height: 56,
-                              alignment: Alignment.topCenter,
-                              child: GestureDetector(
-                                onTap: () => setState(() => _selectedPlace = place),
-                                child: _MapPinTeardrop(
-                                  icon: place.icon,
-                                  color: place.pinColor,
-                                  selected: _selectedPlace == place,
-                                ),
-                              ),
+                  if (!_mapReady)
+                    const Center(child: CircularProgressIndicator(color: AppColors.coral))
+                  else
+                    AnimatedBuilder(
+                      animation: _pulseController,
+                      builder: (context, _) {
+                        return GoogleMap(
+                          initialCameraPosition: CameraPosition(target: _searchOrigin, zoom: 15.2),
+                          onMapCreated: (controller) {
+                            _mapController = controller;
+                            controller.setMapStyle(_lightMapStyle);
+                          },
+                          markers: _markers,
+                          onTap: (_) => _deselect(),
+                          myLocationButtonEnabled: false,
+                          zoomControlsEnabled: false,
+                          mapToolbarEnabled: false,
+                          compassEnabled: false,
+                          circles: {
+                            Circle(
+                              circleId: const CircleId('pulse'),
+                              center: _searchOrigin,
+                              radius: 40 + _pulseController.value * 70,
+                              fillColor: AppColors.gmapsBlue.withOpacity((1 - _pulseController.value) * 0.25),
+                              strokeWidth: 0,
                             ),
-                        ],
-                      ),
-                      // "You are here" blue dot
-                      MarkerLayer(
-                        markers: [
-                          Marker(
-                            point: _center,
-                            width: 40,
-                            height: 40,
-                            child: const _UserLocationDot(),
-                          ),
-                        ],
-                      ),
-                      RichAttributionWidget(
-                        alignment: AttributionAlignment.bottomLeft,
-                        attributions: [
-                          TextSourceAttribution(
-                            '© OpenStreetMap contributors, © CARTO',
-                            onTap: () {},
-                          ),
-                        ],
-                      ),
-                    ],
-                  ),
+                          },
+                        );
+                      },
+                    ),
 
-                  // Soft gradient so the search bar/chips stay legible
-                  // over busy map tiles.
+                  // Gradient so the search bar/chips stay legible.
                   Positioned(
                     top: 0,
                     left: 0,
@@ -228,10 +483,7 @@ class _HiddenPlaceDiscoveryUIState extends State<HiddenPlaceDiscoveryUI> {
                           gradient: LinearGradient(
                             begin: Alignment.topCenter,
                             end: Alignment.bottomCenter,
-                            colors: [
-                              Colors.black.withOpacity(0.18),
-                              Colors.transparent,
-                            ],
+                            colors: [Colors.black.withOpacity(0.18), Colors.transparent],
                           ),
                         ),
                       ),
@@ -239,12 +491,7 @@ class _HiddenPlaceDiscoveryUIState extends State<HiddenPlaceDiscoveryUI> {
                   ),
 
                   // Search bar
-                  Positioned(
-                    top: 14,
-                    left: 14,
-                    right: 14,
-                    child: _SearchBar(),
-                  ),
+                  const Positioned(top: 14, left: 14, right: 14, child: _SearchBar()),
 
                   // Filter chips
                   Positioned(
@@ -259,18 +506,57 @@ class _HiddenPlaceDiscoveryUIState extends State<HiddenPlaceDiscoveryUI> {
                         separatorBuilder: (_, __) => const SizedBox(width: 8),
                         itemBuilder: (context, i) {
                           final f = _filters[i];
-                          final selected = f.label == _selectedFilter;
+                          final selected = f.key == _selectedFilter;
                           return _FilterChip(
                             data: f,
                             selected: selected,
-                            onTap: () => setState(() => _selectedFilter = f.label),
+                            onTap: () {
+                              setState(() => _selectedFilter = f.key);
+                              if (f.key == 'radius') {
+                                _toggleRadius();
+                              }
+                            },
                           );
                         },
                       ),
                     ),
                   ),
 
-                  // Zoom controls (Google-Maps-style stacked +/-)
+                  // Small "updating..." pill shown while re-fetching over an already-visible map (e.g.
+                  // after toggling the radius chip) - the fetch + marker rebuild can take a second or
+                  // two, and without this the map just sits there looking frozen/unresponsive in the
+                  // meantime. Only shown after the initial load (_mapReady) - the first load already has
+                  // its own full-screen spinner instead.
+                  if (_mapReady && _isLoadingPlaces)
+                    Positioned(
+                      top: 108,
+                      left: 0,
+                      right: 0,
+                      child: Center(
+                        child: Container(
+                          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                          decoration: BoxDecoration(
+                            color: Colors.black.withOpacity(0.65),
+                            borderRadius: BorderRadius.circular(20),
+                          ),
+                          child: const Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              SizedBox(
+                                width: 12,
+                                height: 12,
+                                child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white),
+                              ),
+                              SizedBox(width: 8),
+                              Text('Updating places...',
+                                  style: TextStyle(color: Colors.white, fontSize: 12, fontWeight: FontWeight.w600)),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ),
+
+                  // Zoom controls
                   Positioned(
                     right: 12,
                     bottom: 84,
@@ -280,17 +566,14 @@ class _HiddenPlaceDiscoveryUIState extends State<HiddenPlaceDiscoveryUI> {
                     ),
                   ),
 
-                  // Recenter (my-location) button
+                  // Recenter
                   Positioned(
                     right: 12,
                     bottom: 16,
-                    child: _RoundIconButton(
-                      icon: Icons.my_location,
-                      onTap: _recenter,
-                    ),
+                    child: _RoundIconButton(icon: Icons.my_location, onTap: _recenter),
                   ),
 
-                  // Selected place preview card (floats above the sheet)
+                  // Selected place preview
                   if (_selectedPlace != null)
                     Positioned(
                       left: 14,
@@ -312,9 +595,7 @@ class _HiddenPlaceDiscoveryUIState extends State<HiddenPlaceDiscoveryUI> {
                 decoration: const BoxDecoration(
                   color: AppColors.cardBg,
                   borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
-                  boxShadow: [
-                    BoxShadow(color: Colors.black12, blurRadius: 16, offset: Offset(0, -4)),
-                  ],
+                  boxShadow: [BoxShadow(color: Colors.black12, blurRadius: 16, offset: Offset(0, -4))],
                 ),
                 padding: const EdgeInsets.fromLTRB(20, 10, 20, 4),
                 child: Column(
@@ -343,41 +624,52 @@ class _HiddenPlaceDiscoveryUIState extends State<HiddenPlaceDiscoveryUI> {
                             letterSpacing: -0.3,
                           ),
                         ),
-                        Text(
-                          '${_places.length} nearby',
-                          style: const TextStyle(fontSize: 12, color: AppColors.textGrey),
-                        ),
+                        Text('${_places.length} nearby',
+                            style: const TextStyle(fontSize: 12, color: AppColors.textGrey)),
                       ],
                     ),
                     const SizedBox(height: 12),
                     Expanded(
-                      child: ListView.separated(
-                        scrollDirection: Axis.horizontal,
-                        itemCount: _places.length,
-                        separatorBuilder: (_, __) => const SizedBox(width: 12),
-                        itemBuilder: (context, i) {
-                          final place = _places[i];
-                          return SizedBox(
-                            width: 150,
-                            child: _PlaceCard(
-                              place: place,
-                              onTap: () {
-                                setState(() => _selectedPlace = place);
-                                _mapController.move(place.position, 16);
-                              },
-                            ),
-                          );
-                        },
-                      ),
+                      child: _isLoadingPlaces
+                          ? const Center(
+                              child: CircularProgressIndicator(color: AppColors.coral),
+                            )
+                          : _placesError != null
+                              ? Center(
+                                  child: Text(
+                                    _placesError!,
+                                    style: const TextStyle(color: AppColors.textGrey, fontSize: 13),
+                                  ),
+                                )
+                              : _places.isEmpty
+                                  ? const Center(
+                                      child: Text(
+                                        'No hidden places found nearby yet.',
+                                        style: TextStyle(color: AppColors.textGrey, fontSize: 13),
+                                      ),
+                                    )
+                                  : ListView.separated(
+                                      scrollDirection: Axis.horizontal,
+                                      itemCount: _places.length,
+                                      separatorBuilder: (_, __) => const SizedBox(width: 12),
+                                      itemBuilder: (context, i) {
+                                        final place = _places[i];
+                                        return SizedBox(
+                                          width: 150,
+                                          child: _PlaceCard(
+                                            place: place,
+                                            onTap: () {
+                                              _selectPlace(place);
+                                              _flyTo(place.position);
+                                            },
+                                          ),
+                                        );
+                                      },
+                                    ),
                     ),
                   ],
                 ),
               ),
-            ),
-
-            _BottomNav(
-              currentIndex: _navIndex,
-              onTap: (i) => setState(() => _navIndex = i),
             ),
           ],
         ),
@@ -390,6 +682,8 @@ class _HiddenPlaceDiscoveryUIState extends State<HiddenPlaceDiscoveryUI> {
 // SEARCH BAR
 // =============================================================================
 class _SearchBar extends StatelessWidget {
+  const _SearchBar();
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -398,19 +692,14 @@ class _SearchBar extends StatelessWidget {
       decoration: BoxDecoration(
         color: AppColors.chipBg,
         borderRadius: BorderRadius.circular(24),
-        boxShadow: [
-          BoxShadow(color: Colors.black.withOpacity(0.12), blurRadius: 10, offset: const Offset(0, 3)),
-        ],
+        boxShadow: [BoxShadow(color: Colors.black.withOpacity(0.12), blurRadius: 10, offset: const Offset(0, 3))],
       ),
       child: Row(
         children: [
           const Icon(Icons.menu, size: 20, color: AppColors.textGrey),
           const SizedBox(width: 12),
           const Expanded(
-            child: Text(
-              'Search hidden places',
-              style: TextStyle(fontSize: 14, color: AppColors.textGrey),
-            ),
+            child: Text('Search hidden places', style: TextStyle(fontSize: 14, color: AppColors.textGrey)),
           ),
           Container(
             width: 30,
@@ -428,9 +717,10 @@ class _SearchBar extends StatelessWidget {
 // FILTER CHIP
 // =============================================================================
 class _FilterChipData {
+  final String key;
   final String label;
   final IconData icon;
-  const _FilterChipData(this.label, this.icon);
+  const _FilterChipData(this.key, this.label, this.icon);
 }
 
 class _FilterChip extends StatelessWidget {
@@ -450,9 +740,7 @@ class _FilterChip extends StatelessWidget {
         decoration: BoxDecoration(
           color: selected ? AppColors.coral : AppColors.chipBg,
           borderRadius: BorderRadius.circular(20),
-          boxShadow: [
-            BoxShadow(color: Colors.black.withOpacity(0.1), blurRadius: 6, offset: const Offset(0, 2)),
-          ],
+          boxShadow: [BoxShadow(color: Colors.black.withOpacity(0.1), blurRadius: 6, offset: const Offset(0, 2))],
         ),
         child: Row(
           mainAxisSize: MainAxisSize.min,
@@ -470,106 +758,6 @@ class _FilterChip extends StatelessWidget {
           ],
         ),
       ),
-    );
-  }
-}
-
-// =============================================================================
-// MAP PIN (teardrop, Google-Maps style)
-// =============================================================================
-class _MapPinTeardrop extends StatelessWidget {
-  final IconData icon;
-  final Color color;
-  final bool selected;
-
-  const _MapPinTeardrop({required this.icon, required this.color, this.selected = false});
-
-  @override
-  Widget build(BuildContext context) {
-    final scale = selected ? 1.15 : 1.0;
-    return AnimatedScale(
-      scale: scale,
-      duration: const Duration(milliseconds: 150),
-      alignment: Alignment.bottomCenter,
-      child: SizedBox(
-        width: 40,
-        height: 50,
-        child: Stack(
-          alignment: Alignment.topCenter,
-          children: [
-            Icon(Icons.location_on, size: 44, color: color, shadows: const [
-              Shadow(color: Colors.black26, blurRadius: 4, offset: Offset(0, 2)),
-            ]),
-            Positioned(
-              top: 8,
-              child: Container(
-                width: 20,
-                height: 20,
-                decoration: const BoxDecoration(color: Colors.white, shape: BoxShape.circle),
-                child: Icon(icon, size: 12, color: color),
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-// =============================================================================
-// USER LOCATION DOT (with pulsing halo, like Google Maps' blue dot)
-// =============================================================================
-class _UserLocationDot extends StatefulWidget {
-  const _UserLocationDot();
-
-  @override
-  State<_UserLocationDot> createState() => _UserLocationDotState();
-}
-
-class _UserLocationDotState extends State<_UserLocationDot> with SingleTickerProviderStateMixin {
-  late final AnimationController _controller =
-  AnimationController(vsync: this, duration: const Duration(seconds: 2))..repeat();
-
-  @override
-  void dispose() {
-    _controller.dispose();
-    super.dispose();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return AnimatedBuilder(
-      animation: _controller,
-      builder: (context, _) {
-        final t = _controller.value;
-        return SizedBox(
-          width: 40,
-          height: 40,
-          child: Stack(
-            alignment: Alignment.center,
-            children: [
-              Container(
-                width: 40 * (0.4 + t * 0.6),
-                height: 40 * (0.4 + t * 0.6),
-                decoration: BoxDecoration(
-                  color: AppColors.gmapsBlue.withOpacity((1 - t) * 0.35),
-                  shape: BoxShape.circle,
-                ),
-              ),
-              Container(
-                width: 18,
-                height: 18,
-                decoration: BoxDecoration(
-                  color: AppColors.gmapsBlue,
-                  shape: BoxShape.circle,
-                  border: Border.all(color: Colors.white, width: 3),
-                  boxShadow: const [BoxShadow(color: Colors.black26, blurRadius: 4)],
-                ),
-              ),
-            ],
-          ),
-        );
-      },
     );
   }
 }
@@ -640,7 +828,7 @@ class _RoundIconButton extends StatelessWidget {
 }
 
 // =============================================================================
-// MINI PLACE CARD (shown when a pin is tapped)
+// MINI PLACE CARD
 // =============================================================================
 class _MiniPlaceCard extends StatelessWidget {
   final PlaceData place;
@@ -659,8 +847,13 @@ class _MiniPlaceCard extends StatelessWidget {
         children: [
           ClipRRect(
             borderRadius: BorderRadius.circular(12),
-            child: Image.network(place.imageUrl, width: 54, height: 54, fit: BoxFit.cover,
-                errorBuilder: (_, __, ___) => Container(width: 54, height: 54, color: place.pinColor)),
+            child: Image.network(
+              place.imageUrl,
+              width: 54,
+              height: 54,
+              fit: BoxFit.cover,
+              errorBuilder: (_, __, ___) => Container(width: 54, height: 54, color: place.pinColor),
+            ),
           ),
           const SizedBox(width: 10),
           Expanded(
@@ -690,7 +883,7 @@ class _MiniPlaceCard extends StatelessWidget {
 }
 
 // =============================================================================
-// PLACE CARD (bottom sheet, horizontal scroll)
+// PLACE CARD (bottom sheet)
 // =============================================================================
 class _PlaceCard extends StatelessWidget {
   final PlaceData place;
@@ -747,54 +940,6 @@ class _PlaceCard extends StatelessWidget {
               style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w700, color: AppColors.textDark)),
           Text(place.category, style: const TextStyle(fontSize: 11, color: AppColors.coral)),
         ],
-      ),
-    );
-  }
-}
-
-// =============================================================================
-// BOTTOM NAV
-// =============================================================================
-class _BottomNav extends StatelessWidget {
-  final int currentIndex;
-  final ValueChanged<int> onTap;
-
-  const _BottomNav({required this.currentIndex, required this.onTap});
-
-  static const _items = [
-    (Icons.explore_outlined, Icons.explore, 'Explore'),
-    (Icons.chat_bubble_outline, Icons.chat_bubble, 'Community'),
-    (Icons.add_box_outlined, Icons.add_box, 'Post'),
-    (Icons.person_outline, Icons.person, 'Profile'),
-  ];
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.symmetric(vertical: 10),
-      decoration: const BoxDecoration(
-        color: AppColors.cardBg,
-        border: Border(top: BorderSide(color: AppColors.hairline)),
-      ),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceAround,
-        children: List.generate(_items.length, (i) {
-          final (iconOutline, iconFilled, label) = _items[i];
-          final selected = i == currentIndex;
-          final color = selected ? AppColors.coral : AppColors.textGrey;
-          return GestureDetector(
-            onTap: () => onTap(i),
-            behavior: HitTestBehavior.opaque,
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Icon(selected ? iconFilled : iconOutline, color: color, size: 22),
-                const SizedBox(height: 2),
-                Text(label, style: TextStyle(fontSize: 10, color: color, fontWeight: FontWeight.w500)),
-              ],
-            ),
-          );
-        }),
       ),
     );
   }

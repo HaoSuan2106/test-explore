@@ -92,9 +92,7 @@ class _VerifyEmailUiState extends State<VerifyEmailUi> {
         );
       }
     } else {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(_errorMessage() ?? 'Verification failed.')),
-      );
+      _showStatusSnackBar(success: false, message: _errorMessage() ?? 'Verification failed.');
     }
   }
 
@@ -109,15 +107,60 @@ class _VerifyEmailUiState extends State<VerifyEmailUi> {
     if (!mounted) return;
     setState(() => _isResending = false);
 
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(
-          success
-              ? 'A new verification code has been sent.'
-              : _errorMessage() ?? 'Could not resend code.',
-        ),
-      ),
+    _showStatusSnackBar(
+      success: success,
+      message: success ? 'A new verification code has been sent.' : (_errorMessage() ?? 'Could not resend code.'),
     );
+  }
+
+  void _showStatusSnackBar({required bool success, required String message}) {
+    final accentColor = success ? _kAccentOrange : const Color(0xFFD64545);
+
+    ScaffoldMessenger.of(context)
+      ..hideCurrentSnackBar()
+      ..showSnackBar(
+        SnackBar(
+          behavior: SnackBarBehavior.floating,
+          backgroundColor: Colors.transparent,
+          elevation: 0,
+          duration: const Duration(seconds: 3),
+          margin: const EdgeInsets.fromLTRB(20, 0, 20, 24),
+          padding: EdgeInsets.zero,
+          content: Container(
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(14),
+              border: Border.all(color: accentColor.withValues(alpha: 0.25)),
+              boxShadow: [
+                BoxShadow(color: Colors.black.withValues(alpha: 0.08), offset: const Offset(0, 4), blurRadius: 16),
+              ],
+            ),
+            child: Row(
+              children: [
+                Container(
+                  width: 32,
+                  height: 32,
+                  alignment: Alignment.center,
+                  decoration: BoxDecoration(color: accentColor.withValues(alpha: 0.15), shape: BoxShape.circle),
+                  child: Icon(
+                    success ? Icons.mark_email_read_outlined : Icons.error_outline,
+                    size: 18,
+                    color: accentColor,
+                  ),
+                ),
+                const SizedBox(width: 12),
+                Expanded(
+                  child: Text(
+                    message,
+                    style: GoogleFonts.plusJakartaSans(fontSize: 13, fontWeight: FontWeight.w600, color: _kTextBrown),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+      );
   }
 
   void _onChangeEmail() {

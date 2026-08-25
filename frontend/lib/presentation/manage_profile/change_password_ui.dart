@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import '../authentication/login/forgot_password_ui.dart';
+import 'package:provider/provider.dart';
+import '../../providers/auth_profile/profile_provider.dart';
+import '../authentication/registration/verify_email_ui.dart';
 
 const Color _kPrimaryOrange = Color(0xFFFF7148);
 const Color _kAccentOrange = Color(0xFFAB3510);
@@ -54,10 +56,44 @@ class _ChangePasswordUiState extends State<ChangePasswordUi> {
     // TODO: wire up to the update-password API.
   }
 
-  void _onResetViaEmail() {
-    Navigator.of(context).push(
-      MaterialPageRoute(builder: (_) => const ForgotPasswordUi(backLabel: 'Back to Change Password')),
+  Future<void> _onResetViaEmail() async {
+    final email = context.read<ProfileProvider>().profile?.email;
+    if (email == null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Could not find your account email.')),
+      );
+      return;
+    }
+
+    final profileProvider = context.read<ProfileProvider>();
+    final requested = await profileProvider.requestPasswordResetCode();
+    if (!mounted) return;
+
+    if (!requested) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(profileProvider.errorMessage ?? 'Could not send verification code.')),
+      );
+      return;
+    }
+
+    final verified = await Navigator.of(context).push<bool>(
+      MaterialPageRoute(
+        builder: (_) => VerifyEmailUi(
+          email: email,
+          topBarTitle: 'Change Password',
+          title: 'Verify Your Identity',
+          description: "We've sent a verification code to $email. Enter it below to reset your password.",
+          onVerify: (code) => context.read<ProfileProvider>().verifyPasswordResetCode(code),
+          onResend: () => context.read<ProfileProvider>().requestPasswordResetCode(),
+          errorMessageOf: () => context.read<ProfileProvider>().errorMessage,
+          onVerified: () => Navigator.of(context).pop(true),
+        ),
+      ),
     );
+
+    if (verified == true && mounted) {
+      setState(() => _isCurrentPasswordVerified = true);
+    }
   }
 
   @override
@@ -96,7 +132,13 @@ class _ChangePasswordUiState extends State<ChangePasswordUi> {
                     _PasswordField(
                       controller: _currentPasswordController,
                       hintText: 'Enter current password',
-                      onChanged: (_) => setState(() => _isCurrentPasswordVerified = false),
+                      onChanged: (_) => setState(() {
+                        if (_isCurrentPasswordVerified) {
+                          _isCurrentPasswordVerified = false;
+                          _newPasswordController.clear();
+                          _confirmPasswordController.clear();
+                        }
+                      }),
                     ),
                     const SizedBox(height: 20),
                     _CheckButton(onPressed: _onCheckCurrentPassword),
@@ -115,6 +157,7 @@ class _ChangePasswordUiState extends State<ChangePasswordUi> {
                     _PasswordField(
                       controller: _newPasswordController,
                       hintText: 'Min. 8 characters',
+                      enabled: _isCurrentPasswordVerified,
                       onChanged: (_) => setState(() {}),
                     ),
                     const SizedBox(height: 8),
@@ -149,6 +192,7 @@ class _ChangePasswordUiState extends State<ChangePasswordUi> {
                     _PasswordField(
                       controller: _confirmPasswordController,
                       hintText: 'Re-enter new password',
+                      enabled: _isCurrentPasswordVerified,
                       onChanged: (_) => setState(() {}),
                     ),
                     const SizedBox(height: 40),
@@ -233,9 +277,15 @@ class _TopBar extends StatelessWidget {
 class _PasswordField extends StatefulWidget {
   final TextEditingController controller;
   final String hintText;
+  final bool enabled;
   final ValueChanged<String>? onChanged;
 
-  const _PasswordField({required this.controller, required this.hintText, this.onChanged});
+  const _PasswordField({
+    required this.controller,
+    required this.hintText,
+    this.enabled = true,
+    this.onChanged,
+  });
 
   @override
   State<_PasswordField> createState() => _PasswordFieldState();
@@ -253,19 +303,21 @@ class _PasswordFieldState extends State<_PasswordField> {
     return TextField(
       controller: widget.controller,
       obscureText: _obscure,
+      enabled: widget.enabled,
       onChanged: widget.onChanged,
       style: GoogleFonts.plusJakartaSans(fontSize: 14, color: _kTitleDark),
       decoration: InputDecoration(
         filled: true,
-        fillColor: Colors.white,
+        fillColor: widget.enabled ? Colors.white : _kDisabledBg,
         contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
         hintText: widget.hintText,
         hintStyle: GoogleFonts.plusJakartaSans(fontSize: 14, color: _kMuted),
         border: border,
         enabledBorder: border,
+        disabledBorder: border,
         focusedBorder: border.copyWith(borderSide: const BorderSide(color: _kPrimaryOrange)),
         suffixIcon: GestureDetector(
-          onTap: () => setState(() => _obscure = !_obscure),
+          onTap: widget.enabled ? () => setState(() => _obscure = !_obscure) : null,
           child: Icon(
             _obscure ? Icons.visibility_outlined : Icons.visibility_off_outlined,
             size: 20,

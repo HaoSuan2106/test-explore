@@ -184,6 +184,56 @@ public class ManageProfileService : IManageProfileService
         return MapToDto(user);
     }
 
+    public async Task RequestPasswordResetCodeAsync(int userId)
+    {
+        var user = await _repository.GetByIdAsync(userId)
+            ?? throw new NotFoundException("User not found.");
+
+        await _repository.InvalidateActivePasswordResetTokensAsync(userId);
+
+        var code = VerificationCodeHelper.Generate();
+        var token = new PasswordResetToken
+        {
+            UserId = userId,
+            Token = RefreshTokenHelper.Hash(code),
+            ExpiresAt = DateTime.UtcNow.AddMinutes(_smtpSettings.VerificationCodeExpiryMinutes),
+            IsUsed = false,
+            CreatedAt = DateTime.UtcNow
+        };
+        await _repository.CreatePasswordResetTokenAsync(token);
+
+        var subject = "Your ExploreMy password reset code";
+        var body = $"<p>Your ExploreMy password reset code is:</p><h2>{code}</h2>" +
+                   $"<p>This code expires in {_smtpSettings.VerificationCodeExpiryMinutes} minutes. " +
+                   "If you didn't request this, you can safely ignore this email.</p>";
+
+        // Fire-and-forget: the code is already persisted, so don't make the
+        // caller wait on the SMTP round trip. Failures are logged, not
+        // surfaced — "Resend" is the recovery path.
+        _ = Task.Run(async () =>
+        {
+            try
+            {
+                await _emailSender.SendAsync(user.Email, subject, body);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Could not send password reset code to {Email}.", user.Email);
+            }
+        });
+    }
+
+    public async Task VerifyPasswordResetCodeAsync(int userId, VerifyPasswordResetCodeRequestDto request)
+    {
+        var token = await _repository.GetLatestActivePasswordResetTokenByUserIdAsync(userId);
+        if (token is null || RefreshTokenHelper.Hash(request.Code) != token.Token)
+        {
+            throw new AuthenticationException("Invalid or expired verification code.");
+        }
+
+        await _repository.MarkPasswordResetTokenUsedAsync(token);
+    }
+
     private async Task DeleteStoredPictureAsync(string publicUrl)
     {
         var path = _storageClient.GetPathFromPublicUrl(publicUrl);

@@ -16,4 +16,8 @@ public interface IAuthProfileRepository
     Task<EmailVerificationToken?> GetLatestActiveTokenByUserIdAsync(int userId);
     Task InvalidateActiveTokensAsync(int userId);
     Task MarkTokenUsedAsync(EmailVerificationToken token);
+    Task CreatePasswordResetTokenAsync(PasswordResetToken token);
+    Task<PasswordResetToken?> GetLatestActivePasswordResetTokenByUserIdAsync(int userId);
+    Task InvalidateActivePasswordResetTokensAsync(int userId);
+    Task MarkPasswordResetTokenUsedAsync(PasswordResetToken token);
 }

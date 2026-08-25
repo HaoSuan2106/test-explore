@@ -51,6 +51,12 @@ public class VerifyEmailChangeRequestDto
     public string Code { get; init; } = string.Empty;
 }
 
+public class VerifyPasswordResetCodeRequestDto
+{
+    [Required, MinLength(4), MaxLength(8)]
+    public string Code { get; init; } = string.Empty;
+}
+
 public class ProfileDtos
 {
 }

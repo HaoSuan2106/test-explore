@@ -8,6 +8,7 @@ import 'presentation/authentication/login/login_ui.dart';
 import 'presentation/navigation/entry_page_ui.dart';
 import 'presentation/navigation/main_page.dart';
 import 'providers/auth_profile/profile_provider.dart';
+import 'providers/hidden_place/hidden_place_provider.dart';
 
 void main() {
   runApp(const ExploreMYApp());
@@ -25,6 +26,7 @@ class ExploreMYApp extends StatelessWidget {
       providers: [
         ChangeNotifierProvider(create: (_) => AuthProvider(httpClient: httpClient, secureStorage: secureStorage)),
         ChangeNotifierProvider(create: (_) => ProfileProvider(httpClient: httpClient)),
+        ChangeNotifierProvider(create: (_) => HiddenPlaceProvider(httpClient: httpClient)),
       ],
       child: MaterialApp(
         title: 'ExploreMY',

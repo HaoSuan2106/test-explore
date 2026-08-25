@@ -120,6 +120,32 @@ class ProfileProvider extends ChangeNotifier {
     }
   }
 
+  /// Sends a password-reset verification code to the caller's own registered email.
+  Future<bool> requestPasswordResetCode() async {
+    try {
+      await _httpClient.requestPasswordResetCode();
+      errorMessage = null;
+      return true;
+    } on DioException catch (e) {
+      errorMessage = _messageFor(e) ?? 'Could not send verification code.';
+      notifyListeners();
+      return false;
+    }
+  }
+
+  /// Confirms the password-reset [code] sent to the caller's own email.
+  Future<bool> verifyPasswordResetCode(String code) async {
+    try {
+      await _httpClient.verifyPasswordResetCode(code);
+      errorMessage = null;
+      return true;
+    } on DioException catch (e) {
+      errorMessage = _messageFor(e) ?? 'Verification failed.';
+      notifyListeners();
+      return false;
+    }
+  }
+
   /// Call on logout so the next user who logs in on this device
   void clear() {
     profile = null;
