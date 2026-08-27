@@ -1,4 +1,3 @@
-import 'package:dotted_border/dotted_border.dart';
 import 'package:flutter/material.dart';
 import '../hidden_place_discovery/hidden_place_discovery_ui.dart';
 import '../community/chat_room/communication_ui.dart';
@@ -9,14 +8,17 @@ import 'custom_nav_bar.dart';
 /// The app shell. Holds the persistent bottom nav and swaps tab content.
 /// Default tab (index 0) is Hidden Place Discovery UI — the map with pins.
 class MainPage extends StatefulWidget {
-  const MainPage({super.key});
+  /// Optional initial tab index; defaults to 0 (Explore). When the router
+  /// passes ?tab=post the initial tab is set to the Post Feed (index 2).
+  final int initialTab;
+  const MainPage({super.key, this.initialTab = 0});
 
   @override
   State<MainPage> createState() => _MainPageState();
 }
 
 class _MainPageState extends State<MainPage> {
-  int _selectedIndex = 0;
+  late int _selectedIndex;
 
   final List<Widget> _tabs = const [
     HiddenPlaceDiscoveryUI(),
@@ -27,6 +29,12 @@ class _MainPageState extends State<MainPage> {
 
   void _onNavTap(int navIndex) {
     setState(() => _selectedIndex = navIndex);
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _selectedIndex = widget.initialTab;
   }
 
   @override

@@ -1,5 +1,6 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
     <uses-permission android:name="android.permission.CAMERA"/>
+    <uses-permission android:name="android.permission.INTERNET"/>
     <uses-feature android:name="android.hardware.camera" android:required="false"/>
     <!-- Needed for hidden-place discovery to center the search on the device's real location. -->
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
@@ -7,12 +8,21 @@
     <application
         android:label="explore_my"
         android:name="${applicationName}"
-        android:icon="@mipmap/ic_launcher">
+        android:icon="@mipmap/ic_launcher"
+        android:usesCleartextTraffic="true">
 
-        <!-- Google Maps API Key -->
+        <!-- Google Maps API key for the Maps SDK for Android (the basemap, markers and circles
+             drawn by GoogleMap). This is NOT the same call path as the place search: that runs on
+             our own backend with its own key, which is why the place list can be full while the
+             map underneath it stays blank.
+
+             The value is injected at build time from android/local.properties (gitignored) via
+             app/build.gradle.kts, so the key never lands in a commit. Set MAPS_API_KEY there.
+             An empty value builds and runs fine - it just renders an empty map with no overlays,
+             so if the map ever goes blank again, check that first. -->
         <meta-data
             android:name="com.google.android.geo.API_KEY"
-            android:value="AIzaSyBDmaSFhdyQChdfMpRFkGo1aBTeDShjW58"/>
+            android:value="${MAPS_API_KEY}"/>
 
         <activity
             android:name=".MainActivity"

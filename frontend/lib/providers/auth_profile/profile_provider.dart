@@ -92,8 +92,37 @@ class ProfileProvider extends ChangeNotifier {
     }
   }
 
+  /// Sends a verification code to the caller's current email, to confirm
+  /// they still control it before an email change is allowed.
+  Future<bool> requestCurrentEmailVerification() async {
+    try {
+      await _httpClient.requestCurrentEmailVerification();
+      errorMessage = null;
+      return true;
+    } on DioException catch (e) {
+      errorMessage = _messageFor(e) ?? 'Could not send verification code.';
+      notifyListeners();
+      return false;
+    }
+  }
+
+  /// Confirms the current-email [code]. Required before [requestEmailChange]
+  /// will succeed.
+  Future<bool> verifyCurrentEmailVerification(String code) async {
+    try {
+      await _httpClient.verifyCurrentEmailVerification(code);
+      errorMessage = null;
+      return true;
+    } on DioException catch (e) {
+      errorMessage = _messageFor(e) ?? 'Verification failed.';
+      notifyListeners();
+      return false;
+    }
+  }
+
   /// Sends a verification code to [newEmail]. The email itself isn't
-  /// changed until the code is confirmed via [verifyEmailChange].
+  /// changed until the code is confirmed via [verifyEmailChange]. Requires
+  /// [verifyCurrentEmailVerification] to have succeeded first.
   Future<bool> requestEmailChange(String newEmail) async {
     try {
       await _httpClient.requestEmailChange(newEmail);
@@ -115,6 +144,39 @@ class ProfileProvider extends ChangeNotifier {
       return true;
     } on DioException catch (e) {
       errorMessage = _messageFor(e) ?? 'Verification failed.';
+      notifyListeners();
+      return false;
+    }
+  }
+
+  /// Confirms the caller's current password before allowing a password change.
+  Future<bool> checkCurrentPassword(String currentPassword) async {
+    try {
+      await _httpClient.checkCurrentPassword(currentPassword);
+      errorMessage = null;
+      return true;
+    } on DioException catch (e) {
+      errorMessage = _messageFor(e) ?? 'Could not confirm your password.';
+      notifyListeners();
+      return false;
+    }
+  }
+
+  Future<bool> updatePassword({
+    required String newPassword,
+    String? currentPassword,
+    String? resetCode,
+  }) async {
+    try {
+      await _httpClient.updatePassword(
+        newPassword: newPassword,
+        currentPassword: currentPassword,
+        resetCode: resetCode,
+      );
+      errorMessage = null;
+      return true;
+    } on DioException catch (e) {
+      errorMessage = _messageFor(e) ?? 'Could not update your password.';
       notifyListeners();
       return false;
     }

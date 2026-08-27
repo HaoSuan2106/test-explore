@@ -47,11 +47,11 @@ class _LoginUiState extends State<LoginUi> with SingleTickerProviderStateMixin {
     );
     _formSlide = Tween<Offset>(begin: const Offset(0, 0.06), end: Offset.zero)
         .animate(
-          CurvedAnimation(
-            parent: _entranceController,
-            curve: Curves.easeOutCubic,
-          ),
-        );
+      CurvedAnimation(
+        parent: _entranceController,
+        curve: Curves.easeOutCubic,
+      ),
+    );
 
     _entranceController.forward();
   }
@@ -167,7 +167,7 @@ class _LoginUiState extends State<LoginUi> with SingleTickerProviderStateMixin {
                             leadingIcon: Icons.lock_outline,
                             trailing: GestureDetector(
                               onTap: () => setState(
-                                () => _obscurePassword = !_obscurePassword,
+                                    () => _obscurePassword = !_obscurePassword,
                               ),
                               child: Icon(
                                 _obscurePassword
@@ -193,7 +193,7 @@ class _LoginUiState extends State<LoginUi> with SingleTickerProviderStateMixin {
                                 Navigator.of(context).push(
                                   MaterialPageRoute(
                                     builder: (context) =>
-                                        const ForgotPasswordUi(),
+                                    const ForgotPasswordUi(),
                                   ),
                                 );
                               },
@@ -229,7 +229,7 @@ class _LoginUiState extends State<LoginUi> with SingleTickerProviderStateMixin {
                                   Navigator.of(context).push(
                                     MaterialPageRoute(
                                       builder: (context) =>
-                                          const RegistrationUi(),
+                                      const RegistrationUi(),
                                     ),
                                   );
                                 },
@@ -421,22 +421,22 @@ class _LoginButtonState extends State<_LoginButton> {
               alignment: Alignment.center,
               child: widget.isLoading
                   ? const SizedBox(
-                      height: 18,
-                      width: 18,
-                      child: CircularProgressIndicator(
-                        strokeWidth: 2,
-                        color: Colors.white,
-                      ),
-                    )
+                height: 18,
+                width: 18,
+                child: CircularProgressIndicator(
+                  strokeWidth: 2,
+                  color: Colors.white,
+                ),
+              )
                   : Text(
-                      'Login',
-                      style: GoogleFonts.plusJakartaSans(
-                        fontSize: 16,
-                        fontWeight: FontWeight.w700,
-                        color: Colors.white,
-                        height: 24 / 16,
-                      ),
-                    ),
+                'Login',
+                style: GoogleFonts.plusJakartaSans(
+                  fontSize: 16,
+                  fontWeight: FontWeight.w700,
+                  color: Colors.white,
+                  height: 24 / 16,
+                ),
+              ),
             ),
           ),
         ),

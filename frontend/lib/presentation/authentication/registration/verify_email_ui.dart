@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
-import 'package:explore_my/presentation/navigation/main_page.dart';
 import '../../../providers/auth_profile/auth_provider.dart';
+import '../../../widgets/app_feedback.dart';
+import '../../../widgets/content_constraint.dart';
 
 const Color _kPrimaryOrange = Color(0xFFFF7148);
 const Color _kAccentOrange = Color(0xFFAB3510);
@@ -21,11 +24,17 @@ class VerifyEmailUi extends StatefulWidget {
     this.onResend,
     this.onVerified,
     this.errorMessageOf,
+    this.showChangeEmailLink = true,
   });
 
   final String email;
   final String topBarTitle;
   final String title;
+
+  /// Whether to show the "Change Email" link that pops back to edit the
+  /// address. Set to false when [email] isn't editable from here (e.g.
+  /// verifying the caller's current email before an email change).
+  final bool showChangeEmailLink;
 
   /// Defaults to the registration-flow copy when null.
   final String? description;
@@ -53,6 +62,7 @@ class _VerifyEmailUiState extends State<VerifyEmailUi> {
   final _codeController = TextEditingController();
   String? _codeError;
   bool _isResending = false;
+  bool _isVerifying = false;
 
   @override
   void dispose() {
@@ -71,14 +81,24 @@ class _VerifyEmailUiState extends State<VerifyEmailUi> {
       widget.errorMessageOf?.call() ?? context.read<AuthProvider>().errorMessage;
 
   Future<void> _onVerifyCode() async {
+    if (_isVerifying) return;
+
     final codeError = _validateCode(_codeController.text);
     setState(() => _codeError = codeError);
     if (codeError != null) return;
 
+    FocusManager.instance.primaryFocus?.unfocus();
+    setState(() => _isVerifying = true);
+
     final code = _codeController.text.trim();
-    final success = widget.onVerify != null
-        ? await widget.onVerify!(code)
-        : await context.read<AuthProvider>().verifyEmail(widget.email, code);
+    var success = false;
+    try {
+      success = widget.onVerify != null
+          ? await widget.onVerify!(code)
+          : await context.read<AuthProvider>().verifyEmail(widget.email, code);
+    } finally {
+      if (mounted) setState(() => _isVerifying = false);
+    }
 
     if (!mounted) return;
 
@@ -86,13 +106,12 @@ class _VerifyEmailUiState extends State<VerifyEmailUi> {
       if (widget.onVerified != null) {
         widget.onVerified!();
       } else {
-        Navigator.of(context).pushAndRemoveUntil(
-          MaterialPageRoute(builder: (_) => const MainPage()),
-              (route) => false,
-        );
+        context.go('/login');
       }
     } else {
       _showStatusSnackBar(success: false, message: _errorMessage() ?? 'Verification failed.');
+      AppFeedback.show(context,
+          message: _errorMessage() ?? 'Verification failed.', isSuccess: false);
     }
   }
 
@@ -161,6 +180,11 @@ class _VerifyEmailUiState extends State<VerifyEmailUi> {
           ),
         ),
       );
+    AppFeedback.show(context,
+        message: success
+            ? 'A new verification code has been sent.'
+            : _errorMessage() ?? 'Could not resend code.',
+        isSuccess: success);
   }
 
   void _onChangeEmail() {
@@ -172,9 +196,11 @@ class _VerifyEmailUiState extends State<VerifyEmailUi> {
     return Scaffold(
       backgroundColor: Colors.white,
       body: SafeArea(
-        child: Column(
-          children: [
-            _TopBar(title: widget.topBarTitle, onBack: () => Navigator.of(context).pop()),
+        child: ContentConstraint(
+          maxWidth: 600,
+          child: Column(
+            children: [
+              _TopBar(title: widget.topBarTitle, onBack: () => Navigator.of(context).pop()),
             Expanded(
               child: SingleChildScrollView(
                 padding: const EdgeInsets.fromLTRB(20, 24, 20, 32),
@@ -254,8 +280,14 @@ class _VerifyEmailUiState extends State<VerifyEmailUi> {
                       child: TextField(
                         controller: _codeController,
                         keyboardType: TextInputType.number,
+                        textInputAction: TextInputAction.done,
+                        inputFormatters: [
+                          FilteringTextInputFormatter.digitsOnly,
+                          LengthLimitingTextInputFormatter(8),
+                        ],
                         textAlign: TextAlign.center,
                         onChanged: (value) => setState(() => _codeError = _validateCode(value)),
+                        onSubmitted: (_) => _onVerifyCode(),
                         style: GoogleFonts.plusJakartaSans(
                           fontSize: 16,
                           letterSpacing: 8,
@@ -283,32 +315,39 @@ class _VerifyEmailUiState extends State<VerifyEmailUi> {
                         ),
                       ),
                     const SizedBox(height: 20),
-                    _PrimaryButton(label: 'Verify Email', onPressed: _onVerifyCode),
+                    _PrimaryButton(
+                      label: 'Verify Email',
+                      isLoading: _isVerifying,
+                      onPressed: _isVerifying ? null : _onVerifyCode,
+                    ),
                     const SizedBox(height: 16),
                     _ResendCodeButton(
                       isLoading: _isResending,
                       onPressed: _onResendVerificationCode,
                     ),
-                    const SizedBox(height: 8),
-                    Center(
-                      child: GestureDetector(
-                        onTap: _onChangeEmail,
-                        child: Text(
-                          'Change Email',
-                          style: GoogleFonts.plusJakartaSans(
-                            fontSize: 14,
-                            fontWeight: FontWeight.w700,
-                            color: _kChangeEmailColor,
-                            height: 20 / 14,
+                    if (widget.showChangeEmailLink) ...[
+                      const SizedBox(height: 8),
+                      Center(
+                        child: GestureDetector(
+                          onTap: _onChangeEmail,
+                          child: Text(
+                            'Change Email',
+                            style: GoogleFonts.plusJakartaSans(
+                              fontSize: 14,
+                              fontWeight: FontWeight.w700,
+                              color: _kChangeEmailColor,
+                              height: 20 / 14,
+                            ),
                           ),
                         ),
                       ),
-                    ),
+                    ],
                   ],
                 ),
               ),
             ),
           ],
+          ),
         ),
       ),
     );
@@ -433,37 +472,47 @@ class _ResendCodeButtonState extends State<_ResendCodeButton> {
 
 class _PrimaryButton extends StatelessWidget {
   final String label;
-  final VoidCallback onPressed;
+  final bool isLoading;
+  final VoidCallback? onPressed;
 
-  const _PrimaryButton({required this.label, required this.onPressed});
+  const _PrimaryButton({
+    required this.label,
+    required this.onPressed,
+    this.isLoading = false,
+  });
 
   @override
   Widget build(BuildContext context) {
-    return Material(
-      color: Colors.transparent,
-      child: InkWell(
-        borderRadius: BorderRadius.circular(9999),
-        onTap: onPressed,
-        child: Container(
-          padding: const EdgeInsets.symmetric(vertical: 16),
-          decoration: BoxDecoration(
-            color: _kPrimaryOrange,
-            borderRadius: BorderRadius.circular(9999),
-            boxShadow: [
-              BoxShadow(color: Colors.black.withValues(alpha: 0.05), offset: const Offset(0, 1), blurRadius: 2),
-            ],
-          ),
-          alignment: Alignment.center,
-          child: Text(
-            label,
-            style: GoogleFonts.plusJakartaSans(
-              fontSize: 16,
-              fontWeight: FontWeight.w700,
-              color: Colors.white,
-              height: 24 / 16,
-            ),
-          ),
+    return SizedBox(
+      width: double.infinity,
+      height: 56,
+      child: ElevatedButton(
+        onPressed: onPressed,
+        style: ElevatedButton.styleFrom(
+          elevation: 1,
+          backgroundColor: _kPrimaryOrange,
+          disabledBackgroundColor: _kPrimaryOrange.withValues(alpha: 0.7),
+          foregroundColor: Colors.white,
+          shape: const StadiumBorder(),
         ),
+        child: isLoading
+            ? const SizedBox(
+                width: 20,
+                height: 20,
+                child: CircularProgressIndicator(
+                  strokeWidth: 2,
+                  color: Colors.white,
+                ),
+              )
+            : Text(
+                label,
+                style: GoogleFonts.plusJakartaSans(
+                  fontSize: 16,
+                  fontWeight: FontWeight.w700,
+                  color: Colors.white,
+                  height: 24 / 16,
+                ),
+              ),
       ),
     );
   }

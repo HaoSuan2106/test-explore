@@ -1,14 +1,25 @@
 using ExploreMy.Api.Application.AuthProfile.Authentication;
 using ExploreMy.Api.Application.AuthProfile.Facade;
 using ExploreMy.Api.Application.AuthProfile.ManageProfile;
+using ExploreMy.Api.Application.FootTracker.Facade;
+using ExploreMy.Api.Application.FootTracker.FavouritePlace;
 using ExploreMy.Api.Application.HiddenPlace.DiscoverHiddenPlace;
 using ExploreMy.Api.Application.HiddenPlace.Facade;
+using ExploreMy.Api.Application.HiddenPlace.HiddenPlaceContribution;
+using ExploreMy.Api.Application.HiddenPlace.PlacePhotos;
+using ExploreMy.Api.Application.PostReview.Facade;
+using ExploreMy.Api.Application.PostReview.ManagePost;
+using ExploreMy.Api.Application.PostReview.SocialEngagement;
+using ExploreMy.Api.Common.Helpers;
 using ExploreMy.Api.Common.Helpers;
 using ExploreMy.Api.Configuration;
 using ExploreMy.Api.DataAccess.ExternalClients.GooglePlaces;
 using ExploreMy.Api.DataAccess.ExternalClients.SupabaseStorage;
 using ExploreMy.Api.DataAccess.Repositories.AuthProfile;
+using ExploreMy.Api.DataAccess.Repositories.FootTracker;
 using ExploreMy.Api.DataAccess.Repositories.HiddenPlace;
+using ExploreMy.Api.DataAccess.Repositories.PlacePhotos;
+using ExploreMy.Api.DataAccess.Repositories.PostReview;
 using ExploreMy.Api.Middleware;
 using ExploreMy.Api.Persistence.DbContext;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -16,7 +27,12 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using System.Net.Http.Headers;
 using System.Text;
+using ExploreMy.Api.Application.FootTracker.Navigation;
+using ExploreMy.Api.DataAccess.ExternalClients.OpenRouteService;
 
+Console.WriteLine(
+    PasswordHasher.HashPassword("exploreMy123")
+);
 var builder = WebApplication.CreateBuilder(args);
 
 // Config binding
@@ -38,8 +54,14 @@ builder.Services.AddDbContext<MySqlDbContext>(options =>
 {
     options
         .UseMySQL(connectionString)
-        .UseSnakeCaseNamingConvention()
-        .EnableSensitiveDataLogging();
+        .UseSnakeCaseNamingConvention();
+
+    // L-17: sensitive data (query parameter values) must never be logged
+    // outside development environments.
+    if (builder.Environment.IsDevelopment())
+    {
+        options.EnableSensitiveDataLogging();
+    }
 });
 
 // App services
@@ -49,9 +71,23 @@ builder.Services.AddScoped<IAuthenticationService, AuthenticationService>();
 builder.Services.AddScoped<IAuthProfileService, AuthProfileService>();
 builder.Services.AddSingleton<IJwtTokenGenerator, JwtTokenGenerator>();
 builder.Services.AddScoped<IManageProfileService, ManageProfileService>();
-builder.Services.AddScoped<IDiscoverHiddenPlaceService, DiscoverHiddenPlaceService>();
+// PostReview (Post module) services
+builder.Services.AddScoped<IPostReviewRepository, PostReviewMySqlRepository>();
+builder.Services.AddScoped<IManagePostService, ManagePostService>();
+builder.Services.AddScoped<ISocialEngagementService, SocialEngagementService>();
+builder.Services.AddScoped<IPostReviewService, PostReviewService>();
+
+// HiddenPlace (My Recommended Places module) services
 builder.Services.AddScoped<IHiddenPlaceRepository, HiddenPlaceMySqlRepository>();
+builder.Services.AddScoped<IHiddenPlaceContributionService, HiddenPlaceContributionService>();
+builder.Services.AddScoped<IDiscoverHiddenPlaceService, DiscoverHiddenPlaceService>();
 builder.Services.AddScoped<IHiddenPlaceService, HiddenPlaceService>();
+builder.Services.AddScoped<IPlacePhotoRepository, PlacePhotoMySqlRepository>();
+builder.Services.AddScoped<IHiddenPlaceSuppressionRepository, HiddenPlaceSuppressionMySqlRepository>();
+builder.Services.AddScoped<IFootTrackerRepository, FootTrackerMySqlRepository>();
+builder.Services.AddScoped<IFavouritePlaceService, FavouritePlaceService>();
+builder.Services.AddScoped<IFootTrackerService, FootTrackerService>();
+builder.Services.Configure<OpenRouteServiceSettings>(builder.Configuration.GetSection("OpenRouteService"));
 
 builder.Services.AddHttpClient<IStorageClient, SupabaseStorageClient>(client =>
 {
@@ -64,6 +100,17 @@ builder.Services.AddHttpClient<IPlacesApiClient, GooglePlacesApiClient>(client =
 {
     client.BaseAddress = new Uri("https://places.googleapis.com");
 });
+
+// Its HttpClient is deliberately bare: no BaseAddress, no API key, no auth header. It only ever
+// downloads image bytes from whatever CDN URI Google hands back, and those URIs are already signed.
+// Giving this client credentials would mean shipping them to a third-party host on every photo.
+builder.Services.AddHttpClient<IPlacePhotoService, PlacePhotoService>();
+
+builder.Services.AddHttpClient<IRoutingApiClient, OpenRouteServiceApiClient>(client =>
+{
+    client.BaseAddress = new Uri("https://api.openrouteservice.org");
+});
+builder.Services.AddScoped<INavigationService, NavigationService>();
 
 // JWT auth (validates tokens on future protected endpoints)
 builder.Services.AddAuthentication(options =>
@@ -86,9 +133,49 @@ builder.Services.AddAuthentication(options =>
     });
 
 // Add other services
-builder.Services.AddControllers();
+builder.Services.AddControllers()
+    .AddJsonOptions(options =>
+    {
+        // D-06 (post timestamp fix): this MySQL instance stores the wall-clock
+        // values it is given (no session-timezone conversion), and every app
+        // write uses DateTime.UtcNow, so the database holds UTC wall-clock
+        // values. MySql.Data returns those TIMESTAMP values as Kind=Local,
+        // so System.Text.Json serialized them with a +08:00 offset - e.g. a
+        // post created at 03:08Z was emitted as "03:08+08:00" (8 hours
+        // behind) and the Flutter feed showed "8 hours ago" for a brand-new
+        // post. Relabelling Local-kind values as Utc makes every app-written
+        // timestamp serialize as its true instant ("...Z").
+        options.JsonSerializerOptions.Converters.Add(new UtcDateTimeConverter());
+    });
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+
+// CORS for Flutter Web development (must precede UseAuthentication/UseAuthorization/endpoints).
+// Restricted development origins only; credentials allowed only for those origins.
+// NOTE: Do NOT use AllowAnyOrigin() together with AllowCredentials().
+// Flutter Web dev server binds a dynamic localhost port, so origins are matched by host
+// (loopback + the development LAN host) instead of a fixed port list.
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("FlutterWebDev", policy =>
+    {
+        policy
+            .AllowAnyHeader()
+            .AllowAnyMethod()
+            .AllowCredentials()
+            .SetIsOriginAllowed(origin =>
+            {
+                if (Uri.TryCreate(origin, UriKind.Absolute, out var uri))
+                {
+                    return uri.Host == "localhost"
+                        || uri.Host == "127.0.0.1"
+                        || uri.Host == "10.210.56.218"
+                        || uri.Host == "10.255.28.218";
+                }
+                return false;
+            });
+    });
+});
 
 var app = builder.Build();
 
@@ -101,12 +188,49 @@ if (app.Environment.IsDevelopment())
 
 app.UseMiddleware<ExceptionHandlingMiddleware>();
 
-app.UseHttpsRedirection();
+// NOTE: no UseHttpsRedirection() here. This backend is HTTP-only (the Flutter
+// Web client calls http://<host>:5226 directly; no HTTPS endpoint or TLS
+// termination is configured). With no HTTPS port available the redirect
+// middleware only emits a "Failed to determine the https port for redirect"
+// warning on every startup and redirects nothing.
 
-app.UseAuthorization();
+app.UseCors("FlutterWebDev");
+
+app.UseAuthentication();
 
 app.UseAuthorization();
 
 app.MapControllers();
 
 app.Run();
+
+/// <summary>
+/// D-06: serializes <see cref="DateTime"/> values that MySql.Data returned as
+/// Kind=Local (the raw UTC wall-clock stored by the app) as their true UTC
+/// instant. Only the Kind is relabelled - the clock value is never shifted -
+/// so no +8h hard-coding is involved.
+/// </summary>
+internal sealed class UtcDateTimeConverter : System.Text.Json.Serialization.JsonConverter<System.DateTime>
+{
+    public override System.DateTime Read(
+        ref System.Text.Json.Utf8JsonReader reader,
+        Type typeToConvert,
+        System.Text.Json.JsonSerializerOptions options)
+        => reader.GetDateTime();
+
+    public override void Write(
+        System.Text.Json.Utf8JsonWriter writer,
+        System.DateTime value,
+        System.Text.Json.JsonSerializerOptions options)
+    {
+        if (value.Kind == DateTimeKind.Local)
+        {
+            // Relabel the UTC wall-clock value as Utc so the emitted string
+            // carries the "Z" suffix (the correct instant).
+            value = DateTime.SpecifyKind(value, DateTimeKind.Utc);
+        }
+
+        writer.WriteStringValue(
+            value.ToString("yyyy-MM-ddTHH:mm:ss.FFFFFFFK", System.Globalization.CultureInfo.InvariantCulture));
+    }
+}

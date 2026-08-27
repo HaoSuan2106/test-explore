@@ -1,11 +1,15 @@
 import 'package:flutter/material.dart';
 import '../authentication/login/login_ui.dart';
+import '../exploration/exploration_ui.dart';
 import '../manage_profile/change_password_ui.dart';
 import '../manage_profile/manage_profile_ui.dart';
 import 'package:provider/provider.dart';
 import '../../providers/auth_profile/auth_provider.dart';
 import '../../providers/auth_profile/profile_provider.dart';
 import '../../widgets/animated_tap_button.dart';
+import '../favourite_place/favourite_place_screen.dart';
+import '../navigation/app_navigation.dart';
+
 
 const Color _kOrange = Color(0xFFFF7148);
 const Color _kTitleDark = Color(0xFF101C2C);
@@ -100,13 +104,20 @@ class AccountUI extends StatelessWidget {
                               _ProfileListItem(
                                 icon: Icons.favorite_border,
                                 label: 'Favourite Place',
-                                onTap: () {},
+                                onTap: () {
+                                  Navigator.of(context).push(
+                                    MaterialPageRoute(builder: (context) => const FavouritePlaceScreen()),
+                                  );                                },
                               ),
                               const _ItemDivider(),
                               _ProfileListItem(
                                 icon: Icons.explore_outlined,
                                 label: 'Exploration Feature',
-                                onTap: () {},
+                                onTap: () {
+                                  Navigator.of(context).push(
+                                    MaterialPageRoute(builder: (context) => const ExplorationUi()),
+                                  );
+                                },
                               ),
                               const _ItemDivider(),
                               _ProfileListItem(
@@ -119,10 +130,13 @@ class AccountUI extends StatelessWidget {
                                 },
                               ),
                               const _ItemDivider(),
+                              // 2. CONNECTED: My Recommended Places -> GoRouter via AppNavigation
                               _ProfileListItem(
-                                icon: Icons.history,
-                                label: 'My Activity',
-                                onTap: () {},
+                                icon: Icons.place_outlined,
+                                label: 'My Recommendation Places',
+                                onTap: () {
+                                  AppNavigation.toMyRecommendedPlaces(context);
+                                },
                               ),
                               const _ItemDivider(),
                               _LogoutListItem(onTap: () async {

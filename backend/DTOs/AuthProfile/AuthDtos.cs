@@ -42,6 +42,9 @@ public class RegisterRequestDto
     public string Email { get; set; } = string.Empty;
 
     [Required, MinLength(8)]
+    [RegularExpression(
+        @"^(?=.*\d)(?=.*[^A-Za-z0-9\s]).{8,}$",
+        ErrorMessage = "Password must be at least 8 characters and include a number and a symbol.")]
     public string Password { get; set; } = string.Empty;
 }
 

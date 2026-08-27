@@ -1,6 +1,8 @@
+using ExploreMy.Api.DTOs.FootTracker;
+
 namespace ExploreMy.Api.Application.FootTracker.Navigation;
 
-// TODO: define navigation operations
 public interface INavigationService
 {
+    Task<RouteResponseDto> GetRouteAsync(RouteRequestDto request);
 }

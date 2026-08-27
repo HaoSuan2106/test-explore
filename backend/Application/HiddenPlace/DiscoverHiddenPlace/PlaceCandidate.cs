@@ -30,4 +30,39 @@ public class PlaceCandidate
 
     /// <summary>e.g. "OPERATIONAL", "CLOSED_TEMPORARILY", "CLOSED_PERMANENTLY".</summary>
     public string BusinessStatus { get; init; } = "OPERATIONAL";
+
+    // ---- Presentation detail. None of the following is used by the scoring algorithm; it is carried
+    // through so the app can show a place without a second round-trip to Google. ----
+
+    /// <summary>Full human-readable address, e.g. "12, Jalan Sultan, 50000 Kuala Lumpur". Null if absent.</summary>
+    public string? FormattedAddress { get; init; }
+
+    /// <summary>Link to this place on Google Maps - the target for a "get directions" button.</summary>
+    public string? GoogleMapsUri { get; init; }
+
+    /// <summary>The place's own website, when it has one.</summary>
+    public string? WebsiteUri { get; init; }
+
+    /// <summary>Phone number in local format, e.g. "03-1234 5678".</summary>
+    public string? NationalPhoneNumber { get; init; }
+
+    /// <summary>
+    /// The raw JSON array Google returned for `photos`, kept verbatim rather than modelled in C#.
+    ///
+    /// Each entry carries a photo resource name plus the authorAttributions that Google's terms require to
+    /// be shown alongside the image, so keeping the array whole avoids silently dropping the attribution.
+    /// The name is only a reference: fetching the actual image is a separate, separately billed Place
+    /// Photos request.
+    /// </summary>
+    public string? PhotosJson { get; init; }
+
+    /// <summary>
+    /// The raw JSON object Google returned for `regularOpeningHours`, kept verbatim.
+    ///
+    /// Holds both `weekdayDescriptions` (ready to display) and `periods` (structured, so the client can
+    /// work out "open now" itself). Regular hours are the standard weekly pattern and change rarely, which
+    /// is what makes them safe to cache. `currentOpeningHours` is deliberately NOT requested: it is
+    /// computed for the seven days around the request, so a cached copy is wrong within a day.
+    /// </summary>
+    public string? RegularOpeningHoursJson { get; init; }
 }

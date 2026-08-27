@@ -5,6 +5,10 @@ import '../secure_storage/secure_storage_service.dart';
 import '../../models/auth_profile/auth_model.dart';
 import '../../models/auth_profile/profile_model.dart';
 import '../../models/hidden_place/hidden_place_model.dart';
+import '../../models/foot_tracker/exploration_model.dart';
+import '../../models/post_review/post_model.dart';
+import '../../models/hidden_place/recommended_place_model.dart';
+
 
 class HttpClient {
   HttpClient({required SecureStorageService secureStorage})
@@ -29,6 +33,8 @@ class HttpClient {
         },
         onError: (error, handler) async {
           final path = error.requestOptions.path;
+          final hasRetriedAuthentication =
+              error.requestOptions.extra['authRetryAttempted'] == true;
           final isAuthEndpoint = path == '/api/auth/login' ||
               path == '/api/auth/refresh' ||
               path == '/api/auth/register' ||
@@ -36,11 +42,14 @@ class HttpClient {
               path == '/api/auth/resend-verification' ||
               path == '/api/auth/logout';
 
-          if (error.response?.statusCode == 401 && !isAuthEndpoint) {
+          if (error.response?.statusCode == 401 &&
+              !isAuthEndpoint &&
+              !hasRetriedAuthentication) {
             try {
               final newAccessToken = await _refreshAccessToken();
               final retryRequest = error.requestOptions
-                ..headers['Authorization'] = 'Bearer $newAccessToken';
+                ..headers['Authorization'] = 'Bearer $newAccessToken'
+                ..extra['authRetryAttempted'] = true;
               final response = await _dio.fetch(retryRequest);
               return handler.resolve(response);
             } catch (_) {
@@ -69,8 +78,8 @@ class HttpClient {
   // Override this without editing the file:
   //   flutter run --dart-define=API_BASE_URL=http://192.168.1.23:5226
   static const baseUrl = String.fromEnvironment(
-    'API_BASE_URL',
-    defaultValue: 'http://10.0.2.2:5226',
+      'API_BASE_URL',
+      defaultValue: 'http://10.72.135.106:5226'
   );
 
   final SecureStorageService _secureStorage;
@@ -149,6 +158,14 @@ class HttpClient {
     return ProfileModel.fromJson(response.data as Map<String, dynamic>);
   }
 
+  Future<void> requestCurrentEmailVerification() async {
+    await _dio.post('/api/profile/email/verify-current/request');
+  }
+
+  Future<void> verifyCurrentEmailVerification(String code) async {
+    await _dio.post('/api/profile/email/verify-current/confirm', data: {'code': code});
+  }
+
   Future<void> requestEmailChange(String newEmail) async {
     await _dio.post('/api/profile/email/request-change', data: {'newEmail': newEmail});
   }
@@ -163,6 +180,28 @@ class HttpClient {
 
   Future<void> requestPasswordResetCode() async {
     await _dio.post('/api/profile/password/reset-code');
+  }
+
+  Future<void> checkCurrentPassword(String currentPassword) async {
+    await _dio.post(
+      '/api/profile/password/check',
+      data: {'currentPassword': currentPassword},
+    );
+  }
+
+  Future<void> updatePassword({
+    required String newPassword,
+    String? currentPassword,
+    String? resetCode,
+  }) async {
+    final data = <String, dynamic>{'newPassword': newPassword};
+    if (currentPassword != null) data['currentPassword'] = currentPassword;
+    if (resetCode != null) data['resetCode'] = resetCode;
+
+    await _dio.put(
+      '/api/profile/password',
+      data: data,
+    );
   }
 
   Future<void> verifyPasswordResetCode(String code) async {
@@ -205,4 +244,267 @@ class HttpClient {
         .map((item) => HiddenPlaceModel.fromJson(item as Map<String, dynamic>))
         .toList();
   }
+
+
+  Future<List<FavouritePlace>> getFavouritePlaces() async {
+    final response = await _dio.get('/api/foot-tracker/favourite-places');
+    final data = response.data as List<dynamic>;
+    return data
+        .map((item) => FavouritePlace.fromJson(item as Map<String, dynamic>))
+        .toList();
+  }
+
+  Future<void> deleteFavouritePlaces(List<int> favouritePlaceIds) async {
+    await _dio.delete(
+      '/api/foot-tracker/favourite-places',
+      data: {'favouritePlaceIds': favouritePlaceIds},
+    );
+  }
+
+  // ============================================================
+  // Community Post module
+  // ============================================================
+
+  Future<List<PostSummaryModel>> getPostFeed({
+    String? category,
+    String? type,
+    String? sort,
+    int? min,
+    int? max,
+    String? filter,
+    int page = 1,
+    int pageSize = 20,
+  }) async {
+    final response = await _dio.get(
+      '/api/posts',
+      queryParameters: {
+        if (category != null && category.isNotEmpty) 'category': category,
+        if (type != null && type.isNotEmpty) 'type': type,
+        if (sort != null && sort.isNotEmpty) 'sort': sort,
+        'min': ?min,
+        'max': ?max,
+        if (filter != null && filter.isNotEmpty) 'filter': filter,
+        'page': page,
+        'pageSize': pageSize,
+      },
+    );
+    final list = response.data as List? ?? const [];
+    return list
+        .map((e) => PostSummaryModel.fromJson(e as Map<String, dynamic>))
+        .toList();
+  }
+
+  Future<List<PostSummaryModel>> searchPosts(String query,
+      {int page = 1, int pageSize = 20}) async {
+    final response = await _dio.get(
+      '/api/posts/search',
+      queryParameters: {'q': query, 'page': page, 'pageSize': pageSize},
+    );
+    final list = response.data as List? ?? const [];
+    return list
+        .map((e) => PostSummaryModel.fromJson(e as Map<String, dynamic>))
+        .toList();
+  }
+
+  Future<PostDetailsModel> getPostDetails(String postId) async {
+    final response = await _dio.get('/api/posts/$postId');
+    return PostDetailsModel.fromJson(response.data as Map<String, dynamic>);
+  }
+
+  Future<List<PostSummaryModel>> getMyPosts() async {
+    final response = await _dio.get('/api/posts/mine');
+    final list = response.data as List? ?? const [];
+    return list
+        .map((e) => PostSummaryModel.fromJson(e as Map<String, dynamic>))
+        .toList();
+  }
+
+  Future<CreatePostResponse> createPost(CreatePostRequest request) async {
+    final response = await _dio.post('/api/posts', data: request.toJson());
+    return CreatePostResponse.fromJson(response.data as Map<String, dynamic>);
+  }
+
+  Future<UpdatePostResponse> updatePost(
+      String postId, UpdatePostRequest request) async {
+    final response = await _dio.put('/api/posts/$postId', data: request.toJson());
+    return UpdatePostResponse.fromJson(response.data as Map<String, dynamic>);
+  }
+
+  Future<DeletePostResponse> deletePost(String postId) async {
+    final response = await _dio.delete('/api/posts/$postId');
+    return DeletePostResponse.fromJson(response.data as Map<String, dynamic>);
+  }
+
+  Future<SavePostResponse> savePost(String postId) async {
+    final response = await _dio.post('/api/posts/$postId/save');
+    return SavePostResponse.fromJson(response.data as Map<String, dynamic>);
+  }
+
+  Future<SavePostResponse> unsavePost(String postId) async {
+    final response = await _dio.delete('/api/posts/$postId/save');
+    return SavePostResponse.fromJson(response.data as Map<String, dynamic>);
+  }
+
+  Future<List<PostSummaryModel>> getSavedPosts({int page = 1, int pageSize = 50}) async {
+    final response = await _dio.get(
+      '/api/posts/saved',
+      queryParameters: {'page': page, 'pageSize': pageSize},
+    );
+    final list = response.data as List? ?? const [];
+    return list
+        .map((e) => PostSummaryModel.fromJson(e as Map<String, dynamic>))
+        .toList();
+  }
+
+  Future<List<EligibleAttractionModel>> getEligibleAttractions() async {
+    final response = await _dio.get('/api/posts/eligible-attractions');
+    final list = response.data as List? ?? const [];
+    return list
+        .map((e) => EligibleAttractionModel.fromJson(e as Map<String, dynamic>))
+        .toList();
+  }
+
+  Future<bool> hasEligibleAttractions() async {
+    final response = await _dio.get('/api/posts/eligible-attractions/has');
+    final data = response.data as Map<String, dynamic>? ?? const {};
+    return data['hasEligibleAttractions'] as bool? ?? false;
+  }
+
+  Future<String> uploadPostImage(File file) async {
+    final formData = FormData.fromMap({
+      'file': await MultipartFile.fromFile(file.path,
+          filename: file.uri.pathSegments.last),
+    });
+    final response = await _dio.post('/api/posts/images/upload', data: formData);
+    final data = response.data as Map<String, dynamic>? ?? const {};
+    return data['imageUrl'] as String? ?? '';
+  }
+
+  Future<List<PostCommentModel>> getMyComments() async {
+    final response = await _dio.get('/api/posts/comments/mine');
+    final list = response.data as List? ?? const [];
+    return list
+        .map((e) => PostCommentModel.fromJson(e as Map<String, dynamic>))
+        .toList();
+  }
+
+  Future<CreateCommentResponse> createComment(
+      String postId, String content) async {
+    final response = await _dio.post(
+      '/api/posts/$postId/comments',
+      data: CreateCommentRequest(content: content).toJson(),
+    );
+    return CreateCommentResponse.fromJson(response.data as Map<String, dynamic>);
+  }
+
+  Future<UpdateCommentResponse> updateComment(
+      String commentId, String content) async {
+    if (commentId.trim().isEmpty) {
+      throw Exception('Comment ID is required to update a comment.');
+    }
+    final response = await _dio.put(
+      '/api/posts/comments/$commentId',
+      data: UpdateCommentRequest(content: content).toJson(),
+    );
+    return UpdateCommentResponse.fromJson(response.data as Map<String, dynamic>);
+  }
+
+  Future<DeleteCommentResponse> deleteComment(String commentId) async {
+    if (commentId.trim().isEmpty) {
+      throw Exception('Comment ID is required to delete a comment.');
+    }
+    final response = await _dio.delete('/api/posts/comments/$commentId');
+    return DeleteCommentResponse.fromJson(
+        response.data as Map<String, dynamic>);
+  }
+
+  Future<ToggleReactionResponse> toggleReaction(String postId) async {
+    final response = await _dio.post(
+      '/api/posts/$postId/reactions',
+      data: const ToggleReactionRequest().toJson(),
+    );
+    return ToggleReactionResponse.fromJson(
+        response.data as Map<String, dynamic>);
+  }
+
+  Future<List<String>> getReportReasons() async {
+    final response = await _dio.get('/api/posts/report-reasons');
+    final data = response.data as Map<String, dynamic>? ?? const {};
+    return (data['reasons'] as List?)?.cast<String>() ?? const [];
+  }
+
+  Future<String> reportPost(String postId, String reason) async {
+    final response = await _dio.post(
+      '/api/posts/$postId/reports',
+      data: CreateReportRequest(reason: reason).toJson(),
+    );
+    final data = response.data as Map<String, dynamic>? ?? const {};
+    return data['reportId'] as String? ?? '';
+  }
+
+  Future<List<PostReportModel>> getMyReports() async {
+    final response = await _dio.get('/api/posts/reports/mine');
+    final list = response.data as List? ?? const [];
+    return list
+        .map((e) => PostReportModel.fromJson(e as Map<String, dynamic>))
+        .toList();
+  }
+
+  Future<List<RecommendedPlaceSummaryModel>> getPublishedPlaces() async {
+    final response = await _dio.get('/api/recommended-places/discover');
+    final list = response.data as List? ?? const [];
+    return list
+        .map((e) => RecommendedPlaceSummaryModel.fromJson(e as Map<String, dynamic>))
+        .toList();
+  }
+
+  Future<List<RecommendedPlaceSummaryModel>> getMyRecommendedPlaces() async {
+    final response = await _dio.get('/api/recommended-places');
+    final list = response.data as List? ?? const [];
+    return list
+        .map((e) => RecommendedPlaceSummaryModel.fromJson(e as Map<String, dynamic>))
+        .toList();
+  }
+
+  Future<RecommendedPlaceDetailsModel> getRecommendedPlaceDetails(String submissionId) async {
+    final response = await _dio.get('/api/recommended-places/$submissionId');
+    return RecommendedPlaceDetailsModel.fromJson(response.data as Map<String, dynamic>);
+  }
+
+  Future<SubmitRecommendedPlaceResponse> submitRecommendedPlace(
+      SubmitRecommendedPlaceRequest request) async {
+    final response = await _dio.post('/api/recommended-places', data: request.toJson());
+    return SubmitRecommendedPlaceResponse.fromJson(response.data as Map<String, dynamic>);
+  }
+
+  Future<WithdrawRecommendedPlaceResponse> withdrawRecommendedPlace(String submissionId) async {
+    final response = await _dio.post('/api/recommended-places/$submissionId/withdraw');
+    return WithdrawRecommendedPlaceResponse.fromJson(response.data as Map<String, dynamic>);
+  }
+
+  Future<List<String>> getRecommendedPlaceReportReasons() async {
+    final response = await _dio.get('/api/recommended-places/report-reasons');
+    final data = response.data as Map<String, dynamic>? ?? const {};
+    return (data['reasons'] as List?)?.cast<String>() ?? const [];
+  }
+
+  Future<ToggleVerificationResponse> toggleVerification(
+      String submissionId, {required bool verify}) async {
+    final response = await _dio.post(
+      '/api/recommended-places/$submissionId/verifications',
+      data: ToggleVerificationRequest(verify: verify).toJson(),
+    );
+    return ToggleVerificationResponse.fromJson(response.data as Map<String, dynamic>);
+  }
+
+  Future<ReportRecommendedPlaceResponse> reportRecommendedPlace(
+      String submissionId, String reason) async {
+    final response = await _dio.post(
+      '/api/recommended-places/$submissionId/reports',
+      data: ReportRecommendedPlaceRequest(reason: reason).toJson(),
+    );
+    return ReportRecommendedPlaceResponse.fromJson(response.data as Map<String, dynamic>);
+  }
+
 }
+

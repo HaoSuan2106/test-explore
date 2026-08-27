@@ -1,0 +1,46 @@
+# ========================
+# Flutter / Dart
+# ========================
+**/build/
+**/android/.gradle/
+**/android/app/build/
+**/android/local.properties
+**/.dart_tool/
+**/.packages
+**/.pub/
+**/pubspec.lock
+**/flutter_*.log
+**/doc/api/
+**/ios/.symlinks/
+**/ios/Pods/
+**/ios/build/
+*.iml
+*.ipr
+*.iws
+
+# ========================
+# .NET / ASP.NET Backend
+# ========================
+**/bin/
+**/obj/
+**/node_modules/
+*.user
+*.suo
+*.vs/
+*.DotSettings
+.vs/
+
+# ========================
+# IDE
+# ========================
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+
+# ========================
+# OS
+# ========================
+.DS_Store
+Thumbs.db

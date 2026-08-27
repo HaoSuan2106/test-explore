@@ -1,3 +1,5 @@
+using ExploreMy.Api.DTOs.HiddenPlace;
+
 namespace ExploreMy.Api.Application.HiddenPlace.DiscoverHiddenPlace;
 
 public interface IDiscoverHiddenPlaceService
@@ -19,4 +21,6 @@ public interface IDiscoverHiddenPlaceService
     /// running the full Discover pipeline. See DiscoverHiddenPlaceService.PassesQualityGate.
     /// </summary>
     bool PassesQualityGate(PlaceCandidate place, DiscoverHiddenPlaceOptions? options = null);
+    /// <summary>List recommended places that reached the VERIFIED status and are publicly viewable.</summary>
+    Task<List<RecommendedPlaceSummaryDto>> GetPublishedPlacesAsync();
 }

@@ -1,3 +1,15 @@
+import java.util.Properties
+
+// Secrets live in android/local.properties, which is gitignored - see the .gitignore in this
+// module's parent folder. Read here rather than hard-coded in AndroidManifest.xml so a key is
+// never committed, and so each teammate can use their own.
+val localProperties = Properties().apply {
+    val file = rootProject.file("local.properties")
+    if (file.exists()) {
+        file.inputStream().use { load(it) }
+    }
+}
+
 plugins {
     id("com.android.application")
     // The Flutter Gradle Plugin must be applied after the Android and Kotlin Gradle plugins.
@@ -23,6 +35,12 @@ android {
         targetSdk = flutter.targetSdkVersion
         versionCode = flutter.versionCode
         versionName = flutter.versionName
+
+        // Substituted into ${MAPS_API_KEY} in AndroidManifest.xml. Falls back to "" so a fresh
+        // clone still builds instead of failing gradle sync - the map just comes up blank until
+        // MAPS_API_KEY is set in local.properties.
+        manifestPlaceholders["MAPS_API_KEY"] =
+            localProperties.getProperty("MAPS_API_KEY") ?: ""
     }
 
     buildTypes {

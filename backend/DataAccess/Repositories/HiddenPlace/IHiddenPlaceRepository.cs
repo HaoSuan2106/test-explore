@@ -1,5 +1,7 @@
 using HiddenPlaceEntity = ExploreMy.Api.Domain.Entities.HiddenPlace;
 
+using ExploreMy.Api.Domain.Entities;
+
 namespace ExploreMy.Api.DataAccess.Repositories.HiddenPlace;
 
 public interface IHiddenPlaceRepository
@@ -20,4 +22,24 @@ public interface IHiddenPlaceRepository
     /// </summary>
     Task ReplaceBucketsAsync(
         IReadOnlyDictionary<string, List<HiddenPlaceEntity>> placesByBucketKey, DateTime fetchedAtUtc);
+    // ——— Recommended Places ———
+    Task<List<RecommendedPlace>> GetBySubmitterAsync(int userId);
+    Task<List<RecommendedPlace>> GetPublishedPlacesAsync();
+    Task<RecommendedPlace?> GetByIdAsync(string submissionId);
+    Task<bool> ExistsByNameAndAddressAsync(string name, string address);
+    Task<bool> ExistsNearbyAsync(decimal latitude, decimal longitude, double radiusMeters);
+    Task CreatePlaceAsync(RecommendedPlace place);
+    Task UpdatePlaceAsync(RecommendedPlace place);
+
+    // ——— Verifications (voting) ———
+    Task<RecommendedPlaceVerification?> GetActiveVerificationAsync(string submissionId, int userId);
+    Task<RecommendedPlaceVerification?> GetAnyVerificationAsync(string submissionId, int userId);
+    Task CreateVerificationAsync(RecommendedPlaceVerification verification);
+    Task UpdateVerificationAsync(RecommendedPlaceVerification verification);
+    Task<int> GetActiveVerificationCountAsync(string submissionId);
+
+    // ——— Reports ———
+    Task<RecommendedPlaceReport?> GetActiveReportAsync(string submissionId, int userId);
+    Task CreateReportAsync(RecommendedPlaceReport report);
+    Task<int> GetActiveReportCountAsync(string submissionId);
 }

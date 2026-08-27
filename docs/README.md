@@ -37,3 +37,9 @@ dotnet user-secrets set "Jwt:Key" 'VzmsrIpoj8JcE4fvuQUBB0RzNNwONq0uBwZnq5hIHkv5Y
 dotnet user-secrets set "ConnectionStrings:MySqlConnection" 'server=localhost;port=3306;database=exploremy\_dev;user=exploremy\_app;password=exploreMy123;' --project ".\\explore\_my\_backend.csproj"
 dotnet user-secrets set "GoogleApi:ApiKey" "AIzaSyBDmaSFhdyQChdfMpRFkGo1aBTeDShjW58" --project ".\\explore\_my\_backend.csproj"
 
+//qizhan
+//删除hidden_place_cache的data记录，在mysql写
+USE exploremy_dev;
+TRUNCATE TABLE hidden_place_cache;
+//更新mysql的table，在backend terminal写
+dotnet ef database update

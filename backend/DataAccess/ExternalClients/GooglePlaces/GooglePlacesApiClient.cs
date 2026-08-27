@@ -16,11 +16,53 @@ namespace ExploreMy.Api.DataAccess.ExternalClients.GooglePlaces;
 /// </summary>
 public class GooglePlacesApiClient : IPlacesApiClient
 {
-    // Only ask Google for the fields the app actually uses - keeps responses small and,
-    // for Places API (New), keeps you on the cheaper SKU tier (fewer billed fields).
+    // Only ask Google for the fields the app actually uses.
+    //
+    // Places API (New) bills per call by TIER, and the tier is set by the most expensive field in this
+    // mask - not by how many fields are listed. rating, userRatingCount, priceLevel, websiteUri,
+    // nationalPhoneNumber and regularOpeningHours are all Enterprise; everything else here is Pro or
+    // below. So this whole mask costs exactly what rating alone already cost, and adding any further
+    // Pro/Enterprise field is free.
+    //
+    // What is NOT free, and is deliberately absent: editorialSummary, reviews, generativeSummary and the
+    // amenity flags (servesBreakfast, allowsDogs, outdoorSeating, ...) sit in Enterprise + Atmosphere.
+    // Adding any one of them raises the price of EVERY call, including calls that never read it.
+    //
+    // Also absent by design: currentOpeningHours. It is computed for the seven days around the request,
+    // so caching it for 30 days would serve confidently wrong answers. regularOpeningHours is the
+    // cacheable half - see PlaceCandidate.RegularOpeningHoursJson.
     private const string FieldMask =
         "places.id,places.displayName,places.primaryType,places.types," +
-        "places.location,places.rating,places.userRatingCount,places.priceLevel,places.businessStatus";
+        "places.location,places.rating,places.userRatingCount,places.priceLevel,places.businessStatus," +
+        "places.formattedAddress,places.googleMapsUri,places.websiteUri,places.nationalPhoneNumber," +
+        "places.photos,places.regularOpeningHours";
+
+    // How Google decides WHICH places to return when a cell holds more matches than the 20-result cap
+    // allows. searchNearby offers only these two orderings; there is no "rank by review count" and no
+    // server-side review-count filter, so this single choice determines what can ever enter
+    // hidden_place_cache, and nothing downstream can recover a place it excludes.
+    //
+    // POPULARITY (Google's default) returns each cell's 20 best-known places. Every one of them has real
+    // reviews, so no part of the budget is wasted - but a search for hidden gems then never sees anything
+    // else. In a cell holding 50 cafes, the 30 obscure ones are simply never fetched, and the scoring
+    // downstream is left picking the least famous of the most famous. Measured on a real KL search the
+    // results had a median of 578 reviews, with 39 of 136 above 1000.
+    //
+    // DISTANCE returns the 20 places nearest the cell centre instead. No popularity bias, so the sample
+    // reaching the quality gate and HiddenScore is a fair one and genuinely obscure places can surface.
+    // This is the ranking the app's premise requires.
+    //
+    // Its cost is real and worth knowing: an unbiased sample of a dense area contains a lot of barely
+    // reviewed entries. Roughly half of what DISTANCE returned in the same KL search had fewer than five
+    // reviews - not hidden gems, just places nobody has assessed - so a meaningful share of each call's 20
+    // slots buys nothing. DiscoverHiddenPlaceOptions.MinUserRatingCount is the lever for how much of that
+    // to tolerate.
+    //
+    // Two knock-on effects if this is changed: every already-cached row was fetched under the other
+    // ranking, so TRUNCATE hidden_place_cache afterwards; and DISTANCE results cluster near each cell
+    // centre rather than spreading across it, so if coverage gaps appear the fix is a smaller
+    // SearchGridPlanner.CellHalfWidthMeters, not switching back.
+    private const string RankPreference = "DISTANCE";
 
     private static readonly JsonSerializerOptions JsonOptions = new()
     {
@@ -50,6 +92,7 @@ public class GooglePlacesApiClient : IPlacesApiClient
         {
             IncludedTypes = includedTypes.ToList(),
             MaxResultCount = Math.Clamp(maxResultCount, 1, 20),
+            RankPreference = RankPreference,
             LocationRestriction = new LocationRestrictionDto
             {
                 Circle = new CircleDto
@@ -88,6 +131,41 @@ public class GooglePlacesApiClient : IPlacesApiClient
             .ToList();
     }
 
+    public async Task<string?> GetPhotoUriAsync(
+        string photoReference,
+        int maxWidthPx,
+        CancellationToken cancellationToken = default)
+    {
+        // skipHttpRedirect makes Google answer with a small JSON body naming the image URI, instead of
+        // a 302 straight to its CDN. That is a security choice, not a style one: HttpClient follows
+        // redirects by default and re-sends custom headers to the new host, so the plain form would
+        // hand our API key to googleusercontent.com on every photo. This way the key never leaves
+        // googleapis.com, and the download itself is done by a separate client with no credentials.
+        var requestUri = $"/v1/{photoReference}/media?maxWidthPx={maxWidthPx}&skipHttpRedirect=true";
+
+        using var request = new HttpRequestMessage(HttpMethod.Get, requestUri);
+        request.Headers.Add("X-Goog-Api-Key", _settings.ApiKey);
+
+        using var response = await _httpClient.SendAsync(request, cancellationToken);
+
+        if (!response.IsSuccessStatusCode)
+        {
+            var body = await response.Content.ReadAsStringAsync(cancellationToken);
+            _logger.LogWarning(
+                "Google Place Photos returned {StatusCode} for {PhotoReference}: {Body}",
+                response.StatusCode, photoReference, body);
+            return null;
+        }
+
+        await using var stream = await response.Content.ReadAsStreamAsync(cancellationToken);
+        using var document = await JsonDocument.ParseAsync(stream, cancellationToken: cancellationToken);
+
+        return document.RootElement.TryGetProperty("photoUri", out var photoUri)
+               && photoUri.ValueKind == JsonValueKind.String
+            ? photoUri.GetString()
+            : null;
+    }
+
     /// <summary>Returns null for entries missing data essential to the algorithm (id/name/location) so callers can skip them.</summary>
     private PlaceCandidate? MapToPlaceCandidate(GooglePlaceDto dto)
     {
@@ -109,9 +187,27 @@ public class GooglePlacesApiClient : IPlacesApiClient
             Rating = dto.Rating,
             UserRatingCount = dto.UserRatingCount ?? 0,
             PriceLevel = GooglePriceLevelMapper.ToNumericLevel(dto.PriceLevel),
-            BusinessStatus = dto.BusinessStatus ?? "OPERATIONAL"
+            BusinessStatus = dto.BusinessStatus ?? "OPERATIONAL",
+            FormattedAddress = dto.FormattedAddress,
+            GoogleMapsUri = dto.GoogleMapsUri,
+            WebsiteUri = dto.WebsiteUri,
+            NationalPhoneNumber = dto.NationalPhoneNumber,
+            PhotosJson = RawJsonOrNull(dto.Photos),
+            RegularOpeningHoursJson = RawJsonOrNull(dto.RegularOpeningHours)
         };
     }
+
+    /// <summary>
+    /// Serialises a captured JSON value back to its original text, or null when Google omitted the field.
+    ///
+    /// Null rather than "null" or "" on purpose: these land in MySQL `json` columns, which accept SQL NULL
+    /// but reject an empty string, and a literal "null" would force every reader to distinguish
+    /// "no photos" from "the JSON value null".
+    /// </summary>
+    private static string? RawJsonOrNull(JsonElement? element) =>
+        element is null || element.Value.ValueKind is JsonValueKind.Undefined or JsonValueKind.Null
+            ? null
+            : element.Value.GetRawText();
 }
 
 internal static class GooglePriceLevelMapper

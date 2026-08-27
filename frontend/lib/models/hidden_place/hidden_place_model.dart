@@ -12,7 +12,13 @@ class HiddenPlaceModel {
     this.rating,
     required this.userRatingCount,
     this.priceLevel,
+    this.businessStatus,
     required this.hiddenScore,
+    required this.obscurityScore,
+    required this.qualityScore,
+    this.photoUrl,
+    this.photoAttribution,
+    this.source = 'GOOGLE',
   });
 
   final String placeId;
@@ -27,9 +33,43 @@ class HiddenPlaceModel {
 
   /// 0 (free) - 4 (very expensive), null if unknown.
   final int? priceLevel;
+  final String? businessStatus;
 
   /// 0.0-1.0, higher = more "hidden gem". The API response list is already sorted by this, descending.
   final double hiddenScore;
+
+  /// The obscurity half of [hiddenScore] on its own: 0.0-1.0, higher = fewer people have reviewed this
+  /// place compared with similar places nearby.
+  ///
+  /// Kept separate because [hiddenScore] blends obscurity with rating, so two places that are nothing
+  /// alike can share a score - a 25-review museum and a 1663-review temple both scored 0.411 on a real
+  /// search. Show these two alongside the score when explaining a ranking to the user; the score on its
+  /// own only says "this ranked higher", not why.
+  final double obscurityScore;
+
+  /// The quality half of [hiddenScore] on its own: 0.0-1.0, the rating rescaled so the algorithm's
+  /// minimum acceptable rating maps to 0 and 5.0 maps to 1. Not the same as [rating] - this is "how far
+  /// above the bar", which is what actually moves the score.
+  final double qualityScore;
+
+  /// Public URL of the place's photo, served from our own Supabase bucket - NOT from Google.
+  ///
+  /// Null is normal, not an error: plenty of genuinely obscure places have no photo at all, which is
+  /// most of what a hidden-gem search returns. Show a placeholder rather than an empty box.
+  final String? photoUrl;
+
+  /// Who took [photoUrl]'s picture. Google's terms require this to be displayed alongside the
+  /// image, so if the photo is shown anywhere, this has to be shown with it. Null when Google gave
+  /// no attribution.
+  final String? photoAttribution;
+
+  /// Where this place came from: 'GOOGLE' or 'COMMUNITY' (submitted by a user, verified by five
+  /// others).
+  ///
+  /// Worth checking before showing any number on this object. A community place has no Google
+  /// rating, no review count and no meaningful [hiddenScore] - those fields are zero because there
+  /// is nothing to put in them, not because the place scored badly.
+  final String source;
 
   factory HiddenPlaceModel.fromJson(Map<String, dynamic> json) => HiddenPlaceModel(
         placeId: json['placeId'] as String,
@@ -40,6 +80,14 @@ class HiddenPlaceModel {
         rating: (json['rating'] as num?)?.toDouble(),
         userRatingCount: json['userRatingCount'] as int,
         priceLevel: json['priceLevel'] as int?,
+        businessStatus: json['businessStatus'] as String?,
         hiddenScore: (json['hiddenScore'] as num).toDouble(),
+        // Default to 0 rather than requiring the key, so an older backend that does not
+        // send these yet still parses instead of throwing on every place in the list.
+        obscurityScore: (json['obscurityScore'] as num?)?.toDouble() ?? 0.0,
+        qualityScore: (json['qualityScore'] as num?)?.toDouble() ?? 0.0,
+        photoUrl: json['photoUrl'] as String?,
+        photoAttribution: json['photoAttribution'] as String?,
+        source: json['source'] as String? ?? 'GOOGLE',
       );
 }

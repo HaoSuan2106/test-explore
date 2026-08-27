@@ -77,6 +77,50 @@ public class ProfileController : ControllerBase
         }
     }
 
+    [HttpPost("email/verify-current/request")]
+    public async Task<IActionResult> RequestCurrentEmailVerification()
+    {
+        var userId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
+
+        try
+        {
+            await _manageProfileService.RequestCurrentEmailVerificationAsync(userId);
+            return Ok(new { message = "Verification code sent." });
+        }
+        catch (NotFoundException ex)
+        {
+            return NotFound(new { message = ex.Message });
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Unexpected error requesting current email verification for user {UserId}.", userId);
+            return StatusCode(StatusCodes.Status500InternalServerError,
+                new { message = "An unexpected error occurred." });
+        }
+    }
+
+    [HttpPost("email/verify-current/confirm")]
+    public async Task<IActionResult> VerifyCurrentEmailVerification([FromBody] VerifyCurrentEmailRequestDto request)
+    {
+        var userId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
+
+        try
+        {
+            await _manageProfileService.VerifyCurrentEmailVerificationAsync(userId, request);
+            return Ok(new { message = "Code verified." });
+        }
+        catch (AuthenticationException ex)
+        {
+            return BadRequest(new { message = ex.Message });
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Unexpected error verifying current email for user {UserId}.", userId);
+            return StatusCode(StatusCodes.Status500InternalServerError,
+                new { message = "An unexpected error occurred." });
+        }
+    }
+
     [HttpPost("email/request-change")]
     public async Task<IActionResult> RequestEmailChange([FromBody] RequestEmailChangeRequestDto request)
     {
@@ -90,6 +134,10 @@ public class ProfileController : ControllerBase
         catch (NotFoundException ex)
         {
             return NotFound(new { message = ex.Message });
+        }
+        catch (AuthenticationException ex)
+        {
+            return BadRequest(new { message = ex.Message });
         }
         catch (ConflictException ex)
         {
@@ -119,7 +167,7 @@ public class ProfileController : ControllerBase
         }
         catch (AuthenticationException ex)
         {
-            return Unauthorized(new { message = ex.Message });
+            return BadRequest(new { message = ex.Message });
         }
         catch (ConflictException ex)
         {
@@ -128,6 +176,62 @@ public class ProfileController : ControllerBase
         catch (Exception ex)
         {
             _logger.LogError(ex, "Unexpected error verifying email change for user {UserId}.", userId);
+            return StatusCode(StatusCodes.Status500InternalServerError,
+                new { message = "An unexpected error occurred." });
+        }
+    }
+
+    [HttpPost("password/check")]
+    public async Task<IActionResult> CheckCurrentPassword([FromBody] CheckPasswordRequestDto request)
+    {
+        var userId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
+
+        try
+        {
+            await _manageProfileService.VerifyCurrentPasswordAsync(userId, request);
+            return Ok(new { message = "Password confirmed." });
+        }
+        catch (AuthenticationException ex)
+        {
+            return BadRequest(new { message = ex.Message });
+        }
+        catch (NotFoundException ex)
+        {
+            return NotFound(new { message = ex.Message });
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Unexpected error checking the password for user {UserId}.", userId);
+            return StatusCode(StatusCodes.Status500InternalServerError,
+                new { message = "An unexpected error occurred." });
+        }
+    }
+
+    [HttpPut("password")]
+    public async Task<IActionResult> UpdatePassword([FromBody] UpdatePasswordRequestDto request)
+    {
+        var userId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
+
+        try
+        {
+            await _manageProfileService.UpdatePasswordAsync(userId, request);
+            return Ok(new { message = "Password updated successfully." });
+        }
+        catch (AuthenticationException ex)
+        {
+            return BadRequest(new { message = ex.Message });
+        }
+        catch (ValidationException ex)
+        {
+            return BadRequest(new { message = ex.Message });
+        }
+        catch (NotFoundException ex)
+        {
+            return NotFound(new { message = ex.Message });
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Unexpected error updating the password for user {UserId}.", userId);
             return StatusCode(StatusCodes.Status500InternalServerError,
                 new { message = "An unexpected error occurred." });
         }
@@ -167,7 +271,7 @@ public class ProfileController : ControllerBase
         }
         catch (AuthenticationException ex)
         {
-            return Unauthorized(new { message = ex.Message });
+            return BadRequest(new { message = ex.Message });
         }
         catch (Exception ex)
         {

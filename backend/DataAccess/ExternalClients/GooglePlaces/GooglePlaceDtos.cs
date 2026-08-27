@@ -1,3 +1,4 @@
+using System.Text.Json;
 using System.Text.Json.Serialization;
 
 namespace ExploreMy.Api.DataAccess.ExternalClients.GooglePlaces;
@@ -15,6 +16,13 @@ public class SearchNearbyRequestDto
 
     [JsonPropertyName("maxResultCount")]
     public int MaxResultCount { get; init; } = 20;
+
+    /// <summary>"POPULARITY" or "DISTANCE". Omitted from the JSON entirely when null, in which case
+    /// Google applies its own default of POPULARITY. What this app sends, and why, is decided in
+    /// GooglePlacesApiClient - this DTO only carries the value.</summary>
+    [JsonPropertyName("rankPreference")]
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+    public string? RankPreference { get; init; }
 
     [JsonPropertyName("locationRestriction")]
     public required LocationRestrictionDto LocationRestriction { get; init; }
@@ -80,6 +88,32 @@ public class GooglePlaceDto
 
     [JsonPropertyName("businessStatus")]
     public string? BusinessStatus { get; init; }
+
+    [JsonPropertyName("formattedAddress")]
+    public string? FormattedAddress { get; init; }
+
+    [JsonPropertyName("googleMapsUri")]
+    public string? GoogleMapsUri { get; init; }
+
+    [JsonPropertyName("websiteUri")]
+    public string? WebsiteUri { get; init; }
+
+    [JsonPropertyName("nationalPhoneNumber")]
+    public string? NationalPhoneNumber { get; init; }
+
+    /// <summary>
+    /// Captured as raw JSON instead of a modelled type. A photo entry is a small object (resource name,
+    /// dimensions, authorAttributions) whose only consumer is the client, and the attributions have to be
+    /// displayed alongside the image, so passing the array through untouched is both less code and less
+    /// likely to quietly drop something Google's terms require. Same reasoning for RegularOpeningHours.
+    /// </summary>
+    [JsonPropertyName("photos")]
+    public JsonElement? Photos { get; init; }
+
+    /// <summary>Standard weekly schedule: `weekdayDescriptions` for display, `periods` for computing
+    /// "open now" on the client. Raw JSON for the same reason as Photos.</summary>
+    [JsonPropertyName("regularOpeningHours")]
+    public JsonElement? RegularOpeningHours { get; init; }
 }
 
 public class LocalizedTextDto

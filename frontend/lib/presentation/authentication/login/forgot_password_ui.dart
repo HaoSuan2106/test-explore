@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import '../../../widgets/content_constraint.dart';
 
 const Color _kHeadingColor = Color(0xFF111827);
 const Color _kSubtitleColor = Color(0xFF6B7280);
@@ -50,9 +51,11 @@ class _ForgotPasswordUiState extends State<ForgotPasswordUi> {
     return Scaffold(
       backgroundColor: Colors.white,
       body: SafeArea(
-        child: Center(
-          child: SingleChildScrollView(
-            padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 32),
+        child: ContentConstraint(
+          maxWidth: 600,
+          child: Center(
+            child: SingleChildScrollView(
+              padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 32),
             child: Container(
               padding: const EdgeInsets.all(32),
               decoration: BoxDecoration(
@@ -198,6 +201,7 @@ class _ForgotPasswordUiState extends State<ForgotPasswordUi> {
                 ],
               ),
             ),
+          ),
           ),
         ),
       ),

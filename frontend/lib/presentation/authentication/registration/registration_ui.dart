@@ -4,6 +4,10 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import '../../../providers/auth_profile/auth_provider.dart';
+import '../../../utilities/password_policy.dart';
+import '../../../widgets/app_feedback.dart';
+import '../../../widgets/content_constraint.dart';
+import '../../../widgets/password_requirements.dart';
 import 'verify_email_ui.dart';
 
 const Color _kPrimaryOrange = Color(0xFFFF7148);
@@ -80,9 +84,8 @@ class _RegistrationUiState extends State<RegistrationUi> {
         MaterialPageRoute(builder: (_) => VerifyEmailUi(email: _emailController.text.trim())),
       );
     } else {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(authProvider.errorMessage ?? 'Registration failed.')),
-      );
+      AppFeedback.show(context,
+          message: authProvider.errorMessage ?? 'Registration failed.', isSuccess: false);
     }
   }
 
@@ -104,8 +107,7 @@ class _RegistrationUiState extends State<RegistrationUi> {
   }
 
   String? _validatePassword(String? value) {
-    if (value == null || value.isEmpty) return 'Password is required';
-    return null;
+    return PasswordPolicy.validationError(value);
   }
 
   String? _validateConfirmPassword(String? value) {
@@ -118,12 +120,14 @@ class _RegistrationUiState extends State<RegistrationUi> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
-      body: Stack(
-        children: [
-          const Positioned.fill(child: _MapPinsBackground()),
-          SafeArea(
-            child: Column(
-              children: [
+      body: ContentConstraint(
+        maxWidth: 600,
+        child: Stack(
+          children: [
+            const Positioned.fill(child: _MapPinsBackground()),
+            SafeArea(
+              child: Column(
+                children: [
                 _TopBar(onBack: () => Navigator.of(context).pop()),
                 Expanded(
                   child: LayoutBuilder(
@@ -184,7 +188,14 @@ class _RegistrationUiState extends State<RegistrationUi> {
                       icon: Icons.lock_outline,
                       obscureText: _obscurePassword,
                       errorText: _passwordError,
-                      onChanged: (value) => setState(() => _passwordError = _validatePassword(value)),
+                      onChanged: (value) => setState(() {
+                        _passwordError = _validatePassword(value);
+                        if (_confirmPasswordController.text.isNotEmpty) {
+                          _confirmPasswordError = _validateConfirmPassword(
+                            _confirmPasswordController.text,
+                          );
+                        }
+                      }),
                       trailing: GestureDetector(
                         onTap: () => setState(() => _obscurePassword = !_obscurePassword),
                         child: Icon(
@@ -194,6 +205,8 @@ class _RegistrationUiState extends State<RegistrationUi> {
                         ),
                       ),
                     ),
+                    const SizedBox(height: 8),
+                    PasswordRequirements(password: _passwordController.text),
                     const SizedBox(height: 16),
                     _RegField(
                       label: 'Confirm Password',
@@ -250,6 +263,7 @@ class _RegistrationUiState extends State<RegistrationUi> {
             ),
           ),
         ],
+      ),
       ),
     );
   }

@@ -1,16 +1,40 @@
-import 'package:flutter/foundation.dart';
 import 'package:dio/dio.dart';
+import 'package:flutter/foundation.dart';
 import '../../api_communication/http_client/http_client.dart';
 import '../../models/hidden_place/hidden_place_model.dart';
+import '../../models/hidden_place/recommended_place_model.dart';
 
+/// Surfaces the backend's actual error message when one is present, matching
+/// the team pattern used in auth_provider.dart / profile_provider.dart.
+/// Returns null when there is no server-provided message (e.g. network error),
+/// letting the caller fall back to its fixed friendly string.
+String? _messageFor(DioException e) {
+  final data = e.response?.data;
+  if (data is Map && data['message'] is String) {
+    return data['message'] as String;
+  }
+  return null;
+}
+
+/// State manager for the "Hidden Place Recommendation" module
+/// (UC502 — Manage Hidden Place Recommendation).
+///
+/// Follows the established team pattern:
+/// - one injected [HttpClient] (`_httpClient`)
+/// - public mutable state fields
+/// - every loader/mutation uses the same skeleton:
+///   set loading -> clear error -> notifyListeners
+///   -> try / on DioException / finally
 class HiddenPlaceProvider extends ChangeNotifier {
   HiddenPlaceProvider({required HttpClient httpClient}) : _httpClient = httpClient;
 
   final HttpClient _httpClient;
 
+  // ============================================================
+  // Nearby hidden-gem places (Discover)
+  // ============================================================
+
   List<HiddenPlaceModel> places = [];
-  bool isLoading = false;
-  String? errorMessage;
 
   /// Fetches hidden-gem places near (latitude, longitude) from the backend and replaces
   /// the current list. Backend handles the Google Places call + the hidden-score ranking,
@@ -34,6 +58,227 @@ class HiddenPlaceProvider extends ChangeNotifier {
       );
     } on DioException {
       errorMessage = 'Failed to load hidden places nearby.';
+    } finally {
+      isLoading = false;
+      notifyListeners();
+    }
+  }
+
+  // ============================================================
+  // My Recommended Places (UC502)
+  // ============================================================
+
+  bool isLoading = false;
+  String? errorMessage;
+
+  bool isDiscoverLoading = false;
+  String? discoverErrorMessage;
+
+  final List<RecommendedPlaceModel> _userRecommendations = [];
+
+  /// Returns non-withdrawn recommendations (the filtered list shown in the UI).
+  List<RecommendedPlaceModel> get userRecommendations =>
+      _userRecommendations.where((r) => r.status != 'WITHDRAWN').toList();
+
+  int get totalCount => _userRecommendations.where((r) => r.status != 'WITHDRAWN').length;
+  int get underVotingCount =>
+      _userRecommendations.where((r) => r.status == 'UNDER_VOTING').length;
+  int get verifiedCount =>
+      _userRecommendations.where((r) => r.status == 'VERIFIED').length;
+
+  /// Predefined report reasons (REQ502_13/22).
+  List<String> reportReasons = const [
+    'Inappropriate or misleading location imagery',
+    'Commercial Spam Promotion',
+    'Unauthorized Private Property Access',
+    'Inaccurate or outdated place details',
+    'Other violation',
+  ];
+
+  /// Public discovery (REQ502_20): VERIFIED places from the discover endpoint.
+  List<RecommendedPlaceSummaryModel> publishedPlaces = [];
+
+  RecommendedPlaceModel? getPlaceById(String placeId) {
+    try {
+      return _userRecommendations.firstWhere((p) => p.id == placeId);
+    } catch (_) {
+      return null;
+    }
+  }
+
+  // ============================================================
+  // Data loading
+  // ============================================================
+
+  /// Loads the public list of VERIFIED recommended places (REQ502_20).
+  Future<void> loadPublishedPlaces() async {
+    isDiscoverLoading = true;
+    discoverErrorMessage = null;
+    notifyListeners();
+
+    try {
+      publishedPlaces
+        ..clear()
+        ..addAll(await _httpClient.getPublishedPlaces());
+    } on DioException {
+      discoverErrorMessage = 'Failed to load verified places.';
+    } finally {
+      isDiscoverLoading = false;
+      notifyListeners();
+    }
+  }
+
+  /// Loads the current user's own recommendations (REQ502_26/27/28).
+  Future<void> loadMyRecommendations() async {
+    isLoading = true;
+    errorMessage = null;
+    notifyListeners();
+
+    try {
+      _userRecommendations
+        ..clear()
+        ..addAll((await _httpClient.getMyRecommendedPlaces())
+            .map(RecommendedPlaceModel.fromApi));
+    } on DioException {
+      errorMessage = 'Failed to load your recommended places.';
+    } finally {
+      isLoading = false;
+      notifyListeners();
+    }
+  }
+
+  /// Loads the predefined report reasons (REQ502_13).
+  Future<void> loadReportReasons() async {
+    try {
+      reportReasons = await _httpClient.getRecommendedPlaceReportReasons();
+    } on DioException {
+      // Non-fatal: fall back to the predefined list.
+      reportReasons = const [
+        'Inappropriate or misleading location imagery',
+        'Commercial Spam Promotion',
+        'Unauthorized Private Property Access',
+        'Inaccurate or outdated place details',
+        'Other violation',
+      ];
+    }
+    notifyListeners();
+  }
+
+  /// Loads a single recommendation's details for the details screen (REQ502_29/30/31).
+  Future<RecommendedPlaceModel?> loadRecommendationDetails(String placeId) async {
+    await refreshPlace(placeId);
+    return getPlaceById(placeId);
+  }
+
+  /// Reloads a single place after a mutation so counts/status stay in sync.
+  Future<void> refreshPlace(String placeId) async {
+    try {
+      final details = await _httpClient.getRecommendedPlaceDetails(placeId);
+      final updated = RecommendedPlaceModel.fromDetails(details);
+      final index = _userRecommendations.indexWhere((p) => p.id == placeId);
+      if (index >= 0) {
+        _userRecommendations[index] = updated;
+      } else {
+        _userRecommendations.insert(0, updated);
+      }
+      notifyListeners();
+    } on DioException {
+      // Ignore refresh failures; next full reload will correct state.
+    }
+  }
+
+  // ============================================================
+  // Mutations
+  // ============================================================
+
+  /// Submit a new recommended place (REQ502_1/3/11). Returns the new id or null.
+  Future<String?> submitRecommendation({
+    required String name,
+    required String address,
+    required String category,
+    required String description,
+    required double latitude,
+    required double longitude,
+  }) async {
+    isLoading = true;
+    errorMessage = null;
+    notifyListeners();
+
+    try {
+      final response = await _httpClient.submitRecommendedPlace(
+        SubmitRecommendedPlaceRequest(
+          name: name.trim(),
+          locationAddress: address.trim(),
+          latitude: latitude,
+          longitude: longitude,
+          category: category,
+          description: description.trim(),
+        ),
+      );
+      // Re-load the list so the new place appears at the top with server state.
+      await loadMyRecommendations();
+      return response.submissionId;
+    } on DioException catch (e) {
+      errorMessage = _messageFor(e) ?? 'Failed to submit your recommendation.';
+      return null;
+    } finally {
+      isLoading = false;
+      notifyListeners();
+    }
+  }
+
+  /// Withdraw one of the user's own recommendations (REQ502_32/33/34/35).
+  Future<bool> withdrawRecommendation(String placeId) async {
+    isLoading = true;
+    errorMessage = null;
+    notifyListeners();
+
+    try {
+      await _httpClient.withdrawRecommendedPlace(placeId);
+      await loadMyRecommendations();
+      return true;
+    } on DioException catch (e) {
+      errorMessage = _messageFor(e) ?? 'Failed to withdraw your recommendation.';
+      return false;
+    } finally {
+      isLoading = false;
+      notifyListeners();
+    }
+  }
+
+  /// Cast (isVerify = true) or withdraw (isVerify = false) a community verification
+  /// on a recommended place (REQ502_6/7/9/10/17/18/23/29).
+  Future<bool> castVote(String placeId, {required bool isVerify}) async {
+    isLoading = true;
+    errorMessage = null;
+    notifyListeners();
+
+    try {
+      await _httpClient.toggleVerification(placeId, verify: isVerify);
+      await refreshPlace(placeId);
+      return true;
+    } on DioException catch (e) {
+      errorMessage = _messageFor(e) ?? 'Failed to update your vote.';
+      return false;
+    } finally {
+      isLoading = false;
+      notifyListeners();
+    }
+  }
+
+  /// Report a recommended place with a predefined reason (REQ502_12/13/14/15/30).
+  Future<bool> reportPlace(String placeId, String reason) async {
+    isLoading = true;
+    errorMessage = null;
+    notifyListeners();
+
+    try {
+      await _httpClient.reportRecommendedPlace(placeId, reason);
+      await refreshPlace(placeId);
+      return true;
+    } on DioException catch (e) {
+      errorMessage = _messageFor(e) ?? 'Failed to report this place.';
+      return false;
     } finally {
       isLoading = false;
       notifyListeners();

@@ -51,10 +51,35 @@ public class VerifyEmailChangeRequestDto
     public string Code { get; init; } = string.Empty;
 }
 
+public class VerifyCurrentEmailRequestDto
+{
+    [Required, MinLength(4), MaxLength(8)]
+    public string Code { get; init; } = string.Empty;
+}
+
 public class VerifyPasswordResetCodeRequestDto
 {
     [Required, MinLength(4), MaxLength(8)]
     public string Code { get; init; } = string.Empty;
+}
+
+public class CheckPasswordRequestDto
+{
+    [Required]
+    public string CurrentPassword { get; init; } = string.Empty;
+}
+
+public class UpdatePasswordRequestDto
+{
+    public string? CurrentPassword { get; init; }
+
+    public string? ResetCode { get; init; }
+
+    [Required, MinLength(8)]
+    [RegularExpression(
+        @"^(?=.*\d)(?=.*[^A-Za-z0-9\s]).{8,}$",
+        ErrorMessage = "Password must be at least 8 characters and include a number and a symbol.")]
+    public string NewPassword { get; init; } = string.Empty;
 }
 
 public class ProfileDtos

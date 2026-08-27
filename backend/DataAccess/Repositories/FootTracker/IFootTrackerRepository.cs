@@ -1,6 +1,11 @@
+using ExploreMy.Api.Domain.Entities;
+
 namespace ExploreMy.Api.DataAccess.Repositories.FootTracker;
 
-// TODO: implement
 public interface IFootTrackerRepository
 {
+    Task<List<FavouritePlace>> GetFavouritePlacesByUserIdAsync(int userId);
+    Task<FavouritePlace?> GetFavouritePlaceByUserAndPlaceIdAsync(int userId, string placeId);
+    Task AddFavouritePlaceAsync(FavouritePlace favouritePlace);
+    Task RemoveFavouritePlacesAsync(int userId, List<int> favouritePlaceIds);
 }

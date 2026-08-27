@@ -29,6 +29,24 @@ public class HiddenPlace
     public int? PriceLevel { get; set; }
     public string BusinessStatus { get; set; } = "OPERATIONAL";
 
+    // ---- Presentation detail. Cached purely so a place can be displayed without a second round-trip to
+    // Google; none of it feeds the discovery algorithm. See PlaceCandidate for the per-field notes. ----
+
+    public string? FormattedAddress { get; set; }
+    public string? GoogleMapsUri { get; set; }
+    public string? WebsiteUri { get; set; }
+    public string? NationalPhoneNumber { get; set; }
+
+    /// <summary>Google's `photos` array, stored verbatim in a MySQL json column. Photo resource names plus
+    /// the authorAttributions that must be shown with the image. Fetching an actual image is a separate,
+    /// separately billed Place Photos request - this only holds the references.</summary>
+    public string? PhotosJson { get; set; }
+
+    /// <summary>Google's `regularOpeningHours` object, stored verbatim in a MySQL json column: the standard
+    /// weekly pattern, which changes rarely enough to survive the cache TTL. `currentOpeningHours` is not
+    /// stored - it is computed per request and would go stale within a day.</summary>
+    public string? RegularOpeningHoursJson { get; set; }
+
     /// <summary>
     /// Whether this row passed DiscoverHiddenPlaceService's stage-1 quality gate (business status,
     /// rating, review count, chain-brand name check) at the time it was fetched from Google. This is

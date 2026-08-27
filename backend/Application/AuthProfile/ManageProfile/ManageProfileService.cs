@@ -103,10 +103,68 @@ public class ManageProfileService : IManageProfileService
         return MapToDto(user);
     }
 
+    public async Task RequestCurrentEmailVerificationAsync(int userId)
+    {
+        var user = await _repository.GetByIdAsync(userId)
+            ?? throw new NotFoundException("User not found.");
+
+        await _repository.InvalidateActiveTokensAsync(userId);
+
+        var code = VerificationCodeHelper.Generate();
+        var token = new EmailVerificationToken
+        {
+            UserId = userId,
+            Token = RefreshTokenHelper.Hash(code),
+            PendingEmail = null,
+            ExpiresAt = DateTime.UtcNow.AddMinutes(_smtpSettings.VerificationCodeExpiryMinutes),
+            IsUsed = false,
+            CreatedAt = DateTime.UtcNow
+        };
+        await _repository.CreateEmailVerificationTokenAsync(token);
+
+        var subject = "Confirm it's you before changing your ExploreMy email";
+        var body = $"<p>Your ExploreMy verification code is:</p><h2>{code}</h2>" +
+                   $"<p>This code expires in {_smtpSettings.VerificationCodeExpiryMinutes} minutes.</p>";
+
+        // Fire-and-forget: the code is already persisted, so don't make the
+        // caller wait on the SMTP round trip. Failures are logged, not
+        // surfaced — "Resend" is the recovery path.
+        _ = Task.Run(async () =>
+        {
+            try
+            {
+                await _emailSender.SendAsync(user.Email, subject, body);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Could not send current-email verification code to {Email}.", user.Email);
+            }
+        });
+    }
+
+    public async Task VerifyCurrentEmailVerificationAsync(int userId, VerifyCurrentEmailRequestDto request)
+    {
+        var token = await _repository.GetLatestActiveTokenByUserIdAsync(userId);
+        if (token is null
+            || token.PendingEmail is not null
+            || RefreshTokenHelper.Hash(request.Code) != token.Token)
+        {
+            throw new AuthenticationException("Invalid or expired verification code.");
+        }
+
+        await _repository.MarkTokenUsedAsync(token);
+    }
+
     public async Task RequestEmailChangeAsync(int userId, RequestEmailChangeRequestDto request)
     {
         var user = await _repository.GetByIdAsync(userId)
             ?? throw new NotFoundException("User not found.");
+
+        var verifiedCurrentEmail = await _repository.GetLatestVerifiedCurrentEmailTokenAsync(userId);
+        if (verifiedCurrentEmail is null)
+        {
+            throw new AuthenticationException("Please verify your current email before changing it.");
+        }
 
         var newEmail = request.NewEmail.Trim();
         if (string.Equals(newEmail, user.Email, StringComparison.OrdinalIgnoreCase))
@@ -230,8 +288,60 @@ public class ManageProfileService : IManageProfileService
         {
             throw new AuthenticationException("Invalid or expired verification code.");
         }
+    }
 
-        await _repository.MarkPasswordResetTokenUsedAsync(token);
+    public async Task VerifyCurrentPasswordAsync(int userId, CheckPasswordRequestDto request)
+    {
+        var user = await _repository.GetByIdAsync(userId)
+            ?? throw new NotFoundException("User not found.");
+
+        if (!PasswordHasher.VerifyPassword(request.CurrentPassword, user.PasswordHash))
+        {
+            throw new AuthenticationException("Current password is incorrect.");
+        }
+    }
+
+    public async Task UpdatePasswordAsync(int userId, UpdatePasswordRequestDto request)
+    {
+        var user = await _repository.GetByIdAsync(userId)
+            ?? throw new NotFoundException("User not found.");
+
+        PasswordResetToken? resetToken = null;
+        if (!string.IsNullOrWhiteSpace(request.CurrentPassword))
+        {
+            if (!PasswordHasher.VerifyPassword(request.CurrentPassword, user.PasswordHash))
+            {
+                throw new AuthenticationException("Current password is incorrect.");
+            }
+        }
+        else if (!string.IsNullOrWhiteSpace(request.ResetCode))
+        {
+            resetToken = await _repository.GetLatestActivePasswordResetTokenByUserIdAsync(userId);
+            if (resetToken is null || RefreshTokenHelper.Hash(request.ResetCode) != resetToken.Token)
+            {
+                throw new AuthenticationException("Invalid or expired verification code.");
+            }
+        }
+        else
+        {
+            throw new AuthenticationException(
+                "Confirm your current password or verify a reset code before updating your password.");
+        }
+
+        if (PasswordHasher.VerifyPassword(request.NewPassword, user.PasswordHash))
+        {
+            throw new ValidationException("New password must be different from the current password.");
+        }
+
+        user.PasswordHash = PasswordHasher.HashPassword(request.NewPassword);
+        user.UpdatedAt = DateTime.UtcNow;
+        await _repository.UpdateUserAsync(user);
+
+        if (resetToken is not null)
+        {
+            await _repository.MarkPasswordResetTokenUsedAsync(resetToken);
+        }
+        await _repository.InvalidateActivePasswordResetTokensAsync(userId);
     }
 
     private async Task DeleteStoredPictureAsync(string publicUrl)

@@ -93,6 +93,15 @@ class AuthProvider extends ChangeNotifier {
     if (data is Map && data['message'] is String) {
       return data['message'] as String;
     }
+
+    if (e.type == DioExceptionType.connectionError ||
+        e.type == DioExceptionType.connectionTimeout ||
+        e.type == DioExceptionType.sendTimeout ||
+        e.type == DioExceptionType.receiveTimeout) {
+      return 'Cannot connect to the backend at ${HttpClient.baseUrl}. '
+          'Check that the backend is running and the API address is correct.';
+    }
+
     return 'Something went wrong. Please try again.';
   }
 

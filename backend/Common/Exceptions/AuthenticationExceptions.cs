@@ -1,4 +1,4 @@
-﻿namespace ExploreMy.Api.Common.Exceptions;
+namespace ExploreMy.Api.Common.Exceptions;
 
 public class AuthenticationException : Exception
 {
@@ -24,6 +24,13 @@ public class NotFoundException : Exception
 public class ConflictException : Exception
 {
     public ConflictException(string message) : base(message)
+    {
+    }
+}
+
+public class ValidationException : Exception
+{
+    public ValidationException(string message) : base(message)
     {
     }
 }

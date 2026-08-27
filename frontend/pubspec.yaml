@@ -30,7 +30,9 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
+
   google_maps_flutter: ^2.18.0
+
 
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
@@ -47,6 +49,9 @@ dependencies:
   flutter_secure_storage: ^9.2.2
   provider: ^6.1.2
   image_picker: ^1.1.2
+  go_router: ^17.5.0
+  flutter_map: ^8.3.1
+  latlong2: ^0.10.1
 
   # Device GPS location, used to center the hidden-place-discovery search on
   # where the user actually is instead of a hardcoded city coordinate.

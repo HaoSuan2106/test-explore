@@ -153,6 +153,22 @@ public class AuthProfileMySqlRepository : IAuthProfileRepository
         }
     }
 
+    public async Task<EmailVerificationToken?> GetLatestVerifiedCurrentEmailTokenAsync(int userId)
+    {
+        try
+        {
+            return await _context.EmailVerificationTokens
+                .Where(t => t.UserId == userId && t.PendingEmail == null && t.IsUsed && t.ExpiresAt > DateTime.UtcNow)
+                .OrderByDescending(t => t.CreatedAt)
+                .FirstOrDefaultAsync();
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Database error while looking up current-email verification for user {UserId}.", userId);
+            throw;
+        }
+    }
+
     public async Task InvalidateActiveTokensAsync(int userId)
     {
         try
