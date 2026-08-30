@@ -8,4 +8,6 @@ public interface IFootTrackerRepository
     Task<FavouritePlace?> GetFavouritePlaceByUserAndPlaceIdAsync(int userId, string placeId);
     Task AddFavouritePlaceAsync(FavouritePlace favouritePlace);
     Task RemoveFavouritePlacesAsync(int userId, List<int> favouritePlaceIds);
+    Task AddFootTrackerLogAsync(FootTrackerLog log);
+    Task<List<FootTrackerLog>> GetVisitsByUserIdAsync(int userId);
 }

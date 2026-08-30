@@ -1,28 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
-/// Exploration History — "History" tab content for the Exploration
-/// Feature screen. Shows visited places filtered by category, same
-/// chip + list pattern as the Favourite Place screen.
-/// Place data is placeholder/mock for now — swap for real data once the
-/// Exploration History service/repository is wired up.
+import '../../models/foot_tracker/visit_log_model.dart';
+import '../../providers/foot_tracker/navigation_provider.dart';
+import '../route_navigation/navigation_screen.dart';
 
 const _accentColor = Color(0xFFF15A29);
-
-class VisitedPlace {
-  final String id;
-  final String name;
-  final String location;
-  final String lastVisit;
-  final String category;
-
-  const VisitedPlace({
-    required this.id,
-    required this.name,
-    required this.location,
-    required this.lastVisit,
-    required this.category,
-  });
-}
 
 class ExplorationHistoryUi extends StatefulWidget {
   const ExplorationHistoryUi({super.key});
@@ -32,24 +15,62 @@ class ExplorationHistoryUi extends StatefulWidget {
 }
 
 class _ExplorationHistoryUiState extends State<ExplorationHistoryUi> {
-  static const _categories = ['Restaurant', 'Cafe', 'Bar', 'Nature', 'Viewpoint', 'Cultural', 'Market', 'Shopping'];
-  String _selectedCategory = 'Restaurant';
+  static const _categories = ['All', 'Restaurant', 'Cafe', 'Bar', 'Nature', 'Viewpoint', 'Cultural', 'Market', 'Shopping'];
+  String _selectedCategory = 'All';
 
-  // Placeholder — replace with real visited-place data from the backend
-  // once the Exploration History service is wired up.
-  final List<VisitedPlace> _places = const [
-    VisitedPlace(id: '1', name: 'TARUMT Arena', location: 'Malaysia, Selangor, Puchong', lastVisit: '08/01/2026', category: 'Restaurant'),
-    VisitedPlace(id: '2', name: 'Last Tesco', location: 'Malaysia, Selangor, Bintang', lastVisit: '06/12/2025', category: 'Restaurant'),
-    VisitedPlace(id: '3', name: 'Jurusan Park', location: 'Malaysia, KL', lastVisit: '31/11/2025', category: 'Restaurant'),
-    VisitedPlace(id: '4', name: 'Bu Zhi Dao', location: 'Malaysia, Selangor, Prima', lastVisit: '09/09/2025', category: 'Restaurant'),
-  ];
+  bool _isLoading = true;
+  String? _errorMessage;
+  List<VisitLog> _visits = [];
 
-  List<VisitedPlace> get _filteredPlaces =>
-      _places.where((p) => p.category == _selectedCategory).toList();
+  @override
+  void initState() {
+    super.initState();
+    _loadVisits();
+  }
+
+  Future<void> _loadVisits() async {
+    setState(() {
+      _isLoading = true;
+      _errorMessage = null;
+    });
+    try {
+      final visits = await context.read<NavigationProvider>().getVisits();
+      if (!mounted) return;
+      setState(() {
+        _visits = visits;
+        _isLoading = false;
+      });
+    } catch (_) {
+      if (!mounted) return;
+      setState(() {
+        _errorMessage = 'Failed to load exploration history.';
+        _isLoading = false;
+      });
+    }
+  }
+
+  List<VisitLog> get _filteredVisits =>
+      _selectedCategory == 'All' ? _visits : _visits.where((v) => v.primaryType == _selectedCategory).toList();
 
   @override
   Widget build(BuildContext context) {
-    final places = _filteredPlaces;
+    if (_isLoading) {
+      return const Center(child: CircularProgressIndicator());
+    }
+    if (_errorMessage != null) {
+      return Center(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Text(_errorMessage!, style: TextStyle(color: Colors.grey.shade600)),
+            const SizedBox(height: 8),
+            TextButton(onPressed: _loadVisits, child: const Text('Retry')),
+          ],
+        ),
+      );
+    }
+
+    final visits = _filteredVisits;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -64,17 +85,20 @@ class _ExplorationHistoryUiState extends State<ExplorationHistoryUi> {
           child: Text('Visited Places', style: TextStyle(fontSize: 15, fontWeight: FontWeight.w700)),
         ),
         Expanded(
-          child: places.isEmpty
+          child: visits.isEmpty
               ? Center(
             child: Text(
               'No visited places in this category yet.',
               style: TextStyle(fontSize: 13, color: Colors.grey.shade500),
             ),
           )
-              : ListView.builder(
-            padding: const EdgeInsets.fromLTRB(20, 0, 20, 20),
-            itemCount: places.length,
-            itemBuilder: (context, index) => _VisitedPlaceCard(place: places[index]),
+              : RefreshIndicator(
+            onRefresh: _loadVisits,
+            child: ListView.builder(
+              padding: const EdgeInsets.fromLTRB(20, 0, 20, 20),
+              itemCount: visits.length,
+              itemBuilder: (context, index) => _VisitedPlaceCard(visit: visits[index]),
+            ),
           ),
         ),
       ],
@@ -141,9 +165,14 @@ class _CategoryChip extends StatelessWidget {
 }
 
 class _VisitedPlaceCard extends StatelessWidget {
-  final VisitedPlace place;
+  final VisitLog visit;
 
-  const _VisitedPlaceCard({required this.place});
+  const _VisitedPlaceCard({required this.visit});
+
+  String _formatDate(DateTime? date) {
+    if (date == null) return '--';
+    return '${date.day.toString().padLeft(2, '0')}/${date.month.toString().padLeft(2, '0')}/${date.year}';
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -166,23 +195,35 @@ class _VisitedPlaceCard extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(place.name, style: const TextStyle(fontWeight: FontWeight.w700, fontSize: 14)),
+                Text(visit.title, style: const TextStyle(fontWeight: FontWeight.w700, fontSize: 14)),
                 const SizedBox(height: 2),
-                Text(place.location, style: TextStyle(fontSize: 12, color: Colors.grey.shade600)),
-                Text('Last visit at ${place.lastVisit}', style: const TextStyle(fontSize: 12, color: _accentColor)),
+                if (visit.address != null)
+                  Text(visit.address!, style: TextStyle(fontSize: 12, color: Colors.grey.shade600)),
+                Text('Last visit at ${_formatDate(visit.endedAt)}', style: const TextStyle(fontSize: 12, color: _accentColor)),
                 const SizedBox(height: 6),
-                OutlinedButton(
-                  onPressed: () {
-                    // TODO: navigate to Place Details
-                  },
-                  style: OutlinedButton.styleFrom(
-                    minimumSize: const Size(0, 30),
-                    padding: const EdgeInsets.symmetric(horizontal: 14),
-                    side: BorderSide(color: Colors.grey.shade300),
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+                if (visit.latitude != null && visit.longitude != null)
+                  OutlinedButton(
+                    onPressed: () {
+                      Navigator.of(context).push(
+                        MaterialPageRoute(
+                          builder: (context) => RouteNavigationScreen(
+                            destinationName: visit.title,
+                            destinationAddress: visit.address ?? '',
+                            destinationLat: visit.latitude!,
+                            destinationLng: visit.longitude!,
+                            destinationCategory: visit.primaryType,
+                          ),
+                        ),
+                      );
+                    },
+                    style: OutlinedButton.styleFrom(
+                      minimumSize: const Size(0, 30),
+                      padding: const EdgeInsets.symmetric(horizontal: 14),
+                      side: BorderSide(color: Colors.grey.shade300),
+                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+                    ),
+                    child: const Text('Navigate', style: TextStyle(fontSize: 11, color: Colors.black87)),
                   ),
-                  child: const Text('View More', style: TextStyle(fontSize: 11, color: Colors.black87)),
-                ),
               ],
             ),
           ),

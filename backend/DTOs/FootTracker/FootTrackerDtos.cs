@@ -68,3 +68,38 @@ public class RouteResponseDto
     public double DistanceMeters { get; set; }
     public double DurationSeconds { get; set; }
 }
+
+public class RecordVisitRequestDto
+{
+    public string? PlaceId { get; set; }
+
+    [Required]
+    public string Title { get; set; } = string.Empty;
+
+    public string? PrimaryType { get; set; }
+    public string? Address { get; set; }
+    public double? Latitude { get; set; }
+    public double? Longitude { get; set; }
+    public double? DistanceKm { get; set; }
+
+    [Required]
+    public DateTime StartedAt { get; set; }
+
+    [Required]
+    public DateTime EndedAt { get; set; }
+}
+
+public class VisitLogDto
+{
+    public string LogId { get; set; } = string.Empty;
+    public string? PlaceId { get; set; }
+    public string? Title { get; set; }
+    public string? PrimaryType { get; set; }
+    public string? Address { get; set; }
+    public double? Latitude { get; set; }
+    public double? Longitude { get; set; }
+    public double? DistanceKm { get; set; }
+    public DateTime? StartedAt { get; set; }
+    public DateTime? EndedAt { get; set; }
+    public string Status { get; set; } = string.Empty;
+}

@@ -19,6 +19,9 @@ public class MySqlDbContext : Microsoft.EntityFrameworkCore.DbContext
     public DbSet<HiddenPlaceSuppression> HiddenPlaceSuppressions => Set<HiddenPlaceSuppression>();
     public DbSet<FavouritePlace> FavouritePlaces => Set<FavouritePlace>();
 
+    public DbSet<Review> Reviews => Set<Review>();
+    public DbSet<ReviewPhoto> ReviewPhotos => Set<ReviewPhoto>();
+
     // -------------------------------------------------------------------------
     // The Property(...) calls below exist to make `dotnet ef database update`
     // produce the SAME column types, lengths, defaults and index names as
@@ -163,6 +166,74 @@ public class MySqlDbContext : Microsoft.EntityFrameworkCore.DbContext
                 .OnDelete(DeleteBehavior.Cascade);
 
             entity.HasIndex(s => s.UserId).HasDatabaseName("idx_session_user_id");
+        });
+
+        modelBuilder.Entity<Review>(entity =>
+        {
+            entity.ToTable("hidden_place_review");
+
+            entity.HasKey(r => r.ReviewId);
+
+            entity.Property(r => r.GooglePlaceId)
+                .HasMaxLength(255);
+
+            entity.Property(r => r.RecommendPlaceId)
+                .HasMaxLength(255);
+
+            entity.Property(r => r.Rating)
+                .HasPrecision(2, 1);
+
+            entity.Property(r => r.Comment)
+                .IsRequired();
+
+            entity.Property(r => r.CreatedAt)
+                .HasColumnType("datetime(6)");
+
+            entity.Property(r => r.UpdatedAt)
+                .HasColumnType("datetime(6)");
+
+            entity.Property(r => r.Status)
+                .HasMaxLength(20)
+                .HasDefaultValue("ACTIVE");
+
+            entity.HasOne<User>()
+                .WithMany()
+                .HasForeignKey(r => r.UserId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            entity.HasIndex(r => r.GooglePlaceId);
+            entity.HasIndex(r => r.RecommendPlaceId);
+            entity.HasIndex(r => r.UserId);
+        });
+
+        modelBuilder.Entity<ReviewPhoto>(entity =>
+        {
+            entity.ToTable("hidden_place_review_photo");
+
+            entity.HasKey(p => p.ReviewPhotoId);
+
+            entity.Property(p => p.PhotoUrl)
+                .HasMaxLength(500)
+                .IsRequired();
+
+            entity.Property(p => p.DisplayOrder)
+                .IsRequired();
+
+            entity.Property(p => p.CreatedAt)
+                .HasColumnType("datetime(6)");
+
+            entity.HasOne<Review>()
+                .WithMany()
+                .HasForeignKey(p => p.ReviewId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            entity.HasIndex(p => p.ReviewId);
+
+            entity.HasIndex(p => new
+            {
+                p.ReviewId,
+                p.DisplayOrder
+            }).IsUnique();
         });
 
         modelBuilder.Entity<HiddenPlace>(entity =>

@@ -8,7 +8,8 @@ import '../../models/hidden_place/hidden_place_model.dart';
 import '../../models/foot_tracker/exploration_model.dart';
 import '../../models/post_review/post_model.dart';
 import '../../models/hidden_place/recommended_place_model.dart';
-
+import 'package:explore_my/models/foot_tracker/route_model.dart';
+import 'package:explore_my/models/foot_tracker/visit_log_model.dart';
 
 class HttpClient {
   HttpClient({required SecureStorageService secureStorage})
@@ -79,7 +80,7 @@ class HttpClient {
   //   flutter run --dart-define=API_BASE_URL=http://192.168.1.23:5226
   static const baseUrl = String.fromEnvironment(
       'API_BASE_URL',
-      defaultValue: 'http://10.72.135.106:5226'
+      defaultValue: 'http://10.0.2.2:5226'
   );
 
   final SecureStorageService _secureStorage;
@@ -245,6 +246,84 @@ class HttpClient {
         .toList();
   }
 
+  Future<void> createHiddenPlaceReview({
+    String? googlePlaceId,
+    String? recommendPlaceId,
+    required int rating,
+    required String comment,
+  }) async {
+    await _dio.post(
+      '/api/hidden-places/reviews',
+      data: {
+        'googlePlaceId': googlePlaceId,
+        'recommendPlaceId': recommendPlaceId,
+        'rating': rating,
+        'comment': comment,
+      },
+    );
+  }
+
+  Future<dynamic> getMyGooglePlaceReview(
+      String googlePlaceId,
+      ) async {
+    final response = await _dio.get(
+      '/api/hidden-places/reviews/google/$googlePlaceId/mine',
+    );
+
+    return response.data;
+  }
+
+  Future<dynamic> getMyRecommendPlaceReview(
+      String recommendPlaceId,
+      ) async {
+    final response = await _dio.get(
+      '/api/hidden-places/reviews/recommend/$recommendPlaceId/mine',
+    );
+
+    return response.data;
+  }
+
+  Future<void> updateHiddenPlaceReview({
+    required int reviewId,
+    required int rating,
+    required String comment,
+  }) async {
+    await _dio.put(
+      '/api/hidden-places/reviews/$reviewId',
+      data: {
+        'rating': rating,
+        'comment': comment,
+      },
+    );
+  }
+
+  Future<void> deleteHiddenPlaceReview({
+    required int reviewId,
+  }) async {
+    await _dio.delete(
+      '/api/hidden-places/reviews/$reviewId',
+    );
+  }
+
+  Future<List<dynamic>> getGooglePlaceReviews(
+      String googlePlaceId,
+      ) async {
+    final response = await _dio.get(
+      '/api/hidden-places/reviews/google/$googlePlaceId',
+    );
+
+    return response.data as List<dynamic>;
+  }
+
+  Future<List<dynamic>> getRecommendPlaceReviews(
+      String recommendPlaceId,
+      ) async {
+    final response = await _dio.get(
+      '/api/hidden-places/reviews/recommend/$recommendPlaceId',
+    );
+
+    return response.data as List<dynamic>;
+  }
 
   Future<List<FavouritePlace>> getFavouritePlaces() async {
     final response = await _dio.get('/api/foot-tracker/favourite-places');
@@ -259,6 +338,60 @@ class HttpClient {
       '/api/foot-tracker/favourite-places',
       data: {'favouritePlaceIds': favouritePlaceIds},
     );
+  }
+
+  Future<RouteResult> getRoute({
+    required double originLat,
+    required double originLng,
+    required double destLat,
+    required double destLng,
+    required String profile,
+  }) async {
+    final response = await _dio.post(
+      '/api/foot-tracker/route',
+      data: {
+        'originLatitude': originLat,
+        'originLongitude': originLng,
+        'destinationLatitude': destLat,
+        'destinationLongitude': destLng,
+        'profile': profile,
+      },
+    );
+    return RouteResult.fromJson(response.data as Map<String, dynamic>);
+  }
+
+  Future<void> recordVisit({
+    String? placeId,
+    required String title,
+    String? primaryType,
+    String? address,
+    double? latitude,
+    double? longitude,
+    double? distanceKm,
+    required DateTime startedAt,
+    required DateTime endedAt,
+  }) async {
+    await _dio.post(
+      '/api/foot-tracker/visits',
+      data: {
+        'placeId': placeId,
+        'title': title,
+        'primaryType': primaryType,
+        'address': address,
+        'latitude': latitude,
+        'longitude': longitude,
+        'distanceKm': distanceKm,
+        'startedAt': startedAt.toIso8601String(),
+        'endedAt': endedAt.toIso8601String(),
+      },
+    );
+  }
+
+  Future<List<VisitLog>> getVisits() async {
+    final response = await _dio.get('/api/foot-tracker/visits');
+    return (response.data as List<dynamic>)
+        .map((e) => VisitLog.fromJson(e as Map<String, dynamic>))
+        .toList();
   }
 
   // ============================================================

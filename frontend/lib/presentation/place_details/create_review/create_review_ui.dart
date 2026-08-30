@@ -1,24 +1,53 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:provider/provider.dart';
+import 'package:explore_my/providers/hidden_place/review_provider.dart';
 
 class CreateReviewUI extends StatefulWidget {
   final int initialRating;
   final String initialReviewText;
 
+  // Review target. The same UI supports both Google and system-created places.
+  final String? placeId;
+  final ReviewPlaceType placeType;
+  final String? placeName;
+
+  // Create vs update.
+  final bool isEdit;
+  final int? reviewId;
+
   const CreateReviewUI({
     super.key,
     this.initialRating = 0,
     this.initialReviewText = '',
+    this.placeId,
+    this.placeType = ReviewPlaceType.google,
+    this.placeName,
+    this.isEdit = false,
+    this.reviewId,
   });
 
   @override
   State<CreateReviewUI> createState() => _CreateReviewUIState();
 }
 
+enum ReviewPlaceType {
+  google,
+  system,
+}
+
 class _CreateReviewUIState extends State<CreateReviewUI> {
   late int selectedRating;
+  bool _isPosting = false;
 
   final TextEditingController _reviewController =
   TextEditingController();
+
+  final ImagePicker _imagePicker = ImagePicker();
+
+  final List<XFile> _selectedPhotos = [];
 
   @override
   void initState() {
@@ -27,12 +56,120 @@ class _CreateReviewUIState extends State<CreateReviewUI> {
     selectedRating = widget.initialRating.clamp(0, 5);
 
     _reviewController.text = widget.initialReviewText;
+
   }
 
   @override
   void dispose() {
     _reviewController.dispose();
     super.dispose();
+  }
+
+  Future<void> _postReview() async {
+    if (selectedRating == 0) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Please select a rating first.'),
+        ),
+      );
+      return;
+    }
+
+    if (widget.placeId == null || widget.placeId!.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Unable to identify this place.'),
+        ),
+      );
+      return;
+    }
+
+    setState(() {
+      _isPosting = true;
+    });
+
+    try {
+      final reviewProvider = context.read<ReviewProvider>();
+
+      if (widget.isEdit) {
+        if (widget.reviewId == null) {
+          throw Exception('Review ID is missing.');
+        }
+
+        await reviewProvider.updateReview(
+          reviewId: widget.reviewId!,
+          rating: selectedRating,
+          comment: _reviewController.text.trim(),
+        );
+      } else {
+        final isGooglePlace =
+            widget.placeType == ReviewPlaceType.google;
+
+        await reviewProvider.createReview(
+          googlePlaceId: isGooglePlace ? widget.placeId : null,
+          recommendPlaceId: isGooglePlace ? null : widget.placeId,
+          rating: selectedRating,
+          comment: _reviewController.text.trim(),
+        );
+      }
+
+      if (!mounted) return;
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(
+            widget.isEdit
+                ? 'Review updated successfully.'
+                : 'Review posted successfully.',
+          ),
+        ),
+      );
+
+      Navigator.pop(context, true);
+    } catch (e) {
+      if (!mounted) return;
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Failed to post review: $e'),
+        ),
+      );
+    } finally {
+      if (mounted) {
+        setState(() {
+          _isPosting = false;
+        });
+      }
+    }
+  }
+
+  Future<void> _pickPhoto(ImageSource source) async {
+    if (_selectedPhotos.length >= 5) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('You can upload a maximum of 5 photos.'),
+        ),
+      );
+      return;
+    }
+
+    final picked = await _imagePicker.pickImage(
+      source: source,
+      maxWidth: 1600,
+      imageQuality: 85,
+    );
+
+    if (picked == null || !mounted) return;
+
+    setState(() {
+      _selectedPhotos.add(picked);
+    });
+  }
+
+  void _removePhoto(int index) {
+    setState(() {
+      _selectedPhotos.removeAt(index);
+    });
   }
 
   @override
@@ -64,8 +201,8 @@ class _CreateReviewUIState extends State<CreateReviewUI> {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
-                      const Text(
-                        'RING Café',
+                      Text(
+                        widget.placeName ?? 'RING Café',
                         style: TextStyle(
                           fontSize: 25,
                           fontWeight: FontWeight.w500,
@@ -220,10 +357,22 @@ class _CreateReviewUIState extends State<CreateReviewUI> {
                   // ======================================================
                   Row(
                     children: [
-                      _buildAddPhotoButton(),
-                      const SizedBox(width: 13),
+                      if (_selectedPhotos.length < 5) ...[
+                        _buildAddPhotoButton(),
+                        const SizedBox(width: 13),
+                      ],
+
                       ...List.generate(
-                        4,
+                        _selectedPhotos.length,
+                            (index) => Padding(
+                          padding: const EdgeInsets.only(right: 13),
+                          child: _buildSelectedPhoto(index),
+                        ),
+                      ),
+
+                      ...List.generate(
+                        5 - _selectedPhotos.length -
+                            (_selectedPhotos.length < 5 ? 1 : 0),
                             (_) => Padding(
                           padding: const EdgeInsets.only(right: 13),
                           child: _buildPhotoPlaceholder(),
@@ -245,29 +394,7 @@ class _CreateReviewUIState extends State<CreateReviewUI> {
               child: SizedBox(
                 height: 52,
                 child: ElevatedButton(
-                  onPressed: () {
-                    // UI ONLY for now.
-                    //
-                    // Backend/API will be added later.
-                    if (selectedRating == 0) {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(
-                          content: Text(
-                            'Please select a rating first.',
-                          ),
-                        ),
-                      );
-                      return;
-                    }
-
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(
-                        content: Text(
-                          'Review ready to post.',
-                        ),
-                      ),
-                    );
-                  },
+                  onPressed: _isPosting ? null : _postReview,
                   style: ElevatedButton.styleFrom(
                     backgroundColor: accent,
                     foregroundColor: Colors.white,
@@ -277,9 +404,18 @@ class _CreateReviewUIState extends State<CreateReviewUI> {
                       borderRadius: BorderRadius.circular(28),
                     ),
                   ),
-                  child: const Text(
-                    'Post',
-                    style: TextStyle(
+                  child: _isPosting
+                      ? const SizedBox(
+                    width: 22,
+                    height: 22,
+                    child: CircularProgressIndicator(
+                      strokeWidth: 2,
+                      color: Colors.white,
+                    ),
+                  )
+                      : Text(
+                    widget.isEdit ? 'Update' : 'Post',
+                    style: const TextStyle(
                       fontSize: 16,
                       fontWeight: FontWeight.w500,
                     ),
@@ -338,6 +474,45 @@ class _CreateReviewUIState extends State<CreateReviewUI> {
     );
   }
 
+  Widget _buildSelectedPhoto(int index) {
+    final photo = _selectedPhotos[index];
+
+    return Stack(
+      children: [
+        ClipRRect(
+          borderRadius: BorderRadius.circular(9),
+          child: Image.file(
+            File(photo.path),
+            width: 60,
+            height: 60,
+            fit: BoxFit.cover,
+          ),
+        ),
+
+        Positioned(
+          top: 3,
+          right: 3,
+          child: GestureDetector(
+            onTap: () => _removePhoto(index),
+            child: Container(
+              width: 20,
+              height: 20,
+              decoration: const BoxDecoration(
+                color: Colors.black54,
+                shape: BoxShape.circle,
+              ),
+              child: const Icon(
+                Icons.close,
+                size: 14,
+                color: Colors.white,
+              ),
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
   void _showAddPhotoPopup() {
     showModalBottomSheet(
       context: context,
@@ -383,8 +558,7 @@ class _CreateReviewUIState extends State<CreateReviewUI> {
                   title: const Text('Take Photo'),
                   onTap: () {
                     Navigator.pop(context);
-
-                    // TODO: Connect camera later
+                    _pickPhoto(ImageSource.camera);
                   },
                 ),
 
@@ -395,8 +569,7 @@ class _CreateReviewUIState extends State<CreateReviewUI> {
                   title: const Text('Choose from Gallery'),
                   onTap: () {
                     Navigator.pop(context);
-
-                    // TODO: Connect image picker later
+                    _pickPhoto(ImageSource.gallery);
                   },
                 ),
 

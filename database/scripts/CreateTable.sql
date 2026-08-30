@@ -168,52 +168,182 @@ CREATE TABLE IF NOT EXISTS hidden_place_suppression (
 -- MODULE 3: My Recommended Places (UC502)
 
 -- Recommended places table (submitted by users for community voting)
-CREATE TABLE IF NOT EXISTS recommended_places (
-    submission_id VARCHAR(36) PRIMARY KEY,
-    submitter_id INT NOT NULL,
+CREATE TABLE recommended_places (
+    `recommend_place_id` VARCHAR(255) NOT NULL,
+    `name` VARCHAR(255) NOT NULL,
+    `primary_type` VARCHAR(100) NOT NULL,
+    `latitude` DOUBLE NOT NULL,
+    `longitude` DOUBLE NOT NULL,
+    `rating` DOUBLE NULL,
+    `user_rating_count` INT NOT NULL DEFAULT 0,
+    `price_level` INT NULL,
+    `business_status` VARCHAR(50) NOT NULL,
+    `source` VARCHAR(50) NOT NULL DEFAULT 'USER',
+    `description` TEXT NULL,
+    `photo_json` JSON NULL,
+    PRIMARY KEY (`recommend_place_id`)
+);
+
+-- CREATE TABLE IF NOT EXISTS recommended_places (
+--     submission_id VARCHAR(36) PRIMARY KEY,
+--     submitter_id INT NOT NULL,
+--     name VARCHAR(150) NOT NULL,
+--     location_address VARCHAR(250) NOT NULL,
+--     latitude DECIMAL(10,7) DEFAULT NULL,
+--     longitude DECIMAL(10,7) DEFAULT NULL,
+--     category VARCHAR(50) NOT NULL,
+--     description VARCHAR(500) DEFAULT NULL,
+--     status VARCHAR(30) NOT NULL DEFAULT 'UNDER_VOTING',
+--     created_at DATETIME(6) NOT NULL,
+--     updated_at DATETIME(6) NOT NULL,
+
+--     FOREIGN KEY (submitter_id) REFERENCES users(user_id) ON DELETE CASCADE,
+
+--     INDEX idx_recommended_places_submitter_id (submitter_id),
+--     INDEX idx_recommended_places_status (status)
+-- );
+
+-- Community verifications (voting) on recommended places
+-- CREATE TABLE IF NOT EXISTS recommended_place_verifications (
+--     verification_id VARCHAR(36) PRIMARY KEY,
+--     submission_id VARCHAR(36) NOT NULL,
+--     user_id INT NOT NULL,
+--     status VARCHAR(20) NOT NULL,
+--     created_at DATETIME(6) NOT NULL,
+
+--     FOREIGN KEY (submission_id) REFERENCES recommended_places(submission_id) ON DELETE CASCADE,
+--     FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE,
+
+--     UNIQUE KEY uq_verification_submission_user (submission_id, user_id),
+--     INDEX idx_verification_user_id (user_id)
+-- );
+
+-- -- Reports on recommended places
+-- CREATE TABLE IF NOT EXISTS recommended_place_reports (
+--     report_id VARCHAR(36) PRIMARY KEY,
+--     submission_id VARCHAR(36) NOT NULL,
+--     reporter_id INT NOT NULL,
+--     reason VARCHAR(100) NOT NULL,
+--     status VARCHAR(20) NOT NULL,
+--     created_at DATETIME(6) NOT NULL,
+
+--     FOREIGN KEY (submission_id) REFERENCES recommended_places(submission_id) ON DELETE CASCADE,
+--     FOREIGN KEY (reporter_id) REFERENCES users(user_id) ON DELETE CASCADE,
+
+--     UNIQUE KEY uq_report_submission_reporter (submission_id, reporter_id),
+--     INDEX idx_report_reporter_id (reporter_id)
+-- );
+
+CREATE TABLE hidden_place_review (
+    review_id BIGINT NOT NULL AUTO_INCREMENT,
+
+    google_place_id VARCHAR(255) NULL,
+    recommend_place_id VARCHAR(255) NULL,
+
+    user_id INT NOT NULL,
+
+    rating DECIMAL(2,1) NOT NULL,
+    comment TEXT NOT NULL,
+
+    created_at DATETIME(6) NOT NULL,
+    updated_at DATETIME(6) NULL,
+
+    status VARCHAR(20) NOT NULL DEFAULT 'ACTIVE',
+
+    PRIMARY KEY (review_id),
+
+    CONSTRAINT fk_review_user
+        FOREIGN KEY (user_id)
+        REFERENCES users(user_id),
+
+    CONSTRAINT fk_review_recommended_place
+        FOREIGN KEY (recommend_place_id)
+        REFERENCES recommended_places(recommend_place_id),
+
+    CONSTRAINT chk_review_one_place
+        CHECK (
+            (google_place_id IS NOT NULL AND recommend_place_id IS NULL)
+            OR
+            (google_place_id IS NULL AND recommend_place_id IS NOT NULL)
+        )
+);
+
+-- MODULE 4: Foot Tracker - Favourite Places & Exploration History (UC102, UC201)
+
+-- Places table (no dependencies)
+--
+-- Canonical place records referenced by Favourite Places and Exploration
+-- History. Distinct from hidden_place_cache (Module 2), which is a disposable,
+-- refreshable cache of raw Google Places results - a row here is a place the
+-- app has kept a permanent reference to (favourited or actually visited),
+-- independent of whether the Google cache bucket it originated from has since
+-- expired or been refreshed.
+CREATE TABLE IF NOT EXISTS places (
+    place_id VARCHAR(255) PRIMARY KEY,
     name VARCHAR(150) NOT NULL,
-    location_address VARCHAR(250) NOT NULL,
-    latitude DECIMAL(10,7) DEFAULT NULL,
-    longitude DECIMAL(10,7) DEFAULT NULL,
+    address VARCHAR(250) NOT NULL,
     category VARCHAR(50) NOT NULL,
-    description VARCHAR(500) DEFAULT NULL,
-    status VARCHAR(30) NOT NULL DEFAULT 'UNDER_VOTING',
+    description LONGTEXT DEFAULT NULL,
+    latitude DECIMAL(18,2) DEFAULT NULL,
+    longitude DECIMAL(18,2) DEFAULT NULL,
+    created_at DATETIME(6) NOT NULL,
+    updated_at DATETIME(6) NOT NULL
+);
+
+-- Favourite place table (depends on users)
+--
+-- One row per (user, place) - uq_user_place prevents favouriting the same
+-- place twice. Unlike foot_tracker_log below, this table intentionally has
+-- NO duplicates: favouriting is a toggle, not a visit log.
+CREATE TABLE IF NOT EXISTS favourite_place (
+    favourite_place_id INT AUTO_INCREMENT PRIMARY KEY,
+    user_id INT NOT NULL,
+    place_id VARCHAR(255) NOT NULL,
+    name VARCHAR(255) NOT NULL,
+    primary_type VARCHAR(100) NOT NULL,
+    address VARCHAR(500) DEFAULT NULL,
+    latitude DOUBLE NOT NULL,
+    longitude DOUBLE NOT NULL,
+    last_visit_at DATETIME DEFAULT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+
+    CONSTRAINT fk_favourite_place_users_user_id FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE,
+
+    UNIQUE KEY uq_user_place (user_id, place_id)
+);
+
+-- Foot tracker log table (depends on users, places)
+--
+-- One row per completed visit, recorded only once GPS arrival has been
+-- verified during navigation (UC201). Unlike favourite_place, duplicates are
+-- intentional: visiting the same place three times produces three rows,
+-- since this table is the source of Exploration History rather than a
+-- favourites toggle. place_id is nullable with ON DELETE SET NULL - a visit
+-- record must survive even if the place it points to is later removed.
+--
+-- title/primary_type/address/latitude/longitude are denormalized copies of
+-- the place's details at the time of the visit (mirroring favourite_place's
+-- shape) rather than a join through place_id, so History still displays
+-- correctly even when place_id is NULL.
+CREATE TABLE IF NOT EXISTS foot_tracker_log (
+    log_id VARCHAR(255) PRIMARY KEY,
+    user_id INT NOT NULL,
+    place_id VARCHAR(255) DEFAULT NULL,
+    title LONGTEXT,
+    primary_type LONGTEXT,
+    address LONGTEXT,
+    latitude DOUBLE DEFAULT NULL,
+    longitude DOUBLE DEFAULT NULL,
+    distance_km DECIMAL(18,2) DEFAULT NULL,
+    started_at DATETIME(6) DEFAULT NULL,
+    ended_at DATETIME(6) DEFAULT NULL,
+    status VARCHAR(20) NOT NULL,
     created_at DATETIME(6) NOT NULL,
     updated_at DATETIME(6) NOT NULL,
 
-    FOREIGN KEY (submitter_id) REFERENCES users(user_id) ON DELETE CASCADE,
+    CONSTRAINT fk_foot_tracker_log_users_user_id FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE,
+    CONSTRAINT fk_foot_tracker_log_places_place_id FOREIGN KEY (place_id) REFERENCES places(place_id) ON DELETE SET NULL,
 
-    INDEX idx_recommended_places_submitter_id (submitter_id),
-    INDEX idx_recommended_places_status (status)
-);
-
--- Community verifications (voting) on recommended places
-CREATE TABLE IF NOT EXISTS recommended_place_verifications (
-    verification_id VARCHAR(36) PRIMARY KEY,
-    submission_id VARCHAR(36) NOT NULL,
-    user_id INT NOT NULL,
-    status VARCHAR(20) NOT NULL,
-    created_at DATETIME(6) NOT NULL,
-
-    FOREIGN KEY (submission_id) REFERENCES recommended_places(submission_id) ON DELETE CASCADE,
-    FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE,
-
-    UNIQUE KEY uq_verification_submission_user (submission_id, user_id),
-    INDEX idx_verification_user_id (user_id)
-);
-
--- Reports on recommended places
-CREATE TABLE IF NOT EXISTS recommended_place_reports (
-    report_id VARCHAR(36) PRIMARY KEY,
-    submission_id VARCHAR(36) NOT NULL,
-    reporter_id INT NOT NULL,
-    reason VARCHAR(100) NOT NULL,
-    status VARCHAR(20) NOT NULL,
-    created_at DATETIME(6) NOT NULL,
-
-    FOREIGN KEY (submission_id) REFERENCES recommended_places(submission_id) ON DELETE CASCADE,
-    FOREIGN KEY (reporter_id) REFERENCES users(user_id) ON DELETE CASCADE,
-
-    UNIQUE KEY uq_report_submission_reporter (submission_id, reporter_id),
-    INDEX idx_report_reporter_id (reporter_id)
+    INDEX ix_foot_tracker_log_user_id (user_id),
+    INDEX ix_foot_tracker_log_place_id (place_id)
 );

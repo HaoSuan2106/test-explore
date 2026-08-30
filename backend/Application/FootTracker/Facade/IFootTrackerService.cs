@@ -8,4 +8,6 @@ public interface IFootTrackerService
     Task<FavouritePlaceDto> AddFavouritePlaceAsync(int userId, AddFavouritePlaceRequestDto request);
     Task RemoveFavouritePlacesAsync(int userId, RemoveFavouritePlacesRequestDto request);
     Task<RouteResponseDto> GetRouteAsync(RouteRequestDto request);
+    Task<VisitLogDto> RecordVisitAsync(int userId, RecordVisitRequestDto request);
+    Task<List<VisitLogDto>> GetVisitsAsync(int userId);
 }

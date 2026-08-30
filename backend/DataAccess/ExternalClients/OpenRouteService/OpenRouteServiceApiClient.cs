@@ -40,9 +40,13 @@ public class OpenRouteServiceApiClient : IRoutingApiClient
         request.Headers.TryAddWithoutValidation("Authorization", _settings.ApiKey);
 
         var response = await _httpClient.SendAsync(request);
-        response.EnsureSuccessStatusCode();
-
         var json = await response.Content.ReadAsStringAsync();
+
+        if (!response.IsSuccessStatusCode)
+        {
+            throw new HttpRequestException(
+                $"OpenRouteService request failed ({(int)response.StatusCode} {response.StatusCode}): {json}");
+        }
         using var doc = JsonDocument.Parse(json);
 
         var feature = doc.RootElement.GetProperty("features")[0];

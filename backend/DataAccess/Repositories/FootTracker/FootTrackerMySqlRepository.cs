@@ -42,4 +42,18 @@ public class FootTrackerMySqlRepository : IFootTrackerRepository
         _context.FavouritePlaces.RemoveRange(toRemove);
         await _context.SaveChangesAsync();
     }
+
+    public async Task AddFootTrackerLogAsync(FootTrackerLog log)
+    {
+        _context.FootTrackerLogs.Add(log);
+        await _context.SaveChangesAsync();
+    }
+
+    public async Task<List<FootTrackerLog>> GetVisitsByUserIdAsync(int userId)
+    {
+        return await _context.FootTrackerLogs
+            .Where(l => l.UserId == userId && l.Status == FootTrackerLogStatus.Completed)
+            .OrderByDescending(l => l.EndedAt)
+            .ToListAsync();
+    }
 }

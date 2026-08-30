@@ -11,6 +11,10 @@ public class FootTrackerLog
     public int UserId { get; set; }
     public string? PlaceId { get; set; }
     public string? Title { get; set; }
+    public string? PrimaryType { get; set; }
+    public string? Address { get; set; }
+    public double? Latitude { get; set; }
+    public double? Longitude { get; set; }
     public decimal? DistanceKm { get; set; }
     public DateTime? StartedAt { get; set; }
     public DateTime? EndedAt { get; set; }
@@ -18,7 +22,7 @@ public class FootTrackerLog
     public DateTime CreatedAt { get; set; }
     public DateTime UpdatedAt { get; set; }
 
-    // Navigation
+    //Navigation
     public Place? Place { get; set; }
     public User? User { get; set; }
 }

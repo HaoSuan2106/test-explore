@@ -1,12 +1,16 @@
 using ExploreMy.Api.Application.AuthProfile.Authentication;
 using ExploreMy.Api.Application.AuthProfile.Facade;
 using ExploreMy.Api.Application.AuthProfile.ManageProfile;
+using ExploreMy.Api.Application.FootTracker.ExplorationHistory;
+using ExploreMy.Api.Application.FootTracker.ExplorationHistory;
 using ExploreMy.Api.Application.FootTracker.Facade;
 using ExploreMy.Api.Application.FootTracker.FavouritePlace;
+using ExploreMy.Api.Application.FootTracker.Navigation;
 using ExploreMy.Api.Application.HiddenPlace.DiscoverHiddenPlace;
 using ExploreMy.Api.Application.HiddenPlace.Facade;
 using ExploreMy.Api.Application.HiddenPlace.HiddenPlaceContribution;
 using ExploreMy.Api.Application.HiddenPlace.PlacePhotos;
+using ExploreMy.Api.Application.HiddenPlace.Review;
 using ExploreMy.Api.Application.PostReview.Facade;
 using ExploreMy.Api.Application.PostReview.ManagePost;
 using ExploreMy.Api.Application.PostReview.SocialEngagement;
@@ -14,12 +18,14 @@ using ExploreMy.Api.Common.Helpers;
 using ExploreMy.Api.Common.Helpers;
 using ExploreMy.Api.Configuration;
 using ExploreMy.Api.DataAccess.ExternalClients.GooglePlaces;
+using ExploreMy.Api.DataAccess.ExternalClients.OpenRouteService;
 using ExploreMy.Api.DataAccess.ExternalClients.SupabaseStorage;
 using ExploreMy.Api.DataAccess.Repositories.AuthProfile;
 using ExploreMy.Api.DataAccess.Repositories.FootTracker;
 using ExploreMy.Api.DataAccess.Repositories.HiddenPlace;
 using ExploreMy.Api.DataAccess.Repositories.PlacePhotos;
 using ExploreMy.Api.DataAccess.Repositories.PostReview;
+using ExploreMy.Api.Infrastructure.Repositories.HiddenPlace.Review;
 using ExploreMy.Api.Middleware;
 using ExploreMy.Api.Persistence.DbContext;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -27,8 +33,6 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using System.Net.Http.Headers;
 using System.Text;
-using ExploreMy.Api.Application.FootTracker.Navigation;
-using ExploreMy.Api.DataAccess.ExternalClients.OpenRouteService;
 
 Console.WriteLine(
     PasswordHasher.HashPassword("exploreMy123")
@@ -84,10 +88,22 @@ builder.Services.AddScoped<IDiscoverHiddenPlaceService, DiscoverHiddenPlaceServi
 builder.Services.AddScoped<IHiddenPlaceService, HiddenPlaceService>();
 builder.Services.AddScoped<IPlacePhotoRepository, PlacePhotoMySqlRepository>();
 builder.Services.AddScoped<IHiddenPlaceSuppressionRepository, HiddenPlaceSuppressionMySqlRepository>();
+builder.Services.AddScoped<
+    IReviewRepository,
+    ReviewMySqlRepository>();
+
+builder.Services.AddScoped<
+    IReviewPhotoRepository,
+    ReviewPhotoMySqlRepository>();
+
+builder.Services.AddScoped<IReviewService, ReviewService>();
+
+// FootTracker modules services
 builder.Services.AddScoped<IFootTrackerRepository, FootTrackerMySqlRepository>();
 builder.Services.AddScoped<IFavouritePlaceService, FavouritePlaceService>();
 builder.Services.AddScoped<IFootTrackerService, FootTrackerService>();
 builder.Services.Configure<OpenRouteServiceSettings>(builder.Configuration.GetSection("OpenRouteService"));
+builder.Services.AddScoped<IExplorationHistoryService, ExplorationHistoryService>();
 
 builder.Services.AddHttpClient<IStorageClient, SupabaseStorageClient>(client =>
 {
@@ -148,7 +164,33 @@ builder.Services.AddControllers()
         options.JsonSerializerOptions.Converters.Add(new UtcDateTimeConverter());
     });
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+builder.Services.AddSwaggerGen(options =>
+{
+    options.AddSecurityDefinition("Bearer", new Microsoft.OpenApi.Models.OpenApiSecurityScheme
+    {
+        Name = "Authorization",
+        Type = Microsoft.OpenApi.Models.SecuritySchemeType.Http,
+        Scheme = "bearer",
+        BearerFormat = "JWT",
+        In = Microsoft.OpenApi.Models.ParameterLocation.Header,
+        Description = "Enter your JWT token."
+    });
+
+    options.AddSecurityRequirement(new Microsoft.OpenApi.Models.OpenApiSecurityRequirement
+    {
+        {
+            new Microsoft.OpenApi.Models.OpenApiSecurityScheme
+            {
+                Reference = new Microsoft.OpenApi.Models.OpenApiReference
+                {
+                    Type = Microsoft.OpenApi.Models.ReferenceType.SecurityScheme,
+                    Id = "Bearer"
+                }
+            },
+            Array.Empty<string>()
+        }
+    });
+});
 
 // CORS for Flutter Web development (must precede UseAuthentication/UseAuthorization/endpoints).
 // Restricted development origins only; credentials allowed only for those origins.

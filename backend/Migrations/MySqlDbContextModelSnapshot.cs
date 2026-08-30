@@ -138,6 +138,10 @@ namespace explore_my_backend.Migrations
                         .HasColumnType("varchar(255)")
                         .HasColumnName("log_id");
 
+                    b.Property<string>("Address")
+                        .HasColumnType("longtext")
+                        .HasColumnName("address");
+
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime(6)")
                         .HasColumnName("created_at");
@@ -150,9 +154,21 @@ namespace explore_my_backend.Migrations
                         .HasColumnType("datetime(6)")
                         .HasColumnName("ended_at");
 
+                    b.Property<double?>("Latitude")
+                        .HasColumnType("double")
+                        .HasColumnName("latitude");
+
+                    b.Property<double?>("Longitude")
+                        .HasColumnType("double")
+                        .HasColumnName("longitude");
+
                     b.Property<string>("PlaceId")
                         .HasColumnType("varchar(255)")
                         .HasColumnName("place_id");
+
+                    b.Property<string>("PrimaryType")
+                        .HasColumnType("longtext")
+                        .HasColumnName("primary_type");
 
                     b.Property<DateTime?>("StartedAt")
                         .HasColumnType("datetime(6)")
@@ -885,6 +901,106 @@ namespace explore_my_backend.Migrations
                     b.ToTable("recommended_place_verifications", (string)null);
                 });
 
+            modelBuilder.Entity("ExploreMy.Api.Domain.Entities.Review", b =>
+                {
+                    b.Property<long>("ReviewId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint")
+                        .HasColumnName("review_id");
+
+                    b.Property<string>("Comment")
+                        .IsRequired()
+                        .HasColumnType("longtext")
+                        .HasColumnName("comment");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime(6)")
+                        .HasColumnName("created_at");
+
+                    b.Property<string>("GooglePlaceId")
+                        .HasMaxLength(255)
+                        .HasColumnType("varchar(255)")
+                        .HasColumnName("google_place_id");
+
+                    b.Property<decimal>("Rating")
+                        .HasPrecision(2, 1)
+                        .HasColumnType("decimal(2,1)")
+                        .HasColumnName("rating");
+
+                    b.Property<string>("RecommendPlaceId")
+                        .HasMaxLength(255)
+                        .HasColumnType("varchar(255)")
+                        .HasColumnName("recommend_place_id");
+
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .ValueGeneratedOnAdd()
+                        .HasMaxLength(20)
+                        .HasColumnType("varchar(20)")
+                        .HasDefaultValue("ACTIVE")
+                        .HasColumnName("status");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("datetime(6)")
+                        .HasColumnName("updated_at");
+
+                    b.Property<int>("UserId")
+                        .HasColumnType("int")
+                        .HasColumnName("user_id");
+
+                    b.HasKey("ReviewId")
+                        .HasName("pk_hidden_place_review");
+
+                    b.HasIndex("GooglePlaceId")
+                        .HasDatabaseName("ix_hidden_place_review_google_place_id");
+
+                    b.HasIndex("RecommendPlaceId")
+                        .HasDatabaseName("ix_hidden_place_review_recommend_place_id");
+
+                    b.HasIndex("UserId")
+                        .HasDatabaseName("ix_hidden_place_review_user_id");
+
+                    b.ToTable("hidden_place_review", (string)null);
+                });
+
+            modelBuilder.Entity("ExploreMy.Api.Domain.Entities.ReviewPhoto", b =>
+                {
+                    b.Property<long>("ReviewPhotoId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint")
+                        .HasColumnName("review_photo_id");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime(6)")
+                        .HasColumnName("created_at");
+
+                    b.Property<int>("DisplayOrder")
+                        .HasColumnType("int")
+                        .HasColumnName("display_order");
+
+                    b.Property<string>("PhotoUrl")
+                        .IsRequired()
+                        .HasMaxLength(500)
+                        .HasColumnType("varchar(500)")
+                        .HasColumnName("photo_url");
+
+                    b.Property<long>("ReviewId")
+                        .HasColumnType("bigint")
+                        .HasColumnName("review_id");
+
+                    b.HasKey("ReviewPhotoId")
+                        .HasName("pk_hidden_place_review_photo");
+
+                    b.HasIndex("ReviewId")
+                        .HasDatabaseName("ix_hidden_place_review_photo_review_id");
+
+                    b.HasIndex("ReviewId", "DisplayOrder")
+                        .IsUnique()
+                        .HasDatabaseName("ix_hidden_place_review_photo_review_id_display_order");
+
+                    b.ToTable("hidden_place_review_photo", (string)null);
+                });
+
             modelBuilder.Entity("ExploreMy.Api.Domain.Entities.User", b =>
                 {
                     b.Property<int>("UserId")
@@ -1232,6 +1348,26 @@ namespace explore_my_backend.Migrations
                     b.Navigation("Place");
 
                     b.Navigation("User");
+                });
+
+            modelBuilder.Entity("ExploreMy.Api.Domain.Entities.Review", b =>
+                {
+                    b.HasOne("ExploreMy.Api.Domain.Entities.User", null)
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("fk_hidden_place_review_users_user_id");
+                });
+
+            modelBuilder.Entity("ExploreMy.Api.Domain.Entities.ReviewPhoto", b =>
+                {
+                    b.HasOne("ExploreMy.Api.Domain.Entities.Review", null)
+                        .WithMany()
+                        .HasForeignKey("ReviewId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("fk_hidden_place_review_photo_hidden_place_review_review_id");
                 });
 
             modelBuilder.Entity("ExploreMy.Api.Domain.Entities.UserSavedPost", b =>

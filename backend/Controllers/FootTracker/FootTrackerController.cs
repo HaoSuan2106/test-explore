@@ -93,4 +93,36 @@ public class FootTrackerController : ControllerBase
             return StatusCode(500, new { message = "Failed to compute route." });
         }
     }
+
+    [HttpPost("visits")]
+    public async Task<IActionResult> RecordVisit([FromBody] RecordVisitRequestDto request)
+    {
+        var userId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
+        try
+        {
+            var visit = await _footTrackerService.RecordVisitAsync(userId, request);
+            return StatusCode(StatusCodes.Status201Created, visit);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Unexpected error recording visit for user {UserId}.", userId);
+            return StatusCode(StatusCodes.Status500InternalServerError, new { message = "An unexpected error occurred." });
+        }
+    }
+
+    [HttpGet("visits")]
+    public async Task<IActionResult> GetVisits()
+    {
+        var userId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
+        try
+        {
+            var visits = await _footTrackerService.GetVisitsAsync(userId);
+            return Ok(visits);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Unexpected error fetching visits for user {UserId}.", userId);
+            return StatusCode(StatusCodes.Status500InternalServerError, new { message = "An unexpected error occurred." });
+        }
+    }
 }

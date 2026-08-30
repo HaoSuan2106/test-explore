@@ -15,6 +15,8 @@ import 'providers/foot_tracker/favourite_provider.dart';
 import 'presentation/navigation/main_page.dart';
 import 'providers/hidden_place/hidden_place_provider.dart';
 import 'presentation/navigation/app_router.dart';
+import 'providers/foot_tracker/navigation_provider.dart';
+import 'providers/hidden_place/review_provider.dart';
 
 void main() {
   runApp(const ExploreMYApp());
@@ -46,7 +48,15 @@ class ExploreMYApp extends StatelessWidget {
           create: (_) => FavouriteProvider(httpClient: httpClient),
         ),
         ChangeNotifierProvider(
+          create: (_) => NavigationProvider(httpClient: httpClient),
+        ),
+        ChangeNotifierProvider(
           create: (_) => HiddenPlaceProvider(
+            httpClient: httpClient,
+          ),
+        ),
+        ChangeNotifierProvider(
+          create: (_) => ReviewProvider(
             httpClient: httpClient,
           ),
         ),

@@ -3,16 +3,26 @@ import 'create_review/create_review_ui.dart';
 import 'report_review/report_review_ui.dart';
 import 'community_verification/community_verification_ui.dart';
 import '../hidden_place_discovery/hidden_place_discovery_ui.dart';
+import 'dart:convert';
+import 'package:provider/provider.dart';
+import '../../providers/hidden_place/review_provider.dart';
 
+
+enum PlaceReviewTargetType {
+  google,
+  system,
+}
 
 class PlaceDetailUI extends StatefulWidget {
   final PlaceData place;
   final VoidCallback? onClose;
+  final PlaceReviewTargetType reviewTargetType;
 
   const PlaceDetailUI({
     super.key,
     required this.place,
     this.onClose,
+    this.reviewTargetType = PlaceReviewTargetType.google,
   });
 
   @override
@@ -32,7 +42,20 @@ class _PlaceDetailUIState extends State<PlaceDetailUI> {
   //
   // This is intentionally local/mock for now. Later the backend
   // can provide this value and the user's actual review data.
-  bool _hasUserReviewed = true;
+  bool _hasUserReviewed = false;
+  bool _isLoadingMyReview = true;
+  Map<String, dynamic>? _myReview;
+
+  List<dynamic> _reviews = [];
+  bool _isLoadingReviews = true;
+
+  @override
+  void initState() {
+    super.initState();
+
+    _loadMyReview();
+    _loadReviews();
+  }
 
   // Shows the compact title bar only after the original place
   // header has completely scrolled out of the visible sheet.
@@ -62,19 +85,148 @@ class _PlaceDetailUIState extends State<PlaceDetailUI> {
   }
 
   String _businessStatusText(String status) {
-    switch (status.toUpperCase()) {
-      case 'OPERATIONAL':
-        return 'Open · Hours TODO';
+    final hours = _openingHours();
 
-      case 'CLOSED_TEMPORARILY':
-        return 'Temporarily closed';
-
-      case 'CLOSED_PERMANENTLY':
-        return 'Permanently closed';
-
-      default:
-        return 'Status TODO';
+    if (status.toUpperCase() == 'CLOSED_TEMPORARILY') {
+      return 'Temporarily closed';
     }
+
+    if (status.toUpperCase() == 'CLOSED_PERMANENTLY') {
+      return 'Permanently closed';
+    }
+
+    if (hours != null) {
+      final openNow = hours['openNow'];
+
+      if (openNow == true) {
+        return 'Open now';
+      }
+
+      if (openNow == false) {
+        return 'Closed now';
+      }
+    }
+
+    if (status.toUpperCase() == 'OPERATIONAL') {
+      return 'Operational';
+    }
+
+    return 'Status unavailable';
+  }
+
+  Map<String, dynamic>? _openingHours() {
+    final jsonString = widget.place.regularOpeningHoursJson;
+
+    if (jsonString == null || jsonString.isEmpty) {
+      return null;
+    }
+
+    try {
+      return jsonDecode(jsonString) as Map<String, dynamic>;
+    } catch (_) {
+      return null;
+    }
+  }
+
+  Future<void> _loadMyReview() async {
+    try {
+      final reviewProvider = context.read<ReviewProvider>();
+
+      final review = await reviewProvider.getMyReview(
+        googlePlaceId:
+        widget.reviewTargetType == PlaceReviewTargetType.google
+            ? widget.place.placeId
+            : null,
+        recommendPlaceId:
+        widget.reviewTargetType == PlaceReviewTargetType.system
+            ? widget.place.placeId
+            : null,
+      );
+
+      if (!mounted) return;
+
+      setState(() {
+        _myReview = review;
+        _hasUserReviewed = review != null;
+        _isLoadingMyReview = false;
+      });
+    } catch (e) {
+      if (!mounted) return;
+
+      setState(() {
+        _isLoadingMyReview = false;
+      });
+
+      debugPrint('Failed to load my review: $e');
+    }
+  }
+
+  Future<void> _loadReviews() async {
+    try {
+      final reviewProvider = context.read<ReviewProvider>();
+
+      final reviews = await reviewProvider.getReviews(
+        googlePlaceId:
+        widget.reviewTargetType == PlaceReviewTargetType.google
+            ? widget.place.placeId
+            : null,
+        recommendPlaceId:
+        widget.reviewTargetType == PlaceReviewTargetType.system
+            ? widget.place.placeId
+            : null,
+      );
+
+      if (!mounted) return;
+
+      setState(() {
+        _reviews = reviews;
+        _isLoadingReviews = false;
+      });
+    } catch (e) {
+      if (!mounted) return;
+
+      setState(() {
+        _isLoadingReviews = false;
+      });
+
+      debugPrint('Failed to load reviews: $e');
+    }
+  }
+
+  String _formatReviewTime(String? createdAt) {
+    if (createdAt == null || createdAt.isEmpty) {
+      return '';
+    }
+
+    final date = DateTime.tryParse(createdAt);
+
+    if (date == null) {
+      return '';
+    }
+
+    final difference = DateTime.now().difference(date);
+
+    if (difference.inDays >= 365) {
+      return '${difference.inDays ~/ 365}y ago';
+    }
+
+    if (difference.inDays >= 30) {
+      return '${difference.inDays ~/ 30}mo ago';
+    }
+
+    if (difference.inDays >= 1) {
+      return '${difference.inDays}d ago';
+    }
+
+    if (difference.inHours >= 1) {
+      return '${difference.inHours}h ago';
+    }
+
+    if (difference.inMinutes >= 1) {
+      return '${difference.inMinutes}m ago';
+    }
+
+    return 'Just now';
   }
 
   // Used to measure the real position of the original header instead of
@@ -136,7 +288,6 @@ class _PlaceDetailUIState extends State<PlaceDetailUI> {
                         scrollBox.localToGlobal(Offset.zero).dy;
 
                     // Show the compact header only when the entire
-                    // original RING Café header is no longer visible.
                     shouldShow = headerBottom <= scrollTop + 80;
                   }
                 }
@@ -238,13 +389,13 @@ class _PlaceDetailUIState extends State<PlaceDetailUI> {
                   padding: const EdgeInsets.fromLTRB(22, 0, 8, 0),
                   child: Row(
                     children: [
-                      const Expanded(
+                      Expanded(
                         child: Text(
-                          'RING Café',
-                          style: TextStyle(
-                            fontSize: 18,
-                            fontWeight: FontWeight.w700,
-                            color: Colors.black87,
+                          widget.place.title,
+                          style: const TextStyle(
+                            fontSize: 21,
+                            fontWeight: FontWeight.w600,
+                            letterSpacing: -0.2,
                           ),
                         ),
                       ),
@@ -698,20 +849,26 @@ class _PlaceDetailUIState extends State<PlaceDetailUI> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        _infoCard(
-          Icons.location_on_outlined,
-          '28-G, Jalan Puteri 1/4,\n'
-              'Bandar Puteri, 47100 Puchong,\n'
-              'Selangor',
-        ),
-        _infoCard(
-          Icons.phone_outlined,
-          '010-6969 6767',
-        ),
-        _infoCard(
-          Icons.link,
-          'instagram.com',
-        ),
+        if (widget.place.address != null &&
+            widget.place.address!.isNotEmpty)
+          _infoCard(
+            Icons.location_on_outlined,
+            widget.place.address!,
+          ),
+
+        if (widget.place.phoneNumber != null &&
+            widget.place.phoneNumber!.isNotEmpty)
+          _infoCard(
+            Icons.phone_outlined,
+            widget.place.phoneNumber!,
+          ),
+
+        if (widget.place.websiteUri != null &&
+            widget.place.websiteUri!.isNotEmpty)
+          _infoCard(
+            Icons.language,
+            widget.place.websiteUri!,
+          ),
       ],
     );
   }
@@ -914,7 +1071,7 @@ class _PlaceDetailUIState extends State<PlaceDetailUI> {
       String text,
       ) {
     return Container(
-      margin: const EdgeInsets.fromLTRB(20, 6, 20, 0),
+      margin: const EdgeInsets.fromLTRB(20, 16, 20, 0),
       padding: const EdgeInsets.symmetric(
         horizontal: 12,
         vertical: 10,
@@ -946,6 +1103,16 @@ class _PlaceDetailUIState extends State<PlaceDetailUI> {
   }
 
   Widget _buildReviewsPreview() {
+    final otherReviews = _reviews.where((review) {
+      final reviewMap = review as Map<String, dynamic>;
+
+      if (_myReview == null) {
+        return true;
+      }
+
+      return reviewMap['reviewId'] != _myReview!['reviewId'];
+    }).take(2).toList();
+
     return Padding(
       padding: const EdgeInsets.fromLTRB(14, 16, 14, 0),
       child: Column(
@@ -959,14 +1126,45 @@ class _PlaceDetailUIState extends State<PlaceDetailUI> {
             ),
           ),
           const SizedBox(height: 9),
-          _review(
-            'Tomorin',
-            'One of the best cafes I have discovered recently. Beautiful interior, fast service, and perfect for taking photos.',
-          ),
-          _review(
-            'AnonTokyo',
-            'Great coffee, delicious food, and a nice atmosphere.',
-          ),
+
+          if (_isLoadingReviews)
+            const Center(
+              child: Padding(
+                padding: EdgeInsets.all(12),
+                child: CircularProgressIndicator(),
+              ),
+            )
+          else if (otherReviews.isEmpty)
+            const Text(
+              'No reviews yet.',
+              style: TextStyle(
+                fontSize: 12,
+                color: Colors.grey,
+              ),
+            )
+          else
+            ...otherReviews.map((review) {
+              final reviewMap = review as Map<String, dynamic>;
+
+              final username =
+                  reviewMap['username']?.toString() ?? 'Unknown User';
+
+              final rating =
+                  (reviewMap['rating'] as num?)?.toInt() ?? 0;
+
+              final comment =
+                  reviewMap['comment']?.toString() ?? '';
+
+              final createdAt =
+              reviewMap['createdAt']?.toString();
+
+              return _review(
+                username,
+                comment,
+                rating: rating,
+                time: _formatReviewTime(createdAt),
+              );
+            }),
         ],
       ),
     );
@@ -982,65 +1180,7 @@ class _PlaceDetailUIState extends State<PlaceDetailUI> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // =========================
-          // REVIEW STATISTICS
-          // =========================
-          Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              SizedBox(
-                width: 96,
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    const Text(
-                      '4.2',
-                      textAlign: TextAlign.center,
-                      style: TextStyle(
-                        fontSize: 30,
-                        fontWeight: FontWeight.w600,
-                      ),
-                    ),
-                    const SizedBox(height: 1),
-                    const Text(
-                      '★★★★★',
-                      textAlign: TextAlign.center,
-                      style: TextStyle(
-                        color: accent,
-                        fontSize: 16,
-                        letterSpacing: 0.6,
-                      ),
-                    ),
-                    const SizedBox(height: 2),
-                    Text(
-                      '(67 reviews)',
-                      style: TextStyle(
-                        color: Colors.grey.shade600,
-                        fontSize: 10,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              const SizedBox(width: 52),
-              SizedBox(
-                width: 190,
-                child: Column(
-                  children: [
-                    _ratingBar(5, 42),
-                    _ratingBar(4, 15),
-                    _ratingBar(3, 6),
-                    _ratingBar(2, 3),
-                    _ratingBar(1, 1),
-                  ],
-                ),
-              ),
-            ],
-          ),
 
-          const SizedBox(height: 16),
-          const Divider(height: 1, color: Color(0xffdddddd)),
-          const SizedBox(height: 14),
 
           // =========================
           // YOUR REVIEW
@@ -1127,35 +1267,68 @@ class _PlaceDetailUIState extends State<PlaceDetailUI> {
           // =========================
           // REVIEWS
           // =========================
-          _review(
-            'Tomorin',
-            'One of the best cafes I have discovered recently. Beautiful interior, fast service, and perfect for taking photos.',
-          ),
+          if (_isLoadingReviews)
+            const Center(
+              child: Padding(
+                padding: EdgeInsets.all(20),
+                child: CircularProgressIndicator(),
+              ),
+            )
+          else if (_reviews.isEmpty)
+            const Padding(
+              padding: EdgeInsets.all(20),
+              child: Center(
+                child: Text(
+                  'No reviews yet.',
+                  style: TextStyle(
+                    fontSize: 12,
+                    color: Colors.grey,
+                  ),
+                ),
+              ),
+            )
+          else
+            ..._reviews
+                .where((review) {
+              final reviewMap = review as Map<String, dynamic>;
 
-          const Divider(
-            height: 1,
-            color: Color(0xffdddddd),
-          ),
+              // Don't show the current user's review again
+              // in the "other users" section.
+              if (_myReview == null) {
+                return true;
+              }
 
-          const SizedBox(height: 12),
+              return reviewMap['reviewId'] != _myReview!['reviewId'];
+            })
+                .map((review) {
+              final reviewMap = review as Map<String, dynamic>;
 
-          _review(
-            'AnonTokyo',
-            'Great coffee, delicious food, and a nice atmosphere. The only thing that could be improved is the customer service.',
-            hasPhoto: true,
-          ),
+              final username = reviewMap['username']?.toString() ?? 'Unknown User';
+              final rating = (reviewMap['rating'] as num?)?.toInt() ?? 0;
+              final comment = reviewMap['comment']?.toString() ?? '';
 
-          const Divider(
-            height: 1,
-            color: Color(0xffdddddd),
-          ),
+              final createdAt = reviewMap['createdAt']?.toString();
 
-          const SizedBox(height: 12),
+              final photos =
+                  (reviewMap['photos'] as List<dynamic>?) ?? [];
 
-          _review(
-            'Mina',
-            'Nice place to relax and the drinks were good. Would come back again.',
-          ),
+              return Column(
+                children: [
+                  _review(
+                    username,
+                    comment,
+                    rating: rating,
+                    time: _formatReviewTime(createdAt),
+                    photos: photos,
+                  ),
+                  const Divider(
+                    height: 1,
+                    color: Color(0xffdddddd),
+                  ),
+                  const SizedBox(height: 12),
+                ],
+              );
+            }),
         ],
       ),
     );
@@ -1181,12 +1354,14 @@ class _PlaceDetailUIState extends State<PlaceDetailUI> {
           const SizedBox(height: 12),
           Row(
             children: [
-              const CircleAvatar(
+              CircleAvatar(
                 radius: 22,
-                backgroundColor: Color(0xffffd7cf),
+                backgroundColor: const Color(0xffffd7cf),
                 child: Text(
-                  'B',
-                  style: TextStyle(
+                  (_myReview?['username']?.toString().isNotEmpty ?? false)
+                      ? _myReview!['username'].toString()[0].toUpperCase()
+                      : '?',
+                  style: const TextStyle(
                     color: accent,
                     fontWeight: FontWeight.w600,
                   ),
@@ -1203,6 +1378,11 @@ class _PlaceDetailUIState extends State<PlaceDetailUI> {
                         MaterialPageRoute(
                           builder: (_) => CreateReviewUI(
                             initialRating: index + 1,
+                            placeId: widget.place.placeId,
+                            placeName: widget.place.title,
+                            placeType: widget.reviewTargetType == PlaceReviewTargetType.system
+                                ? ReviewPlaceType.system
+                                : ReviewPlaceType.google,
                           ),
                         ),
                       );
@@ -1230,6 +1410,9 @@ class _PlaceDetailUIState extends State<PlaceDetailUI> {
   // ============================================================
 
   Widget _buildExistingUserReview() {
+    final photos =
+        (_myReview?['photos'] as List<dynamic>?) ?? [];
+
     return Padding(
       padding: const EdgeInsets.only(
         left: 8,
@@ -1277,9 +1460,9 @@ class _PlaceDetailUIState extends State<PlaceDetailUI> {
                             children: [
                               Row(
                                 children: [
-                                  const Text(
-                                    'Boon Boon',
-                                    style: TextStyle(
+                                  Text(
+                                    _myReview?['username']?.toString() ?? 'You',
+                                    style: const TextStyle(
                                       fontSize: 12,
                                       fontWeight: FontWeight.w600,
                                     ),
@@ -1299,7 +1482,7 @@ class _PlaceDetailUIState extends State<PlaceDetailUI> {
                                   const SizedBox(width: 4),
 
                                   Text(
-                                    '1 month ago',
+                                    _formatReviewTime(_myReview?['createdAt']?.toString()),
                                     style: TextStyle(
                                       color: Colors.grey.shade500,
                                       fontSize: 9,
@@ -1310,9 +1493,9 @@ class _PlaceDetailUIState extends State<PlaceDetailUI> {
 
                               const SizedBox(height: 3),
 
-                              const Text(
-                                '★★★★★',
-                                style: TextStyle(
+                              Text(
+                                '★' * ((_myReview?['rating'] as num?)?.toInt() ?? 0),
+                                style: const TextStyle(
                                   color: accent,
                                   fontSize: 12,
                                   letterSpacing: 0.5,
@@ -1347,10 +1530,16 @@ class _PlaceDetailUIState extends State<PlaceDetailUI> {
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                  builder: (_) => const CreateReviewUI(
-                                    initialRating: 5,
-                                    initialReviewText:
-                                    'Didn’t expect to find such a lovely cafe tucked away in this neighborhood. Cozy atmosphere, great coffee, and not too crowded. Definitely a hidden gem!',
+                                  builder: (_) => CreateReviewUI(
+                                    initialRating: (_myReview?['rating'] as num?)?.toInt() ?? 0,
+                                    initialReviewText: _myReview?['comment']?.toString() ?? '',
+                                    placeId: widget.place.placeId,
+                                    placeName: widget.place.title,
+                                    placeType: widget.reviewTargetType == PlaceReviewTargetType.system
+                                        ? ReviewPlaceType.system
+                                        : ReviewPlaceType.google,
+                                    isEdit: true,
+                                    reviewId: _myReview?['reviewId'],
                                   ),
                                 ),
                               );
@@ -1403,14 +1592,62 @@ class _PlaceDetailUIState extends State<PlaceDetailUI> {
 
                                           Expanded(
                                             child: TextButton(
-                                              onPressed: () {
-                                                Navigator.pop(dialogContext);
+                                              onPressed: () async {
+                                                final reviewId = _myReview?['reviewId'];
 
-                                                ScaffoldMessenger.of(context).showSnackBar(
-                                                  const SnackBar(
-                                                    content: Text('Delete review selected'),
-                                                  ),
-                                                );
+                                                if (reviewId == null) {
+                                                  Navigator.pop(dialogContext);
+
+                                                  ScaffoldMessenger.of(context).showSnackBar(
+                                                    const SnackBar(
+                                                      content: Text('Review ID not found.'),
+                                                    ),
+                                                  );
+
+                                                  return;
+                                                }
+
+                                                try {
+                                                  await context.read<ReviewProvider>().deleteReview(
+                                                    reviewId: (reviewId as num).toInt(),
+                                                  );
+
+                                                  if (!mounted) return;
+
+                                                  Navigator.of(context).pop();
+
+                                                  setState(() {
+                                                    _myReview = null;
+                                                    _hasUserReviewed = false;
+                                                  });
+
+                                                  ScaffoldMessenger.of(context).showSnackBar(
+                                                    const SnackBar(
+                                                      content: Text('Review deleted successfully.'),
+                                                    ),
+                                                  );
+
+                                                  setState(() {
+                                                    _myReview = null;
+                                                    _hasUserReviewed = false;
+                                                  });
+
+                                                  ScaffoldMessenger.of(context).showSnackBar(
+                                                    const SnackBar(
+                                                      content: Text('Review deleted successfully.'),
+                                                    ),
+                                                  );
+                                                } catch (e) {
+                                                  if (!mounted) return;
+
+                                                  Navigator.of(context).pop();
+
+                                                  ScaffoldMessenger.of(context).showSnackBar(
+                                                    SnackBar(
+                                                      content: Text('Failed to delete review: $e'),
+                                                    ),
+                                                  );
+                                                }
                                               },
                                               style: TextButton.styleFrom(
                                                 backgroundColor: accent,
@@ -1470,9 +1707,9 @@ class _PlaceDetailUIState extends State<PlaceDetailUI> {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          const Text(
-                            'Didn’t expect to find such a lovely cafe tucked away in this neighborhood. Cozy atmosphere, great coffee, and not too crowded. Definitely a hidden gem!',
-                            style: TextStyle(
+                          Text(
+                            _myReview?['comment']?.toString() ?? '',
+                            style: const TextStyle(
                               fontSize: 11,
                               height: 1.35,
                             ),
@@ -1480,22 +1717,46 @@ class _PlaceDetailUIState extends State<PlaceDetailUI> {
 
                           const SizedBox(height: 9),
 
-                          // Temporary photo placeholder
-                          Container(
-                            width: double.infinity,
-                            height: 150,
-                            decoration: BoxDecoration(
-                              color: const Color(0xffe1e1e1),
-                              borderRadius: BorderRadius.circular(9),
-                            ),
-                            child: const Center(
-                              child: Icon(
-                                Icons.image_outlined,
-                                size: 34,
-                                color: Color(0xffa0a0a0),
+                          if (photos.isNotEmpty) ...[
+                            const SizedBox(height: 9),
+                            SizedBox(
+                              height: 180,
+                              child: ListView.separated(
+                                scrollDirection: Axis.horizontal,
+                                itemCount: photos.length,
+                                separatorBuilder: (context, index) =>
+                                const SizedBox(width: 8),
+                                itemBuilder: (context, index) {
+                                  final photoUrl =
+                                      photos[index]['photoUrl']?.toString() ?? '';
+
+                                  return ClipRRect(
+                                    borderRadius: BorderRadius.circular(9),
+                                    child: Image.network(
+                                      photoUrl,
+                                      width: 180,
+                                      height: 180,
+                                      fit: BoxFit.cover,
+                                      errorBuilder: (context, error, stackTrace) {
+                                        return Container(
+                                          width: 180,
+                                          height: 180,
+                                          color: const Color(0xffe1e1e1),
+                                          child: const Center(
+                                            child: Icon(
+                                              Icons.broken_image_outlined,
+                                              size: 34,
+                                              color: Color(0xffa0a0a0),
+                                            ),
+                                          ),
+                                        );
+                                      },
+                                    ),
+                                  );
+                                },
                               ),
                             ),
-                          ),
+                          ],
                         ],
                       ),
                     ),
@@ -1628,7 +1889,8 @@ class _PlaceDetailUIState extends State<PlaceDetailUI> {
       String name,
       String text, {
         String time = '2 months ago',
-        bool hasPhoto = false,
+        int rating = 5,
+        List<dynamic> photos = const [],
       }) {
     return Padding(
       padding: const EdgeInsets.only(
@@ -1701,9 +1963,9 @@ class _PlaceDetailUIState extends State<PlaceDetailUI> {
                             ],
                           ),
                           const SizedBox(height: 1),
-                          const Text(
-                            '★★★★★',
-                            style: TextStyle(
+                          Text(
+                            '★' * rating,
+                            style: const TextStyle(
                               color: accent,
                               fontSize: 12,
                               letterSpacing: 0.5,
@@ -1773,21 +2035,43 @@ class _PlaceDetailUIState extends State<PlaceDetailUI> {
                         ),
                       ),
 
-                      if (hasPhoto) ...[
+                      if (photos.isNotEmpty) ...[
                         const SizedBox(height: 9),
-                        Container(
-                          width: double.infinity,
+                        SizedBox(
                           height: 150,
-                          decoration: BoxDecoration(
-                            color: const Color(0xffe1e1e1),
-                            borderRadius: BorderRadius.circular(9),
-                          ),
-                          child: const Center(
-                            child: Icon(
-                              Icons.image_outlined,
-                              size: 34,
-                              color: Color(0xffa0a0a0),
-                            ),
+                          child: ListView.separated(
+                            scrollDirection: Axis.horizontal,
+                            itemCount: photos.length,
+                            separatorBuilder: (context, index) =>
+                            const SizedBox(width: 8),
+                            itemBuilder: (context, index) {
+                              final photoUrl =
+                                  photos[index]['photoUrl']?.toString() ?? '';
+
+                              return ClipRRect(
+                                borderRadius: BorderRadius.circular(9),
+                                child: Image.network(
+                                  photoUrl,
+                                  width: 180,
+                                  height: 150,
+                                  fit: BoxFit.cover,
+                                  errorBuilder: (context, error, stackTrace) {
+                                    return Container(
+                                      width: 180,
+                                      height: 150,
+                                      color: const Color(0xffe1e1e1),
+                                      child: const Center(
+                                        child: Icon(
+                                          Icons.broken_image_outlined,
+                                          size: 34,
+                                          color: Color(0xffa0a0a0),
+                                        ),
+                                      ),
+                                    );
+                                  },
+                                ),
+                              );
+                            },
                           ),
                         ),
                       ],

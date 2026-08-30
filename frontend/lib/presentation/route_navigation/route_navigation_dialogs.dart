@@ -87,6 +87,57 @@ Future<void> showArrivalSuccessDialog(BuildContext context) {
   );
 }
 
+/// A4: Location Permission Denied -> M3
+Future<void> showLocationPermissionDialog(BuildContext context) {
+  return showDialog<void>(
+    context: context,
+    builder: (context) => _ActionDialog(
+      icon: Icons.location_disabled,
+      title: 'Location permission required',
+      message: 'Please enable location permission and try again.',
+      actions: [
+        _DialogButton(label: 'OK', filled: true, onTap: () => Navigator.of(context).pop()),
+      ],
+    ),
+  );
+}
+
+/// A5: Route Request Failed -> M4
+/// Resolves true if the user chooses Retry.
+Future<bool?> showRouteRequestFailedDialog(BuildContext context) {
+  return showDialog<bool>(
+    context: context,
+    builder: (context) => _ActionDialog(
+      icon: Icons.error_outline,
+      title: 'Unable to generate route',
+      message: 'Please check your Internet connection and try again.',
+      stackedActions: true,
+      actions: [
+        _DialogButton(label: 'Retry', filled: true, onTap: () => Navigator.of(context).pop(true)),
+        _DialogButton(label: 'Cancel navigation', filled: false, onTap: () => Navigator.of(context).pop(false)),
+      ],
+    ),
+  );
+}
+
+/// Manual recalculate — user pressed the Recalculate button on the map
+/// (not the automatic deviation prompt). Reuses the same dialog styling.
+/// Resolves true if the user confirms.
+Future<bool?> showRecalculateRouteConfirmDialog(BuildContext context) {
+  return showDialog<bool>(
+    context: context,
+    builder: (context) => _ActionDialog(
+      icon: Icons.alt_route,
+      title: 'Recalculate route',
+      message: 'Get a new route from your current location?',
+      actions: [
+        _DialogButton(label: 'Cancel', filled: false, onTap: () => Navigator.of(context).pop(false)),
+        _DialogButton(label: 'Recalculate', filled: true, onTap: () => Navigator.of(context).pop(true)),
+      ],
+    ),
+  );
+}
+
 class _ActionDialog extends StatelessWidget {
   final IconData? icon;
   final String title;

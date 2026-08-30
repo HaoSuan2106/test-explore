@@ -18,6 +18,12 @@ class HiddenPlaceModel {
     required this.qualityScore,
     this.photoUrl,
     this.photoAttribution,
+    this.formattedAddress,
+    this.googleMapsUri,
+    this.nationalPhoneNumber,
+    this.websiteUri,
+    this.photosJson,
+    this.regularOpeningHoursJson,
     this.source = 'GOOGLE',
   });
 
@@ -63,6 +69,13 @@ class HiddenPlaceModel {
   /// no attribution.
   final String? photoAttribution;
 
+  final String? formattedAddress;
+  final String? googleMapsUri;
+  final String? nationalPhoneNumber;
+  final String? websiteUri;
+  final String? photosJson;
+  final String? regularOpeningHoursJson;
+
   /// Where this place came from: 'GOOGLE' or 'COMMUNITY' (submitted by a user, verified by five
   /// others).
   ///
@@ -88,6 +101,12 @@ class HiddenPlaceModel {
         qualityScore: (json['qualityScore'] as num?)?.toDouble() ?? 0.0,
         photoUrl: json['photoUrl'] as String?,
         photoAttribution: json['photoAttribution'] as String?,
+        formattedAddress: json['formattedAddress'] as String?,
+        googleMapsUri: json['googleMapsUri'] as String?,
+        websiteUri: json['websiteUri'] as String?,
+        nationalPhoneNumber: json['nationalPhoneNumber'] as String?,
+        photosJson: json['photosJson'] as String?,
+        regularOpeningHoursJson: json['regularOpeningHoursJson'] as String?,
         source: json['source'] as String? ?? 'GOOGLE',
       );
 }

@@ -97,6 +97,13 @@ class PlaceData {
   /// pinCommunity. Also means rating/ratingCount are placeholders, not real measurements.
   final bool isCommunity;
 
+  final String? address;
+  final String? phoneNumber;
+  final String? websiteUri;
+  final String? googleMapsUri;
+  final String? photosJson;
+  final String? regularOpeningHoursJson;
+
   const PlaceData({
     required this.placeId,
     required this.title,
@@ -110,6 +117,12 @@ class PlaceData {
     required this.businessStatus,
     this.photoAttribution,
     this.isCommunity = false,
+    required this.address,
+    required this.phoneNumber,
+    required this.websiteUri,
+    required this.googleMapsUri,
+    required this.photosJson,
+    required this.regularOpeningHoursJson,
   });
 }
 
@@ -360,6 +373,14 @@ PlaceData _toPlaceData(HiddenPlaceModel place) {
     businessStatus: place.businessStatus ?? 'UNKNOWN',
     photoAttribution: place.photoAttribution,
     isCommunity: place.source == 'COMMUNITY',
+
+    address: place.formattedAddress,
+    phoneNumber: place.nationalPhoneNumber,
+    websiteUri: place.websiteUri,
+    googleMapsUri: place.googleMapsUri,
+
+    photosJson: place.photosJson,
+    regularOpeningHoursJson: place.regularOpeningHoursJson,
   );
 }
 
