@@ -1,15 +1,23 @@
 class FavouritePlace {
   final String id;
+  final String placeId;
   final String name;
   final String location;
+  final double latitude;
+  final double longitude;
   final String lastVisit;
+  final bool hasVisited;
   final String category;
 
   const FavouritePlace({
     required this.id,
+    required this.placeId,
     required this.name,
     required this.location,
+    required this.latitude,
+    required this.longitude,
     required this.lastVisit,
+    required this.hasVisited,
     required this.category,
   });
 
@@ -20,26 +28,27 @@ class FavouritePlace {
   factory FavouritePlace.fromJson(Map<String, dynamic> json) {
     final lastVisitAt = json['lastVisitAt'] as String?;
     final createdAt = json['createdAt'] as String;
+    final hasVisited = lastVisitAt != null;
     final date = DateTime.parse(lastVisitAt ?? createdAt);
 
     return FavouritePlace(
       id: json['favouritePlaceId'].toString(),
+      placeId: json['placeId'] as String,
       name: json['name'] as String,
       location: (json['address'] as String?) ?? '',
+      latitude: (json['latitude'] as num).toDouble(),
+      longitude: (json['longitude'] as num).toDouble(),
       lastVisit:
       '${date.day.toString().padLeft(2, '0')}/${date.month.toString().padLeft(2, '0')}/${date.year}',
-      category: _mapToUiCategory(json['primaryType'] as String),
+      hasVisited: hasVisited,
+      category: mapToUiCategory(json['primaryType'] as String),
     );
   }
 
-  static String _mapToUiCategory(String rawType) {
-    // If the DB already stores one of the app's exact 8 categories
-    // (e.g. manually-inserted test data), use it as-is.
+  static String mapToUiCategory(String rawType) {
     for (final c in uiCategories) {
       if (c.toLowerCase() == rawType.toLowerCase()) return c;
     }
-
-    // Otherwise treat it as a raw Google Places `primaryType` value.
     const restaurant = {'restaurant', 'meal_takeaway', 'meal_delivery', 'fast_food_restaurant', 'fine_dining_restaurant'};
     const cafe = {'cafe', 'coffee_shop', 'bakery'};
     const bar = {'bar', 'night_club', 'pub', 'wine_bar'};
@@ -58,6 +67,6 @@ class FavouritePlace {
     if (market.contains(rawType)) return 'Market';
     if (shopping.contains(rawType)) return 'Shopping';
 
-    return 'Cultural'; // fallback for anything unmapped
+    return 'Cultural';
   }
 }

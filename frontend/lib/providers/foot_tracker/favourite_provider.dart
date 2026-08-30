@@ -44,6 +44,33 @@ class FavouriteProvider extends ChangeNotifier implements SessionScopedProvider 
     }
   }
 
+  bool isFavourite(String placeId) => _places.any((p) => p.placeId == placeId);
+
+  Future<void> addFavouritePlace({
+    required String placeId,
+    required String name,
+    required String primaryType,
+    String? address,
+    required double latitude,
+    required double longitude,
+  }) async {
+    await _httpClient.addFavouritePlace(
+      placeId: placeId,
+      name: name,
+      primaryType: primaryType,
+      address: address,
+      latitude: latitude,
+      longitude: longitude,
+    );
+    await loadPlaces();
+  }
+
+  Future<void> removeFavouritePlaceByPlaceId(String placeId) async {
+    final match = _places.where((p) => p.placeId == placeId);
+    if (match.isEmpty) return;
+    await deletePlaces({match.first.id});
+  }
+
   @override
   void clearSessionData() {
     _places = [];

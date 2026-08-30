@@ -1,4 +1,5 @@
 using System.Net.Http.Headers;
+using System.Net.Http.Json;
 using ExploreMy.Api.Configuration;
 using Microsoft.Extensions.Options;
 
@@ -82,6 +83,22 @@ public class SupabaseStorageClient : IStorageClient
         return $"{_settings.Url}/storage/v1/object/public/{targetBucket}/{path}";
     }
 
+    public async Task<string> MoveAsync(string fromPath, string toPath, string? bucket = null)
+    {
+        var targetBucket = string.IsNullOrWhiteSpace(bucket) ? _settings.Bucket : bucket;
+        var payload = new { bucketId = targetBucket, sourceKey = fromPath, destinationKey = toPath };
+        using var response = await _httpClient.PostAsJsonAsync("/storage/v1/object/move", payload);
+
+        if (!response.IsSuccessStatusCode)
+        {
+            var body = await response.Content.ReadAsStringAsync();
+            _logger.LogError("Supabase move from {From} to {To} failed with {StatusCode}: {Body}", fromPath, toPath, response.StatusCode, body);
+            throw new InvalidOperationException("Failed to finalize file in storage.");
+        }
+
+        return GetPublicUrl(toPath, targetBucket);
+    }
+
     public async Task DeleteAsync(string path)
     {
         var requestUri = $"/storage/v1/object/{_settings.Bucket}/{path}";
@@ -94,9 +111,10 @@ public class SupabaseStorageClient : IStorageClient
         }
     }
 
-    public string? GetPathFromPublicUrl(string publicUrl)
+    public string? GetPathFromPublicUrl(string publicUrl, string? bucket = null)
     {
-        var marker = $"/storage/v1/object/public/{_settings.Bucket}/";
+        var targetBucket = string.IsNullOrWhiteSpace(bucket) ? _settings.Bucket : bucket;
+        var marker = $"/storage/v1/object/public/{targetBucket}/";
         var index = publicUrl.IndexOf(marker, StringComparison.Ordinal);
         return index < 0 ? null : publicUrl[(index + marker.Length)..];
     }

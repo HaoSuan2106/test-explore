@@ -1,7 +1,10 @@
 using ExploreMy.Api.Application.FootTracker.ExplorationHistory;
 using ExploreMy.Api.Application.FootTracker.FavouritePlace;
 using ExploreMy.Api.Application.FootTracker.Navigation;
+using ExploreMy.Api.DataAccess.Repositories.FootTracker;
 using ExploreMy.Api.DTOs.FootTracker;
+using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 
 namespace ExploreMy.Api.Application.FootTracker.Facade;
 
@@ -27,4 +30,6 @@ public class FootTrackerService : IFootTrackerService
     public Task<RouteResponseDto> GetRouteAsync(RouteRequestDto request) => _navigationService.GetRouteAsync(request);
     public Task<VisitLogDto> RecordVisitAsync(int userId, RecordVisitRequestDto request) => _explorationHistoryService.RecordVisitAsync(userId, request);
     public Task<List<VisitLogDto>> GetVisitsAsync(int userId) => _explorationHistoryService.GetVisitsAsync(userId);
+    public Task<Dictionary<string, int>> GetExplorationMapAsync(int userId) => _explorationHistoryService.GetExplorationMapAsync(userId);
+
 }

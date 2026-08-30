@@ -6,6 +6,8 @@ import '../hidden_place_discovery/hidden_place_discovery_ui.dart';
 import 'dart:convert';
 import 'package:provider/provider.dart';
 import '../../providers/hidden_place/review_provider.dart';
+import '../../models/community/message_model.dart';
+import '../community/share_to_chat/share_to_chat_sheet.dart';
 
 
 enum PlaceReviewTargetType {
@@ -545,6 +547,52 @@ class _PlaceDetailUIState extends State<PlaceDetailUI> {
   // ACTION BUTTONS
   // =========================
 
+  /// Opens the "Share to Chat" sheet for this place. Community-submitted
+  /// places (isCommunity) reopen live via the Recommended Place Details
+  /// route, so no snapshot is needed; Google-sourced places have no such
+  /// "fetch by id" route, so a JSON snapshot of the current [PlaceData] is
+  /// carried along instead. [icon] is intentionally left out of the
+  /// snapshot: it's not JSON-serializable and PlaceDetailUI never reads it.
+  void _shareToChat() {
+    final place = widget.place;
+    final isCommunity = place.isCommunity;
+    final shareDataJson = isCommunity
+        ? null
+        : jsonEncode({
+            'placeId': place.placeId,
+            'title': place.title,
+            'category': place.category,
+            'imageUrl': place.imageUrl,
+            'lat': place.position.latitude,
+            'lng': place.position.longitude,
+            'rating': place.rating,
+            'ratingCount': place.ratingCount,
+            'priceLevel': place.priceLevel,
+            'businessStatus': place.businessStatus,
+            'photoAttribution': place.photoAttribution,
+            'isCommunity': place.isCommunity,
+            'address': place.address,
+            'phoneNumber': place.phoneNumber,
+            'websiteUri': place.websiteUri,
+            'googleMapsUri': place.googleMapsUri,
+            'photosJson': place.photosJson,
+            'regularOpeningHoursJson': place.regularOpeningHoursJson,
+          });
+
+    showShareToChatSheet(
+      context,
+      sharedPlace: SharedPlaceRequest(
+        placeId: place.placeId,
+        placeSource: isCommunity ? 'COMMUNITY' : 'GOOGLE',
+        shareDataJson: shareDataJson,
+        placeName: place.title,
+        placeAddress: place.address,
+        placeImageUrl: place.imageUrl,
+        placeStatus: place.businessStatus,
+      ),
+    );
+  }
+
   Widget _buildActions() {
     return Padding(
       padding: const EdgeInsets.fromLTRB(20, 4, 20, 4),
@@ -635,6 +683,11 @@ class _PlaceDetailUIState extends State<PlaceDetailUI> {
                   ),
                 ),
               );
+              return;
+            }
+
+            if (text == 'Share') {
+              _shareToChat();
               return;
             }
 

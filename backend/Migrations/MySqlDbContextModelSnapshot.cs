@@ -1039,6 +1039,44 @@ namespace explore_my_backend.Migrations
                     b.ToTable("hidden_place_review_photo", (string)null);
                 });
 
+            modelBuilder.Entity("ExploreMy.Api.Domain.Entities.ReviewReport", b =>
+            {
+                b.Property<long>("ReportId")
+                    .ValueGeneratedOnAdd()
+                    .HasColumnType("bigint")
+                    .HasColumnName("report_id");
+
+                b.Property<DateTime>("CreatedAt")
+                    .HasColumnType("datetime(6)")
+                    .HasColumnName("created_at");
+
+                b.Property<string>("Reason")
+                    .IsRequired()
+                    .HasMaxLength(50)
+                    .HasColumnType("varchar(50)")
+                    .HasColumnName("reason");
+
+                b.Property<long>("ReviewId")
+                    .HasColumnType("bigint")
+                    .HasColumnName("review_id");
+
+                b.Property<int>("UserId")
+                    .HasColumnType("int")
+                    .HasColumnName("user_id");
+
+                b.HasKey("ReportId")
+                    .HasName("pk_hidden_place_review_report");
+
+                b.HasIndex("ReviewId")
+                    .HasDatabaseName("ix_hidden_place_review_report_review_id");
+
+                b.HasIndex("ReviewId", "UserId")
+                    .IsUnique()
+                    .HasDatabaseName("ix_hidden_place_review_report_review_id_user_id");
+
+                b.ToTable("hidden_place_review_report", (string)null);
+            });
+
             modelBuilder.Entity("ExploreMy.Api.Domain.Entities.User", b =>
                 {
                     b.Property<int>("UserId")
@@ -1407,6 +1445,16 @@ namespace explore_my_backend.Migrations
                         .IsRequired()
                         .HasConstraintName("fk_hidden_place_review_photo_hidden_place_review_review_id");
                 });
+
+            modelBuilder.Entity("ExploreMy.Api.Domain.Entities.ReviewReport", b =>
+            {
+                b.HasOne("ExploreMy.Api.Domain.Entities.Review", null)
+                    .WithMany()
+                    .HasForeignKey("ReviewId")
+                    .OnDelete(DeleteBehavior.Cascade)
+                    .IsRequired()
+                    .HasConstraintName("fk_hidden_place_review_report_hidden_place_review_review_id");
+            });
 
             modelBuilder.Entity("ExploreMy.Api.Domain.Entities.UserSavedPost", b =>
                 {

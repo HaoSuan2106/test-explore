@@ -80,6 +80,8 @@ class PlaceData {
   final String placeId;
   final String title;
   final String category;
+  //Add by Ian
+  final String primaryType;
   final String imageUrl;
   final IconData icon;
   final LatLng position;
@@ -108,6 +110,7 @@ class PlaceData {
     required this.placeId,
     required this.title,
     required this.category,
+    required this.primaryType,
     required this.imageUrl,
     required this.icon,
     required this.position,
@@ -359,6 +362,7 @@ PlaceData _toPlaceData(HiddenPlaceModel place) {
     placeId: place.placeId,
     title: place.name,
     category: _humanizeType(place.primaryType),
+    primaryType: place.primaryType,
     // Empty string, not null, when the place has no photo - _PlaceCard treats empty as "show the
     // placeholder" and never asks the network for it.
     imageUrl: place.photoUrl ?? '',

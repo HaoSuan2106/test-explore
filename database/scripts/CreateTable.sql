@@ -367,3 +367,108 @@ CREATE TABLE IF NOT EXISTS foot_tracker_log (
     INDEX ix_foot_tracker_log_user_id (user_id),
     INDEX ix_foot_tracker_log_place_id (place_id)
 );
+-- MODULE: Communication (Community Chat)
+-- NOTE: kept in sync with backend/Persistence/DbContext/MySqlDbContext.cs's
+-- OnModelCreating for the Community entities. This hand-written script mirrors
+-- the project's existing manual convention (see MODULE 1 above); it is not a
+-- substitute for a real EF Core migration — run
+-- `dotnet ef migrations add AddCommunityModule` from backend/ once the model
+-- changes are reviewed, since no dotnet SDK was available to generate one here.
+
+-- Community table
+CREATE TABLE IF NOT EXISTS community (
+    community_id INT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(150) NOT NULL,
+    description VARCHAR(1000) DEFAULT NULL,
+    area VARCHAR(100) DEFAULT NULL,
+    state VARCHAR(100) DEFAULT NULL,
+    latitude DOUBLE DEFAULT NULL,
+    longitude DOUBLE DEFAULT NULL,
+    image_url VARCHAR(500) DEFAULT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+
+    INDEX idx_community_state (state)
+);
+
+-- Community member table (depends on community, users)
+CREATE TABLE IF NOT EXISTS community_member (
+    community_member_id INT AUTO_INCREMENT PRIMARY KEY,
+    community_id INT NOT NULL,
+    user_id INT NOT NULL,
+    role VARCHAR(20) NOT NULL DEFAULT 'Member',
+    is_active BOOLEAN NOT NULL DEFAULT TRUE,
+    joined_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    left_at DATETIME DEFAULT NULL,
+
+    FOREIGN KEY (community_id) REFERENCES community(community_id) ON DELETE CASCADE,
+    FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE,
+
+    UNIQUE INDEX idx_member_community_user (community_id, user_id)
+);
+
+-- Message table (depends on community, users)
+CREATE TABLE IF NOT EXISTS message (
+    message_id INT AUTO_INCREMENT PRIMARY KEY,
+    community_id INT NOT NULL,
+    sender_user_id INT NOT NULL,
+    content VARCHAR(2000) DEFAULT NULL,
+    reply_to_message_id INT DEFAULT NULL,
+    is_deleted BOOLEAN NOT NULL DEFAULT FALSE,
+    sent_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+
+    FOREIGN KEY (community_id) REFERENCES community(community_id) ON DELETE CASCADE,
+    FOREIGN KEY (sender_user_id) REFERENCES users(user_id) ON DELETE RESTRICT,
+
+    INDEX idx_message_community_sent_at (community_id, sent_at)
+);
+
+-- Message attachment table (depends on message)
+CREATE TABLE IF NOT EXISTS message_attachment (
+    attachment_id INT AUTO_INCREMENT PRIMARY KEY,
+    message_id INT NOT NULL,
+    -- "Image" | "PlaceShare" (Hidden Place, Google-sourced or a community
+    -- submission) | "PostShare" (Post Feed)
+    type VARCHAR(20) NOT NULL,
+    media_url VARCHAR(500) DEFAULT NULL,
+
+    -- PlaceShare: place_id is a Google place_id or a community submissionId
+    -- (both strings, hence VARCHAR rather than the INT this column started
+    -- as — it was never actually populated under the old type). place_source
+    -- says which, so the chat bubble knows which screen to reopen on tap.
+    -- share_data_json is only populated for a GOOGLE place: a snapshot of
+    -- the place (PlaceData) taken at share time, since Google-sourced places
+    -- have no reusable "fetch by id" screen/route to reopen live — see
+    -- CommunicationService.SendMessageAsync. A COMMUNITY place instead
+    -- reopens live via its existing /places/details/... route, so it needs
+    -- no snapshot.
+    place_id VARCHAR(255) DEFAULT NULL,
+    place_source VARCHAR(20) DEFAULT NULL,
+    share_data_json TEXT DEFAULT NULL,
+    place_name VARCHAR(255) DEFAULT NULL,
+    place_address VARCHAR(500) DEFAULT NULL,
+    place_image_url VARCHAR(500) DEFAULT NULL,
+    place_status VARCHAR(50) DEFAULT NULL,
+
+    -- PostShare: post_id round-trips to Post Review's own /post/details/:id
+    -- route, which fetches the live post itself — no snapshot needed here,
+    -- unlike the Google-place case above.
+    post_id VARCHAR(36) DEFAULT NULL,
+
+    FOREIGN KEY (message_id) REFERENCES message(message_id) ON DELETE CASCADE,
+
+    INDEX idx_attachment_message_id (message_id)
+);
+
+-- Message report table (depends on message, users)
+CREATE TABLE IF NOT EXISTS message_report (
+    report_id INT AUTO_INCREMENT PRIMARY KEY,
+    message_id INT NOT NULL,
+    reporter_user_id INT NOT NULL,
+    reason VARCHAR(500) DEFAULT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+
+    FOREIGN KEY (message_id) REFERENCES message(message_id) ON DELETE CASCADE,
+    FOREIGN KEY (reporter_user_id) REFERENCES users(user_id) ON DELETE RESTRICT,
+
+    UNIQUE INDEX idx_report_message_reporter (message_id, reporter_user_id)
+);

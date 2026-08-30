@@ -3,6 +3,9 @@ import 'package:provider/provider.dart';
 
 import '../../models/foot_tracker/exploration_model.dart';
 import '../../providers/foot_tracker/favourite_provider.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
+import '../hidden_place_discovery/hidden_place_discovery_ui.dart' show PlaceData;
+import '../place_details/place_detail_map_screen.dart';
 
 /// Favourite Place — Favourite List screen
 /// Matches UC301 A5 (Manage Favourite Place) / UC103 A4.
@@ -18,6 +21,30 @@ class FavouritePlaceScreen extends StatefulWidget {
 
   @override
   State<FavouritePlaceScreen> createState() => _FavouritePlaceScreenState();
+}
+
+PlaceData _favouriteToPlaceData(FavouritePlace place) {
+  return PlaceData(
+    placeId: place.placeId,
+    title: place.name,
+    category: place.category,
+    primaryType: place.category,
+    imageUrl: '',
+    icon: Icons.place,
+    position: LatLng(place.latitude, place.longitude),
+    rating: 0.0,
+    ratingCount: 0,
+    priceLevel: null,
+    businessStatus: 'UNKNOWN',
+    photoAttribution: null,
+    isCommunity: false,
+    address: place.location,
+    phoneNumber: null,
+    websiteUri: null,
+    googleMapsUri: null,
+    photosJson: null,
+    regularOpeningHoursJson: null,
+  );
 }
 
 class _FavouritePlaceScreenState extends State<FavouritePlaceScreen> {
@@ -139,7 +166,13 @@ class _FavouritePlaceScreenState extends State<FavouritePlaceScreen> {
                     onTap: _selectionMode
                         ? () => _toggleSelected(place.id)
                         : () {
-                      // TODO: navigate to Place Details (UC301 BF-8+)
+                      Navigator.of(context).push(
+                        MaterialPageRoute(
+                          builder: (context) => PlaceDetailMapScreen(
+                            place: _favouriteToPlaceData(place),
+                          ),
+                        ),
+                      );
                     },
                   );
                 },
@@ -337,13 +370,22 @@ class _FavouritePlaceCard extends StatelessWidget {
                     Text(place.name, style: const TextStyle(fontWeight: FontWeight.w700, fontSize: 14)),
                     const SizedBox(height: 2),
                     Text(place.location, style: TextStyle(fontSize: 12, color: Colors.grey.shade600)),
-                    Text('Last visit at ${place.lastVisit}', style: const TextStyle(fontSize: 12, color: _accentColor)),
+                    Text(
+                      place.hasVisited ? 'Last visit at ${place.lastVisit}' : 'Saved on ${place.lastVisit}',
+                      style: const TextStyle(fontSize: 12, color: _accentColor),
+                    ),
                     const SizedBox(height: 6),
                     OutlinedButton(
                       onPressed: selectionMode
                           ? null
                           : () {
-                        // TODO: navigate to Place Details (UC301 BF-8+)
+                        Navigator.of(context).push(
+                          MaterialPageRoute(
+                            builder: (context) => PlaceDetailMapScreen(
+                              place: _favouriteToPlaceData(place),
+                            ),
+                          ),
+                        );
                       },
                       style: OutlinedButton.styleFrom(
                         minimumSize: const Size(0, 30),

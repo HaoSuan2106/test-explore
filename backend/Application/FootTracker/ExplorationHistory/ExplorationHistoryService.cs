@@ -7,10 +7,14 @@ namespace ExploreMy.Api.Application.FootTracker.ExplorationHistory;
 public class ExplorationHistoryService : IExplorationHistoryService
 {
     private readonly IFootTrackerRepository _footTrackerRepository;
+    private readonly IDistrictLookupService _districtLookupService;
 
-    public ExplorationHistoryService(IFootTrackerRepository footTrackerRepository)
+    public ExplorationHistoryService(
+    IFootTrackerRepository footTrackerRepository,
+    IDistrictLookupService districtLookupService)
     {
         _footTrackerRepository = footTrackerRepository;
+        _districtLookupService = districtLookupService;
     }
 
     public async Task<VisitLogDto> RecordVisitAsync(int userId, RecordVisitRequestDto request)
@@ -60,5 +64,23 @@ public class ExplorationHistoryService : IExplorationHistoryService
             EndedAt = log.EndedAt,
             Status = log.Status,
         };
+    }
+
+    public async Task<Dictionary<string, int>> GetExplorationMapAsync(int userId)
+    {
+        var visits = await _footTrackerRepository.GetVisitsByUserIdAsync(userId);
+
+        var counts = new Dictionary<string, int>();
+        foreach (var visit in visits)
+        {
+            if (visit.Latitude is null || visit.Longitude is null) continue;
+
+            var district = _districtLookupService.FindDistrict(visit.Latitude.Value, visit.Longitude.Value);
+            if (district is null) continue;
+
+            counts[district] = counts.GetValueOrDefault(district) + 1;
+        }
+
+        return counts;
     }
 }

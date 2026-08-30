@@ -13,14 +13,18 @@ public class ReviewService : IReviewService
     private readonly IReviewPhotoRepository _reviewPhotoRepository;
     private readonly IStorageClient _storageClient;
 
+    private readonly IReviewReportRepository _reviewReportRepository;
+
     public ReviewService(
-        IReviewRepository repository,
-        IReviewPhotoRepository reviewPhotoRepository,
-        IStorageClient storageClient)
+    IReviewRepository repository,
+    IReviewPhotoRepository reviewPhotoRepository,
+    IStorageClient storageClient,
+    IReviewReportRepository reviewReportRepository)
     {
         _repository = repository;
         _reviewPhotoRepository = reviewPhotoRepository;
         _storageClient = storageClient;
+        _reviewReportRepository = reviewReportRepository;
     }
 
     public async Task<HiddenPlaceReviewDto?> GetByIdAsync(long reviewId)
@@ -186,8 +190,8 @@ public class ReviewService : IReviewService
     }
 
     public async Task DeleteAsync(
-        int userId,
-        long reviewId)
+    int userId,
+    long reviewId)
     {
         var review = await _repository.GetByIdAsync(reviewId);
 
@@ -203,7 +207,26 @@ public class ReviewService : IReviewService
                 "You are not allowed to delete this review.");
         }
 
-        // Soft delete instead of physically removing the review.
+        // Get all photos belonging to this review.
+        var photos = await _reviewPhotoRepository
+            .GetByReviewIdAsync(reviewId);
+
+        // Delete the actual files from Supabase Storage.
+        foreach (var photo in photos)
+        {
+            var storagePath =
+                _storageClient.GetPathFromPublicUrl(photo.PhotoUrl);
+
+            if (!string.IsNullOrWhiteSpace(storagePath))
+            {
+                await _storageClient.DeleteAsync(storagePath);
+            }
+        }
+
+        // Delete all photo records from the database.
+        await _reviewPhotoRepository.DeleteByReviewIdAsync(reviewId);
+
+        // Soft delete the review.
         review.Status = "DELETED";
         review.UpdatedAt = DateTime.UtcNow;
 
@@ -377,5 +400,119 @@ public class ReviewService : IReviewService
             })
             .OrderBy(photo => photo.DisplayOrder)
             .ToList();
+    }
+
+    public async Task DeletePhotoAsync(
+    int userId,
+    long reviewId,
+    long reviewPhotoId)
+    {
+        var review = await _repository.GetByIdAsync(reviewId);
+
+        if (review is null || review.Status != "ACTIVE")
+        {
+            throw new NotFoundException("Review not found.");
+        }
+
+        // Only the owner of the review can delete its photos.
+        if (review.UserId != userId)
+        {
+            throw new ForbiddenException(
+                "You are not allowed to delete photos from this review.");
+        }
+
+        var photos = await _reviewPhotoRepository
+            .GetByReviewIdAsync(reviewId);
+
+        var photo = photos.FirstOrDefault(
+            p => p.ReviewPhotoId == reviewPhotoId);
+
+        if (photo is null)
+        {
+            throw new NotFoundException("Review photo not found.");
+        }
+
+        // Delete the file from Supabase Storage.
+        var storagePath =
+            _storageClient.GetPathFromPublicUrl(photo.PhotoUrl);
+
+        if (!string.IsNullOrWhiteSpace(storagePath))
+        {
+            await _storageClient.DeleteAsync(storagePath);
+        }
+
+        // Delete the database record.
+        await _reviewPhotoRepository.DeleteAsync(photo);
+    }
+
+    public async Task ReportAsync(
+    int userId,
+    long reviewId,
+    string reason)
+    {
+        const int reportThreshold = 1;
+
+        var review = await _repository.GetByIdAsync(reviewId);
+
+        if (review is null || review.Status != "ACTIVE")
+        {
+            throw new NotFoundException("Review not found.");
+        }
+
+        if (string.IsNullOrWhiteSpace(reason))
+        {
+            throw new ArgumentException(
+                "Report reason is required.");
+        }
+
+        var allowedReasons = new HashSet<string>(
+            StringComparer.OrdinalIgnoreCase)
+            {
+                "Off topic",
+                "Spam",
+                "Conflict of interest",
+                "Profanity",
+                "Harmful",
+                "Not helpful"
+            };
+
+        if (!allowedReasons.Contains(reason.Trim()))
+        {
+            throw new ArgumentException(
+                "Invalid report reason.");
+        }
+
+        var alreadyReported =
+            await _reviewReportRepository.ExistsAsync(
+                reviewId,
+                userId);
+
+        if (alreadyReported)
+        {
+            throw new ConflictException(
+                "You have already reported this review.");
+        }
+
+        var report = new ReviewReport
+        {
+            ReviewId = reviewId,
+            UserId = userId,
+            Reason = reason.Trim(),
+            CreatedAt = DateTime.UtcNow
+        };
+
+        await _reviewReportRepository.AddAsync(report);
+
+        var reportCount =
+            await _reviewReportRepository.CountByReviewIdAsync(
+                reviewId);
+
+        if (reportCount >= reportThreshold)
+        {
+            review.Status = "REMOVED";
+            review.UpdatedAt = DateTime.UtcNow;
+
+            await _repository.UpdateAsync(review);
+        }
     }
 }

@@ -43,6 +43,26 @@ public class FavouritePlaceService : IFavouritePlaceService
             CreatedAt = DateTime.UtcNow
         };
 
+        // Snapshot rich details from hidden_place_cache now, while it's still there —
+        // the cache expires but this row on favourite_place doesn't.
+        var cached = await _repository.GetLatestHiddenPlaceCacheByPlaceIdAsync(request.PlaceId);
+        if (cached is not null)
+        {
+            favouritePlace.Rating = cached.Rating;
+            favouritePlace.UserRatingCount = cached.UserRatingCount;
+            favouritePlace.PriceLevel = cached.PriceLevel;
+            favouritePlace.BusinessStatus = cached.BusinessStatus;
+            favouritePlace.GoogleMapsUri = cached.GoogleMapsUri;
+            favouritePlace.NationalPhoneNumber = cached.NationalPhoneNumber;
+            favouritePlace.WebsiteUri = cached.WebsiteUri;
+            favouritePlace.PhotosJson = cached.PhotosJson;
+            favouritePlace.RegularOpeningHoursJson = cached.RegularOpeningHoursJson;
+        }
+        else
+        {
+            _logger.LogWarning("No hidden_place_cache entry found for place {PlaceId} when favouriting — rich details will be empty.", request.PlaceId);
+        }
+
         await _repository.AddFavouritePlaceAsync(favouritePlace);
         return ToDto(favouritePlace);
     }

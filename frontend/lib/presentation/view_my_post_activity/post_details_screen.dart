@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import '../../../theme/app_theme.dart';
 import '../../../widgets/app_header.dart';
 import '../../../widgets/app_button.dart';
 import '../../../providers/post_review/post_provider.dart';
 import '../../../providers/auth_profile/profile_provider.dart';
+import '../../../models/community/message_model.dart';
+import '../community/share_to_chat/share_to_chat_sheet.dart';
 import '../navigation/app_navigation.dart';
 import '../post_review/comment/edit_comment_screen.dart';
 import '../post_review/report/report_reason_sheet.dart';
@@ -218,17 +219,22 @@ class _PostDetailsScreenState extends State<PostDetailsScreen>
     }
   }
 
-  /// Shares the post by copying a shareable text to the clipboard (no backend
-  /// dependency in Phase 1).
+  /// Shares the post into a chosen community's chat.
   Future<void> _sharePost() async {
     final post = context.read<PostProvider>().getPostById(widget.postId);
-    final text = post == null
-        ? 'Check out this community post on ExploreMY!'
-        : 'Check out "${post.title}" at ${post.location} on ExploreMY!';
-    await Clipboard.setData(ClipboardData(text: text));
-    if (!mounted) return;
-    AppFeedback.show(context,
-        message: 'Post details copied to clipboard.', isSuccess: true);
+    if (post == null) {
+      AppFeedback.show(context, message: 'This post is no longer available.', isSuccess: false);
+      return;
+    }
+    await showShareToChatSheet(
+      context,
+      sharedPost: SharedPostRequest(
+        postId: post.id,
+        postTitle: post.title,
+        postImageUrl: post.imageUrl,
+        postLocation: post.location,
+      ),
+    );
   }
 
   @override

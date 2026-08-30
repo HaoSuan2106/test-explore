@@ -17,6 +17,7 @@ class CreateReviewUI extends StatefulWidget {
   // Create vs update.
   final bool isEdit;
   final int? reviewId;
+  final List<dynamic> initialPhotos;
 
   const CreateReviewUI({
     super.key,
@@ -27,6 +28,7 @@ class CreateReviewUI extends StatefulWidget {
     this.placeName,
     this.isEdit = false,
     this.reviewId,
+    this.initialPhotos = const [],
   });
 
   @override
@@ -48,6 +50,8 @@ class _CreateReviewUIState extends State<CreateReviewUI> {
   final ImagePicker _imagePicker = ImagePicker();
 
   final List<XFile> _selectedPhotos = [];
+  final List<Map<String, dynamic>> _existingPhotos = [];
+  final List<int> _removedPhotoIds = [];
 
   @override
   void initState() {
@@ -56,6 +60,12 @@ class _CreateReviewUIState extends State<CreateReviewUI> {
     selectedRating = widget.initialRating.clamp(0, 5);
 
     _reviewController.text = widget.initialReviewText;
+
+    _existingPhotos.addAll(
+      widget.initialPhotos.map(
+            (photo) => Map<String, dynamic>.from(photo),
+      ),
+    );
 
   }
 
@@ -101,16 +111,47 @@ class _CreateReviewUIState extends State<CreateReviewUI> {
           rating: selectedRating,
           comment: _reviewController.text.trim(),
         );
+
+        for (final photoId in _removedPhotoIds) {
+          await reviewProvider.deleteReviewPhoto(
+            reviewId: widget.reviewId!,
+            reviewPhotoId: photoId,
+          );
+        }
+
+        if (_selectedPhotos.isNotEmpty) {
+          await reviewProvider.uploadReviewPhotos(
+            reviewId: widget.reviewId!,
+            files: _selectedPhotos
+                .map((photo) => File(photo.path))
+                .toList(),
+          );
+        }
       } else {
         final isGooglePlace =
             widget.placeType == ReviewPlaceType.google;
 
-        await reviewProvider.createReview(
+        final response = await reviewProvider.createReview(
           googlePlaceId: isGooglePlace ? widget.placeId : null,
           recommendPlaceId: isGooglePlace ? null : widget.placeId,
           rating: selectedRating,
           comment: _reviewController.text.trim(),
         );
+
+        final reviewId = (response['reviewId'] as num?)?.toInt();
+
+        if (reviewId == null) {
+          throw Exception('Failed to get created review ID.');
+        }
+
+        if (_selectedPhotos.isNotEmpty) {
+          await reviewProvider.uploadReviewPhotos(
+            reviewId: reviewId,
+            files: _selectedPhotos
+                .map((photo) => File(photo.path))
+                .toList(),
+          );
+        }
       }
 
       if (!mounted) return;
@@ -144,7 +185,7 @@ class _CreateReviewUIState extends State<CreateReviewUI> {
   }
 
   Future<void> _pickPhoto(ImageSource source) async {
-    if (_selectedPhotos.length >= 5) {
+    if (_existingPhotos.length + _selectedPhotos.length >= 5) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
           content: Text('You can upload a maximum of 5 photos.'),
@@ -169,6 +210,21 @@ class _CreateReviewUIState extends State<CreateReviewUI> {
   void _removePhoto(int index) {
     setState(() {
       _selectedPhotos.removeAt(index);
+    });
+  }
+
+  void _removeExistingPhoto(int index) {
+    final photo = _existingPhotos[index];
+
+    final photoId =
+    (photo['reviewPhotoId'] as num?)?.toInt();
+
+    if (photoId != null) {
+      _removedPhotoIds.add(photoId);
+    }
+
+    setState(() {
+      _existingPhotos.removeAt(index);
     });
   }
 
@@ -357,10 +413,18 @@ class _CreateReviewUIState extends State<CreateReviewUI> {
                   // ======================================================
                   Row(
                     children: [
-                      if (_selectedPhotos.length < 5) ...[
+                      if (_existingPhotos.length + _selectedPhotos.length < 5) ...[
                         _buildAddPhotoButton(),
                         const SizedBox(width: 13),
                       ],
+
+                      ...List.generate(
+                        _existingPhotos.length,
+                            (index) => Padding(
+                          padding: const EdgeInsets.only(right: 13),
+                          child: _buildExistingPhoto(index),
+                        ),
+                      ),
 
                       ...List.generate(
                         _selectedPhotos.length,
@@ -371,8 +435,10 @@ class _CreateReviewUIState extends State<CreateReviewUI> {
                       ),
 
                       ...List.generate(
-                        5 - _selectedPhotos.length -
-                            (_selectedPhotos.length < 5 ? 1 : 0),
+                        5 - _existingPhotos.length - _selectedPhotos.length -
+                            (_existingPhotos.length + _selectedPhotos.length < 5
+                                ? 1
+                                : 0),
                             (_) => Padding(
                           padding: const EdgeInsets.only(right: 13),
                           child: _buildPhotoPlaceholder(),
@@ -494,6 +560,63 @@ class _CreateReviewUIState extends State<CreateReviewUI> {
           right: 3,
           child: GestureDetector(
             onTap: () => _removePhoto(index),
+            child: Container(
+              width: 20,
+              height: 20,
+              decoration: const BoxDecoration(
+                color: Colors.black54,
+                shape: BoxShape.circle,
+              ),
+              child: const Icon(
+                Icons.close,
+                size: 14,
+                color: Colors.white,
+              ),
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildExistingPhoto(int index) {
+    final photo = _existingPhotos[index];
+
+    final photoUrl =
+        photo['photoUrl']?.toString() ?? '';
+
+    return Stack(
+      children: [
+        ClipRRect(
+          borderRadius: BorderRadius.circular(9),
+          child: Image.network(
+            photoUrl,
+            width: 60,
+            height: 60,
+            fit: BoxFit.cover,
+            errorBuilder: (context, error, stackTrace) {
+              return Container(
+                width: 60,
+                height: 60,
+                decoration: BoxDecoration(
+                  color: const Color(0xffeeeeee),
+                  borderRadius: BorderRadius.circular(9),
+                ),
+                child: const Icon(
+                  Icons.broken_image_outlined,
+                  size: 22,
+                  color: Color(0xffaaaaaa),
+                ),
+              );
+            },
+          ),
+        ),
+
+        Positioned(
+          top: 3,
+          right: 3,
+          child: GestureDetector(
+            onTap: () => _removeExistingPhoto(index),
             child: Container(
               width: 20,
               height: 20,

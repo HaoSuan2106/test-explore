@@ -38,4 +38,14 @@ public interface IReviewService
     int userId,
     long reviewId,
     List<IFormFile> files);
+
+    Task DeletePhotoAsync(
+    int userId,
+    long reviewId,
+    long reviewPhotoId);
+
+    Task ReportAsync(
+    int userId,
+    long reviewId,
+    string reason);
 }

@@ -8,6 +8,8 @@ import '../../../../utils/time_format.dart';
 import '../../../../widgets/app_feedback.dart';
 import '../../../../widgets/content_constraint.dart';
 import '../../../providers/post_review/post_provider.dart';
+import '../../../models/community/message_model.dart';
+import '../../community/share_to_chat/share_to_chat_sheet.dart';
 import '../../navigation/app_navigation.dart';
 import '../report/report_reason_sheet.dart';
 import 'post_filter_sheet.dart';
@@ -654,18 +656,33 @@ class _PostUIState extends State<PostUI> {
                     ),
                   ],
                 ),
-                Row(
-                  children: [
-                    const Icon(Icons.share_outlined, size: 18, color: AppColors.textMuted),
-                    const SizedBox(width: 4),
-                    Text(
-                      'Share',
-                      style: AppTypography.labelSm.copyWith(
-                        color: AppColors.textSecondary,
-                        fontWeight: FontWeight.w600,
-                      ),
+                InkWell(
+                  onTap: () => showShareToChatSheet(
+                    context,
+                    sharedPost: SharedPostRequest(
+                      postId: post.id,
+                      postTitle: post.title,
+                      postImageUrl: post.imageUrl,
+                      postLocation: post.location,
                     ),
-                  ],
+                  ),
+                  borderRadius: BorderRadius.circular(4),
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 4),
+                    child: Row(
+                      children: [
+                        const Icon(Icons.share_outlined, size: 18, color: AppColors.textMuted),
+                        const SizedBox(width: 4),
+                        Text(
+                          'Share',
+                          style: AppTypography.labelSm.copyWith(
+                            color: AppColors.textSecondary,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
                 ),
               ],
             ),

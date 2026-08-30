@@ -1,6 +1,9 @@
 using ExploreMy.Api.Application.AuthProfile.Authentication;
 using ExploreMy.Api.Application.AuthProfile.Facade;
 using ExploreMy.Api.Application.AuthProfile.ManageProfile;
+using ExploreMy.Api.Application.Community.Communication;
+using ExploreMy.Api.Application.Community.ExploreCommunity;
+using ExploreMy.Api.Application.Community.Facade;
 using ExploreMy.Api.Application.FootTracker.ExplorationHistory;
 using ExploreMy.Api.Application.FootTracker.ExplorationHistory;
 using ExploreMy.Api.Application.FootTracker.Facade;
@@ -21,10 +24,12 @@ using ExploreMy.Api.DataAccess.ExternalClients.GooglePlaces;
 using ExploreMy.Api.DataAccess.ExternalClients.OpenRouteService;
 using ExploreMy.Api.DataAccess.ExternalClients.SupabaseStorage;
 using ExploreMy.Api.DataAccess.Repositories.AuthProfile;
+using ExploreMy.Api.DataAccess.Repositories.Community;
 using ExploreMy.Api.DataAccess.Repositories.FootTracker;
 using ExploreMy.Api.DataAccess.Repositories.HiddenPlace;
 using ExploreMy.Api.DataAccess.Repositories.PlacePhotos;
 using ExploreMy.Api.DataAccess.Repositories.PostReview;
+using ExploreMy.Api.Hubs;
 using ExploreMy.Api.Infrastructure.Repositories.HiddenPlace.Review;
 using ExploreMy.Api.Middleware;
 using ExploreMy.Api.Persistence.DbContext;
@@ -105,6 +110,13 @@ builder.Services.AddScoped<IFootTrackerService, FootTrackerService>();
 builder.Services.Configure<OpenRouteServiceSettings>(builder.Configuration.GetSection("OpenRouteService"));
 builder.Services.AddScoped<IExplorationHistoryService, ExplorationHistoryService>();
 
+// Community module
+builder.Services.AddScoped<ICommunityRepository, CommunityMySqlRepository>();
+builder.Services.AddScoped<IExploreCommunityService, ExploreCommunityService>();
+builder.Services.AddScoped<ICommunicationService, CommunicationService>();
+builder.Services.AddScoped<ICommunityService, CommunityService>();
+builder.Services.AddSignalR();
+
 builder.Services.AddHttpClient<IStorageClient, SupabaseStorageClient>(client =>
 {
     client.BaseAddress = new Uri(supabaseSettings.Url);
@@ -145,6 +157,22 @@ builder.Services.AddAuthentication(options =>
             ValidIssuer = jwtSettings.Issuer,
             ValidAudience = jwtSettings.Audience,
             IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtSettings.Key))
+        };
+
+        // SignalR/WebSocket clients can't set an Authorization header, so the
+        // CommunityChatHub connection carries its JWT on the query string instead.
+        options.Events = new JwtBearerEvents
+        {
+            OnMessageReceived = context =>
+            {
+                var accessToken = context.Request.Query["access_token"];
+                if (!string.IsNullOrEmpty(accessToken) &&
+                    context.HttpContext.Request.Path.StartsWithSegments("/hubs/community-chat"))
+                {
+                    context.Token = accessToken;
+                }
+                return Task.CompletedTask;
+            }
         };
     });
 
@@ -243,6 +271,7 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
+app.MapHub<CommunityChatHub>("/hubs/community-chat");
 
 app.Run();
 

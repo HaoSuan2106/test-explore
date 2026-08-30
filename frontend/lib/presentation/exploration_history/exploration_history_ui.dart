@@ -3,7 +3,10 @@ import 'package:provider/provider.dart';
 
 import '../../models/foot_tracker/visit_log_model.dart';
 import '../../providers/foot_tracker/navigation_provider.dart';
-import '../route_navigation/navigation_screen.dart';
+import '../../models/foot_tracker/exploration_model.dart';
+import '../hidden_place_discovery/hidden_place_discovery_ui.dart' show PlaceData;
+import '../place_details/place_detail_map_screen.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 const _accentColor = Color(0xFFF15A29);
 
@@ -164,6 +167,31 @@ class _CategoryChip extends StatelessWidget {
   }
 }
 
+PlaceData _visitToPlaceData(VisitLog visit) {
+  final rawType = visit.primaryType ?? 'unknown';
+  return PlaceData(
+    placeId: visit.placeId!,
+    title: visit.title,
+    category: FavouritePlace.mapToUiCategory(rawType),
+    primaryType: rawType,
+    imageUrl: '',
+    icon: Icons.place,
+    position: LatLng(visit.latitude!, visit.longitude!),
+    rating: 0.0,
+    ratingCount: 0,
+    priceLevel: null,
+    businessStatus: 'UNKNOWN',
+    photoAttribution: null,
+    isCommunity: false,
+    address: visit.address,
+    phoneNumber: null,
+    websiteUri: null,
+    googleMapsUri: null,
+    photosJson: null,
+    regularOpeningHoursJson: null,
+  );
+}
+
 class _VisitedPlaceCard extends StatelessWidget {
   final VisitLog visit;
 
@@ -201,17 +229,13 @@ class _VisitedPlaceCard extends StatelessWidget {
                   Text(visit.address!, style: TextStyle(fontSize: 12, color: Colors.grey.shade600)),
                 Text('Last visit at ${_formatDate(visit.endedAt)}', style: const TextStyle(fontSize: 12, color: _accentColor)),
                 const SizedBox(height: 6),
-                if (visit.latitude != null && visit.longitude != null)
+                if (visit.placeId != null && visit.latitude != null && visit.longitude != null)
                   OutlinedButton(
                     onPressed: () {
                       Navigator.of(context).push(
                         MaterialPageRoute(
-                          builder: (context) => RouteNavigationScreen(
-                            destinationName: visit.title,
-                            destinationAddress: visit.address ?? '',
-                            destinationLat: visit.latitude!,
-                            destinationLng: visit.longitude!,
-                            destinationCategory: visit.primaryType,
+                          builder: (context) => PlaceDetailMapScreen(
+                            place: _visitToPlaceData(visit),
                           ),
                         ),
                       );
@@ -222,7 +246,7 @@ class _VisitedPlaceCard extends StatelessWidget {
                       side: BorderSide(color: Colors.grey.shade300),
                       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
                     ),
-                    child: const Text('Navigate', style: TextStyle(fontSize: 11, color: Colors.black87)),
+                    child: const Text('View More', style: TextStyle(fontSize: 11, color: Colors.black87)),
                   ),
               ],
             ),

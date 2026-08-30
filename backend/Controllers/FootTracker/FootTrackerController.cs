@@ -1,9 +1,10 @@
-using System.Security.Claims;
 using ExploreMy.Api.Application.FootTracker.Facade;
 using ExploreMy.Api.Common.Exceptions;
+using ExploreMy.Api.DataAccess.Repositories.FootTracker;
 using ExploreMy.Api.DTOs.FootTracker;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 
 namespace ExploreMy.Api.Controllers.FootTracker;
 
@@ -122,6 +123,23 @@ public class FootTrackerController : ControllerBase
         catch (Exception ex)
         {
             _logger.LogError(ex, "Unexpected error fetching visits for user {UserId}.", userId);
+            return StatusCode(StatusCodes.Status500InternalServerError, new { message = "An unexpected error occurred." });
+        }
+    }
+
+
+    [HttpGet("exploration-map")]
+    public async Task<IActionResult> GetExplorationMap()
+    {
+        var userId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
+        try
+        {
+            var counts = await _footTrackerService.GetExplorationMapAsync(userId);
+            return Ok(counts);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Unexpected error building exploration map for user {UserId}.", userId);
             return StatusCode(StatusCodes.Status500InternalServerError, new { message = "An unexpected error occurred." });
         }
     }

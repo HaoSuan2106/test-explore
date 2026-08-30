@@ -1,222 +1,228 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart' show rootBundle;
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:provider/provider.dart';
 
-/// Shows the user's personal exploration heatmap: districts shaded
-/// according to how many verified hidden places the user has visited
-/// within each one, per constraint C6.
-class PersonalExplorationMapUi extends StatefulWidget {
-  const PersonalExplorationMapUi({super.key});
+import '../../providers/foot_tracker/exploration_map_provider.dart';
 
-  @override
-  State<PersonalExplorationMapUi> createState() =>
-      _PersonalExplorationMapUiState();
-}
-
-class _PersonalExplorationMapUiState extends State<PersonalExplorationMapUi> {
-  GoogleMapController? _mapController;
-
-  static const LatLng _initialCenter = LatLng(3.1945, 101.6965);
-
-  // TODO: replace with the real per-district visited-hidden-place counts
-  // from the backend (REQ201_3 / REQ201_4 / REQ201_5) once the Exploration
-  // heatmap endpoint exists. Boundaries below are placeholder shapes.
-  static final List<_District> _districts = [
-    _District(
-      name: 'Taman Sri Rampai',
-      visitedCount: 14,
-      points: const [
-        LatLng(3.1945, 101.6935),
-        LatLng(3.1965, 101.6945),
-        LatLng(3.1975, 101.6975),
-        LatLng(3.1960, 101.7000),
-        LatLng(3.1930, 101.6995),
-        LatLng(3.1915, 101.6965),
-      ],
-    ),
-    _District(
-      name: 'Setapak',
-      visitedCount: 6,
-      points: const [
-        LatLng(3.1980, 101.6900),
-        LatLng(3.1995, 101.6920),
-        LatLng(3.1985, 101.6950),
-        LatLng(3.1960, 101.6940),
-        LatLng(3.1965, 101.6910),
-      ],
-    ),
-    _District(
-      name: 'Wangsa Maju',
-      visitedCount: 27,
-      points: const [
-        LatLng(3.1900, 101.7000),
-        LatLng(3.1920, 101.7020),
-        LatLng(3.1905, 101.7050),
-        LatLng(3.1880, 101.7035),
-        LatLng(3.1885, 101.7010),
-      ],
-    ),
-  ];
-
-  // TODO: replace with real visited-place markers from the backend once
-  // the Exploration feature's provider/API is wired up.
-  static const List<_MapPlace> _places = [
-    _MapPlace(name: 'Taman Sri Rampai', position: LatLng(3.1958, 101.6958)),
-    _MapPlace(
-      name: 'United Kepong Rooms',
-      position: LatLng(3.1938, 101.6978),
-    ),
-  ];
-
-  /// Implements constraint C6:
-  /// 0 visits -> no colour, <10 -> light blue, <25 -> blue, else dark blue.
-  static Color? _colorForVisitCount(int count) {
-    if (count == 0) return null;
-    if (count < 10) return const Color(0xFFBFE3F2); // light blue
-    if (count < 25) return const Color(0xFF6FB8DE); // blue
-    return const Color(0xFF1B4F82); // dark blue
-  }
-
-  Set<Polygon> get _polygons => _districts
-      .map((district) {
-    final color = _colorForVisitCount(district.visitedCount);
-    if (color == null) return null;
-    return Polygon(
-      polygonId: PolygonId(district.name),
-      points: district.points,
-      fillColor: color.withOpacity(0.45),
-      strokeColor: color,
-      strokeWidth: 2,
-    );
-  })
-      .whereType<Polygon>()
-      .toSet();
-
-  Set<Marker> get _markers => _places
-      .map(
-        (place) => Marker(
-      markerId: MarkerId(place.name),
-      position: place.position,
-      infoWindow: InfoWindow(title: place.name),
-    ),
-  )
-      .toSet();
-
-  @override  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.white,
-      appBar: AppBar(
-        backgroundColor: Colors.white,
-        elevation: 0,
-        automaticallyImplyLeading: false,
-        titleSpacing: 12,
-        title: Row(
-          children: [
-            IconButton(
-              onPressed: () => Navigator.of(context).maybePop(),
-              icon: const Icon(Icons.arrow_back, size: 20, color: Colors.black87),
-              style: IconButton.styleFrom(
-                backgroundColor: Colors.grey.shade100,
-                shape: const CircleBorder(),
-                padding: const EdgeInsets.all(8),
-                minimumSize: const Size(36, 36),
-              ),
-            ),
-            const Expanded(
-              child: Text(
-                'Personal Exploration Map',
-                textAlign: TextAlign.center,
-                style: TextStyle(fontSize: 17, fontWeight: FontWeight.w700, color: Colors.black),
-              ),
-            ),
-            const SizedBox(width: 36),
-          ],
-        ),
-      ),
-      body: ClipRRect(
-        borderRadius: BorderRadius.circular(16),
-        child: Stack(
-          children: [
-            GoogleMap(
-              initialCameraPosition: const CameraPosition(
-                target: _initialCenter,
-                zoom: 14,
-              ),
-              polygons: _polygons,
-              markers: _markers,
-              onMapCreated: (controller) => _mapController = controller,
-              myLocationButtonEnabled: false,
-              zoomControlsEnabled: false,
-            ),
-            const Positioned(
-              top: 12,
-              left: 12,
-              child: _ExplorationHeatmapLegend(),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}
 
 class _District {
   final String name;
   final int visitedCount;
-  final List<LatLng> points;
+  final List<List<LatLng>> polygonPieces;
 
   const _District({
     required this.name,
     required this.visitedCount,
-    required this.points,
+    required this.polygonPieces,
   });
 }
 
-class _MapPlace {
-  final String name;
-  final LatLng position;
+Future<List<_District>> _loadDistrictsFromAsset(Map<String, int> visitCounts) async {
+  final raw = await rootBundle.loadString('assets/geojson/malaysia.district.geojson');
+  final data = jsonDecode(raw) as Map<String, dynamic>;
+  final features = data['features'] as List<dynamic>;
 
-  const _MapPlace({required this.name, required this.position});
+  return features.map((f) {
+    final props = f['properties'] as Map<String, dynamic>;
+    final geometry = f['geometry'] as Map<String, dynamic>;
+    final coordinates = geometry['coordinates'] as List<dynamic>; // MultiPolygon
+
+    final pieces = <List<LatLng>>[];
+    for (final polygon in coordinates) {
+      final exteriorRing = (polygon as List<dynamic>).first as List<dynamic>;
+      pieces.add(exteriorRing.map((point) {
+        final p = point as List<dynamic>;
+        return LatLng((p[1] as num).toDouble(), (p[0] as num).toDouble());
+      }).toList());
+    }
+
+    final name = props['name'] as String;
+    return _District(
+      name: name,
+      visitedCount: visitCounts[name] ?? 0,
+      polygonPieces: pieces,
+    );
+  }).toList();
 }
 
-/// Legend matching constraint C6's exact district-visit-count -> colour rule.
+class PersonalExplorationMapUi extends StatefulWidget {
+  const PersonalExplorationMapUi({super.key});
+
+  @override
+  State<PersonalExplorationMapUi> createState() => _PersonalExplorationMapUiState();
+}
+
+class _PersonalExplorationMapUiState extends State<PersonalExplorationMapUi> {
+  GoogleMapController? _mapController;
+  static const LatLng _initialCenter = LatLng(3.1945, 101.6965);
+
+  List<_District> _districts = [];
+  bool _isLoading = true;
+  String? _errorMessage;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadData();
+  }
+
+  Future<void> _loadData() async {
+    setState(() {
+      _isLoading = true;
+      _errorMessage = null;
+    });
+
+    try {
+      final provider = context.read<ExplorationMapProvider>();
+      await provider.loadExplorationMap();
+      if (provider.errorMessage != null) {
+        throw Exception(provider.errorMessage);
+      }
+
+      final districts = await _loadDistrictsFromAsset(provider.visitCounts);
+      if (!mounted) return;
+      setState(() {
+        _districts = districts;
+        _isLoading = false;
+      });
+    } catch (e, st) {
+      debugPrint('Exploration map load failed: $e');
+      debugPrint('$st');
+      if (!mounted) return;
+      setState(() {
+        _errorMessage = 'Failed to load your exploration map.';
+        _isLoading = false;
+      });
+    }
+  }
+
+  static Color? _colorForVisitCount(int count) {
+    if (count == 0) return null;
+    if (count < 10) return const Color(0xFFF9EDB2);
+    if (count < 25) return const Color(0xFFF15A29);
+    return const Color(0xFFB33418);
+  }
+
+  Set<Polygon> get _polygons => _districts.expand((district) {
+    final color = _colorForVisitCount(district.visitedCount);
+    if (color == null) return const Iterable<Polygon>.empty();
+    return district.polygonPieces.asMap().entries.map((entry) {
+      return Polygon(
+        polygonId: PolygonId('${district.name}_${entry.key}'),
+        points: entry.value,
+        fillColor: color.withOpacity(0.45),
+        strokeColor: color,
+        strokeWidth: 2,
+      );
+    });
+  }).toSet();
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: Colors.white,
+      body: SafeArea(
+        child: Column(
+          children: [
+            _Header(onBack: () => Navigator.of(context).maybePop()),
+            Expanded(
+              child: _isLoading
+                  ? const Center(child: CircularProgressIndicator())
+                  : _errorMessage != null
+                  ? Center(
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Text(_errorMessage!, style: TextStyle(color: Colors.grey.shade600)),
+                    const SizedBox(height: 8),
+                    TextButton(onPressed: _loadData, child: const Text('Retry')),
+                  ],
+                ),
+              )
+                  : Stack(
+                children: [
+                  GoogleMap(
+                    initialCameraPosition: const CameraPosition(
+                      target: _initialCenter,
+                      zoom: 8,
+                    ),
+                    polygons: _polygons,
+                    onMapCreated: (controller) => _mapController = controller,
+                  ),
+                  const Positioned(
+                    left: 16,
+                    bottom: 16,
+                    child: _ExplorationHeatmapLegend(),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _Header extends StatelessWidget {
+  final VoidCallback onBack;
+
+  const _Header({required this.onBack});
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(12, 8, 12, 0),
+      child: Row(
+        children: [
+          IconButton(
+            onPressed: onBack,
+            icon: const Icon(Icons.arrow_back, size: 20, color: Colors.black87),
+            style: IconButton.styleFrom(
+              backgroundColor: Colors.grey.shade100,
+              shape: const CircleBorder(),
+              padding: const EdgeInsets.all(8),
+              minimumSize: const Size(36, 36),
+            ),
+          ),
+          const Expanded(
+            child: Text(
+              'Personal Exploration Map',
+              textAlign: TextAlign.center,
+              style: TextStyle(fontSize: 17, fontWeight: FontWeight.w700),
+            ),
+          ),
+          const SizedBox(width: 36),
+        ],
+      ),
+    );
+  }
+}
+
 class _ExplorationHeatmapLegend extends StatelessWidget {
   const _ExplorationHeatmapLegend();
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.all(10),
+      padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(
         color: Colors.white,
-        borderRadius: BorderRadius.circular(8),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.15),
-            blurRadius: 6,
-            offset: const Offset(0, 2),
-          ),
-        ],
+        borderRadius: BorderRadius.circular(12),
+        boxShadow: const [BoxShadow(color: Colors.black12, blurRadius: 6)],
       ),
       child: const Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(
-            'Exploration Density',
-            style: TextStyle(fontSize: 11, fontWeight: FontWeight.w600),
-          ),
-          SizedBox(height: 6),
-          _LegendRow(color: Color(0xFFD9D9D9), label: '0 visits: No colour'),
-          _LegendRow(
-            color: Color(0xFFBFE3F2),
-            label: '1-9 visits: Light Blue',
-          ),
-          _LegendRow(color: Color(0xFF6FB8DE), label: '10-24 visits: Blue'),
-          _LegendRow(
-            color: Color(0xFF1B4F82),
-            label: '25+ visits: Dark Blue',
-          ),
+          _LegendRow(color: Color(0xFFF9EDB2), label: '1–9 visits'),
+          SizedBox(height: 4),
+          _LegendRow(color: Color(0xFFF15A29), label: '10–24 visits'),
+          SizedBox(height: 4),
+          _LegendRow(color: Color(0xFFB33418), label: '25+ visits'),
         ],
       ),
     );
@@ -231,19 +237,13 @@ class _LegendRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 2),
-      child: Row(
-        children: [
-          Container(
-            width: 10,
-            height: 10,
-            decoration: BoxDecoration(color: color, shape: BoxShape.circle),
-          ),
-          const SizedBox(width: 6),
-          Text(label, style: const TextStyle(fontSize: 10)),
-        ],
-      ),
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Container(width: 14, height: 14, color: color),
+        const SizedBox(width: 8),
+        Text(label, style: const TextStyle(fontSize: 12)),
+      ],
     );
   }
 }

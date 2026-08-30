@@ -1,6 +1,7 @@
 using ExploreMy.Api.Domain.Entities;
 using ExploreMy.Api.Persistence.DbContext;
 using Microsoft.EntityFrameworkCore;
+using DomainHiddenPlace = ExploreMy.Api.Domain.Entities.HiddenPlace;
 
 namespace ExploreMy.Api.DataAccess.Repositories.FootTracker;
 
@@ -55,5 +56,13 @@ public class FootTrackerMySqlRepository : IFootTrackerRepository
             .Where(l => l.UserId == userId && l.Status == FootTrackerLogStatus.Completed)
             .OrderByDescending(l => l.EndedAt)
             .ToListAsync();
+    }
+
+    public async Task<DomainHiddenPlace?> GetLatestHiddenPlaceCacheByPlaceIdAsync(string placeId)
+    {
+        return await _context.HiddenPlaces
+            .Where(h => h.PlaceId == placeId)
+            .OrderByDescending(h => h.FetchedAtUtc)
+            .FirstOrDefaultAsync();
     }
 }

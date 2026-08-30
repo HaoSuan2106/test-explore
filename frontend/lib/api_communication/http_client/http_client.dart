@@ -4,6 +4,8 @@ import 'package:dio/dio.dart';
 import '../secure_storage/secure_storage_service.dart';
 import '../../models/auth_profile/auth_model.dart';
 import '../../models/auth_profile/profile_model.dart';
+import '../../models/community/community_model.dart';
+import '../../models/community/message_model.dart';
 import '../../models/hidden_place/hidden_place_model.dart';
 import '../../models/foot_tracker/exploration_model.dart';
 import '../../models/post_review/post_model.dart';
@@ -689,5 +691,75 @@ class HttpClient {
     return ReportRecommendedPlaceResponse.fromJson(response.data as Map<String, dynamic>);
   }
 
-}
+  // ---------------- Community module ----------------
 
+  Future<List<CommunitySummary>> getJoinedCommunities() async {
+    final response = await _dio.get('/api/community/joined');
+    return (response.data as List).map((e) => CommunitySummary.fromJson(e as Map<String, dynamic>)).toList();
+  }
+
+  Future<List<CommunitySummary>> browseCommunities({String? keyword, String? state}) async {
+    final response = await _dio.post('/api/community/browse', data: {'keyword': keyword, 'state': state});
+    return (response.data as List).map((e) => CommunitySummary.fromJson(e as Map<String, dynamic>)).toList();
+  }
+
+  Future<CommunityDetail> getCommunityDetail(int communityId) async {
+    final response = await _dio.get('/api/community/$communityId');
+    return CommunityDetail.fromJson(response.data as Map<String, dynamic>);
+  }
+
+  Future<bool> joinCommunity(int communityId) async {
+    final response = await _dio.post('/api/community/join', data: {'communityId': communityId});
+    return (response.data as Map<String, dynamic>)['success'] as bool? ?? false;
+  }
+
+  Future<String> leaveCommunity(int communityId) async {
+    final response = await _dio.post('/api/community/$communityId/leave');
+    return (response.data as Map<String, dynamic>)['message'] as String? ?? 'Left the community.';
+  }
+
+  Future<List<MessageModel>> getMessages(int communityId, {int take = 30, int? beforeMessageId}) async {
+    final response = await _dio.get('/api/community/$communityId/messages', queryParameters: {
+      'take': take,
+      if (beforeMessageId != null) 'beforeMessageId': beforeMessageId,
+    });
+    return (response.data as List).map((e) => MessageModel.fromJson(e as Map<String, dynamic>)).toList();
+  }
+
+  Future<MessageModel> sendMessage(SendMessageRequest request) async {
+    final response = await _dio.post('/api/community/messages', data: request.toJson());
+    return MessageModel.fromJson(response.data as Map<String, dynamic>);
+  }
+
+  Future<void> deleteMessage(int messageId) async {
+    await _dio.delete('/api/community/messages/$messageId');
+  }
+
+  Future<void> reportMessage(int messageId, {String? reason}) async {
+    await _dio.post('/api/community/messages/$messageId/report', data: {'reason': reason});
+  }
+
+  Future<List<MessageModel>> searchMessages(int communityId, String keyword) async {
+    final response = await _dio.post('/api/community/messages/search', data: {
+      'communityId': communityId,
+      'keyword': keyword,
+    });
+    return (response.data as List).map((e) => MessageModel.fromJson(e as Map<String, dynamic>)).toList();
+  }
+
+  /// Uploads a "Share Media" image and returns its public URL, to pass into
+  /// SendMessageRequest.imageUrls.
+  Future<String> uploadMessageImage(int communityId, File file) async {
+    final fileName = file.path.split(Platform.pathSeparator).last;
+    final formData = FormData.fromMap({
+      'file': await MultipartFile.fromFile(file.path, filename: fileName),
+    });
+    final response = await _dio.post('/api/community/$communityId/media', data: formData);
+    return (response.data as Map<String, dynamic>)['url'] as String;
+  }
+
+  Future<List<ParticipantModel>> getParticipants(int communityId) async {
+    final response = await _dio.get('/api/community/$communityId/participants');
+    return (response.data as List).map((e) => ParticipantModel.fromJson(e as Map<String, dynamic>)).toList();
+  }
+}

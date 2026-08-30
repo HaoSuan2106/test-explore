@@ -13,5 +13,14 @@ public class SupabaseSettings
     /// policy changed - without touching anything a user owns.
     /// </summary>
     public string PlacePhotoBucket { get; set; } = string.Empty;
+
+    /// <summary>
+    /// Bucket holding Communication module message attachments (Share Media images).
+    /// Separate from the profile-picture bucket for the same reason PlacePhotoBucket is: these are
+    /// per-group-chat user uploads with their own lifecycle (e.g. deleted along with a message or a
+    /// community), not something that should share retention/cleanup rules with profile pictures.
+    /// </summary>
+    public string CommunityMediaBucket { get; set; } = string.Empty;
+
     public string ServiceRoleKey { get; set; } = string.Empty;
 }

@@ -387,6 +387,108 @@ public class ReviewController : ControllerBase
     }
 
     // ============================================================
+    // DELETE REVIEW PHOTO
+    // ============================================================
+
+    [Authorize]
+    [HttpDelete("{reviewId:long}/photos/{reviewPhotoId:long}")]
+    public async Task<IActionResult> DeletePhoto(
+        long reviewId,
+        long reviewPhotoId)
+    {
+        try
+        {
+            var userId = GetCurrentUserId();
+
+            await _reviewService.DeletePhotoAsync(
+                userId,
+                reviewId,
+                reviewPhotoId);
+
+            return NoContent();
+        }
+        catch (NotFoundException ex)
+        {
+            return NotFound(new { message = ex.Message });
+        }
+        catch (ForbiddenException ex)
+        {
+            return StatusCode(
+                StatusCodes.Status403Forbidden,
+                new { message = ex.Message });
+        }
+        catch (UnauthorizedAccessException ex)
+        {
+            return Unauthorized(new { message = ex.Message });
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(
+                ex,
+                "Unexpected error deleting review photo {ReviewPhotoId} from review {ReviewId}.",
+                reviewPhotoId,
+                reviewId);
+
+            return StatusCode(
+                StatusCodes.Status500InternalServerError,
+                new { message = "An unexpected error occurred." });
+        }
+    }
+
+    // ============================================================
+    // REPORT REVIEW
+    // ============================================================
+
+    [Authorize]
+    [HttpPost("{reviewId:long}/report")]
+    public async Task<IActionResult> Report(
+        long reviewId,
+        [FromBody] ReportReviewRequest request)
+    {
+        try
+        {
+            var userId = GetCurrentUserId();
+
+            await _reviewService.ReportAsync(
+                userId,
+                reviewId,
+                request.Reason);
+
+            return Ok(new
+            {
+                message = "Review reported successfully."
+            });
+        }
+        catch (ConflictException ex)
+        {
+            return Conflict(new { message = ex.Message });
+        }
+        catch (NotFoundException ex)
+        {
+            return NotFound(new { message = ex.Message });
+        }
+        catch (ArgumentException ex)
+        {
+            return BadRequest(new { message = ex.Message });
+        }
+        catch (UnauthorizedAccessException ex)
+        {
+            return Unauthorized(new { message = ex.Message });
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(
+                ex,
+                "Unexpected error reporting review {ReviewId}.",
+                reviewId);
+
+            return StatusCode(
+                StatusCodes.Status500InternalServerError,
+                new { message = "An unexpected error occurred." });
+        }
+    }
+
+    // ============================================================
     // GET CURRENT USER ID FROM JWT
     // ============================================================
 

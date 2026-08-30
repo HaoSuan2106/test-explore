@@ -1,7 +1,16 @@
 import 'package:flutter/material.dart';
+import 'package:dio/dio.dart';
+import 'package:provider/provider.dart';
+
+import '../../../providers/hidden_place/review_provider.dart';
 
 class ReportReviewUI extends StatelessWidget {
-  const ReportReviewUI({super.key});
+  const ReportReviewUI({
+    super.key,
+    required this.reviewId,
+  });
+
+  final int reviewId;
 
   static const Color accent = Color(0xffff6547);
 
@@ -211,26 +220,66 @@ class ReportReviewUI extends StatelessWidget {
                     const SizedBox(width: 12),
                     Expanded(
                       child: TextButton(
-                        onPressed: () {
+                        onPressed: () async {
                           Navigator.pop(dialogContext);
 
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(
-                              content: Text(
-                                'Report submitted\n'
-                                    'Thank you for helping keep our community safe.',
-                              ),
-                            ),
-                          );
+                          try {
+                            final reviewProvider = context.read<ReviewProvider>();
 
-                          Future.delayed(
-                            const Duration(milliseconds: 900),
-                                () {
-                              if (context.mounted) {
-                                Navigator.pop(context);
-                              }
-                            },
-                          );
+                            await reviewProvider.reportReview(
+                              reviewId: reviewId,
+                              reason: title,
+                            );
+
+                            if (!context.mounted) return;
+
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(
+                                content: Text(
+                                  'Report submitted\n'
+                                      'Thank you for helping keep our community safe.',
+                                ),
+                              ),
+                            );
+
+                            await Future.delayed(
+                              const Duration(milliseconds: 900),
+                            );
+
+                            if (context.mounted) {
+                              Navigator.pop(context);
+                            }
+                          } on DioException catch (e) {
+                            if (!context.mounted) return;
+
+                            if (e.response?.statusCode == 409) {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(
+                                  content: Text(
+                                    'You have already reported this review.',
+                                  ),
+                                ),
+                              );
+                            } else {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(
+                                  content: Text(
+                                    'Failed to report review. Please try again.',
+                                  ),
+                                ),
+                              );
+                            }
+                          } catch (_) {
+                            if (!context.mounted) return;
+
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(
+                                content: Text(
+                                  'Failed to report review. Please try again.',
+                                ),
+                              ),
+                            );
+                          }
                         },
                         style: TextButton.styleFrom(
                           backgroundColor: accent,

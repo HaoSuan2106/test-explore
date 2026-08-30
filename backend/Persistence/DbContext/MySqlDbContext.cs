@@ -53,6 +53,13 @@ public class MySqlDbContext : Microsoft.EntityFrameworkCore.DbContext
     public DbSet<RecommendedPlaceVerification> RecommendedPlaceVerifications => Set<RecommendedPlaceVerification>();
     public DbSet<RecommendedPlaceReport> RecommendedPlaceReports => Set<RecommendedPlaceReport>();
 
+    // Community module
+    public DbSet<Community> Communities => Set<Community>();
+    public DbSet<CommunityMember> CommunityMembers => Set<CommunityMember>();
+    public DbSet<Message> Messages => Set<Message>();
+    public DbSet<MessageAttachment> MessageAttachments => Set<MessageAttachment>();
+    public DbSet<MessageReport> MessageReports => Set<MessageReport>();
+
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);
@@ -581,7 +588,82 @@ public class MySqlDbContext : Microsoft.EntityFrameworkCore.DbContext
 
             entity.HasIndex(r => new { r.SubmissionId, r.ReporterId }).IsUnique();
             entity.HasIndex(r => r.ReporterId);
+        });
 
+        // ---------------- Community module ----------------
+
+        modelBuilder.Entity<Community>(entity =>
+        {
+            entity.ToTable("community");
+            entity.HasKey(c => c.CommunityId);
+        });
+
+        modelBuilder.Entity<CommunityMember>(entity =>
+        {
+            entity.ToTable("community_member");
+            entity.HasKey(m => m.CommunityMemberId);
+
+            entity.HasOne<Community>()
+                .WithMany()
+                .HasForeignKey(m => m.CommunityId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            entity.HasOne<User>()
+                .WithMany()
+                .HasForeignKey(m => m.UserId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            // A user can only have one membership row per community.
+            entity.HasIndex(m => new { m.CommunityId, m.UserId }).IsUnique();
+        });
+
+        modelBuilder.Entity<Message>(entity =>
+        {
+            entity.ToTable("message");
+            entity.HasKey(m => m.MessageId);
+
+            entity.HasOne<Community>()
+                .WithMany()
+                .HasForeignKey(m => m.CommunityId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            entity.HasOne<User>()
+                .WithMany()
+                .HasForeignKey(m => m.SenderUserId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            entity.HasIndex(m => new { m.CommunityId, m.SentAt });
+        });
+
+        modelBuilder.Entity<MessageAttachment>(entity =>
+        {
+            entity.ToTable("message_attachment");
+            entity.HasKey(a => a.AttachmentId);
+
+            entity.HasOne<Message>()
+                .WithMany()
+                .HasForeignKey(a => a.MessageId)
+                .OnDelete(DeleteBehavior.Cascade);
+        });
+
+        modelBuilder.Entity<MessageReport>(entity =>
+        {
+            entity.ToTable("message_report");
+            entity.HasKey(r => r.ReportId);
+
+            entity.HasOne<Message>()
+                .WithMany()
+                .HasForeignKey(r => r.MessageId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            entity.HasOne<User>()
+                .WithMany()
+                .HasForeignKey(r => r.ReporterUserId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            // Reporting the same message twice just re-confirms it's a problem,
+            // not a new incident.
+            entity.HasIndex(r => new { r.MessageId, r.ReporterUserId }).IsUnique();
         });
     }
 }

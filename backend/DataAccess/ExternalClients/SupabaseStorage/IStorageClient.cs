@@ -40,6 +40,12 @@ public interface IStorageClient
 
     Task DeleteAsync(string path);
 
+    /// Moves/renames an object already in storage (within the same bucket) and returns its new
+    /// public URL. Used to relocate a file uploaded under a temporary path once the real identifier
+    /// it should be named after (e.g. a database row's id) becomes known — see Community's
+    /// UploadMessageImageAsync/SendMessageAsync.
+    Task<string> MoveAsync(string fromPath, string toPath, string? bucket = null);
+
     /// Extracts the storage object path from a public URL previously returned by UploadAsync, or null if the URL isn't from this bucket.
-    string? GetPathFromPublicUrl(string publicUrl);
+    string? GetPathFromPublicUrl(string publicUrl, string? bucket = null);
 }
