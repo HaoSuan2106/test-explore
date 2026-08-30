@@ -181,6 +181,26 @@ public class ProfileController : ControllerBase
         }
     }
 
+    /// UC103 A3-4 — the user left the Change Email flow; drop any code that
+    /// was issued for it so it cannot be used afterwards.
+    [HttpPost("email/cancel-change")]
+    public async Task<IActionResult> CancelEmailChange()
+    {
+        var userId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
+
+        try
+        {
+            await _manageProfileService.CancelEmailChangeAsync(userId);
+            return Ok(new { message = "Email change cancelled." });
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Unexpected error cancelling email change for user {UserId}.", userId);
+            return StatusCode(StatusCodes.Status500InternalServerError,
+                new { message = "An unexpected error occurred." });
+        }
+    }
+
     [HttpPost("password/check")]
     public async Task<IActionResult> CheckCurrentPassword([FromBody] CheckPasswordRequestDto request)
     {

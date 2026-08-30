@@ -2,11 +2,12 @@ import 'package:flutter/foundation.dart';
 
 import '../../api_communication/http_client/http_client.dart';
 import '../../models/foot_tracker/exploration_model.dart';
+import '../session_scoped_provider.dart';
 
 /// Manages the user's Favourite Place list — loading and deleting
 /// selected places. Now backed by real backend calls under
 /// FootTrackerController.
-class FavouriteProvider extends ChangeNotifier {
+class FavouriteProvider extends ChangeNotifier implements SessionScopedProvider {
   FavouriteProvider({required HttpClient httpClient}) : _httpClient = httpClient;
 
   final HttpClient _httpClient;
@@ -41,5 +42,13 @@ class FavouriteProvider extends ChangeNotifier {
       errorMessage = 'Failed to remove favourite place(s).';
       notifyListeners();
     }
+  }
+
+  @override
+  void clearSessionData() {
+    _places = [];
+    isLoading = false;
+    errorMessage = null;
+    notifyListeners();
   }
 }

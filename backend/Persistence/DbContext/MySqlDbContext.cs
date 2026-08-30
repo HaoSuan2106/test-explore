@@ -255,6 +255,8 @@ public class MySqlDbContext : Microsoft.EntityFrameworkCore.DbContext
             entity.Property(p => p.GoogleMapsUri).HasMaxLength(500);
             entity.Property(p => p.WebsiteUri).HasMaxLength(500);
             entity.Property(p => p.NationalPhoneNumber).HasMaxLength(50);
+            entity.Property(p => p.ShortFormattedAddress).HasMaxLength(500);
+            entity.Property(p => p.PrimaryTypeDisplayName).HasMaxLength(100);
 
             // Mapped to MySQL's native json type rather than longtext. The app only ever passes these
             // through to the client, so the strong reason is validation: json rejects anything malformed,
@@ -265,6 +267,16 @@ public class MySqlDbContext : Microsoft.EntityFrameworkCore.DbContext
             // json will not accept an empty string. GooglePlacesApiClient.RawJsonOrNull enforces that.
             entity.Property(p => p.PhotosJson).HasColumnType("json");
             entity.Property(p => p.RegularOpeningHoursJson).HasColumnType("json");
+            entity.Property(p => p.AddressComponentsJson).HasColumnType("json");
+            entity.Property(p => p.ViewportJson).HasColumnType("json");
+            entity.Property(p => p.GoogleMapsLinksJson).HasColumnType("json");
+            entity.Property(p => p.AccessibilityOptionsJson).HasColumnType("json");
+            entity.Property(p => p.ContainingPlacesJson).HasColumnType("json");
+
+            // Plain nullable columns - no default, since "unknown" (Google omitted the field) has to stay
+            // distinguishable from a known false/empty value.
+            entity.Property(p => p.PureServiceAreaBusiness);
+            entity.Property(p => p.OpeningDate).HasColumnType("date");
 
             // Left as datetime(6), NOT timestamp: freshness is compared against UTC
             // "now" in code, and timestamp would apply session-timezone conversion

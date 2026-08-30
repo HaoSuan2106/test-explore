@@ -51,10 +51,22 @@ class HttpClient {
               final retryRequest = error.requestOptions
                 ..headers['Authorization'] = 'Bearer $newAccessToken'
                 ..extra['authRetryAttempted'] = true;
+
+              // A FormData body (profile picture upload) is a one-shot stream:
+              // replaying the original instance would send an empty or
+              // already-finalized body, so hand the retry a fresh clone.
+              final data = retryRequest.data;
+              if (data is FormData) {
+                retryRequest.data = data.clone();
+              }
+
               final response = await _dio.fetch(retryRequest);
               return handler.resolve(response);
             } catch (_) {
+              // The session is gone for good: drop the tokens and tell the app
+              // so it can return the user to the Login page (FR102-12).
               await _secureStorage.clearTokens();
+              onSessionExpired?.call();
             }
           }
 
@@ -86,6 +98,11 @@ class HttpClient {
   final SecureStorageService _secureStorage;
   late final Dio _dio;
   Future<String>? _refreshFuture;
+
+  /// Called once the stored session can no longer be refreshed — expired,
+  /// revoked, or the account was suspended. The app wires this up to sign the
+  /// user out locally and send them back to the Login page (FR102-12).
+  void Function()? onSessionExpired;
 
   Future<String> _refreshAccessToken() {
     // Single-flight guard: refresh tokens rotate on every use, so if two
@@ -149,6 +166,33 @@ class HttpClient {
     await _dio.post('/api/auth/logout', data: {'refreshToken': refreshToken});
   }
 
+  /// Signed-out password reset (FR102-13): asks for a code to be emailed to
+  /// [email]. Always succeeds, so it cannot reveal whether the account exists.
+  Future<void> requestPasswordReset(String email) async {
+    await _dio.post('/api/auth/forgot-password', data: {'email': email});
+  }
+
+  /// Checks the emailed reset code before the new password is collected
+  /// (FR102-17, FR102-18).
+  Future<void> verifyForgotPasswordCode(String email, String code) async {
+    await _dio.post(
+      '/api/auth/forgot-password/verify',
+      data: {'email': email, 'code': code},
+    );
+  }
+
+  /// Stores the new password against a verified reset code (FR102-20).
+  Future<void> resetPassword({
+    required String email,
+    required String code,
+    required String newPassword,
+  }) async {
+    await _dio.post(
+      '/api/auth/reset-password',
+      data: {'email': email, 'code': code, 'newPassword': newPassword},
+    );
+  }
+
   Future<ProfileModel> getProfile() async {
     final response = await _dio.get('/api/profile');
     return ProfileModel.fromJson(response.data as Map<String, dynamic>);
@@ -177,6 +221,12 @@ class HttpClient {
       data: {'newEmail': newEmail, 'code': code},
     );
     return ProfileModel.fromJson(response.data as Map<String, dynamic>);
+  }
+
+  /// Abandons an in-progress email change so the issued code stops working
+  /// (UC103 A3-4).
+  Future<void> cancelEmailChange() async {
+    await _dio.post('/api/profile/email/cancel-change');
   }
 
   Future<void> requestPasswordResetCode() async {

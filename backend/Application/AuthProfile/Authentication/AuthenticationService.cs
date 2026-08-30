@@ -35,38 +35,52 @@ public class AuthenticationService : IAuthenticationService
 
     public async Task<RegisterResponseDto> RegisterAsync(RegisterRequestDto request)
     {
-        var existingUser = await _repository.GetByEmailAsync(request.Email);
-        if (existingUser is not null)
+        var email = request.Email.Trim();
+        var username = request.Username.Trim();
+
+        var existingByEmail = await _repository.GetByEmailAsync(email);
+        if (existingByEmail is not null)
         {
-            if (existingUser.AccountStatus != "pending_verification")
+            if (existingByEmail.AccountStatus != "pending_verification")
             {
-                _logger.LogWarning("Registration attempt failed for {Email}: email already in use.", request.Email);
+                _logger.LogWarning("Registration attempt failed for {Email}: email already in use.", email);
                 throw new ConflictException("Email is already in use.");
             }
 
             // Account exists but was never verified — resume registration by
-            // reissuing a code instead of blocking a legitimate retry.
-            await IssueVerificationCodeAsync(existingUser);
-
-            return new RegisterResponseDto
+            // reissuing a code instead of blocking a legitimate retry. The
+            // username may have been changed on the retry, so it still has to
+            // be free (unless this same row already owns it).
+            var usernameOwner = await _repository.GetByUsernameAsync(username);
+            if (usernameOwner is not null && usernameOwner.UserId != existingByEmail.UserId)
             {
-                UserId = existingUser.UserId,
-                Username = existingUser.Username,
-                Email = existingUser.Email,
-                AccountStatus = existingUser.AccountStatus
-            };
+                _logger.LogWarning("Registration attempt failed for {Username}: username already in use.", username);
+                throw new ConflictException("Username is already in use.");
+            }
+
+            return await ResumeRegistrationAsync(existingByEmail, username, email, request.Password);
         }
 
-        if (await _repository.GetByUsernameAsync(request.Username) is not null)
+        var existingByUsername = await _repository.GetByUsernameAsync(username);
+        if (existingByUsername is not null)
         {
-            _logger.LogWarning("Registration attempt failed for {Username}: username already in use.", request.Username);
-            throw new ConflictException("Username is already in use.");
+            if (existingByUsername.AccountStatus != "pending_verification")
+            {
+                _logger.LogWarning("Registration attempt failed for {Username}: username already in use.", username);
+                throw new ConflictException("Username is already in use.");
+            }
+
+            // Same unverified sign-up being retried with a corrected email. The
+            // address is known to be unclaimed (checked above), so move the
+            // pending row onto it rather than dead-ending the user on a
+            // username they believe is theirs.
+            return await ResumeRegistrationAsync(existingByUsername, username, email, request.Password);
         }
 
         var user = new User
         {
-            Username = request.Username,
-            Email = request.Email,
+            Username = username,
+            Email = email,
             PasswordHash = PasswordHasher.HashPassword(request.Password),
             AccountStatus = "pending_verification",
             CreatedAt = DateTime.UtcNow,
@@ -79,11 +93,37 @@ public class AuthenticationService : IAuthenticationService
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "Registration failed for {Email}: could not create user.", request.Email);
+            _logger.LogError(ex, "Registration failed for {Email}: could not create user.", email);
             throw;
         }
 
         await IssueVerificationCodeAsync(user);
+
+        return new RegisterResponseDto
+        {
+            UserId = user.UserId,
+            Username = user.Username,
+            Email = user.Email,
+            AccountStatus = user.AccountStatus
+        };
+    }
+
+    /// Re-runs an unverified sign-up on the existing row: the details the user
+    /// just typed win (nothing was ever confirmed on the old ones), and a fresh
+    /// code goes out so the caller lands on the verification step.
+    private async Task<RegisterResponseDto> ResumeRegistrationAsync(
+        User user, string username, string email, string password)
+    {
+        user.Username = username;
+        user.Email = email;
+        user.PasswordHash = PasswordHasher.HashPassword(password);
+        user.UpdatedAt = DateTime.UtcNow;
+        await _repository.UpdateUserAsync(user);
+
+        await IssueVerificationCodeAsync(user);
+
+        _logger.LogInformation(
+            "Resumed pending registration for {Email} (user {UserId}).", email, user.UserId);
 
         return new RegisterResponseDto
         {
@@ -272,6 +312,117 @@ public class AuthenticationService : IAuthenticationService
         {
             await _repository.RevokeSessionAsync(session);
         }
+    }
+
+    /// UC102 FR102-13/FR102-14 — the signed-out "Forgot password?" entry point.
+    ///
+    /// Always completes successfully: replying differently for a known and an
+    /// unknown address would turn this endpoint into an account-enumeration
+    /// oracle. A suspended account is likewise treated as "nothing to send"
+    /// (FR102-05).
+    public async Task RequestPasswordResetAsync(ForgotPasswordRequestDto request)
+    {
+        var user = await _repository.GetByEmailAsync(request.Email.Trim());
+        if (user is null || user.AccountStatus == "suspended" || user.AccountStatus == "pending_verification")
+        {
+            _logger.LogInformation(
+                "Password reset requested for {Email}: no eligible account, nothing sent.", request.Email);
+            return;
+        }
+
+        await IssuePasswordResetCodeAsync(user);
+    }
+
+    public async Task VerifyPasswordResetCodeAsync(VerifyForgotPasswordCodeRequestDto request)
+    {
+        var user = await ResolveResettableUserAsync(request.Email);
+        var token = await _repository.GetLatestActivePasswordResetTokenByUserIdAsync(user.UserId);
+
+        // FR102-17 / FR102-16: only the latest unused, unexpired code counts.
+        if (token is null || RefreshTokenHelper.Hash(request.Code) != token.Token)
+        {
+            throw new AuthenticationException("Invalid or expired verification code.");
+        }
+    }
+
+    /// FR102-20/FR102-21 — the code is re-validated here and only marked used
+    /// once the new password has actually been stored.
+    public async Task ResetPasswordAsync(ResetPasswordRequestDto request)
+    {
+        var user = await ResolveResettableUserAsync(request.Email);
+
+        var token = await _repository.GetLatestActivePasswordResetTokenByUserIdAsync(user.UserId);
+        if (token is null || RefreshTokenHelper.Hash(request.Code) != token.Token)
+        {
+            throw new AuthenticationException("Invalid or expired verification code.");
+        }
+
+        if (PasswordHasher.VerifyPassword(request.NewPassword, user.PasswordHash))
+        {
+            throw new ValidationException("New password must be different from the current password.");
+        }
+
+        user.PasswordHash = PasswordHasher.HashPassword(request.NewPassword);
+        user.UpdatedAt = DateTime.UtcNow;
+        await _repository.UpdateUserAsync(user);
+
+        await _repository.MarkPasswordResetTokenUsedAsync(token);
+        await _repository.InvalidateActivePasswordResetTokensAsync(user.UserId);
+    }
+
+    private async Task<User> ResolveResettableUserAsync(string email)
+    {
+        var user = await _repository.GetByEmailAsync(email.Trim());
+        if (user is null)
+        {
+            // Same message as a wrong code, so this cannot be used to probe
+            // which addresses have accounts.
+            throw new AuthenticationException("Invalid or expired verification code.");
+        }
+
+        if (user.AccountStatus == "suspended")
+        {
+            throw new ForbiddenException("This account has been suspended.");
+        }
+
+        return user;
+    }
+
+    private async Task IssuePasswordResetCodeAsync(User user)
+    {
+        // FR102-15: issuing a new code invalidates any earlier unused one.
+        await _repository.InvalidateActivePasswordResetTokensAsync(user.UserId);
+
+        var code = VerificationCodeHelper.Generate();
+        var token = new PasswordResetToken
+        {
+            UserId = user.UserId,
+            Token = RefreshTokenHelper.Hash(code),
+            ExpiresAt = DateTime.UtcNow.AddMinutes(_smtpSettings.VerificationCodeExpiryMinutes),
+            IsUsed = false,
+            CreatedAt = DateTime.UtcNow
+        };
+        await _repository.CreatePasswordResetTokenAsync(token);
+
+        var subject = "Your ExploreMy password reset code";
+        var body = $"<p>Your ExploreMy password reset code is:</p><h2>{code}</h2>" +
+                   $"<p>This code expires in {_smtpSettings.VerificationCodeExpiryMinutes} minutes. " +
+                   "If you didn't request this, you can safely ignore this email.</p>";
+
+        // Fire-and-forget: the code is already persisted, so don't make the
+        // caller wait on the SMTP round trip. Failures are logged, not
+        // surfaced — "Resend" is the recovery path.
+        _ = Task.Run(async () =>
+        {
+            try
+            {
+                await _emailSender.SendAsync(user.Email, subject, body);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Could not send password reset code to {Email}.", user.Email);
+            }
+        });
     }
 
     private async Task<LoginResponseDto> IssueTokensAsync(User user)

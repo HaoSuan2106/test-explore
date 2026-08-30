@@ -41,4 +41,19 @@ public class AuthProfileService : IAuthProfileService
     {
         return _authenticationService.RegisterAsync(request);
     }
+
+    public Task RequestPasswordResetAsync(ForgotPasswordRequestDto request)
+    {
+        return _authenticationService.RequestPasswordResetAsync(request);
+    }
+
+    public Task VerifyPasswordResetCodeAsync(VerifyForgotPasswordCodeRequestDto request)
+    {
+        return _authenticationService.VerifyPasswordResetCodeAsync(request);
+    }
+
+    public Task ResetPasswordAsync(ResetPasswordRequestDto request)
+    {
+        return _authenticationService.ResetPasswordAsync(request);
+    }
 }

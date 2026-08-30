@@ -1,26 +1,81 @@
 import 'dart:io';
 
-import 'package:flutter/foundation.dart';
+import 'package:flutter/widgets.dart';
 import 'package:dio/dio.dart';
 import '../../api_communication/http_client/http_client.dart';
 import '../../models/auth_profile/profile_model.dart';
+import '../../utilities/profile_image_cache.dart';
+import '../session_scoped_provider.dart';
 
 String? _messageFor(DioException e) {
   final data = e.response?.data;
-  if (data is Map && data['message'] is String) {
-    return data['message'] as String;
+  if (data is! Map) return null;
+
+  if (data['message'] is String) return data['message'] as String;
+
+  // A rejected [ApiController] model replies with
+  // { errors: { Field: ["reason", ...] } } and no top-level message. Without
+  // this the real reason is dropped and every failure — a duplicate username,
+  // an out-of-range age — surfaces as the caller's generic fallback.
+  final errors = data['errors'];
+  if (errors is Map) {
+    for (final value in errors.values) {
+      if (value is String && value.isNotEmpty) return value;
+      if (value is List) {
+        final first = value.firstWhere(
+          (item) => item is String && item.isNotEmpty,
+          orElse: () => null,
+        );
+        if (first is String) return first;
+      }
+    }
   }
+
   return null;
 }
 
-class ProfileProvider extends ChangeNotifier {
-  ProfileProvider({required HttpClient httpClient}) : _httpClient = httpClient;
+class ProfileProvider extends ChangeNotifier implements SessionScopedProvider {
+  ProfileProvider({
+    required HttpClient httpClient,
+    ProfileImageCache? imageCache,
+  })  : _httpClient = httpClient,
+        _imageCache = imageCache ?? ProfileImageCache();
 
   final HttpClient _httpClient;
+  final ProfileImageCache _imageCache;
 
   ProfileModel? profile;
   bool isLoading = false;
   String? errorMessage;
+
+  /// The downloaded copy of [ProfileModel.profilePictureUrl], kept on the
+  /// device so the avatar still renders with no connection.
+  File? avatarFile;
+
+  /// What the UI should draw for the user's avatar: the local file when one
+  /// has been cached, the remote URL while it hasn't, and null when there is
+  /// no picture at all (callers show their placeholder icon).
+  ImageProvider? get avatarImage {
+    final file = avatarFile;
+    if (file != null) return FileImage(file);
+
+    final url = profile?.profilePictureUrl;
+    if (url != null && url.isNotEmpty) return NetworkImage(url);
+
+    return null;
+  }
+
+  /// Loads the avatar that is already on disk, without touching the network.
+  ///
+  /// Called at startup before [loadProfile] so the picture is on screen even
+  /// when the profile request itself fails offline.
+  Future<void> loadCachedAvatar() async {
+    final file = await _imageCache.load();
+    if (file == null) return;
+
+    avatarFile = file;
+    notifyListeners();
+  }
 
   /// Fetches the profile once and caches it. Screens that just need to
   /// display it (Account, Edit Profile) call this and get the cached copy
@@ -34,6 +89,7 @@ class ProfileProvider extends ChangeNotifier {
 
     try {
       profile = await _httpClient.getProfile();
+      await _syncAvatar();
     } on DioException {
       errorMessage = 'Failed to load profile.';
     } finally {
@@ -46,6 +102,7 @@ class ProfileProvider extends ChangeNotifier {
   Future<bool> updateProfilePicture(File file) async {
     try {
       profile = await _httpClient.uploadProfilePicture(file);
+      await _syncAvatar();
       errorMessage = null;
       notifyListeners();
       return true;
@@ -60,6 +117,7 @@ class ProfileProvider extends ChangeNotifier {
   Future<bool> removeProfilePicture() async {
     try {
       profile = await _httpClient.removeProfilePicture();
+      await _syncAvatar();
       errorMessage = null;
       notifyListeners();
       return true;
@@ -68,6 +126,13 @@ class ProfileProvider extends ChangeNotifier {
       notifyListeners();
       return false;
     }
+  }
+
+  /// Downloads the current [ProfileModel.profilePictureUrl] if the on-disk
+  /// copy is missing or belongs to an older picture. Never throws: a failure
+  /// just leaves whatever was already cached in place.
+  Future<void> _syncAvatar() async {
+    avatarFile = await _imageCache.sync(profile?.profilePictureUrl);
   }
 
   /// Saves username/city/age/gender and updates the cached profile on success.
@@ -208,10 +273,28 @@ class ProfileProvider extends ChangeNotifier {
     }
   }
 
+  /// Abandons an in-progress email change so the code that was emailed stops
+  /// working (UC103 A3-4). Best effort: the codes expire on their own, so a
+  /// failure here must not block the user from leaving the screen.
+  Future<void> cancelEmailChange() async {
+    try {
+      await _httpClient.cancelEmailChange();
+    } on DioException {
+      // Ignored on purpose — see above.
+    }
+  }
+
   /// Call on logout so the next user who logs in on this device
   void clear() {
     profile = null;
     errorMessage = null;
+    avatarFile = null;
+    // The downloaded picture outlives the session unless it is deleted, and
+    // would otherwise greet whoever signs in next.
+    _imageCache.clear();
     notifyListeners();
   }
+
+  @override
+  void clearSessionData() => clear();
 }

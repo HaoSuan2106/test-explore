@@ -78,6 +78,8 @@ public class ManageProfileService : IManageProfileService
         return MapToDto(user);
     }
 
+    private static bool Blank(string? value) => string.IsNullOrWhiteSpace(value);
+
     public async Task<UserProfileDto> UpdateProfileAsync(int userId, UpdateProfileRequestDto request)
     {
         var user = await _repository.GetByIdAsync(userId)
@@ -94,9 +96,11 @@ public class ManageProfileService : IManageProfileService
         }
 
         user.Username = username;
-        user.City = request.City;
+        // Optional fields: a blank one is stored as NULL rather than "", so
+        // "not set" has a single representation everywhere it is read back.
+        user.City = Blank(request.City) ? null : request.City!.Trim();
         user.Age = request.Age;
-        user.Gender = request.Gender;
+        user.Gender = Blank(request.Gender) ? null : request.Gender;
         user.UpdatedAt = DateTime.UtcNow;
         await _repository.UpdateUserAsync(user);
 
@@ -240,6 +244,13 @@ public class ManageProfileService : IManageProfileService
         await _repository.UpdateUserAsync(user);
 
         return MapToDto(user);
+    }
+
+    /// UC103 A3-4 step 3 — abandoning the email change invalidates any code
+    /// that was issued for it, so a stale code can never be replayed later.
+    public async Task CancelEmailChangeAsync(int userId)
+    {
+        await _repository.InvalidateActiveTokensAsync(userId);
     }
 
     public async Task RequestPasswordResetCodeAsync(int userId)

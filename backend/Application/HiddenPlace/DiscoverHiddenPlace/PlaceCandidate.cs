@@ -65,4 +65,47 @@ public class PlaceCandidate
     /// computed for the seven days around the request, so a cached copy is wrong within a day.
     /// </summary>
     public string? RegularOpeningHoursJson { get; init; }
+
+    // ---- Added on top of the original field set. All Pro tier or lower - free, since the mask is
+    // already Enterprise. See the FieldMask comment in GooglePlacesApiClient. ----
+
+    /// <summary>The raw JSON array Google returned for `addressComponents` - structured address parts
+    /// (street, locality, admin areas, postal code, ...), each with long/short names and component
+    /// types. Presentation/filtering detail; not used by the scoring algorithm.</summary>
+    public string? AddressComponentsJson { get; init; }
+
+    /// <summary>The raw JSON object Google returned for `viewport` - the low/high lat-lng rectangle that
+    /// fits the place, for sizing and centring a map. Presentation detail only.</summary>
+    public string? ViewportJson { get; init; }
+
+    /// <summary>The raw JSON object Google returned for `googleMapsLinks` - ready-made deep links
+    /// (directions, place page, write-a-review, reviews, photos). Presentation detail only.</summary>
+    public string? GoogleMapsLinksJson { get; init; }
+
+    /// <summary>The raw JSON object Google returned for `accessibilityOptions` - wheelchair accessibility
+    /// flags for parking, entrance, restroom and seating. Presentation detail only.</summary>
+    public string? AccessibilityOptionsJson { get; init; }
+
+    /// <summary>The raw JSON array Google returned for `containingPlaces` - places this one sits inside
+    /// (e.g. a mall). Presentation detail only.</summary>
+    public string? ContainingPlacesJson { get; init; }
+
+    /// <summary>True when the business has no storefront customers visit (delivery-only, mobile,
+    /// home-based, ...). Data only for now - NOT yet checked by DiscoverHiddenPlaceService.PassesQualityGate.
+    /// The app's premise is places people travel to, so wiring this into the quality gate (reject when
+    /// true) is the natural next step, deliberately left for a separate change.</summary>
+    public bool? PureServiceAreaBusiness { get; init; }
+
+    /// <summary>The date the place opened for business, when Google has it. Null rather than a partial
+    /// date whenever Google's year/month/day isn't fully known - see GooglePlacesApiClient.ToDateOnly.
+    /// Not yet used by scoring; kept for a future "new vs. long-open but still obscure" refinement.</summary>
+    public DateOnly? OpeningDate { get; init; }
+
+    /// <summary>Localized, human-readable type label (e.g. "Cafe"), distinct from the raw machine-readable
+    /// PrimaryType ("cafe"). Presentation detail only.</summary>
+    public string? PrimaryTypeDisplayName { get; init; }
+
+    /// <summary>A shorter form of FormattedAddress, better suited to list/card layouts. Presentation
+    /// detail only.</summary>
+    public string? ShortFormattedAddress { get; init; }
 }

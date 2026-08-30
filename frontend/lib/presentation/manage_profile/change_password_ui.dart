@@ -245,6 +245,40 @@ class _ChangePasswordUiState extends State<ChangePasswordUi> {
                       isLoading: _isCheckingPassword,
                       onPressed: _onCheckCurrentPassword,
                     ),
+                    // Sits with the current-password step rather than in the
+                    // page footer: it is the way out for someone who cannot
+                    // fill the field above, so it has to be visible before
+                    // they scroll past it.
+                    const SizedBox(height: 16),
+                    Center(
+                      child: Wrap(
+                        alignment: WrapAlignment.center,
+                        children: [
+                          Text(
+                            'Lost your current password? ',
+                            style: GoogleFonts.plusJakartaSans(fontSize: 12, color: _kMuted, height: 16 / 12),
+                          ),
+                          GestureDetector(
+                            onTap: _isCurrentPasswordVerified
+                                ? null
+                                : _onResetViaEmail,
+                            child: Text(
+                              _isCurrentPasswordVerified
+                                  ? 'Identity Verified'
+                                  : 'Reset via Email',
+                              style: GoogleFonts.plusJakartaSans(
+                                fontSize: 12,
+                                fontWeight: FontWeight.w700,
+                                color: _isCurrentPasswordVerified
+                                    ? _kMuted
+                                    : _kAccentOrange,
+                                height: 16 / 12,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
                     const SizedBox(height: 40),
                     Divider(height: 1, color: _kInputBorder),
                     const SizedBox(height: 40),
@@ -330,36 +364,6 @@ class _ChangePasswordUiState extends State<ChangePasswordUi> {
                         'Secure encryption is used to protect your credentials.',
                         textAlign: TextAlign.center,
                         style: GoogleFonts.plusJakartaSans(fontSize: 12, color: _kMuted, height: 16 / 12),
-                      ),
-                    ),
-                    const SizedBox(height: 2),
-                    Center(
-                      child: Wrap(
-                        alignment: WrapAlignment.center,
-                        children: [
-                          Text(
-                            'Lost your current password? ',
-                            style: GoogleFonts.plusJakartaSans(fontSize: 12, color: _kMuted, height: 16 / 12),
-                          ),
-                          GestureDetector(
-                            onTap: _isCurrentPasswordVerified
-                                ? null
-                                : _onResetViaEmail,
-                            child: Text(
-                              _isCurrentPasswordVerified
-                                  ? 'Identity Verified'
-                                  : 'Reset via Email',
-                              style: GoogleFonts.plusJakartaSans(
-                                fontSize: 12,
-                                fontWeight: FontWeight.w700,
-                                color: _isCurrentPasswordVerified
-                                    ? _kMuted
-                                    : _kAccentOrange,
-                                height: 16 / 12,
-                              ),
-                            ),
-                          ),
-                        ],
                       ),
                     ),
                   ],

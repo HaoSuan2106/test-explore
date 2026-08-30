@@ -211,6 +211,14 @@ namespace explore_my_backend.Migrations
                         .HasColumnType("int")
                         .HasColumnName("hidden_place_cache_id");
 
+                    b.Property<string>("AccessibilityOptionsJson")
+                        .HasColumnType("json")
+                        .HasColumnName("accessibility_options_json");
+
+                    b.Property<string>("AddressComponentsJson")
+                        .HasColumnType("json")
+                        .HasColumnName("address_components_json");
+
                     b.Property<string>("BusinessStatus")
                         .IsRequired()
                         .ValueGeneratedOnAdd()
@@ -225,6 +233,10 @@ namespace explore_my_backend.Migrations
                         .HasColumnType("varchar(255)")
                         .HasColumnName("cache_grid_key");
 
+                    b.Property<string>("ContainingPlacesJson")
+                        .HasColumnType("json")
+                        .HasColumnName("containing_places_json");
+
                     b.Property<DateTime>("FetchedAtUtc")
                         .HasColumnType("datetime(6)")
                         .HasColumnName("fetched_at_utc");
@@ -233,6 +245,10 @@ namespace explore_my_backend.Migrations
                         .HasMaxLength(500)
                         .HasColumnType("varchar(500)")
                         .HasColumnName("formatted_address");
+
+                    b.Property<string>("GoogleMapsLinksJson")
+                        .HasColumnType("json")
+                        .HasColumnName("google_maps_links_json");
 
                     b.Property<string>("GoogleMapsUri")
                         .HasMaxLength(500)
@@ -257,6 +273,10 @@ namespace explore_my_backend.Migrations
                         .HasMaxLength(50)
                         .HasColumnType("varchar(50)")
                         .HasColumnName("national_phone_number");
+
+                    b.Property<DateOnly?>("OpeningDate")
+                        .HasColumnType("date")
+                        .HasColumnName("opening_date");
 
                     b.Property<bool>("PassedQualityGate")
                         .ValueGeneratedOnAdd()
@@ -284,6 +304,15 @@ namespace explore_my_backend.Migrations
                         .HasColumnType("varchar(100)")
                         .HasColumnName("primary_type");
 
+                    b.Property<string>("PrimaryTypeDisplayName")
+                        .HasMaxLength(100)
+                        .HasColumnType("varchar(100)")
+                        .HasColumnName("primary_type_display_name");
+
+                    b.Property<bool?>("PureServiceAreaBusiness")
+                        .HasColumnType("tinyint(1)")
+                        .HasColumnName("pure_service_area_business");
+
                     b.Property<double?>("Rating")
                         .HasColumnType("double")
                         .HasColumnName("rating");
@@ -292,11 +321,20 @@ namespace explore_my_backend.Migrations
                         .HasColumnType("json")
                         .HasColumnName("regular_opening_hours_json");
 
+                    b.Property<string>("ShortFormattedAddress")
+                        .HasMaxLength(500)
+                        .HasColumnType("varchar(500)")
+                        .HasColumnName("short_formatted_address");
+
                     b.Property<int>("UserRatingCount")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
                         .HasDefaultValue(0)
                         .HasColumnName("user_rating_count");
+
+                    b.Property<string>("ViewportJson")
+                        .HasColumnType("json")
+                        .HasColumnName("viewport_json");
 
                     b.Property<string>("WebsiteUri")
                         .HasMaxLength(500)

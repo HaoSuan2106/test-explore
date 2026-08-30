@@ -126,15 +126,29 @@ class _ManageProfileUiState extends State<ManageProfileUi> {
     return result ?? false;
   }
 
+  /// UC103 A3-4 step 3 — leaving the Change Email flow invalidates any code
+  /// that was issued for it, so a stale code can't be replayed later.
+  Future<void> _cancelPendingEmailChange() async {
+    final hasPendingEmailChange = _currentEmailVerified ||
+        _emailController.text.trim() != _verifiedEmail.trim();
+    if (!hasPendingEmailChange) return;
+
+    await context.read<ProfileProvider>().cancelEmailChange();
+  }
+
   Future<void> _handleBack() async {
     if (!_hasUnsavedChanges) {
+      await _cancelPendingEmailChange();
+      if (!mounted) return;
       Navigator.of(context).pop();
       return;
     }
     final shouldDiscard = await _confirmDiscardChanges();
-    if (shouldDiscard && mounted) {
-      Navigator.of(context).pop();
-    }
+    if (!shouldDiscard || !mounted) return;
+
+    await _cancelPendingEmailChange();
+    if (!mounted) return;
+    Navigator.of(context).pop();
   }
 
   @override
@@ -167,29 +181,44 @@ class _ManageProfileUiState extends State<ManageProfileUi> {
     }
   }
 
-  Future<void> _onSaveChanges() async {
+  /// UC103 C2 — profile information validation. Returns the first problem
+  /// found, or null when every field is acceptable.
+  String? _validateProfile() {
     final username = _usernameController.text.trim();
-    if (username.length < 3) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Username must be at least 3 characters.'),
-        ),
-      );
-      AppFeedback.show(context,
-          message: 'Username must be at least 3 characters.', isSuccess: false);
+    if (username.isEmpty) return 'Username is required.';
+    if (username.length < 3 || username.length > 30) {
+      return 'Username must be 3-30 characters.';
+    }
+    if (!RegExp(r'^[a-zA-Z0-9_ ]+$').hasMatch(username)) {
+      return 'Username contains invalid characters.';
+    }
+
+    // City, age and gender are optional — the profile saves with any of them
+    // blank, and clearing one is how the user removes it. Age is still checked
+    // for shape, but only when something was actually typed.
+    final ageText = _ageController.text.trim();
+    if (ageText.isNotEmpty) {
+      final age = int.tryParse(ageText);
+      if (age == null) return 'Enter a valid age.';
+      if (age < 13 || age > 120) return 'Age must be between 13 and 120.';
+    }
+
+    return null;
+  }
+
+  Future<void> _onSaveChanges() async {
+    final validationError = _validateProfile();
+    if (validationError != null) {
+      // A1-1: report the problem and keep everything the user typed.
+      AppFeedback.show(context, message: validationError, isSuccess: false);
       return;
     }
 
+    final username = _usernameController.text.trim();
     final ageText = _ageController.text.trim();
-    final age = ageText.isEmpty ? null : int.tryParse(ageText);
-    if (ageText.isNotEmpty && age == null) {
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(const SnackBar(content: Text('Enter a valid age.')));
-      AppFeedback.show(context,
-          message: 'Enter a valid age.', isSuccess: false);
-      return;
-    }
+    // Null rather than 0/"" for a blank optional field, so the backend clears
+    // the column instead of storing a placeholder.
+    final age = ageText.isEmpty ? null : int.parse(ageText);
 
     setState(() => _isSaving = true);
     final profileProvider = context.read<ProfileProvider>();
@@ -198,7 +227,9 @@ class _ManageProfileUiState extends State<ManageProfileUi> {
       username: username,
       city: city.isEmpty ? null : city,
       age: age,
-      gender: _selectedGender,
+      gender: (_selectedGender != null && _selectedGender!.isEmpty)
+          ? null
+          : _selectedGender,
     );
     if (!mounted) return;
 
@@ -416,18 +447,15 @@ class _ManageProfileUiState extends State<ManageProfileUi> {
 
   @override
   Widget build(BuildContext context) {
+    // Locally cached copy when there is one, remote URL otherwise. Watched so
+    // the picture refreshes as soon as a new upload finishes downloading.
+    final avatarImage = context.watch<ProfileProvider>().avatarImage;
+
     return PopScope(
       canPop: false,
       onPopInvokedWithResult: (didPop, result) async {
         if (didPop) return;
-        if (!_hasUnsavedChanges) {
-          Navigator.of(context).pop();
-          return;
-        }
-        final shouldDiscard = await _confirmDiscardChanges();
-        if (shouldDiscard && mounted) {
-          Navigator.of(context).pop();
-        }
+        await _handleBack();
       },
       child: Scaffold(
         backgroundColor: Colors.white,
@@ -474,12 +502,11 @@ class _ManageProfileUiState extends State<ManageProfileUi> {
                                 child: Stack(
                                   fit: StackFit.expand,
                                   children: [
-                                    (_profilePictureUrl != null &&
-                                            _profilePictureUrl!.isNotEmpty)
+                                    avatarImage != null
                                         ? Transform.scale(
                                             scale: 1.2,
-                                            child: Image.network(
-                                              _profilePictureUrl!,
+                                            child: Image(
+                                              image: avatarImage,
                                               fit: BoxFit.cover,
                                               errorBuilder: (_, __, ___) =>
                                                   Container(

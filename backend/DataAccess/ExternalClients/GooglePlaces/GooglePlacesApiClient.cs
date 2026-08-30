@@ -24,6 +24,10 @@ public class GooglePlacesApiClient : IPlacesApiClient
     // below. So this whole mask costs exactly what rating alone already cost, and adding any further
     // Pro/Enterprise field is free.
     //
+    // addressComponents, viewport, googleMapsLinks, accessibilityOptions, containingPlaces,
+    // pureServiceAreaBusiness, openingDate, primaryTypeDisplayName and shortFormattedAddress were added
+    // on that basis - all Pro tier, so none of them raise the price of a call that was already Enterprise.
+    //
     // What is NOT free, and is deliberately absent: editorialSummary, reviews, generativeSummary and the
     // amenity flags (servesBreakfast, allowsDogs, outdoorSeating, ...) sit in Enterprise + Atmosphere.
     // Adding any one of them raises the price of EVERY call, including calls that never read it.
@@ -35,7 +39,12 @@ public class GooglePlacesApiClient : IPlacesApiClient
         "places.id,places.displayName,places.primaryType,places.types," +
         "places.location,places.rating,places.userRatingCount,places.priceLevel,places.businessStatus," +
         "places.formattedAddress,places.googleMapsUri,places.websiteUri,places.nationalPhoneNumber," +
-        "places.photos,places.regularOpeningHours";
+        "places.photos,places.regularOpeningHours," +
+        // Everything below is Pro tier or lower - free additions, since rating/userRatingCount/priceLevel/
+        // websiteUri/nationalPhoneNumber/regularOpeningHours above already put the whole call in Enterprise.
+        "places.addressComponents,places.viewport,places.googleMapsLinks,places.accessibilityOptions," +
+        "places.containingPlaces,places.pureServiceAreaBusiness,places.openingDate," +
+        "places.primaryTypeDisplayName,places.shortFormattedAddress";
 
     // How Google decides WHICH places to return when a cell holds more matches than the 20-result cap
     // allows. searchNearby offers only these two orderings; there is no "rank by review count" and no
@@ -193,8 +202,40 @@ public class GooglePlacesApiClient : IPlacesApiClient
             WebsiteUri = dto.WebsiteUri,
             NationalPhoneNumber = dto.NationalPhoneNumber,
             PhotosJson = RawJsonOrNull(dto.Photos),
-            RegularOpeningHoursJson = RawJsonOrNull(dto.RegularOpeningHours)
+            RegularOpeningHoursJson = RawJsonOrNull(dto.RegularOpeningHours),
+            AddressComponentsJson = RawJsonOrNull(dto.AddressComponents),
+            ViewportJson = RawJsonOrNull(dto.Viewport),
+            GoogleMapsLinksJson = RawJsonOrNull(dto.GoogleMapsLinks),
+            AccessibilityOptionsJson = RawJsonOrNull(dto.AccessibilityOptions),
+            ContainingPlacesJson = RawJsonOrNull(dto.ContainingPlaces),
+            PureServiceAreaBusiness = dto.PureServiceAreaBusiness,
+            OpeningDate = ToDateOnly(dto.OpeningDate),
+            PrimaryTypeDisplayName = dto.PrimaryTypeDisplayName?.Text,
+            ShortFormattedAddress = dto.ShortFormattedAddress
         };
+    }
+
+    /// <summary>
+    /// Converts Google's {year, month, day} openingDate object to a DateOnly. Null whenever any part is
+    /// missing or zero - Google's google.type.Date allows a year-only or month/day-only date (0 in the
+    /// unset parts), and DateOnly cannot represent a partial date, so a partial value is dropped rather
+    /// than guessed at.
+    /// </summary>
+    private static DateOnly? ToDateOnly(GoogleDateDto? date)
+    {
+        if (date is not { Year: > 0, Month: > 0, Day: > 0 })
+        {
+            return null;
+        }
+
+        try
+        {
+            return new DateOnly(date.Year.Value, date.Month.Value, date.Day.Value);
+        }
+        catch (ArgumentOutOfRangeException)
+        {
+            return null;
+        }
     }
 
     /// <summary>

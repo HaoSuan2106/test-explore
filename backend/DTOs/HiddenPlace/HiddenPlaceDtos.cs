@@ -71,6 +71,40 @@ public class HiddenPlaceResponseItemDto
     /// </summary>
     public string? RegularOpeningHoursJson { get; set; }
 
+    /// <summary>Google's `addressComponents` array as raw JSON: structured address parts (street,
+    /// locality, admin areas, postal code, ...), each with long/short names and component types.</summary>
+    public string? AddressComponentsJson { get; set; }
+
+    /// <summary>Google's `viewport` object as raw JSON: the low/high lat-lng rectangle that fits the
+    /// place, for sizing and centring a map.</summary>
+    public string? ViewportJson { get; set; }
+
+    /// <summary>Google's `googleMapsLinks` object as raw JSON: ready-made deep links (directions, place
+    /// page, write-a-review, reviews, photos).</summary>
+    public string? GoogleMapsLinksJson { get; set; }
+
+    /// <summary>Google's `accessibilityOptions` object as raw JSON: wheelchair accessibility flags for
+    /// parking, entrance, restroom and seating.</summary>
+    public string? AccessibilityOptionsJson { get; set; }
+
+    /// <summary>Google's `containingPlaces` array as raw JSON: places this one sits inside (e.g. a
+    /// mall).</summary>
+    public string? ContainingPlacesJson { get; set; }
+
+    /// <summary>True when the business has no storefront customers visit (delivery-only, mobile,
+    /// home-based, ...).</summary>
+    public bool? PureServiceAreaBusiness { get; set; }
+
+    /// <summary>The date the place opened for business, when Google has it and it is a complete date.</summary>
+    public DateOnly? OpeningDate { get; set; }
+
+    /// <summary>Localized, human-readable type label (e.g. "Cafe"), distinct from the raw machine-readable
+    /// PrimaryType ("cafe").</summary>
+    public string? PrimaryTypeDisplayName { get; set; }
+
+    /// <summary>A shorter form of FormattedAddress, better suited to list/card layouts.</summary>
+    public string? ShortFormattedAddress { get; set; }
+
     /// <summary>0.0-1.0, higher = more "hidden gem". The response list is already sorted by this, descending.</summary>
     public double HiddenScore { get; set; }
 

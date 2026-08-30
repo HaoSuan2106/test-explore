@@ -51,7 +51,11 @@ final GoRouter appRouter = GoRouter(
     if (!restored) return '/login';
     if (!context.mounted) return null;
 
-    await context.read<ProfileProvider>().loadProfile();
+    final profileProvider = context.read<ProfileProvider>();
+    // Put the cached avatar on screen first — it needs no network, so it is
+    // still there when the profile request below fails offline.
+    await profileProvider.loadCachedAvatar();
+    await profileProvider.loadProfile();
     return '/main';
   },
 

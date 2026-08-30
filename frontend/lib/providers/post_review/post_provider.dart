@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import '../../api_communication/http_client/http_client.dart';
 import '../../models/post_review/post_model.dart';
+import '../session_scoped_provider.dart';
 
 /// UI-facing community post model. Maps from the API [PostSummaryModel].
 class PostModel {
@@ -129,7 +130,7 @@ class UserReportItem {
       );
 }
 
-class PostProvider with ChangeNotifier {
+class PostProvider with ChangeNotifier implements SessionScopedProvider {
   final HttpClient? httpClient;
 
   /// Phase 1 (frontend-only) demo mode: when true, every loader and mutation
@@ -1146,5 +1147,32 @@ class PostProvider with ChangeNotifier {
     if (myIndex != -1) {
       _myPosts[myIndex] = post;
     }
+  }
+
+  /// Drops everything cached for the signed-in user (feed, my posts, comments,
+  /// reports, drafts and search), then re-seeds the demo fallback so the
+  /// provider is usable again for the next session.
+  @override
+  void clearSessionData() {
+    _feedPosts.clear();
+    _myPosts.clear();
+    _userComments.clear();
+    _userReports.clear();
+    _postComments.clear();
+    _searchResults.clear();
+    _likesInFlight.clear();
+    _savesInFlight.clear();
+    _eligibleAttractions = [];
+    _hasEligibleAttractions = false;
+    _searchError = null;
+    _lastSearchQuery = '';
+    _isSearching = false;
+    _errorMessage = null;
+    _activityErrorMessage = null;
+    _isLoading = false;
+    _isActivityLoading = false;
+    clearDraft();
+    _seedFallback();
+    notifyListeners();
   }
 }

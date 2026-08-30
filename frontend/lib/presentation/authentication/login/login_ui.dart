@@ -67,13 +67,25 @@ class _LoginUiState extends State<LoginUi> with SingleTickerProviderStateMixin {
   Future<void> _onLogin() async {
     if (_isSubmitting) return;
 
+    final email = _emailController.text.trim();
+    // Not trimmed: a password may legitimately start or end with a space, and
+    // registration stores it exactly as typed. Trimming here would lock such
+    // an account out permanently.
+    final password = _passwordController.text;
+
+    // A blank field is a failed credential check as far as the user is
+    // concerned. Answer it here rather than round-tripping to the server,
+    // whose model-validation response carries no `message` and so surfaces as
+    // the generic "Something went wrong. Please try again."
+    if (email.isEmpty || password.isEmpty) {
+      _showLoginError('Invalid email or password.');
+      return;
+    }
+
     setState(() => _isSubmitting = true);
 
     final authProvider = context.read<AuthProvider>();
-    final success = await authProvider.login(
-      _emailController.text.trim(),
-      _passwordController.text.trim(),
-    );
+    final success = await authProvider.login(email, password);
 
     if (!mounted) return;
 
@@ -91,10 +103,12 @@ class _LoginUiState extends State<LoginUi> with SingleTickerProviderStateMixin {
         context,
       ).pushReplacement(MaterialPageRoute(builder: (_) => const MainPage()));
     } else {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(authProvider.errorMessage ?? 'Login failed.')),
-      );
+      _showLoginError(authProvider.errorMessage ?? 'Invalid email or password.');
     }
+  }
+
+  void _showLoginError(String message) {
+    ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(message)));
   }
 
   @override

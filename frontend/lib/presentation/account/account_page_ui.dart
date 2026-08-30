@@ -9,6 +9,7 @@ import '../../providers/auth_profile/profile_provider.dart';
 import '../../widgets/animated_tap_button.dart';
 import '../favourite_place/favourite_place_screen.dart';
 import '../navigation/app_navigation.dart';
+import '../../providers/session_scoped_provider.dart';
 
 
 const Color _kOrange = Color(0xFFFF7148);
@@ -19,12 +20,66 @@ const Color _kIconBoxBg = Color(0x1AB41D0E);
 const Color _kLogoutBg = Color(0xFFFFDAD6);
 const Color _kLogoutText = Color(0xFFBA1A1A);
 
-class AccountUI extends StatelessWidget {
+class AccountUI extends StatefulWidget {
   const AccountUI({super.key});
 
   @override
+  State<AccountUI> createState() => _AccountUIState();
+}
+
+class _AccountUIState extends State<AccountUI> {
+  @override
+  void initState() {
+    super.initState();
+    // FR103-01: the Account page is responsible for having the profile, rather
+    // than assuming whoever navigated here already loaded it. The provider
+    // caches, so this is a no-op once the profile is in memory — and it means
+    // a failed load at login can still be recovered from here.
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (mounted) context.read<ProfileProvider>().loadProfile();
+    });
+  }
+
+  Future<void> _retryLoadProfile() =>
+      context.read<ProfileProvider>().loadProfile(forceRefresh: true);
+
+  @override
   Widget build(BuildContext context) {
-    final profile = context.watch<ProfileProvider>().profile;
+    final profileProvider = context.watch<ProfileProvider>();
+    final profile = profileProvider.profile;
+    // Prefers the locally cached copy over the remote URL — see
+    // ProfileProvider.avatarImage.
+    final avatarImage = profileProvider.avatarImage;
+
+    // A load that failed leaves nothing to show — offer a way back instead of
+    // a permanently blank page.
+    if (profile == null && profileProvider.errorMessage != null) {
+      return Scaffold(
+        backgroundColor: Colors.white,
+        body: Center(
+          child: Padding(
+            padding: const EdgeInsets.all(24),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                const Icon(Icons.person_off_outlined, size: 40, color: _kMuted),
+                const SizedBox(height: 12),
+                Text(
+                  profileProvider.errorMessage!,
+                  textAlign: TextAlign.center,
+                  style: const TextStyle(fontSize: 14, color: _kMuted),
+                ),
+                const SizedBox(height: 16),
+                FilledButton(
+                  onPressed: profileProvider.isLoading ? null : _retryLoadProfile,
+                  child: const Text('Try Again'),
+                ),
+              ],
+            ),
+          ),
+        ),
+      );
+    }
 
     return Scaffold(
       backgroundColor: Colors.white,
@@ -145,7 +200,10 @@ class AccountUI extends StatelessWidget {
 
                                 await context.read<AuthProvider>().logout();
                                 if (!context.mounted) return;
-                                context.read<ProfileProvider>().clear();
+                                // FR103-14: drop every provider's cached data,
+                                // not just the profile, so the next person to
+                                // sign in on this device sees none of it.
+                                clearSessionScopedProviders(context);
                                 Navigator.of(context).pushAndRemoveUntil(
                                   MaterialPageRoute(builder: (context) => const LoginUi()),
                                       (route) => false,
@@ -177,11 +235,11 @@ class AccountUI extends StatelessWidget {
                     ],
                   ),
                   clipBehavior: Clip.antiAlias,
-                  child: (profile?.profilePictureUrl != null && profile!.profilePictureUrl!.isNotEmpty)
+                  child: avatarImage != null
                       ? Transform.scale(
                     scale: 1.2,
-                    child: Image.network(
-                      profile.profilePictureUrl!,
+                    child: Image(
+                      image: avatarImage,
                       fit: BoxFit.cover,
                       loadingBuilder: (context, child, progress) {
                         if (progress == null) return child;

@@ -47,6 +47,49 @@ public class HiddenPlace
     /// stored - it is computed per request and would go stale within a day.</summary>
     public string? RegularOpeningHoursJson { get; set; }
 
+    // ---- Added on top of the original field set. All Pro tier or lower - free, since the mask is
+    // already Enterprise. See the FieldMask comment on GooglePlacesApiClient. ----
+
+    /// <summary>Google's `addressComponents` array, stored verbatim in a MySQL json column: structured
+    /// address parts (street, locality, admin areas, postal code, ...), each with long/short names and
+    /// component types. Presentation/filtering detail; not used by the scoring algorithm.</summary>
+    public string? AddressComponentsJson { get; set; }
+
+    /// <summary>Google's `viewport` object, stored verbatim in a MySQL json column: the low/high lat-lng
+    /// rectangle that fits the place, for sizing and centring a map. Presentation detail only.</summary>
+    public string? ViewportJson { get; set; }
+
+    /// <summary>Google's `googleMapsLinks` object, stored verbatim in a MySQL json column: ready-made deep
+    /// links (directions, place page, write-a-review, reviews, photos). Presentation detail only.</summary>
+    public string? GoogleMapsLinksJson { get; set; }
+
+    /// <summary>Google's `accessibilityOptions` object, stored verbatim in a MySQL json column: wheelchair
+    /// accessibility flags for parking, entrance, restroom and seating. Presentation detail only.</summary>
+    public string? AccessibilityOptionsJson { get; set; }
+
+    /// <summary>Google's `containingPlaces` array, stored verbatim in a MySQL json column: places this one
+    /// sits inside (e.g. a mall). Presentation detail only.</summary>
+    public string? ContainingPlacesJson { get; set; }
+
+    /// <summary>True when the business has no storefront customers visit (delivery-only, mobile,
+    /// home-based, ...). Data only for now - NOT yet checked by DiscoverHiddenPlaceService.PassesQualityGate.
+    /// The app's premise is places people travel to, so wiring this into the quality gate (reject when
+    /// true) is the natural next step, deliberately left for a separate change.</summary>
+    public bool? PureServiceAreaBusiness { get; set; }
+
+    /// <summary>The date the place opened for business, when Google has it and it is a complete
+    /// year/month/day. Not yet used by scoring; kept for a future "new vs. long-open but still obscure"
+    /// refinement.</summary>
+    public DateOnly? OpeningDate { get; set; }
+
+    /// <summary>Localized, human-readable type label (e.g. "Cafe"), distinct from the raw machine-readable
+    /// PrimaryType ("cafe"). Presentation detail only.</summary>
+    public string? PrimaryTypeDisplayName { get; set; }
+
+    /// <summary>A shorter form of FormattedAddress, better suited to list/card layouts. Presentation
+    /// detail only.</summary>
+    public string? ShortFormattedAddress { get; set; }
+
     /// <summary>
     /// Whether this row passed DiscoverHiddenPlaceService's stage-1 quality gate (business status,
     /// rating, review count, chain-brand name check) at the time it was fetched from Google. This is

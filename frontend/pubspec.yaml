@@ -41,6 +41,9 @@ dependencies:
   # Local key-value storage, used to remember whether the user has
   # already been through the entry/onboarding screen.
   shared_preferences: ^2.3.3
+  # Resolves the app's private on-device directory, used to keep a downloaded
+  # copy of the signed-in user's avatar so it survives going offline.
+  path_provider: ^2.1.6
   google_fonts: ^8.2.1
 
   dotted_border: ^2.1.0

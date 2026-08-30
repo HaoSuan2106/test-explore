@@ -12,6 +12,7 @@ public interface IManageProfileService
     Task VerifyCurrentEmailVerificationAsync(int userId, VerifyCurrentEmailRequestDto request);
     Task RequestEmailChangeAsync(int userId, RequestEmailChangeRequestDto request);
     Task<UserProfileDto> VerifyEmailChangeAsync(int userId, VerifyEmailChangeRequestDto request);
+    Task CancelEmailChangeAsync(int userId);
     Task RequestPasswordResetCodeAsync(int userId);
     Task VerifyPasswordResetCodeAsync(int userId, VerifyPasswordResetCodeRequestDto request);
     Task VerifyCurrentPasswordAsync(int userId, CheckPasswordRequestDto request);

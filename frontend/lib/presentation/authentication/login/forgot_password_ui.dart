@@ -1,6 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:provider/provider.dart';
+
+import '../../../providers/auth_profile/auth_provider.dart';
+import '../../../widgets/app_feedback.dart';
 import '../../../widgets/content_constraint.dart';
+import '../registration/verify_email_ui.dart';
+import 'reset_password_ui.dart';
 
 const Color _kHeadingColor = Color(0xFF111827);
 const Color _kSubtitleColor = Color(0xFF6B7280);
@@ -22,6 +28,7 @@ class ForgotPasswordUi extends StatefulWidget {
 class _ForgotPasswordUiState extends State<ForgotPasswordUi> {
   final _emailController = TextEditingController();
   String? _emailError;
+  bool _isSubmitting = false;
 
   @override
   void dispose() {
@@ -38,12 +45,76 @@ class _ForgotPasswordUiState extends State<ForgotPasswordUi> {
     return null;
   }
 
-  void _onResetPassword() {
+  /// UC102 FR102-13/FR102-14 — request a reset code, then walk the user
+  /// through verifying it and choosing a new password.
+  Future<void> _onResetPassword() async {
+    if (_isSubmitting) return;
+
     final error = _validateEmail(_emailController.text);
     setState(() => _emailError = error);
     if (error != null) return;
 
-    // TODO: wire up to the forgot-password API.
+    final email = _emailController.text.trim();
+    setState(() => _isSubmitting = true);
+    final authProvider = context.read<AuthProvider>();
+    final requested = await authProvider.requestPasswordReset(email);
+    if (!mounted) return;
+    setState(() => _isSubmitting = false);
+
+    if (!requested) {
+      AppFeedback.show(
+        context,
+        message: authProvider.errorMessage ?? 'Could not send the reset code.',
+        isSuccess: false,
+      );
+      return;
+    }
+
+    // The backend answers the same way whether or not the address has an
+    // account, so the wording here must not imply one exists.
+    AppFeedback.show(
+      context,
+      message: 'If an account exists for that email, a reset code has been sent.',
+    );
+
+    var verifiedCode = '';
+    final codeVerified = await Navigator.of(context).push<bool>(
+      MaterialPageRoute(
+        builder: (_) => VerifyEmailUi(
+          email: email,
+          topBarTitle: 'Reset Password',
+          title: 'Check Your Email',
+          description:
+              "If an account exists for $email, we've sent it a 6-digit code. "
+              'Enter it below to reset your password.',
+          showChangeEmailLink: false,
+          onVerify: (code) async {
+            final ok = await context
+                .read<AuthProvider>()
+                .verifyPasswordResetCode(email, code);
+            if (ok) verifiedCode = code;
+            return ok;
+          },
+          onResend: () =>
+              context.read<AuthProvider>().requestPasswordReset(email),
+          errorMessageOf: () => context.read<AuthProvider>().errorMessage,
+          onVerified: () => Navigator.of(context).pop(true),
+        ),
+      ),
+    );
+
+    if (codeVerified != true || !mounted) return;
+
+    final didReset = await Navigator.of(context).push<bool>(
+      MaterialPageRoute(
+        builder: (_) => ResetPasswordUi(email: email, code: verifiedCode),
+      ),
+    );
+
+    // FR102-22: back to the Login page once the password has been updated.
+    if (didReset == true && mounted) {
+      Navigator.of(context).pop();
+    }
   }
 
   @override
@@ -82,7 +153,7 @@ class _ForgotPasswordUiState extends State<ForgotPasswordUi> {
                   ),
                   const SizedBox(height: 8),
                   Text(
-                    "Enter your email address and we'll send you a link to reset your password.",
+                    "Enter your email address and we'll send you a 6-digit code to reset your password.",
                     textAlign: TextAlign.center,
                     style: GoogleFonts.plusJakartaSans(
                       fontSize: 14,
@@ -157,7 +228,7 @@ class _ForgotPasswordUiState extends State<ForgotPasswordUi> {
                     color: Colors.transparent,
                     child: InkWell(
                       borderRadius: BorderRadius.circular(8),
-                      onTap: _onResetPassword,
+                      onTap: _isSubmitting ? null : _onResetPassword,
                       child: Container(
                         padding: const EdgeInsets.symmetric(vertical: 16),
                         decoration: BoxDecoration(
@@ -165,15 +236,24 @@ class _ForgotPasswordUiState extends State<ForgotPasswordUi> {
                           borderRadius: BorderRadius.circular(8),
                         ),
                         alignment: Alignment.center,
-                        child: Text(
-                          'Reset Password',
-                          style: GoogleFonts.plusJakartaSans(
-                            fontSize: 16,
-                            fontWeight: FontWeight.w700,
-                            color: Colors.white,
-                            height: 24 / 16,
-                          ),
-                        ),
+                        child: _isSubmitting
+                            ? const SizedBox(
+                                width: 20,
+                                height: 20,
+                                child: CircularProgressIndicator(
+                                  strokeWidth: 2,
+                                  color: Colors.white,
+                                ),
+                              )
+                            : Text(
+                                'Reset Password',
+                                style: GoogleFonts.plusJakartaSans(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.w700,
+                                  color: Colors.white,
+                                  height: 24 / 16,
+                                ),
+                              ),
                       ),
                     ),
                   ),

@@ -10,4 +10,7 @@ public interface IAuthProfileService
     Task<LoginResponseDto> LoginAsync(LoginRequestDto request);
     Task<LoginResponseDto> RefreshTokenAsync(RefreshTokenRequestDto request);
     Task LogoutAsync(LogoutRequestDto request);
+    Task RequestPasswordResetAsync(ForgotPasswordRequestDto request);
+    Task VerifyPasswordResetCodeAsync(VerifyForgotPasswordCodeRequestDto request);
+    Task ResetPasswordAsync(ResetPasswordRequestDto request);
 }

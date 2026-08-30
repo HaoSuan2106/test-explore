@@ -394,7 +394,8 @@ class _EditPostScreenState extends State<EditPostScreen> {
     final username = (profile?.username != null && profile!.username.isNotEmpty)
         ? profile.username
         : 'Aisyah Nur';
-    final avatarUrl = profile?.profilePictureUrl;
+    // Locally cached copy when there is one, remote URL otherwise.
+    final avatarImage = context.watch<ProfileProvider>().avatarImage;
 
     return Container(
       padding: const EdgeInsets.all(12),
@@ -407,9 +408,9 @@ class _EditPostScreenState extends State<EditPostScreen> {
         children: [
           ClipRRect(
             borderRadius: AppRadii.roundedFull,
-            child: (avatarUrl != null && avatarUrl.isNotEmpty)
-                ? Image.network(
-              avatarUrl,
+            child: avatarImage != null
+                ? Image(
+              image: avatarImage,
               width: 48,
               height: 48,
               fit: BoxFit.cover,

@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import '../../../providers/auth_profile/auth_provider.dart';
 import '../../../widgets/app_feedback.dart';
@@ -70,10 +69,13 @@ class _VerifyEmailUiState extends State<VerifyEmailUi> {
     super.dispose();
   }
 
+  /// FR101-10 / FR102-14: verification codes are exactly six digits.
   String? _validateCode(String? value) {
     final text = value?.trim() ?? '';
     if (text.isEmpty) return 'Verification code is required';
-    if (!RegExp(r'^\d{4,8}$').hasMatch(text)) return 'Enter a valid verification code';
+    if (!RegExp(r'^\d{6}$').hasMatch(text)) {
+      return 'Enter the 6-digit verification code';
+    }
     return null;
   }
 
@@ -90,6 +92,10 @@ class _VerifyEmailUiState extends State<VerifyEmailUi> {
     FocusManager.instance.primaryFocus?.unfocus();
     setState(() => _isVerifying = true);
 
+    // Captured before the success toast's pause so it survives the async gap
+    // even as this route is being torn down.
+    final navigator = Navigator.of(context);
+
     final code = _codeController.text.trim();
     var success = false;
     try {
@@ -97,22 +103,41 @@ class _VerifyEmailUiState extends State<VerifyEmailUi> {
           ? await widget.onVerify!(code)
           : await context.read<AuthProvider>().verifyEmail(widget.email, code);
     } finally {
-      if (mounted) setState(() => _isVerifying = false);
+      // On success the button stays in its loading state until we navigate
+      // away, so the code can't be submitted a second time during the pause.
+      if (mounted && !success) setState(() => _isVerifying = false);
     }
 
     if (!mounted) return;
 
-    if (success) {
-      if (widget.onVerified != null) {
-        widget.onVerified!();
-      } else {
-        context.go('/login');
-      }
-    } else {
-      _showStatusSnackBar(success: false, message: _errorMessage() ?? 'Verification failed.');
+    if (!success) {
       AppFeedback.show(context,
           message: _errorMessage() ?? 'Verification failed.', isSuccess: false);
+      return;
     }
+
+    if (widget.onVerified != null) {
+      setState(() => _isVerifying = false);
+      widget.onVerified!();
+      return;
+    }
+
+    // FR101 registration flow: confirm the account is created, then hand the
+    // user back to Login to sign in with it.
+    AppFeedback.show(context,
+        message: 'Registration successful! Please log in to continue.');
+
+    // The toast lives in the root overlay, so it stays on screen across the
+    // route change — this pause just lets it land here before Login appears.
+    await Future.delayed(const Duration(milliseconds: 900));
+    if (!mounted) return;
+
+    // Register and Verify were pushed imperatively (plain Navigator.push) on
+    // top of the /login page, so the router's location never left /login —
+    // popping those two routes is what actually reveals Login again. Don't
+    // also go('/login'): rebuilding the page stack underneath routes that are
+    // being removed is what left the screen black.
+    navigator.popUntil((route) => route.isFirst);
   }
 
   Future<void> _onResendVerificationCode() async {
@@ -126,65 +151,13 @@ class _VerifyEmailUiState extends State<VerifyEmailUi> {
     if (!mounted) return;
     setState(() => _isResending = false);
 
-    _showStatusSnackBar(
-      success: success,
-      message: success ? 'A new verification code has been sent.' : (_errorMessage() ?? 'Could not resend code.'),
+    AppFeedback.show(
+      context,
+      message: success
+          ? 'A new verification code has been sent.'
+          : (_errorMessage() ?? 'Could not resend code.'),
+      isSuccess: success,
     );
-  }
-
-  void _showStatusSnackBar({required bool success, required String message}) {
-    final accentColor = success ? _kAccentOrange : const Color(0xFFD64545);
-
-    ScaffoldMessenger.of(context)
-      ..hideCurrentSnackBar()
-      ..showSnackBar(
-        SnackBar(
-          behavior: SnackBarBehavior.floating,
-          backgroundColor: Colors.transparent,
-          elevation: 0,
-          duration: const Duration(seconds: 3),
-          margin: const EdgeInsets.fromLTRB(20, 0, 20, 24),
-          padding: EdgeInsets.zero,
-          content: Container(
-            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
-            decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.circular(14),
-              border: Border.all(color: accentColor.withValues(alpha: 0.25)),
-              boxShadow: [
-                BoxShadow(color: Colors.black.withValues(alpha: 0.08), offset: const Offset(0, 4), blurRadius: 16),
-              ],
-            ),
-            child: Row(
-              children: [
-                Container(
-                  width: 32,
-                  height: 32,
-                  alignment: Alignment.center,
-                  decoration: BoxDecoration(color: accentColor.withValues(alpha: 0.15), shape: BoxShape.circle),
-                  child: Icon(
-                    success ? Icons.mark_email_read_outlined : Icons.error_outline,
-                    size: 18,
-                    color: accentColor,
-                  ),
-                ),
-                const SizedBox(width: 12),
-                Expanded(
-                  child: Text(
-                    message,
-                    style: GoogleFonts.plusJakartaSans(fontSize: 13, fontWeight: FontWeight.w600, color: _kTextBrown),
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ),
-      );
-    AppFeedback.show(context,
-        message: success
-            ? 'A new verification code has been sent.'
-            : _errorMessage() ?? 'Could not resend code.',
-        isSuccess: success);
   }
 
   void _onChangeEmail() {
@@ -283,7 +256,7 @@ class _VerifyEmailUiState extends State<VerifyEmailUi> {
                         textInputAction: TextInputAction.done,
                         inputFormatters: [
                           FilteringTextInputFormatter.digitsOnly,
-                          LengthLimitingTextInputFormatter(8),
+                          LengthLimitingTextInputFormatter(6),
                         ],
                         textAlign: TextAlign.center,
                         onChanged: (value) => setState(() => _codeError = _validateCode(value)),

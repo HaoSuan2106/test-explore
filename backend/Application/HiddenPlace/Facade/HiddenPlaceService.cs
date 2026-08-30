@@ -302,6 +302,15 @@ public class HiddenPlaceService : IHiddenPlaceService
         NationalPhoneNumber = place.NationalPhoneNumber,
         PhotosJson = place.PhotosJson,
         RegularOpeningHoursJson = place.RegularOpeningHoursJson,
+        AddressComponentsJson = place.AddressComponentsJson,
+        ViewportJson = place.ViewportJson,
+        GoogleMapsLinksJson = place.GoogleMapsLinksJson,
+        AccessibilityOptionsJson = place.AccessibilityOptionsJson,
+        ContainingPlacesJson = place.ContainingPlacesJson,
+        PureServiceAreaBusiness = place.PureServiceAreaBusiness,
+        OpeningDate = place.OpeningDate,
+        PrimaryTypeDisplayName = place.PrimaryTypeDisplayName,
+        ShortFormattedAddress = place.ShortFormattedAddress,
         PassedQualityGate = _discoverHiddenPlaceService.PassesQualityGate(place)
     };
 
@@ -321,7 +330,16 @@ public class HiddenPlaceService : IHiddenPlaceService
         WebsiteUri = entity.WebsiteUri,
         NationalPhoneNumber = entity.NationalPhoneNumber,
         PhotosJson = entity.PhotosJson,
-        RegularOpeningHoursJson = entity.RegularOpeningHoursJson
+        RegularOpeningHoursJson = entity.RegularOpeningHoursJson,
+        AddressComponentsJson = entity.AddressComponentsJson,
+        ViewportJson = entity.ViewportJson,
+        GoogleMapsLinksJson = entity.GoogleMapsLinksJson,
+        AccessibilityOptionsJson = entity.AccessibilityOptionsJson,
+        ContainingPlacesJson = entity.ContainingPlacesJson,
+        PureServiceAreaBusiness = entity.PureServiceAreaBusiness,
+        OpeningDate = entity.OpeningDate,
+        PrimaryTypeDisplayName = entity.PrimaryTypeDisplayName,
+        ShortFormattedAddress = entity.ShortFormattedAddress
     };
 
     private static HiddenPlaceResponseItemDto MapToResponseDto(
@@ -347,6 +365,15 @@ public class HiddenPlaceService : IHiddenPlaceService
             NationalPhoneNumber = result.Place.NationalPhoneNumber,
             PhotosJson = result.Place.PhotosJson,
             RegularOpeningHoursJson = result.Place.RegularOpeningHoursJson,
+            AddressComponentsJson = result.Place.AddressComponentsJson,
+            ViewportJson = result.Place.ViewportJson,
+            GoogleMapsLinksJson = result.Place.GoogleMapsLinksJson,
+            AccessibilityOptionsJson = result.Place.AccessibilityOptionsJson,
+            ContainingPlacesJson = result.Place.ContainingPlacesJson,
+            PureServiceAreaBusiness = result.Place.PureServiceAreaBusiness,
+            OpeningDate = result.Place.OpeningDate,
+            PrimaryTypeDisplayName = result.Place.PrimaryTypeDisplayName,
+            ShortFormattedAddress = result.Place.ShortFormattedAddress,
             HiddenScore = result.HiddenScore,
 
             // The two halves the blended score is made of. Carried through so the client can explain a

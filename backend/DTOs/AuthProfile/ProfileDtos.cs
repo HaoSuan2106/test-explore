@@ -24,15 +24,23 @@ public class UserProfileSummaryDto
 public class UpdateProfileRequestDto
 {
     [Required, MinLength(3), MaxLength(30)]
+    [RegularExpression(@"^[a-zA-Z0-9_ ]+$",
+        ErrorMessage = "Username may only contain letters, numbers, spaces and underscores.")]
     public string Username { get; init; } = string.Empty;
 
+    // City, Age and Gender are optional: the profile can be saved with any of
+    // them left blank, and clearing one is how the user removes it. The rules
+    // below only constrain a value that was actually supplied — null skips
+    // every validation attribute except [Required], which is why none is used.
     [MaxLength(100)]
     public string? City { get; init; }
 
-    [Range(1, 120)]
+    [Range(13, 120, ErrorMessage = "Age must be between 13 and 120.")]
     public int? Age { get; init; }
 
     [MaxLength(30)]
+    [RegularExpression("^(Male|Female|Prefer not to say)$",
+        ErrorMessage = "Gender must be one of the available options.")]
     public string? Gender { get; init; }
 }
 
@@ -47,19 +55,22 @@ public class VerifyEmailChangeRequestDto
     [Required, EmailAddress]
     public string NewEmail { get; init; } = string.Empty;
 
-    [Required, MinLength(4), MaxLength(8)]
+    [Required, RegularExpression(VerificationCodeRules.Pattern,
+        ErrorMessage = VerificationCodeRules.ErrorMessage)]
     public string Code { get; init; } = string.Empty;
 }
 
 public class VerifyCurrentEmailRequestDto
 {
-    [Required, MinLength(4), MaxLength(8)]
+    [Required, RegularExpression(VerificationCodeRules.Pattern,
+        ErrorMessage = VerificationCodeRules.ErrorMessage)]
     public string Code { get; init; } = string.Empty;
 }
 
 public class VerifyPasswordResetCodeRequestDto
 {
-    [Required, MinLength(4), MaxLength(8)]
+    [Required, RegularExpression(VerificationCodeRules.Pattern,
+        ErrorMessage = VerificationCodeRules.ErrorMessage)]
     public string Code { get; init; } = string.Empty;
 }
 
@@ -76,9 +87,7 @@ public class UpdatePasswordRequestDto
     public string? ResetCode { get; init; }
 
     [Required, MinLength(8)]
-    [RegularExpression(
-        @"^(?=.*\d)(?=.*[^A-Za-z0-9\s]).{8,}$",
-        ErrorMessage = "Password must be at least 8 characters and include a number and a symbol.")]
+    [RegularExpression(PasswordPolicy.Pattern, ErrorMessage = PasswordPolicy.ErrorMessage)]
     public string NewPassword { get; init; } = string.Empty;
 }
 

@@ -1,0 +1,123 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="390" height="800" viewBox="0 0 390 800" font-family="Plus Jakarta Sans, sans-serif">
+  <defs>
+    <symbol id="pin" viewBox="0 0 24 24">
+      <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z"/>
+    </symbol>
+  </defs>
+
+  <g id="Background">
+    <rect width="390" height="800" fill="#FFFFFF"/>
+    <g id="Decorative map pins" opacity="0.45">
+      <use href="#pin" x="232" y="96" width="20" height="20" fill="#FF7148" opacity="0.55"/>
+      <use href="#pin" x="52" y="196" width="16" height="16" fill="#9FD3D8" opacity="0.7"/>
+      <use href="#pin" x="248" y="300" width="18" height="18" fill="#FF7148" opacity="0.45"/>
+      <use href="#pin" x="222" y="318" width="14" height="14" fill="#F5C77E" opacity="0.7"/>
+      <use href="#pin" x="352" y="474" width="14" height="14" fill="#F5C77E" opacity="0.6"/>
+      <use href="#pin" x="98" y="556" width="12" height="12" fill="#FF7148" opacity="0.3"/>
+      <use href="#pin" x="360" y="668" width="14" height="14" fill="#FF7148" opacity="0.4"/>
+      <use href="#pin" x="312" y="712" width="16" height="16" fill="#9FD3D8" opacity="0.6"/>
+      <use href="#pin" x="356" y="748" width="14" height="14" fill="#FF7148" opacity="0.35"/>
+    </g>
+  </g>
+
+  <g id="Top bar">
+    <g id="Back arrow" fill="none" stroke="#AB3510" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M28 32 H40"/>
+      <path d="M33 27 L28 32 L33 37"/>
+    </g>
+    <text x="56" y="38" font-size="16" font-weight="400" fill="#AB3510">Login</text>
+  </g>
+
+  <g id="Header">
+    <text x="195" y="105" font-size="16" font-weight="700" fill="#FF7148" text-anchor="middle">Create Account</text>
+    <text x="195" y="131" font-size="14" font-weight="400" fill="#59413B" text-anchor="middle">Join our community of explorers and start your</text>
+    <text x="195" y="151" font-size="14" font-weight="400" fill="#59413B" text-anchor="middle">adventure.</text>
+  </g>
+
+  <g id="Field / Username">
+    <text x="24" y="201" font-size="14" font-weight="600" fill="#59413B">Username</text>
+    <rect x="20" y="210" width="350" height="48" rx="12" fill="#FFFFFF" stroke="#DCE3ED"/>
+    <g id="Icon person" fill="none" stroke="#727880" stroke-width="1.5" stroke-linecap="round">
+      <circle cx="45" cy="230" r="3.5"/>
+      <path d="M39 241c0-3.3 2.7-5 6-5s6 1.7 6 5"/>
+    </g>
+    <text x="66" y="239" font-size="14" font-weight="400" fill="#6B7280">Choose a travel alias</text>
+  </g>
+
+  <g id="Field / Email Address">
+    <text x="24" y="287" font-size="14" font-weight="600" fill="#59413B">Email Address</text>
+    <rect x="20" y="296" width="350" height="48" rx="12" fill="#FFFFFF" stroke="#DCE3ED"/>
+    <g id="Icon mail" fill="none" stroke="#727880" stroke-width="1.5" stroke-linejoin="round">
+      <rect x="37" y="313" width="16" height="12" rx="2"/>
+      <path d="M37 315l8 5 8-5"/>
+    </g>
+    <text x="66" y="325" font-size="14" font-weight="400" fill="#6B7280">yourname@example.com</text>
+  </g>
+
+  <g id="Field / Password">
+    <text x="24" y="373" font-size="14" font-weight="600" fill="#59413B">Password</text>
+    <rect x="20" y="382" width="350" height="48" rx="12" fill="#FFFFFF" stroke="#DCE3ED"/>
+    <g id="Icon lock" fill="none" stroke="#727880" stroke-width="1.5" stroke-linejoin="round">
+      <rect x="39" y="404" width="12" height="9" rx="2"/>
+      <path d="M42 404v-2.5a3 3 0 016 0V404"/>
+    </g>
+    <text x="66" y="411" font-size="14" font-weight="400" fill="#6B7280">••••••••</text>
+    <g id="Icon eye off" fill="none" stroke="#727880" stroke-width="1.5" stroke-linecap="round">
+      <path d="M336 406c2.5-3.5 5.5-5 8-5s5.5 1.5 8 5c-2.5 3.5-5.5 5-8 5s-5.5-1.5-8-5z"/>
+      <circle cx="344" cy="406" r="2"/>
+      <path d="M337 399l14 14"/>
+    </g>
+  </g>
+
+  <g id="Password requirements">
+    <g id="Requirement 1">
+      <circle cx="27" cy="445" r="7" fill="none" stroke="#64748B" stroke-width="1.5"/>
+      <text x="42" y="449" font-size="12" font-weight="400" fill="#64748B">At least 8 characters</text>
+    </g>
+    <g id="Requirement 2">
+      <circle cx="27" cy="463" r="7" fill="none" stroke="#64748B" stroke-width="1.5"/>
+      <text x="42" y="467" font-size="12" font-weight="400" fill="#64748B">Contains an uppercase letter</text>
+    </g>
+    <g id="Requirement 3">
+      <circle cx="27" cy="481" r="7" fill="none" stroke="#64748B" stroke-width="1.5"/>
+      <text x="42" y="485" font-size="12" font-weight="400" fill="#64748B">Contains a lowercase letter</text>
+    </g>
+    <g id="Requirement 4">
+      <circle cx="27" cy="499" r="7" fill="none" stroke="#64748B" stroke-width="1.5"/>
+      <text x="42" y="503" font-size="12" font-weight="400" fill="#64748B">Contains a number</text>
+    </g>
+    <g id="Requirement 5">
+      <circle cx="27" cy="517" r="7" fill="none" stroke="#64748B" stroke-width="1.5"/>
+      <text x="42" y="521" font-size="12" font-weight="400" fill="#64748B">Contains a symbol</text>
+    </g>
+  </g>
+
+  <g id="Field / Confirm Password">
+    <text x="24" y="573" font-size="14" font-weight="600" fill="#59413B">Confirm Password</text>
+    <rect x="20" y="582" width="350" height="48" rx="12" fill="#FFFFFF" stroke="#DCE3ED"/>
+    <g id="Icon shield" fill="none" stroke="#727880" stroke-width="1.5" stroke-linejoin="round">
+      <path d="M45 598l6 2.5v4c0 3.5-2.5 6-6 7.5-3.5-1.5-6-4-6-7.5v-4z"/>
+    </g>
+    <text x="66" y="611" font-size="14" font-weight="400" fill="#6B7280">••••••••</text>
+    <g id="Icon eye off 2" fill="none" stroke="#727880" stroke-width="1.5" stroke-linecap="round">
+      <path d="M336 606c2.5-3.5 5.5-5 8-5s5.5 1.5 8 5c-2.5 3.5-5.5 5-8 5s-5.5-1.5-8-5z"/>
+      <circle cx="344" cy="606" r="2"/>
+      <path d="M337 599l14 14"/>
+    </g>
+  </g>
+
+  <g id="Button / Continue">
+    <rect x="20" y="650" width="350" height="50" rx="25" fill="#FF7148"/>
+    <text x="184" y="680" font-size="14" font-weight="600" fill="#FFFFFF" text-anchor="middle">Continue</text>
+    <g id="Icon arrow forward" fill="none" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M216 675h12"/>
+      <path d="M223 670l5 5-5 5"/>
+    </g>
+  </g>
+
+  <g id="Footer / Back to login">
+    <text x="195" y="746" font-size="14" text-anchor="middle">
+      <tspan font-weight="400" fill="#59413B">Already have an account? </tspan><tspan font-weight="700" fill="#AB3510">Back to Login</tspan>
+    </text>
+  </g>
+</svg>

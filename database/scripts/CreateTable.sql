@@ -102,6 +102,26 @@ CREATE TABLE IF NOT EXISTS hidden_place_cache (
     -- periods to compute "open now". The standard weekly pattern only - not
     -- currentOpeningHours, which is per-request and would go stale in a day.
     regular_opening_hours_json JSON DEFAULT NULL,
+
+    -- Added on top of the original set. All Pro tier or lower in the Places API
+    -- SKU, so free given the mask is already Enterprise (see the FieldMask
+    -- comment on GooglePlacesApiClient). Presentation detail, except
+    -- pure_service_area_business, which is a candidate signal for the
+    -- discovery quality gate but is not wired into it yet.
+    address_components_json JSON DEFAULT NULL,
+    viewport_json JSON DEFAULT NULL,
+    google_maps_links_json JSON DEFAULT NULL,
+    accessibility_options_json JSON DEFAULT NULL,
+    containing_places_json JSON DEFAULT NULL,
+    -- True when the business has no storefront customers visit (delivery-only,
+    -- mobile, home-based, ...). Data only for now - not yet checked by the
+    -- discovery quality gate (backend/.../DiscoverHiddenPlaceService.cs).
+    pure_service_area_business BOOLEAN DEFAULT NULL,
+    -- Date the place opened, when Google has a complete year/month/day for it.
+    opening_date DATE DEFAULT NULL,
+    primary_type_display_name VARCHAR(100) DEFAULT NULL,
+    short_formatted_address VARCHAR(500) DEFAULT NULL,
+
     -- Whether the row passed the stage-1 quality gate (business status, rating,
     -- review count, chain-brand name check) at the time it was fetched. This is
     -- the ABSOLUTE part of the algorithm only - the relative HiddenScore is

@@ -24,6 +24,18 @@ class PasswordRequirements extends StatelessWidget {
         ),
         const SizedBox(height: 4),
         _Requirement(
+          label: 'Contains an uppercase letter',
+          isMet: PasswordPolicy.hasUppercase(password),
+          enabled: enabled,
+        ),
+        const SizedBox(height: 4),
+        _Requirement(
+          label: 'Contains a lowercase letter',
+          isMet: PasswordPolicy.hasLowercase(password),
+          enabled: enabled,
+        ),
+        const SizedBox(height: 4),
+        _Requirement(
           label: 'Contains a number',
           isMet: PasswordPolicy.hasNumber(password),
           enabled: enabled,

@@ -114,6 +114,71 @@ public class GooglePlaceDto
     /// "open now" on the client. Raw JSON for the same reason as Photos.</summary>
     [JsonPropertyName("regularOpeningHours")]
     public JsonElement? RegularOpeningHours { get; init; }
+
+    // ---- Added on top of the original mask. All Pro tier or lower, so free given the mask is already
+    // Enterprise - see the FieldMask comment in GooglePlacesApiClient. ----
+
+    /// <summary>Structured postal address components (street, locality, admin areas, postal code, ...),
+    /// each with a long name, short name, the applicable component types and a language code. Raw JSON -
+    /// same reasoning as Photos: the client is the only consumer and the shape is Google's to define.</summary>
+    [JsonPropertyName("addressComponents")]
+    public JsonElement? AddressComponents { get; init; }
+
+    /// <summary>The rectangle (low/high lat-lng) that fits the place - used to size and centre a map.
+    /// Raw JSON, same reasoning as Photos.</summary>
+    [JsonPropertyName("viewport")]
+    public JsonElement? Viewport { get; init; }
+
+    /// <summary>Ready-made deep links (directions, place page, write-a-review, reviews, photos), so the
+    /// client doesn't have to build them from googleMapsUri. Raw JSON, same reasoning as Photos.</summary>
+    [JsonPropertyName("googleMapsLinks")]
+    public JsonElement? GoogleMapsLinks { get; init; }
+
+    /// <summary>Wheelchair accessibility flags for parking, entrance, restroom and seating. Raw JSON,
+    /// same reasoning as Photos.</summary>
+    [JsonPropertyName("accessibilityOptions")]
+    public JsonElement? AccessibilityOptions { get; init; }
+
+    /// <summary>Places this one sits inside (e.g. the mall or building housing it) - useful for locating
+    /// a place described as "inside X". Raw JSON, same reasoning as Photos.</summary>
+    [JsonPropertyName("containingPlaces")]
+    public JsonElement? ContainingPlaces { get; init; }
+
+    /// <summary>True when the business has no storefront customers visit (delivery-only, mobile,
+    /// home-based, ...). The app's premise is places people travel to, so this is a quality-gate signal,
+    /// not presentation detail.</summary>
+    [JsonPropertyName("pureServiceAreaBusiness")]
+    public bool? PureServiceAreaBusiness { get; init; }
+
+    /// <summary>The date the place opened for business, when Google has it. Distinguishes "new, so few
+    /// reviews yet" from "been open a while and still obscure" - the latter is the more interesting kind
+    /// of hidden gem. See GooglePlacesApiClient.ToDateOnly for how the {year, month, day} shape here is
+    /// turned into a DateOnly.</summary>
+    [JsonPropertyName("openingDate")]
+    public GoogleDateDto? OpeningDate { get; init; }
+
+    /// <summary>Localized, human-readable type label (e.g. "Cafe" vs. the raw primaryType "cafe"), ready
+    /// to show in the UI without a client-side type-to-label table.</summary>
+    [JsonPropertyName("primaryTypeDisplayName")]
+    public LocalizedTextDto? PrimaryTypeDisplayName { get; init; }
+
+    /// <summary>A shorter form of formattedAddress, better suited to list/card layouts.</summary>
+    [JsonPropertyName("shortFormattedAddress")]
+    public string? ShortFormattedAddress { get; init; }
+}
+
+/// <summary>Wire shape of Google's google.type.Date: a possibly-partial calendar date (year/month/day can
+/// each be 0 when Google doesn't know that part). See GooglePlacesApiClient.ToDateOnly.</summary>
+public class GoogleDateDto
+{
+    [JsonPropertyName("year")]
+    public int? Year { get; init; }
+
+    [JsonPropertyName("month")]
+    public int? Month { get; init; }
+
+    [JsonPropertyName("day")]
+    public int? Day { get; init; }
 }
 
 public class LocalizedTextDto

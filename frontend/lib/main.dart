@@ -17,33 +17,62 @@ import 'providers/hidden_place/hidden_place_provider.dart';
 import 'presentation/navigation/app_router.dart';
 import 'providers/foot_tracker/navigation_provider.dart';
 import 'providers/hidden_place/review_provider.dart';
+import 'providers/session_scoped_provider.dart';
 
 void main() {
   runApp(const ExploreMYApp());
 }
 
-class ExploreMYApp extends StatelessWidget {
+class ExploreMYApp extends StatefulWidget {
   const ExploreMYApp({super.key});
 
   @override
+  State<ExploreMYApp> createState() => _ExploreMYAppState();
+}
+
+class _ExploreMYAppState extends State<ExploreMYApp> {
+  static const _secureStorage = SecureStorageService();
+
+  late final HttpClient _httpClient;
+  late final AuthProvider _authProvider;
+  late final ProfileProvider _profileProvider;
+
+  @override
+  void initState() {
+    super.initState();
+    _httpClient = HttpClient(secureStorage: _secureStorage);
+    _authProvider =
+        AuthProvider(httpClient: _httpClient, secureStorage: _secureStorage);
+    _profileProvider = ProfileProvider(httpClient: _httpClient);
+
+    // FR102-12: a session that can no longer be refreshed (expired, revoked or
+    // suspended mid-use) must not leave the user sitting on signed-in screens
+    // — drop the cached data and send them back to Login.
+    _httpClient.onSessionExpired = _handleSessionExpired;
+  }
+
+  Future<void> _handleSessionExpired() async {
+    await _authProvider.handleSessionExpired();
+
+    final context = rootNavigatorKey.currentContext;
+    if (context != null && context.mounted) {
+      clearSessionScopedProviders(context);
+    } else {
+      _profileProvider.clearSessionData();
+    }
+
+    appRouter.go('/login');
+  }
+
+  @override
   Widget build(BuildContext context) {
-    const secureStorage = SecureStorageService();
-    final httpClient = HttpClient(secureStorage: secureStorage);
+    final httpClient = _httpClient;
 
     return MultiProvider(
       providers: [
 
-        ChangeNotifierProvider(
-          create: (_) => AuthProvider(
-            httpClient: httpClient,
-            secureStorage: secureStorage,
-          ),
-        ),
-        ChangeNotifierProvider(
-          create: (_) => ProfileProvider(
-            httpClient: httpClient,
-          ),
-        ),
+        ChangeNotifierProvider.value(value: _authProvider),
+        ChangeNotifierProvider.value(value: _profileProvider),
         ChangeNotifierProvider(
           create: (_) => FavouriteProvider(httpClient: httpClient),
         ),

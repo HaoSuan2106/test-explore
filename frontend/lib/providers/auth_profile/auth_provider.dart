@@ -105,18 +105,98 @@ class AuthProvider extends ChangeNotifier {
     return 'Something went wrong. Please try again.';
   }
 
+  /// Activates a pending account with the emailed code (FR101-18).
+  ///
+  /// The backend hands back a session with the response, but registration ends
+  /// at the Login page (FR101-19) — so the tokens are deliberately discarded
+  /// rather than stored. Keeping them would leave a live session on the device
+  /// that nobody ever logged into, and the next app launch would silently
+  /// auto-restore it.
   Future<bool> verifyEmail(String email, String code) async {
     isLoading = true;
     errorMessage = null;
     notifyListeners();
 
     try {
-      final response = await _httpClient.verifyEmail(VerifyEmailRequest(email: email, code: code));
-      await _secureStorage.saveTokens(
-        accessToken: response.token,
-        refreshToken: response.refreshToken,
+      await _httpClient.verifyEmail(VerifyEmailRequest(email: email, code: code));
+      await _secureStorage.clearTokens();
+      status = AuthStatus.unauthenticated;
+      return true;
+    } on DioException catch (e) {
+      errorMessage = _messageFor(e);
+      return false;
+    } finally {
+      isLoading = false;
+      notifyListeners();
+    }
+  }
+
+  /// Marks the session as gone after the stored refresh token stopped working
+  /// (expired, revoked, or the account was suspended). Any locally stored
+  /// tokens have already been dropped by the HTTP layer at this point.
+  Future<void> handleSessionExpired() async {
+    if (status == AuthStatus.unauthenticated) return;
+
+    await _secureStorage.clearTokens();
+    status = AuthStatus.unauthenticated;
+    errorMessage = null;
+    notifyListeners();
+  }
+
+  /// UC102 FR102-13 — asks for a reset code to be emailed from the signed-out
+  /// Forgot Password screen.
+  Future<bool> requestPasswordReset(String email) async {
+    isLoading = true;
+    errorMessage = null;
+    notifyListeners();
+
+    try {
+      await _httpClient.requestPasswordReset(email);
+      return true;
+    } on DioException catch (e) {
+      errorMessage = _messageFor(e);
+      return false;
+    } finally {
+      isLoading = false;
+      notifyListeners();
+    }
+  }
+
+  /// FR102-17 — validates the emailed reset code before a new password may be
+  /// entered.
+  Future<bool> verifyPasswordResetCode(String email, String code) async {
+    isLoading = true;
+    errorMessage = null;
+    notifyListeners();
+
+    try {
+      await _httpClient.verifyForgotPasswordCode(email, code);
+      return true;
+    } on DioException catch (e) {
+      errorMessage = _messageFor(e);
+      return false;
+    } finally {
+      isLoading = false;
+      notifyListeners();
+    }
+  }
+
+  /// FR102-20 — stores the new password against the verified reset code.
+  Future<bool> resetPassword({
+    required String email,
+    required String code,
+    required String newPassword,
+  }) async {
+    isLoading = true;
+    errorMessage = null;
+    notifyListeners();
+
+    try {
+      await _httpClient.resetPassword(
+        email: email,
+        code: code,
+        newPassword: newPassword,
       );
-      status = AuthStatus.authenticated;
       return true;
     } on DioException catch (e) {
       errorMessage = _messageFor(e);

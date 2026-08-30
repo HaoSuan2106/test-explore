@@ -3,6 +3,7 @@ import 'package:flutter/foundation.dart';
 import '../../api_communication/http_client/http_client.dart';
 import '../../models/hidden_place/hidden_place_model.dart';
 import '../../models/hidden_place/recommended_place_model.dart';
+import '../session_scoped_provider.dart';
 
 /// Surfaces the backend's actual error message when one is present, matching
 /// the team pattern used in auth_provider.dart / profile_provider.dart.
@@ -25,7 +26,7 @@ String? _messageFor(DioException e) {
 /// - every loader/mutation uses the same skeleton:
 ///   set loading -> clear error -> notifyListeners
 ///   -> try / on DioException / finally
-class HiddenPlaceProvider extends ChangeNotifier {
+class HiddenPlaceProvider extends ChangeNotifier implements SessionScopedProvider {
   HiddenPlaceProvider({required HttpClient httpClient}) : _httpClient = httpClient;
 
   final HttpClient _httpClient;
@@ -283,5 +284,17 @@ class HiddenPlaceProvider extends ChangeNotifier {
       isLoading = false;
       notifyListeners();
     }
+  }
+
+  @override
+  void clearSessionData() {
+    places = [];
+    publishedPlaces = [];
+    _userRecommendations.clear();
+    isLoading = false;
+    errorMessage = null;
+    isDiscoverLoading = false;
+    discoverErrorMessage = null;
+    notifyListeners();
   }
 }
