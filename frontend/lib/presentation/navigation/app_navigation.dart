@@ -4,6 +4,8 @@ import 'package:go_router/go_router.dart';
 import '../post_review/status/loading_state_screen.dart';
 import '../recommend_new_place/modals/withdraw_recommendation_modal.dart';
 import '../recommend_new_place/recommend_place_draft.dart';
+import '../recommend_new_place/recommendation_success_screen.dart';
+import '../../models/hidden_place/recommended_place_model.dart';
 
 class AppNavigation {
   /// Navigate to Main Shell
@@ -60,19 +62,32 @@ class AppNavigation {
     context.push('/profile/recommended-places');
   }
 
-  /// Open Recommended Place Details
-  static void toRecommendedPlaceDetails(
-      BuildContext context, {
-        required String placeId,
-        bool isUnderVoting = true,
-      }) {
-    final status = isUnderVoting ? 'under-voting' : 'verified';
-    context.push('/places/details/$status?placeId=$placeId');
-  }
-
   /// Open Recommend New Place Form (STEP 1 — Place Details)
   static void toRecommendPlace(BuildContext context) {
     context.push('/places/recommend');
+  }
+
+  /// Open the wizard pre-filled for editing an existing recommendation.
+  /// The draft carries the existing data and the [editingSubmissionId] so the
+  /// review screen branches to PUT instead of POST.
+  static void toEditRecommendation(
+      BuildContext context, {
+        required RecommendedPlaceModel place,
+      }) {
+    // The existing photos (public URLs already stored in photosJson) are
+    // carried into the wizard verbatim. They are NEVER re-uploaded or
+    // re-downloaded; they only disappear if the user explicitly removes them.
+    context.push('/places/recommend', extra: RecommendPlaceDraft(
+      name: place.name,
+      primaryType: place.primaryType,
+      description: place.description,
+      latitude: place.latitude,
+      longitude: place.longitude,
+      priceLevel: place.priceLevel,
+      businessStatus: place.businessStatus,
+      photoPaths: place.photosJson ?? const [],
+      editingSubmissionId: place.id,
+    ));
   }
 
   /// Open STEP 2 — Direct Map Location (fixed center pin, drag map)
@@ -99,9 +114,41 @@ class AppNavigation {
     context.push('/places/recommend/review', extra: draft);
   }
 
-  /// Open Recommendation Success (replaces the review screen in the stack)
-  static void toRecommendationSuccess(BuildContext context) {
-    context.pushReplacement('/places/recommend/success');
+  /// Open Recommendation Success — a completed flow terminal screen.
+  ///
+  /// Pops the wizard stack (Step 1 → Step 2 → Step 3 → Review) back to the
+  /// process parent (My Recommended Places), then pushes the Success terminal
+  /// on top. System back / edge-swipe from Success therefore returns to My
+  /// Recommended Places — never a wizard step, Profile, or app exit.
+  ///
+  /// Contrast with the original `go()` design, which replaced the entire stack
+  /// with a single Success route and made system back exit the app. The
+  /// requirement (R1/R2/G) explicitly mandates back → My Recommended Places,
+  /// so the requirement supersedes the earlier design intent.
+  ///
+  /// [submissionId] is the recommendation's identifier returned by the submit /
+  /// update API — carried as route `extra` so the Success screen can offer a
+  /// direct "View Recommendation" link to its Details page.
+  ///
+  /// [isUpdate] distinguishes an edited recommendation ("updated successfully")
+  /// from a brand-new submission ("submitted"), so the terminal copy and the
+  /// return flow match what actually happened.
+  static void toRecommendationSuccess(
+      BuildContext context, {
+        String? submissionId,
+        bool isUpdate = false,
+      }) {
+    final navigator = Navigator.of(context);
+    // Pop the wizard stack (Step 1 → Review) back to the process parent
+    // (My Recommended Places), keeping the parent on the stack so that system
+    // back / edge-swipe from Success returns there.
+    navigator.popUntil((route) =>
+        route.settings.name == '/profile/recommended-places' || route.isFirst);
+    context.push('/places/recommend/success',
+        extra: RecommendationSuccessArgs(
+          submissionId: submissionId,
+          isUpdate: isUpdate,
+        ));
   }
 
   /// Open In-Situ Withdraw Recommendation Confirmation Sheet
@@ -125,11 +172,6 @@ class AppNavigation {
       '/status/loading',
       extra: LoadingStateArgs(title: title, heading: heading, message: message),
     );
-  }
-
-  /// Open Post Deleted Success Screen (replaces the loading screen)
-  static void toPostDeletedSuccess(BuildContext context) {
-    context.pushReplacement('/status/post-deleted');
   }
 
   /// Open Report Submitted Thank You Screen

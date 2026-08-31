@@ -95,9 +95,33 @@ class PlaceData {
   /// we serve the bytes from our own bucket, so nothing else will attach it for us.
   final String? photoAttribution;
 
-  /// True when this place came from a community submission rather than Google - see AppColors.
-  /// pinCommunity. Also means rating/ratingCount are placeholders, not real measurements.
-  final bool isCommunity;
+  /// The community recommendation's submission id (UUID). Null for Google-sourced
+  /// places. This is the AUTHORITATIVE field for deciding whether a place is a
+  /// community recommendation — the UI shows Community / Verification Status only
+  /// when this field is non-null.
+  ///
+  /// For community places in the discover list, this is the same UUID as [placeId]
+  /// (the backend sets PlaceId = SubmissionId for community sources).
+  final String? recommendPlaceId;
+
+  /// True when this place came from a community submission rather than Google - see
+  /// AppColors.pinCommunity. Also means rating/ratingCount are placeholders, not
+  /// real measurements.
+  ///
+  /// DERIVED from the actual [recommendPlaceId]: a place is community ONLY when the
+  /// real recommend_place_id exists. It cannot be force-set to true (per the
+  /// "do not force isCommunity" rule) — callers pass recommendPlaceId and this
+  /// getter reflects it.
+  bool get isCommunity => recommendPlaceId != null;
+
+  /// Whether this community place has been verified (passed the verification
+  /// threshold). Always false for Google-sourced places. Used to show
+  /// [Verified] / [Unverified] status in the Place Details UI.
+  final bool isVerified;
+
+  /// Display name of the community submitter (DB: users.username via
+  /// submitterName on the details DTO). Empty for Google-sourced places.
+  final String recommendedBy;
 
   final String? address;
   final String? phoneNumber;
@@ -105,6 +129,26 @@ class PlaceData {
   final String? googleMapsUri;
   final String? photosJson;
   final String? regularOpeningHoursJson;
+
+  /// Whether the current user has already reported this place. Comes from the
+  /// backend's persisted state (not local UI state), so the Report Place action
+  /// stays disabled across screen reloads.
+  final bool isReportedByCurrentUser;
+
+  /// Whether THIS authenticated user has already verified this community
+  /// place (their own row in recommended_place_verifications).
+  ///
+  /// Deliberately distinct from [isVerified] (the aggregate/community
+  /// verification status). Comes from the backend's recommendation-details
+  /// DTO (RecommendedPlaceDetailsDto.IsVerifiedByCurrentUser) via the My
+  /// Recommended Places flow; the discover DTO does not send it, so those
+  /// places fall back to false.
+  final bool isVerifiedByCurrentUser;
+
+  /// Whether the place has been moved to REPORTED_CLOSED (hidden after reaching
+  /// the report threshold). When true, Community Verification shows the
+  /// suppression banner and no further vote/report is allowed.
+  final bool isReportedClosed;
 
   const PlaceData({
     required this.placeId,
@@ -119,13 +163,18 @@ class PlaceData {
     required this.priceLevel,
     required this.businessStatus,
     this.photoAttribution,
-    this.isCommunity = false,
+    this.recommendPlaceId,
+    this.isVerified = false,
+    this.recommendedBy = '',
     required this.address,
     required this.phoneNumber,
     required this.websiteUri,
     required this.googleMapsUri,
     required this.photosJson,
     required this.regularOpeningHoursJson,
+    this.isReportedByCurrentUser = false,
+    this.isReportedClosed = false,
+    this.isVerifiedByCurrentUser = false,
   });
 }
 
@@ -148,7 +197,7 @@ const _center = LatLng(3.1390, 101.6869); // Kuala Lumpur-ish, adjust freely
 // title, the category line, the gaps - is fixed, and the photo is the one flexible part, so it
 // absorbs the whole difference. Raise this number for taller photos, lower it for shorter ones
 // and more visible map.
-const double _kSheetRestExtent = 0.42;
+const double _kSheetRestExtent = 0.43;
 const double _kSheetCollapsedExtent = 0.13;
 
 // The search radii the user can pick between - must match the backend's
@@ -376,7 +425,11 @@ PlaceData _toPlaceData(HiddenPlaceModel place) {
     priceLevel: place.priceLevel,
     businessStatus: place.businessStatus ?? 'UNKNOWN',
     photoAttribution: place.photoAttribution,
-    isCommunity: place.source == 'COMMUNITY',
+    // For community sources the backend sets PlaceId = SubmissionId (see
+    // MapCommunityToResponseDto), so this is the real recommend_place_id /
+    // submission id used by the verify/report APIs. Null for Google places.
+    // isCommunity is derived from this field (never force-set).
+    recommendPlaceId: place.source == 'COMMUNITY' ? place.placeId : null,
 
     address: place.formattedAddress,
     phoneNumber: place.nationalPhoneNumber,
@@ -578,6 +631,8 @@ class _HiddenPlaceDiscoveryUIState extends State<HiddenPlaceDiscoveryUI>
   /// controls are the only things that need to move with it. Calling setState here would rebuild
   /// the GoogleMap and the whole marker set 60 times a second for a couple of floating buttons.
   final ValueNotifier<double> _sheetExtent = ValueNotifier(_kSheetRestExtent);
+  final ValueNotifier<double> _placeDetailExtent =
+  ValueNotifier(0.43);
 
   late final AnimationController _pulseController = AnimationController(
     vsync: this,
@@ -605,6 +660,7 @@ class _HiddenPlaceDiscoveryUIState extends State<HiddenPlaceDiscoveryUI>
   void dispose() {
     _pulseController.dispose();
     _sheetExtent.dispose();
+    _placeDetailExtent.dispose();
     super.dispose();
   }
 
@@ -857,7 +913,7 @@ class _HiddenPlaceDiscoveryUIState extends State<HiddenPlaceDiscoveryUI>
           // The 20px lives on each child instead, and on the card row it is scroll padding, so
           // cards keep their resting inset but slide off the real edge.
           child: Padding(
-            padding: const EdgeInsets.fromLTRB(0, 10, 0, 4),
+            padding: const EdgeInsets.fromLTRB(0, 9, 0, 4),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -866,12 +922,12 @@ class _HiddenPlaceDiscoveryUIState extends State<HiddenPlaceDiscoveryUI>
                 // it too - so the handle reads as draggable instead of decorative.
                 Center(
                   child: Container(
-                    width: 40,
-                    height: 4,
-                    margin: const EdgeInsets.only(bottom: 14),
+                    margin: const EdgeInsets.only(top: 0, bottom: 10),
+                    width: 96,
+                    height: 5,
                     decoration: BoxDecoration(
                       color: AppColors.coral,
-                      borderRadius: BorderRadius.circular(2),
+                      borderRadius: BorderRadius.circular(20),
                     ),
                   ),
                 ),
@@ -1040,16 +1096,6 @@ class _HiddenPlaceDiscoveryUIState extends State<HiddenPlaceDiscoveryUI>
                   ),
                 ),
 
-                // Search bar
-                //
-                // Presentational only for now - _SearchBar renders a static pill, it has no TextField
-                // and no tap handler. Wire it up before demoing "search" as a feature.
-                Positioned(
-                  top: topInset + 10,
-                  left: 14,
-                  right: 14,
-                  child: const _SearchBar(),
-                ),
 
                 // Filter chips
                 //
@@ -1062,7 +1108,7 @@ class _HiddenPlaceDiscoveryUIState extends State<HiddenPlaceDiscoveryUI>
                 // viewport keeps the same resting inset but lets chips slide off the real screen edge.
                 if (!_showPlaceDetail)
                   Positioned(
-                    top: topInset + 64,
+                    top: topInset + 10,
                     left: 0,
                     right: 0,
                     child: SizedBox(
@@ -1143,11 +1189,19 @@ class _HiddenPlaceDiscoveryUIState extends State<HiddenPlaceDiscoveryUI>
                 // -----------------------------------------------------------
                 // Rebuilt on every frame of a sheet drag, which is why only these two buttons live
                 // inside the builder - see _sheetExtent for why this is not a setState.
-                ValueListenableBuilder<double>(
-                  valueListenable: _sheetExtent,
-                  builder: (context, extent, _) {
-                    final sheetTop =
-                        _showPlaceDetail ? 0.0 : extent * constraints.maxHeight;
+                ListenableBuilder(
+                  listenable: Listenable.merge([
+                    _sheetExtent,
+                    _placeDetailExtent,
+                  ]),
+                  builder: (context, _) {
+                    const maxControlFollowExtent = 0.43;
+
+                    final extent = _showPlaceDetail
+                        ? _placeDetailExtent.value.clamp(0.0, maxControlFollowExtent)
+                        : _sheetExtent.value;
+
+                    final sheetTop = extent * constraints.maxHeight;
                     return Stack(
                       children: [
                         Positioned(
@@ -1205,6 +1259,9 @@ class _HiddenPlaceDiscoveryUIState extends State<HiddenPlaceDiscoveryUI>
                     child: PlaceDetailUI(
                       place: _selectedPlace!,
                       onClose: _closePlaceDetail,
+                      onSheetExtentChanged: (extent) {
+                        _placeDetailExtent.value = extent;
+                      },
                     ),
                   ),
               ],
@@ -1216,52 +1273,6 @@ class _HiddenPlaceDiscoveryUIState extends State<HiddenPlaceDiscoveryUI>
   }
 }
 
-// =============================================================================
-// SEARCH BAR
-// =============================================================================
-class _SearchBar extends StatelessWidget {
-  const _SearchBar();
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      height: 46,
-      padding: const EdgeInsets.symmetric(horizontal: 14),
-      decoration: BoxDecoration(
-        color: AppColors.chipBg,
-        borderRadius: BorderRadius.circular(24),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.12),
-            blurRadius: 10,
-            offset: const Offset(0, 3),
-          ),
-        ],
-      ),
-      child: Row(
-        children: [
-          const Icon(Icons.menu, size: 20, color: AppColors.textGrey),
-          const SizedBox(width: 12),
-          const Expanded(
-            child: Text(
-              'Search hidden places',
-              style: TextStyle(fontSize: 14, color: AppColors.textGrey),
-            ),
-          ),
-          Container(
-            width: 30,
-            height: 30,
-            decoration: const BoxDecoration(
-              color: AppColors.coral,
-              shape: BoxShape.circle,
-            ),
-            child: const Icon(Icons.person, size: 16, color: Colors.white),
-          ),
-        ],
-      ),
-    );
-  }
-}
 
 // =============================================================================
 // FILTER CHIP
@@ -1557,39 +1568,7 @@ class _PlaceCard extends StatelessWidget {
                         ),
                       ),
                     ),
-                  Positioned(
-                    top: 6,
-                    right: 6,
-                    child: Container(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 6,
-                        vertical: 3,
-                      ),
-                      decoration: BoxDecoration(
-                        color: Colors.black.withOpacity(0.55),
-                        borderRadius: BorderRadius.circular(8),
-                      ),
-                      child: Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          const Icon(
-                            Icons.star,
-                            size: 11,
-                            color: Color(0xFFF2B33D),
-                          ),
-                          const SizedBox(width: 2),
-                          Text(
-                            '${place.rating}',
-                            style: const TextStyle(
-                              color: Colors.white,
-                              fontSize: 10,
-                              fontWeight: FontWeight.w600,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
+
                 ],
               ),
             ),

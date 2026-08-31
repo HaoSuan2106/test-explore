@@ -182,7 +182,6 @@ PlaceData _visitToPlaceData(VisitLog visit) {
     priceLevel: null,
     businessStatus: 'UNKNOWN',
     photoAttribution: null,
-    isCommunity: false,
     address: visit.address,
     phoneNumber: null,
     websiteUri: null,

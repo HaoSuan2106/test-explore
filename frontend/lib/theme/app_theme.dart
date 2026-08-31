@@ -224,8 +224,17 @@ abstract class AppShadows {
 }
 
 /// Typography Hierarchy (Plus Jakarta Sans)
+///
+/// Styles are built ONCE as cached `static final` fields instead of being
+/// re-created on every access. Previously each `AppTypography.bodyMd` call
+/// invoked `GoogleFonts.plusJakartaSans(...)` and allocated a fresh
+/// [TextStyle] (plus font-resolution bookkeeping) — that churn happened on
+/// every PostCard build (several styles × many cards × rebuilds). The cached
+/// styles are immutable and byte-for-byte identical in appearance; callers
+/// that need tweaks still use `.copyWith(...)`, which only allocates the
+/// small delta instead of the whole style.
 abstract class AppTypography {
-  static TextStyle get headlineXl => GoogleFonts.plusJakartaSans(
+  static final TextStyle headlineXl = GoogleFonts.plusJakartaSans(
         fontSize: 32.0,
         fontWeight: FontWeight.w700,
         height: 40.0 / 32.0,
@@ -233,42 +242,42 @@ abstract class AppTypography {
         color: AppColors.textPrimary,
       );
 
-  static TextStyle get headlineXlMobile => GoogleFonts.plusJakartaSans(
+  static final TextStyle headlineXlMobile = GoogleFonts.plusJakartaSans(
         fontSize: 28.0,
         fontWeight: FontWeight.w700,
         height: 36.0 / 28.0,
         color: AppColors.textPrimary,
       );
 
-  static TextStyle get headlineLg => GoogleFonts.plusJakartaSans(
+  static final TextStyle headlineLg = GoogleFonts.plusJakartaSans(
         fontSize: 24.0,
         fontWeight: FontWeight.w700,
         height: 32.0 / 24.0,
         color: AppColors.textPrimary,
       );
 
-  static TextStyle get headlineMd => GoogleFonts.plusJakartaSans(
+  static final TextStyle headlineMd = GoogleFonts.plusJakartaSans(
         fontSize: 20.0,
         fontWeight: FontWeight.w600,
         height: 28.0 / 20.0,
         color: AppColors.textPrimary,
       );
 
-  static TextStyle get bodyLg => GoogleFonts.plusJakartaSans(
+  static final TextStyle bodyLg = GoogleFonts.plusJakartaSans(
         fontSize: 16.0,
         fontWeight: FontWeight.w400,
         height: 24.0 / 16.0,
         color: AppColors.textPrimary,
       );
 
-  static TextStyle get bodyMd => GoogleFonts.plusJakartaSans(
+  static final TextStyle bodyMd = GoogleFonts.plusJakartaSans(
         fontSize: 14.0,
         fontWeight: FontWeight.w400,
         height: 20.0 / 14.0,
         color: AppColors.textSecondary,
       );
 
-  static TextStyle get labelLg => GoogleFonts.plusJakartaSans(
+  static final TextStyle labelLg = GoogleFonts.plusJakartaSans(
         fontSize: 14.0,
         fontWeight: FontWeight.w600,
         height: 20.0 / 14.0,
@@ -276,7 +285,7 @@ abstract class AppTypography {
         color: AppColors.textPrimary,
       );
 
-  static TextStyle get labelSm => GoogleFonts.plusJakartaSans(
+  static final TextStyle labelSm = GoogleFonts.plusJakartaSans(
         fontSize: 12.0,
         fontWeight: FontWeight.w500,
         height: 16.0 / 12.0,

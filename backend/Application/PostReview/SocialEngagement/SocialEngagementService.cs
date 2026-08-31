@@ -246,12 +246,9 @@ public class SocialEngagementService : ISocialEngagementService
             throw new ForbiddenException("You cannot report your own post.");
         }
 
-        if (await _repository.HasActiveReportAsync(postId, currentUserId))
-        {
-            throw new ValidationException("You have already reported this post.");
-        }
-
-        // D5: reports are terminal — there is no withdrawal and no reactivation.
+        // NOTE: the schema allows multiple reports from the same reporter on the
+        // same post (latest_v2.sql seed rep-006 is an intentional duplicate).
+        // No duplicate-prevention check is enforced here.
         var report = new PostReport
         {
             PostId = postId,
@@ -272,6 +269,28 @@ public class SocialEngagementService : ISocialEngagementService
             ReportCount = count,
             Message = "Report submitted successfully.",
         };
+    }
+
+    public async Task<PostReportDto> WithdrawReportAsync(int currentUserId, string postId, string reportId)
+    {
+        var report = await _repository.GetReportByIdAsync(reportId)
+            ?? throw new NotFoundException("Report not found.");
+
+        if (report.PostId != postId)
+            throw new NotFoundException("Report not found on this post.");
+
+        if (report.ReporterId != currentUserId)
+            throw new ForbiddenException("You can only withdraw your own reports.");
+
+        if (report.Status != PostReportStatus.Active)
+            throw new ValidationException("Only active reports can be withdrawn.");
+
+        report.Status = PostReportStatus.Withdrawn;
+        report.WithdrawnAt = DateTime.UtcNow;
+        await _repository.UpdateReportAsync(report);
+
+        _logger.LogInformation("User {UserId} withdrew report {ReportId} on post {PostId}.", currentUserId, reportId, postId);
+        return PostDtoMapper.ToReport(report);
     }
 
     public async Task<List<PostReportDto>> GetMyReportsAsync(int currentUserId)

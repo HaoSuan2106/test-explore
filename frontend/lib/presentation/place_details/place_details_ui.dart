@@ -1,4 +1,8 @@
 import 'package:flutter/material.dart';
+import '../../models/foot_tracker/exploration_model.dart';
+import '../../providers/hidden_place/hidden_place_provider.dart';
+import '../../widgets/app_feedback.dart';
+import 'community_verification/place_report_sheet.dart';
 import 'create_review/create_review_ui.dart';
 import 'report_review/report_review_ui.dart';
 import 'community_verification/community_verification_ui.dart';
@@ -6,25 +10,26 @@ import '../hidden_place_discovery/hidden_place_discovery_ui.dart';
 import 'dart:convert';
 import 'package:provider/provider.dart';
 import '../../providers/hidden_place/review_provider.dart';
-import '../../models/community/message_model.dart';
-import '../community/share_to_chat/share_to_chat_sheet.dart';
 
+// Import by Ian navigation screen
+import '../route_navigation/navigation_screen.dart';
+import '../../providers/foot_tracker/favourite_provider.dart';
+import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 
-enum PlaceReviewTargetType {
-  google,
-  system,
-}
+enum PlaceReviewTargetType { google, system }
 
 class PlaceDetailUI extends StatefulWidget {
   final PlaceData place;
   final VoidCallback? onClose;
   final PlaceReviewTargetType reviewTargetType;
+  final ValueChanged<double>? onSheetExtentChanged;
 
   const PlaceDetailUI({
     super.key,
     required this.place,
     this.onClose,
     this.reviewTargetType = PlaceReviewTargetType.google,
+    this.onSheetExtentChanged,
   });
 
   @override
@@ -34,6 +39,7 @@ class PlaceDetailUI extends StatefulWidget {
 class _PlaceDetailUIState extends State<PlaceDetailUI> {
   static const Color accent = Color(0xFFFF6242);
 
+  late bool _hasReported = widget.place.isReportedByCurrentUser;
   int _selectedTab = 0;
 
   // ============================================================
@@ -46,7 +52,12 @@ class _PlaceDetailUIState extends State<PlaceDetailUI> {
   // can provide this value and the user's actual review data.
   bool _hasUserReviewed = false;
   bool _isLoadingMyReview = true;
+late bool _hasUserVerified = widget.place.isVerifiedByCurrentUser;
+  //Add by Ian for favourite place
+  bool _isFavourite = false;
+  bool _isTogglingFavourite = false;
   Map<String, dynamic>? _myReview;
+  late bool _isReportedClosed = widget.place.isReportedClosed;
 
   List<dynamic> _reviews = [];
   bool _isLoadingReviews = true;
@@ -57,13 +68,15 @@ class _PlaceDetailUIState extends State<PlaceDetailUI> {
 
     _loadMyReview();
     _loadReviews();
+    //Added by Ian for favourite place
+    _loadFavouriteStatus();
   }
 
   // Shows the compact title bar only after the original place
   // header has completely scrolled out of the visible sheet.
   bool _showStickyHeader = false;
 
-  String _selectedFilter = 'Most Relevant';
+  String _selectedFilter = 'Newest';
 
   String _priceLevelText(int? priceLevel) {
     if (priceLevel == null) {
@@ -130,13 +143,67 @@ class _PlaceDetailUIState extends State<PlaceDetailUI> {
     }
   }
 
+  //Used by Ian favourite place
+  Future<void> _loadFavouriteStatus() async {
+    final favouriteProvider = context.read<FavouriteProvider>();
+    if (favouriteProvider.places.isEmpty) {
+      await favouriteProvider.loadPlaces();
+    }
+    if (!mounted) return;
+    setState(() {
+      _isFavourite = favouriteProvider.isFavourite(widget.place.placeId);
+    });
+  }
+
+  Future<void> _toggleFavourite() async {
+    if (_isTogglingFavourite) return;
+    setState(() => _isTogglingFavourite = true);
+
+    final favouriteProvider = context.read<FavouriteProvider>();
+    final wasFavourite = _isFavourite;
+
+    try {
+      if (wasFavourite) {
+        await favouriteProvider.removeFavouritePlaceByPlaceId(
+          widget.place.placeId,
+        );
+      } else {
+        await favouriteProvider.addFavouritePlace(
+          placeId: widget.place.placeId,
+          name: widget.place.title,
+          primaryType: FavouritePlace.mapToUiCategory(widget.place.primaryType),
+          address: widget.place.address,
+          latitude: widget.place.position.latitude,
+          longitude: widget.place.position.longitude,
+        );
+      }
+      if (!mounted) return;
+      setState(() {
+        _isFavourite = !wasFavourite;
+        _isTogglingFavourite = false;
+      });
+    } catch (e) {
+      if (!mounted) return;
+      setState(() => _isTogglingFavourite = false);
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(
+            wasFavourite
+                ? 'Failed to remove favourite.'
+                : 'Failed to add favourite.',
+          ),
+        ),
+      );
+    }
+  }
+  //Until up only Ian
+
   Future<void> _loadMyReview() async {
     try {
       final reviewProvider = context.read<ReviewProvider>();
 
       final review = await reviewProvider.getMyReview(
-        googlePlaceId:
-        widget.reviewTargetType == PlaceReviewTargetType.google
+        googlePlaceId: widget.reviewTargetType == PlaceReviewTargetType.google
             ? widget.place.placeId
             : null,
         recommendPlaceId:
@@ -168,8 +235,7 @@ class _PlaceDetailUIState extends State<PlaceDetailUI> {
       final reviewProvider = context.read<ReviewProvider>();
 
       final reviews = await reviewProvider.getReviews(
-        googlePlaceId:
-        widget.reviewTargetType == PlaceReviewTargetType.google
+        googlePlaceId: widget.reviewTargetType == PlaceReviewTargetType.google
             ? widget.place.placeId
             : null,
         recommendPlaceId:
@@ -247,97 +313,95 @@ class _PlaceDetailUIState extends State<PlaceDetailUI> {
       maxChildSize: 0.92,
       snap: true,
       snapSizes: const [0.10, 0.43, 0.92],
-      builder: (
-          BuildContext context,
-          ScrollController scrollController,
-          ) {
-        return Container(
-          decoration: const BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.vertical(
-              top: Radius.circular(26),
+      builder: (BuildContext context, ScrollController scrollController) {
+        return NotificationListener<DraggableScrollableNotification>(
+          onNotification: (notification) {
+            widget.onSheetExtentChanged?.call(notification.extent);
+            return false;
+          },
+          child: Container(
+            decoration: const BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.vertical(top: Radius.circular(26)),
+              boxShadow: [
+                BoxShadow(
+                  color: Color(0x22000000),
+                  blurRadius: 18,
+                  offset: Offset(0, -4),
+                ),
+              ],
             ),
-            boxShadow: [
-              BoxShadow(
-                color: Color(0x22000000),
-                blurRadius: 18,
-                offset: Offset(0, -4),
-              ),
-            ],
-          ),
-          clipBehavior: Clip.antiAlias,
-          child: NotificationListener<ScrollNotification>(
-            onNotification: (notification) {
-              if (notification.depth == 0 &&
-                  notification is ScrollUpdateNotification) {
-                final headerContext = _placeHeaderKey.currentContext;
-                final scrollContext = _scrollViewKey.currentContext;
+            clipBehavior: Clip.antiAlias,
+            child: NotificationListener<ScrollNotification>(
+              onNotification: (notification) {
+                if (notification.depth == 0 &&
+                    notification is ScrollUpdateNotification) {
+                  final headerContext = _placeHeaderKey.currentContext;
+                  final scrollContext = _scrollViewKey.currentContext;
 
-                bool shouldShow = false;
+                  bool shouldShow = false;
 
-                if (headerContext != null && scrollContext != null) {
-                  final headerBox =
-                  headerContext.findRenderObject() as RenderBox?;
-                  final scrollBox =
-                  scrollContext.findRenderObject() as RenderBox?;
+                  if (headerContext != null && scrollContext != null) {
+                    final headerBox =
+                    headerContext.findRenderObject() as RenderBox?;
+                    final scrollBox =
+                    scrollContext.findRenderObject() as RenderBox?;
 
-                  if (headerBox != null && scrollBox != null) {
-                    final headerTop =
-                        headerBox.localToGlobal(Offset.zero).dy;
-                    final headerBottom =
-                        headerTop + headerBox.size.height;
-                    final scrollTop =
-                        scrollBox.localToGlobal(Offset.zero).dy;
+                    if (headerBox != null && scrollBox != null) {
+                      final headerTop = headerBox.localToGlobal(Offset.zero).dy;
+                      final headerBottom = headerTop + headerBox.size.height;
+                      final scrollTop = scrollBox.localToGlobal(Offset.zero).dy;
 
-                    // Show the compact header only when the entire
-                    shouldShow = headerBottom <= scrollTop + 80;
+                      // Show the compact header only when the entire
+                      shouldShow = headerBottom <= scrollTop + 80;
+                    }
+                  }
+
+                  if (shouldShow != _showStickyHeader) {
+                    setState(() => _showStickyHeader = shouldShow);
                   }
                 }
-
-                if (shouldShow != _showStickyHeader) {
-                  setState(() => _showStickyHeader = shouldShow);
-                }
-              }
-              return false;
-            },
-            child: Stack(
-              children: [
-                CustomScrollView(
-                  key: _scrollViewKey,
-                  controller: scrollController,
-                  slivers: [
-                    SliverToBoxAdapter(
-                      child: Column(
-                        children: [
-                          _buildDragHandle(),
-                          _buildPlaceHeader(),
-                          _buildActions(),
-                          _buildPhotos(),
-                          _buildTabs(),
-                        ],
+                return false;
+              },
+              child: Stack(
+                children: [
+                  CustomScrollView(
+                    key: _scrollViewKey,
+                    controller: scrollController,
+                    slivers: [
+                      SliverToBoxAdapter(
+                        child: Column(
+                          children: [
+                            _buildDragHandle(),
+                            _buildPlaceHeader(),
+                            _buildActions(),
+                            _buildPhotos(),
+                            _buildTabs(),
+                          ],
+                        ),
                       ),
-                    ),
-                    SliverToBoxAdapter(
-                      child: Column(
-                        children: [
-                          _buildSelectedTabContent(),
-                          const SizedBox(height: 36),
-                        ],
+                      SliverToBoxAdapter(
+                        child: Column(
+                          children: [
+                            _buildSelectedTabContent(),
+                            const SizedBox(height: 36),
+                          ],
+                        ),
                       ),
-                    ),
-                  ],
-                ),
-
-                // This is an OVERLAY, not part of the scroll content.
-                // It only appears after the user scrolls upward.
-                if (_showStickyHeader)
-                  Positioned(
-                    top: 0,
-                    left: 0,
-                    right: 0,
-                    child: _buildStickyPlaceHeader(),
+                    ],
                   ),
-              ],
+
+                  // This is an OVERLAY, not part of the scroll content.
+                  // It only appears after the user scrolls upward.
+                  if (_showStickyHeader)
+                    Positioned(
+                      top: 0,
+                      left: 0,
+                      right: 0,
+                      child: _buildStickyPlaceHeader(),
+                    ),
+                ],
+              ),
             ),
           ),
         );
@@ -370,9 +434,7 @@ class _PlaceDetailUIState extends State<PlaceDetailUI> {
           height: 72,
           decoration: const BoxDecoration(
             color: Colors.white,
-            borderRadius: BorderRadius.vertical(
-              top: Radius.circular(26),
-            ),
+            borderRadius: BorderRadius.vertical(top: Radius.circular(26)),
           ),
           child: Column(
             children: [
@@ -402,7 +464,9 @@ class _PlaceDetailUIState extends State<PlaceDetailUI> {
                         ),
                       ),
                       IconButton(
-                        onPressed: widget.onClose ?? () => Navigator.of(context).maybePop(),
+                        onPressed:
+                        widget.onClose ??
+                                () => Navigator.of(context).maybePop(),
                         icon: const Icon(
                           Icons.close,
                           size: 24,
@@ -425,10 +489,7 @@ class _PlaceDetailUIState extends State<PlaceDetailUI> {
           left: 0,
           right: 0,
           bottom: 0,
-          child: Container(
-            height: 1,
-            color: const Color(0xFFD9D9D9),
-          ),
+          child: Container(height: 1, color: const Color(0xFFD9D9D9)),
         ),
       ],
     );
@@ -461,45 +522,13 @@ class _PlaceDetailUIState extends State<PlaceDetailUI> {
                 Row(
                   children: [
                     Text(
-                      widget.place.rating.toStringAsFixed(1),
-                      style: const TextStyle(
-                        fontSize: 14,
-                        fontWeight: FontWeight.w600,
-                      ),
-                    ),
-                    const SizedBox(width: 5),
-                    const Text(
-                      '★★★★★',
-                      style: TextStyle(
-                        color: accent,
-                        fontSize: 17,
-                        letterSpacing: 0.8,
-                      ),
-                    ),
-                    const SizedBox(width: 5),
-                    Text(
-                      '(${widget.place.ratingCount} reviews)',
-                      style: TextStyle(
-                        color: Colors.grey.shade600,
-                        fontSize: 12,
-                      ),
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 5),
-                Row(
-                  children: [
-                    Text(
                       widget.place.category,
                       style: const TextStyle(fontSize: 12),
                     ),
                     const SizedBox(width: 4),
                     Text(
                       _priceLevelText(widget.place.priceLevel),
-                      style: const TextStyle(
-                        fontSize: 12,
-                        color: Colors.grey,
-                      ),
+                      style: const TextStyle(fontSize: 12, color: Colors.grey),
                     ),
                     const SizedBox(width: 10),
                     Icon(
@@ -518,7 +547,9 @@ class _PlaceDetailUIState extends State<PlaceDetailUI> {
                 Text(
                   _businessStatusText(widget.place.businessStatus),
                   style: TextStyle(
-                    color: widget.place.businessStatus.toUpperCase() == 'OPERATIONAL'
+                    color:
+                    widget.place.businessStatus.toUpperCase() ==
+                        'OPERATIONAL'
                         ? const Color(0xff25a35a)
                         : Colors.grey,
                     fontSize: 12,
@@ -532,11 +563,7 @@ class _PlaceDetailUIState extends State<PlaceDetailUI> {
             padding: const EdgeInsets.all(8),
             constraints: const BoxConstraints(),
             onPressed: widget.onClose ?? () => Navigator.pop(context),
-            icon: const Icon(
-              Icons.close,
-              size: 27,
-              color: Color(0xff333333),
-            ),
+            icon: const Icon(Icons.close, size: 27, color: Color(0xff333333)),
           ),
         ],
       ),
@@ -547,53 +574,10 @@ class _PlaceDetailUIState extends State<PlaceDetailUI> {
   // ACTION BUTTONS
   // =========================
 
-  /// Opens the "Share to Chat" sheet for this place. Community-submitted
-  /// places (isCommunity) reopen live via the Recommended Place Details
-  /// route, so no snapshot is needed; Google-sourced places have no such
-  /// "fetch by id" route, so a JSON snapshot of the current [PlaceData] is
-  /// carried along instead. [icon] is intentionally left out of the
-  /// snapshot: it's not JSON-serializable and PlaceDetailUI never reads it.
-  void _shareToChat() {
-    final place = widget.place;
-    final isCommunity = place.isCommunity;
-    final shareDataJson = isCommunity
-        ? null
-        : jsonEncode({
-            'placeId': place.placeId,
-            'title': place.title,
-            'category': place.category,
-            'imageUrl': place.imageUrl,
-            'lat': place.position.latitude,
-            'lng': place.position.longitude,
-            'rating': place.rating,
-            'ratingCount': place.ratingCount,
-            'priceLevel': place.priceLevel,
-            'businessStatus': place.businessStatus,
-            'photoAttribution': place.photoAttribution,
-            'isCommunity': place.isCommunity,
-            'address': place.address,
-            'phoneNumber': place.phoneNumber,
-            'websiteUri': place.websiteUri,
-            'googleMapsUri': place.googleMapsUri,
-            'photosJson': place.photosJson,
-            'regularOpeningHoursJson': place.regularOpeningHoursJson,
-          });
-
-    showShareToChatSheet(
-      context,
-      sharedPlace: SharedPlaceRequest(
-        placeId: place.placeId,
-        placeSource: isCommunity ? 'COMMUNITY' : 'GOOGLE',
-        shareDataJson: shareDataJson,
-        placeName: place.title,
-        placeAddress: place.address,
-        placeImageUrl: place.imageUrl,
-        placeStatus: place.businessStatus,
-      ),
-    );
-  }
-
   Widget _buildActions() {
+    final bool isCommunity =
+        widget.place.recommendPlaceId != null;
+
     return Padding(
       padding: const EdgeInsets.fromLTRB(20, 4, 20, 4),
       child: Row(
@@ -603,12 +587,38 @@ class _PlaceDetailUIState extends State<PlaceDetailUI> {
             'Direction',
             selected: true,
           ),
+
           const SizedBox(width: 6),
-          _actionButton(Icons.favorite_border, 'Save'),
+
+          _actionButton(
+            _isFavourite
+                ? Icons.favorite
+                : Icons.favorite_border,
+            'Save',
+          ),
+
           const SizedBox(width: 6),
-          _actionButton(Icons.share_outlined, 'Share'),
+
+          _actionButton(
+            Icons.share_outlined,
+            'Share',
+          ),
+
           const SizedBox(width: 6),
-          _actionButton(Icons.verified_outlined, 'Verified'),
+
+          if (isCommunity)
+            _actionButton(
+              Icons.verified_outlined,
+              'Community',
+            )
+          else
+            _actionButton(
+              _hasReported
+                  ? Icons.check
+                  : Icons.report_outlined,
+              _hasReported ? 'Reported' : 'Report Place',
+              enabled: !_hasReported,
+            ),
         ],
       ),
     );
@@ -618,85 +628,146 @@ class _PlaceDetailUIState extends State<PlaceDetailUI> {
       IconData icon,
       String text, {
         bool selected = false,
+        bool enabled = true,
       }) {
     return Expanded(
       child: Material(
-        color: selected ? accent : const Color(0xfff4f4f4),
+        color: selected
+            ? accent
+            : (enabled
+            ? const Color(0xfff4f4f4)
+            : const Color(0xFFE7E7E7)),
         borderRadius: BorderRadius.circular(7),
         child: InkWell(
           borderRadius: BorderRadius.circular(7),
-          onTap: () {
-            if (text == 'Verified') {
-              Navigator.push(
+          onTap: enabled
+              ? () async {
+            // ============================================================
+            // COMMUNITY
+            // Only community recommendations can open verification.
+            // ============================================================
+            if (text == 'Community') {
+              final recommendPlaceId =
+                  widget.place.recommendPlaceId;
+
+              // Normal Google place cannot enter Community Verification.
+              if (recommendPlaceId == null) {
+                return;
+              }
+
+              // debugPrint(
+              //   'COMMUNITY VERIFICATION DATA: '
+              //       'place_id=${widget.place.placeId}, '
+              //       'recommend_place_id=$recommendPlaceId, '
+              //       'submission_id=$recommendPlaceId',
+              // );
+
+              final result =
+              await Navigator.push<CommunityUserVote>(
                 context,
                 MaterialPageRoute(
-                  builder: (_) => const CommunityVerificationUI(
-                    placeStatus: CommunityPlaceStatus.verified,
-                    userVote: CommunityUserVote.none,
-                    placeName: 'RING Café',
-                    recommendedBy: 'Rikki',
+                  builder: (_) => CommunityVerificationUI(
+                    // IMPORTANT:
+                    // Community verification uses recommend_place_id,
+                    // NOT Google place_id.
+                    placeId: recommendPlaceId,
+
+                    // Aggregate community status.
+                    placeStatus: widget.place.isVerified
+                        ? CommunityPlaceStatus.verified
+                        : CommunityPlaceStatus.unverified,
+
+                    // Current user's own verification state.
+                    userVote: _hasUserVerified
+                        ? CommunityUserVote.verify
+                        : CommunityUserVote.none,
+
+                    placeName: widget.place.title,
+                    recommendedBy: widget.place.recommendedBy,
+                    hasReported:
+                    widget.place.isReportedByCurrentUser,
+                    isReportedClosed:
+                    widget.place.isReportedClosed,
                   ),
                 ),
               );
+
+              // Sync current user's verification state after returning.
+              if (!mounted) return;
+
+              if (result != null) {
+                setState(() {
+                  _hasUserVerified =
+                      result == CommunityUserVote.verify;
+                });
+              }
+
               return;
             }
 
-            if (text == 'Unverified') {
+            // ============================================================
+            // NORMAL GOOGLE PLACE REPORT
+            // Community recommendation cannot use this report flow.
+            // ============================================================
+            if (text == 'Report Place') {
+              if (widget.place.recommendPlaceId != null) {
+                return;
+              }
+              await _openPlaceReportSheet();
+              return;
+            }
+
+            // ============================================================
+            // DIRECTION
+            // ============================================================
+            if (text == 'Direction') {
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (_) => const CommunityVerificationUI(
-                    placeStatus: CommunityPlaceStatus.unverified,
-                    userVote: CommunityUserVote.none,
-                    placeName: 'RING Café',
-                    recommendedBy: 'Rikki',
+                  builder: (_) => RouteNavigationScreen(
+                    destinationName: widget.place.title,
+                    destinationAddress:
+                    widget.place.address ?? '',
+                    destinationLat:
+                    widget.place.position.latitude,
+                    destinationLng:
+                    widget.place.position.longitude,
+
+                    // IMPORTANT:
+                    // Pass real Google place_id so FootTracker
+                    // can save the visited place correctly.
+                    destinationPlaceId:
+                    widget.place.placeId,
+
+                    destinationCategory:
+                    FavouritePlace.mapToUiCategory(
+                      widget.place.primaryType,
+                    ),
                   ),
                 ),
               );
+
               return;
             }
 
-            if (text == 'Reported') {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (_) => const CommunityVerificationUI(
-                    placeStatus: CommunityPlaceStatus.unverified,
-                    userVote: CommunityUserVote.report,
-                    placeName: 'RING Café',
-                    recommendedBy: 'Rikki',
-                  ),
-                ),
-              );
+            // ============================================================
+            // SAVE
+            // ============================================================
+            if (text == 'Save') {
+              _toggleFavourite();
               return;
             }
 
-            if (text == 'Voted') {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (_) => const CommunityVerificationUI(
-                    placeStatus: CommunityPlaceStatus.unverified,
-                    userVote: CommunityUserVote.verify,
-                    placeName: 'RING Café',
-                    recommendedBy: 'Rikki',
-                  ),
-                ),
-              );
-              return;
-            }
-
-            if (text == 'Share') {
-              _shareToChat();
-              return;
-            }
-
+            // ============================================================
+            // DEFAULT
+            // ============================================================
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(
                 content: Text('$text selected'),
               ),
             );
-          },
+          }
+              : null,
           child: SizedBox(
             height: 36,
             child: Row(
@@ -728,74 +799,417 @@ class _PlaceDetailUIState extends State<PlaceDetailUI> {
     );
   }
 
+  Future<void> _openPlaceReportSheet() async {
+    // Only normal Google places can use this report flow.
+    if (widget.place.recommendPlaceId != null) {
+      return;
+    }
+
+    final placeId = widget.place.placeId;
+
+    if (placeId.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Unable to report this place.'),
+        ),
+      );
+      return;
+    }
+
+    final result = await PlaceReportSheet.show(
+      context,
+      submissionId: placeId,
+    );
+
+    if (!mounted) return;
+
+    final provider = context.read<HiddenPlaceProvider>();
+
+    // 409 = already reported.
+    if (result == null) {
+      if (provider.lastReportWasDuplicate) {
+        setState(() {
+          _hasReported = true;
+        });
+      }
+      return;
+    }
+
+    // Report succeeded.
+    setState(() {
+      _hasReported = true;
+      _isReportedClosed =
+          result.placeStatus == 'REPORTED_CLOSED';
+    });
+
+    AppFeedback.show(
+      context,
+      message: result.message,
+      isSuccess: true,
+    );
+  }
   // =========================
   // PHOTOS
   // =========================
 
+  List<String> _getPlacePhotoUrls() {
+    final photoUrls = <String>[];
+
+    // 1. ONE system/Google photo.
+    if (widget.place.imageUrl.isNotEmpty) {
+      photoUrls.add(widget.place.imageUrl);
+    }
+
+    // 2. Photos from ACTIVE user reviews only.
+    for (final review in _reviews) {
+      if (review is! Map<String, dynamic>) continue;
+
+      // Ignore deleted reviews completely.
+      final status = review['status']?.toString().toUpperCase();
+
+      if (status != null && status != 'ACTIVE') {
+        continue;
+      }
+
+      final photos = review['photos'];
+
+      if (photos is! List) continue;
+
+      for (final photo in photos) {
+        if (photo is! Map<String, dynamic>) continue;
+
+        final photoUrl = photo['photoUrl']?.toString() ?? '';
+
+        if (photoUrl.isNotEmpty && !photoUrls.contains(photoUrl)) {
+          photoUrls.add(photoUrl);
+        }
+      }
+    }
+
+    return photoUrls;
+  }
+
   Widget _buildPhotos() {
-    // Keep the existing BIG photo exactly the same size (355 x 408-ish).
-    // The photos beside it are now arranged like Google Maps:
-    // BIG photo on the left + two SMALL photos stacked on the right.
-    // Swipe horizontally to move to the next BIG photo/gallery group.
+    final allPhotos = _getPlacePhotoUrls();
+
+    if (allPhotos.isEmpty) {
+      return SizedBox(
+        height: 300,
+        child: Padding(
+          padding: const EdgeInsets.fromLTRB(18, 12, 18, 10),
+          child: ClipRRect(
+            borderRadius: BorderRadius.circular(14),
+            child: Container(
+              color: const Color(0xffe1e1e1),
+              child: Center(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Icon(
+                      Icons.photo_library_outlined,
+                      size: 48,
+                      color: Colors.grey.shade500,
+                    ),
+                    const SizedBox(height: 10),
+                    Text(
+                      'No photos yet',
+                      style: TextStyle(
+                        fontSize: 13,
+                        fontWeight: FontWeight.w500,
+                        color: Colors.grey.shade600,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ),
+        ),
+      );
+    }
+
+    // ============================================================
+    // OVERVIEW PHOTO LIMIT
+    // ============================================================
+    //
+    // Only show the first 8 photos in Overview.
+    //
+    // Photos tab still contains ALL photos.
+    //
+    const maxOverviewPhotos = 8;
+
+    final hasMorePhotos = allPhotos.length > maxOverviewPhotos;
+
+    final photos = allPhotos.take(maxOverviewPhotos).toList();
+
+    // Every 3 photos = one gallery group.
+    //
+    // [0,1,2]
+    // [3,4,5]
+    // [6,7]
+    //
+    final groupCount = (photos.length + 2) ~/ 3;
+
     return SizedBox(
       height: 430,
-      child: ListView(
+      child: ListView.separated(
         scrollDirection: Axis.horizontal,
         padding: const EdgeInsets.fromLTRB(18, 12, 18, 10),
         physics: const BouncingScrollPhysics(),
-        children: [
-          _photoGalleryGroup(),
-          const SizedBox(width: 8),
-          _photoGalleryGroup(),
-        ],
+        itemCount: groupCount,
+        separatorBuilder: (_, __) => const SizedBox(width: 8),
+        itemBuilder: (context, groupIndex) {
+          final start = groupIndex * 3;
+          final end = (start + 3 > photos.length) ? photos.length : start + 3;
+
+          final group = photos.sublist(start, end);
+
+          final isLastGroup = groupIndex == groupCount - 1;
+
+          return _photoGalleryGroup(
+            group,
+            isLastGroup: isLastGroup,
+            hasMorePhotos: hasMorePhotos,
+          );
+        },
       ),
     );
   }
 
-  Widget _photoGalleryGroup() {
-    // IMPORTANT: the BIG image remains width 355, matching the previous UI.
-    return SizedBox(
-      width: 608, // 355 big + 8 gap + 145 thumbnail column
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          SizedBox(
-            width: 355,
-            child: _imagePlaceholder(
-              radius: 14,
-              iconSize: 48,
+  Widget _photoGalleryGroup(
+      List<String> photos, {
+        required bool isLastGroup,
+        required bool hasMorePhotos,
+      }) {
+    const double bigWidth = 366;
+    const double smallWidth = 234;
+
+    // ============================================================
+    // 1 PHOTO
+    //
+    // ┌──────────────────────┬──────────────┐
+    // │                      │ No more      │
+    // │       photo 0        ├──────────────┤
+    // │                      │ View All     │
+    // └──────────────────────┴──────────────┘
+    // ============================================================
+
+    if (photos.length == 1) {
+      return SizedBox(
+        width: bigWidth + 8 + smallWidth,
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            SizedBox(
+              width: bigWidth,
+              child: _networkPhoto(photos[0], radius: 14, iconSize: 48),
             ),
-          ),
-          const SizedBox(width: 8),
-          SizedBox(
-            width: 245,
-            child: Column(
-              children: [
-                Expanded(
-                  child: _imagePlaceholder(
-                    radius: 14,
-                    iconSize: 30,
+
+            const SizedBox(width: 8),
+
+            SizedBox(
+              width: smallWidth,
+              child: Column(
+                children: [
+                  Expanded(child: _noMorePhotosTile()),
+
+                  const SizedBox(height: 8),
+
+                  Expanded(child: _viewAllPhotosTile()),
+                ],
+              ),
+            ),
+          ],
+        ),
+      );
+    }
+
+    // ============================================================
+    // 2 PHOTOS
+    //
+    // ┌──────────────────────┬──────────────┐
+    // │                      │ photo 1      │
+    // │       photo 0        ├──────────────┤
+    // │                      │ No more      │
+    // └──────────────────────┴──────────────┘
+    // ============================================================
+
+    if (photos.length == 2) {
+      return SizedBox(
+        width: bigWidth + 8 + smallWidth,
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            SizedBox(
+              width: bigWidth,
+              child: _networkPhoto(photos[0], radius: 14, iconSize: 48),
+            ),
+
+            const SizedBox(width: 8),
+
+            SizedBox(
+              width: smallWidth,
+              child: Column(
+                children: [
+                  Expanded(
+                    child: _networkPhoto(photos[1], radius: 14, iconSize: 30),
                   ),
-                ),
-                const SizedBox(height: 8),
-                Expanded(
-                  child: _imagePlaceholder(
-                    radius: 14,
-                    iconSize: 30,
+
+                  const SizedBox(height: 8),
+
+                  Expanded(
+                    child: (isLastGroup && hasMorePhotos)
+                        ? _viewAllPhotosTile()
+                        : _noMorePhotosTile(),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
+      );
+    }
+
+    // ============================================================
+    // 3 PHOTOS
+    //
+    // ┌──────────────────────┬──────────────┐
+    // │                      │ photo 1      │
+    // │       photo 0        ├──────────────┤
+    // │                      │ photo 2      │
+    // └──────────────────────┴──────────────┘
+    // ============================================================
+
+    if (photos.length == 3) {
+      return SizedBox(
+        width: bigWidth + 8 + smallWidth,
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            SizedBox(
+              width: bigWidth,
+              child: _networkPhoto(photos[0], radius: 14, iconSize: 48),
+            ),
+
+            const SizedBox(width: 8),
+
+            SizedBox(
+              width: smallWidth,
+              child: Column(
+                children: [
+                  Expanded(
+                    child: _networkPhoto(photos[1], radius: 14, iconSize: 30),
+                  ),
+
+                  const SizedBox(height: 8),
+
+                  Expanded(
+                    child: _networkPhoto(photos[2], radius: 14, iconSize: 30),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
+      );
+    }
+
+    return const SizedBox.shrink();
+  }
+
+  Widget _viewAllPhotosTile() {
+    return ClipRRect(
+      borderRadius: BorderRadius.circular(14),
+      child: Material(
+        color: const Color(0xffe1e1e1),
+        child: InkWell(
+          onTap: () {
+            setState(() {
+              _selectedTab = 2;
+            });
+          },
+          child: Center(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Icon(Icons.photo_library_outlined, size: 30, color: accent),
+                const SizedBox(height: 6),
+                Text(
+                  'View all photos',
+                  style: TextStyle(
+                    fontSize: 11,
+                    fontWeight: FontWeight.w500,
+                    color: accent,
                   ),
                 ),
               ],
             ),
           ),
-        ],
+        ),
       ),
     );
   }
 
-  Widget _imagePlaceholder({
-    required double radius,
-    required double iconSize,
-  }) {
+  Widget _noMorePhotosTile() {
+    return ClipRRect(
+      borderRadius: BorderRadius.circular(14),
+      child: Container(
+        color: const Color(0xffe1e1e1),
+        child: Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Icon(
+                Icons.photo_library_outlined,
+                size: 30,
+                color: Colors.grey.shade500,
+              ),
+              const SizedBox(height: 6),
+              Text(
+                'No more photos',
+                style: TextStyle(
+                  fontSize: 11,
+                  fontWeight: FontWeight.w500,
+                  color: Colors.grey.shade600,
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _networkPhoto(
+      String photoUrl, {
+        required double radius,
+        required double iconSize,
+      }) {
+    return ClipRRect(
+      borderRadius: BorderRadius.circular(radius),
+      child: GestureDetector(
+        onTap: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (_) => _FullScreenPhotoViewer(photoUrl: photoUrl),
+            ),
+          );
+        },
+        child: Image.network(
+          photoUrl,
+          width: double.infinity,
+          height: double.infinity,
+          fit: BoxFit.cover,
+          errorBuilder: (_, __, ___) {
+            return _imagePlaceholder(radius: radius, iconSize: iconSize);
+          },
+        ),
+      ),
+    );
+  }
+
+  Widget _imagePlaceholder({required double radius, required double iconSize}) {
     return Container(
       decoration: BoxDecoration(
         color: const Color(0xffe1e1e1),
@@ -820,12 +1234,7 @@ class _PlaceDetailUIState extends State<PlaceDetailUI> {
 
     return Container(
       decoration: const BoxDecoration(
-        border: Border(
-          bottom: BorderSide(
-            color: Color(0xffc8c8c8),
-            width: 1,
-          ),
-        ),
+        border: Border(bottom: BorderSide(color: Color(0xffc8c8c8), width: 1)),
       ),
       child: Row(
         children: List.generate(
@@ -891,10 +1300,7 @@ class _PlaceDetailUIState extends State<PlaceDetailUI> {
   Widget _buildOverview() {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        _buildOverviewInfoCards(),
-        _buildOverviewReviews(),
-      ],
+      children: [_buildOverviewInfoCards(), _buildOverviewReviews()],
     );
   }
 
@@ -902,31 +1308,48 @@ class _PlaceDetailUIState extends State<PlaceDetailUI> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        if (widget.place.address != null &&
-            widget.place.address!.isNotEmpty)
-          _infoCard(
-            Icons.location_on_outlined,
-            widget.place.address!,
-          ),
+        if (widget.place.address != null && widget.place.address!.isNotEmpty)
+          _infoCard(Icons.location_on_outlined, widget.place.address!),
 
         if (widget.place.phoneNumber != null &&
             widget.place.phoneNumber!.isNotEmpty)
-          _infoCard(
-            Icons.phone_outlined,
-            widget.place.phoneNumber!,
-          ),
+          _infoCard(Icons.phone_outlined, widget.place.phoneNumber!),
 
         if (widget.place.websiteUri != null &&
             widget.place.websiteUri!.isNotEmpty)
-          _infoCard(
-            Icons.language,
-            widget.place.websiteUri!,
-          ),
+          _infoCard(Icons.language, widget.place.websiteUri!),
       ],
     );
   }
 
   Widget _buildOverviewReviews() {
+    final activeReviews = _reviews
+        .where((review) {
+      if (review is! Map<String, dynamic>) return false;
+
+      final status = review['status']?.toString().toUpperCase();
+
+      return status == null || status == 'ACTIVE';
+    })
+        .whereType<Map<String, dynamic>>()
+        .toList();
+
+    // Newest first
+    activeReviews.sort((a, b) {
+      final aDate = DateTime.tryParse(a['createdAt']?.toString() ?? '');
+
+      final bDate = DateTime.tryParse(b['createdAt']?.toString() ?? '');
+
+      if (aDate == null && bDate == null) return 0;
+      if (aDate == null) return 1;
+      if (bDate == null) return -1;
+
+      return bDate.compareTo(aDate);
+    });
+
+    // Overview only shows 3 reviews.
+    final previewReviews = activeReviews.take(3).toList();
+
     return Padding(
       padding: const EdgeInsets.fromLTRB(20, 17, 0, 0),
       child: Column(
@@ -934,78 +1357,59 @@ class _PlaceDetailUIState extends State<PlaceDetailUI> {
         children: [
           const Text(
             'Reviews',
-            style: TextStyle(
-              fontSize: 15,
-              fontWeight: FontWeight.w600,
-            ),
+            style: TextStyle(fontSize: 15, fontWeight: FontWeight.w600),
           ),
+
           const SizedBox(height: 3),
 
-          // Rating summary appears before the review cards, like the Figma.
-          Row(
-            children: [
-              const Text(
-                '4.2',
-                style: TextStyle(
-                  fontSize: 18,
-                  fontWeight: FontWeight.w600,
-                ),
-              ),
-              const SizedBox(width: 7),
-              const Text(
-                '★',
-                style: TextStyle(
-                  color: accent,
-                  fontSize: 19,
-                ),
-              ),
-              const SizedBox(width: 4),
-              const Text(
-                '(67)',
-                style: TextStyle(
-                  color: Color(0xff555555),
-                  fontSize: 12,
-                ),
-              ),
-            ],
-          ),
-
-          const SizedBox(height: 9),
-
-          // Horizontal scrolling review cards.
-          SizedBox(
-            height: 184,
-            child: ListView(
-              scrollDirection: Axis.horizontal,
+          if (_isLoadingReviews)
+            const SizedBox(
+              height: 184,
+              child: Center(child: CircularProgressIndicator()),
+            )
+          else if (previewReviews.isEmpty)
+            Padding(
               padding: const EdgeInsets.only(right: 20),
-              children: [
-                _overviewReviewCard(
-                  name: 'Tomorin',
-                  ago: '2 months ago',
-                  text:
-                  "One of the best cafes I've discovered recently. Beautiful interior, fast service, and perfect for taking photos.",
-                ),
-                const SizedBox(width: 10),
-                _overviewReviewCard(
-                  name: 'AnonTokyo',
-                  ago: '2 months ago',
-                  text:
-                  'Great coffee, delicious food, and a nice atmosphere. The only thing that could be improved is the customer service.',
-                ),
-                const SizedBox(width: 10),
-                _overviewReviewCard(
-                  name: 'Mina',
-                  ago: '3 months ago',
-                  text:
-                  'Nice place to relax and the drinks were good. Would come back again.',
-                ),
-              ],
+              child: SizedBox(height: 184, child: _emptyOverviewReviewCard()),
+            )
+          else
+            SizedBox(
+              height: 184,
+              child: ListView.separated(
+                scrollDirection: Axis.horizontal,
+                padding: const EdgeInsets.only(right: 20),
+                itemCount: previewReviews.length,
+                separatorBuilder: (_, __) => const SizedBox(width: 10),
+                itemBuilder: (context, index) {
+                  final review = previewReviews[index];
+
+                  final username =
+                      review['username']?.toString() ?? 'Unknown User';
+
+                  final comment = review['comment']?.toString() ?? '';
+
+                  final rating = (review['rating'] as num?)?.toInt() ?? 0;
+
+                  final createdAt = review['createdAt']?.toString();
+
+                  final photos = review['photos'] is List
+                      ? review['photos'] as List<dynamic>
+                      : <dynamic>[];
+
+                  return _overviewReviewCard(
+                    name: username,
+                    ago: _formatReviewTime(createdAt),
+                    text: comment,
+                    rating: rating,
+                    photos: photos,
+                    profilePhotoUrl: _getReviewProfilePhotoUrl(review),
+                  );
+                },
+              ),
             ),
-          ),
 
           const SizedBox(height: 12),
 
-          // Figma-style button leading to the full Reviews tab/page.
           Padding(
             padding: const EdgeInsets.only(right: 20),
             child: SizedBox(
@@ -1017,20 +1421,14 @@ class _PlaceDetailUIState extends State<PlaceDetailUI> {
                 },
                 style: OutlinedButton.styleFrom(
                   foregroundColor: accent,
-                  side: const BorderSide(
-                    color: accent,
-                    width: 1,
-                  ),
+                  side: const BorderSide(color: accent, width: 1),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(8),
                   ),
                 ),
                 child: const Text(
                   'View All Reviews',
-                  style: TextStyle(
-                    fontSize: 11,
-                    fontWeight: FontWeight.w500,
-                  ),
+                  style: TextStyle(fontSize: 11, fontWeight: FontWeight.w500),
                 ),
               ),
             ),
@@ -1040,10 +1438,44 @@ class _PlaceDetailUIState extends State<PlaceDetailUI> {
     );
   }
 
+  Widget _emptyOverviewReviewCard() {
+    return SizedBox(
+      width: double.infinity,
+      child: Container(
+        padding: const EdgeInsets.all(10),
+        decoration: BoxDecoration(
+          color: const Color(0xfffafafa),
+          border: Border.all(color: const Color(0xffd8d8d8)),
+          borderRadius: BorderRadius.circular(9),
+        ),
+        child: const Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Icon(
+                Icons.rate_review_outlined,
+                size: 32,
+                color: Color(0xffb0b0b0),
+              ),
+              SizedBox(height: 8),
+              Text(
+                'No reviews yet',
+                style: TextStyle(fontSize: 12, color: Color(0xff888888)),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
   Widget _overviewReviewCard({
     required String name,
     required String ago,
     required String text,
+    required int rating,
+    required List<dynamic> photos,
+    String? profilePhotoUrl,
   }) {
     return SizedBox(
       width: 245,
@@ -1051,9 +1483,7 @@ class _PlaceDetailUIState extends State<PlaceDetailUI> {
         padding: const EdgeInsets.all(10),
         decoration: BoxDecoration(
           color: const Color(0xfffafafa),
-          border: Border.all(
-            color: const Color(0xffd8d8d8),
-          ),
+          border: Border.all(color: const Color(0xffd8d8d8)),
           borderRadius: BorderRadius.circular(9),
         ),
         child: Column(
@@ -1064,14 +1494,19 @@ class _PlaceDetailUIState extends State<PlaceDetailUI> {
                 CircleAvatar(
                   radius: 16,
                   backgroundColor: const Color(0xffffd7cf),
-                  child: Text(
+                  backgroundImage: profilePhotoUrl != null && profilePhotoUrl.isNotEmpty
+                      ? NetworkImage(profilePhotoUrl)
+                      : null,
+                  child: profilePhotoUrl == null || profilePhotoUrl.isEmpty
+                      ? Text(
                     name.substring(0, 1).toUpperCase(),
                     style: const TextStyle(
                       color: accent,
                       fontWeight: FontWeight.w600,
                       fontSize: 12,
                     ),
-                  ),
+                  )
+                      : null,
                 ),
                 const SizedBox(width: 8),
                 Expanded(
@@ -1085,17 +1520,14 @@ class _PlaceDetailUIState extends State<PlaceDetailUI> {
                 ),
                 Text(
                   ago,
-                  style: TextStyle(
-                    color: Colors.grey.shade500,
-                    fontSize: 8.5,
-                  ),
+                  style: TextStyle(color: Colors.grey.shade500, fontSize: 8.5),
                 ),
               ],
             ),
             const SizedBox(height: 5),
-            const Text(
-              '★★★★★',
-              style: TextStyle(
+            Text(
+              '${'★' * rating}${'☆' * (5 - rating)}',
+              style: const TextStyle(
                 color: accent,
                 fontSize: 12,
                 letterSpacing: 0.5,
@@ -1103,14 +1535,24 @@ class _PlaceDetailUIState extends State<PlaceDetailUI> {
             ),
             const SizedBox(height: 6),
             Expanded(
-              child: Text(
-                text,
-                maxLines: 6,
-                overflow: TextOverflow.ellipsis,
-                style: const TextStyle(
-                  fontSize: 11,
-                  height: 1.35,
-                ),
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Expanded(
+                    child: Text(
+                      text,
+                      maxLines: photos.isNotEmpty ? 4 : 6,
+                      overflow: TextOverflow.ellipsis,
+                      style: const TextStyle(fontSize: 11, height: 1.35),
+                    ),
+                  ),
+
+                  if (photos.isNotEmpty) ...[
+                    const SizedBox(width: 8),
+
+                    _overviewReviewPhoto(photos.first),
+                  ],
+                ],
               ),
             ),
           ],
@@ -1119,35 +1561,54 @@ class _PlaceDetailUIState extends State<PlaceDetailUI> {
     );
   }
 
-  Widget _infoCard(
-      IconData icon,
-      String text,
-      ) {
+  Widget _overviewReviewPhoto(dynamic photo) {
+    final photoUrl = photo is Map<String, dynamic>
+        ? photo['photoUrl']?.toString() ?? ''
+        : '';
+
+    if (photoUrl.isEmpty) {
+      return const SizedBox.shrink();
+    }
+
+    return ClipRRect(
+      borderRadius: BorderRadius.circular(7),
+      child: Image.network(
+        photoUrl,
+        width: 55,
+        height: 55,
+        fit: BoxFit.cover,
+        errorBuilder: (_, __, ___) {
+          return Container(
+            width: 55,
+            height: 55,
+            color: const Color(0xffe1e1e1),
+            child: const Icon(
+              Icons.broken_image_outlined,
+              size: 20,
+              color: Color(0xff999999),
+            ),
+          );
+        },
+      ),
+    );
+  }
+
+  Widget _infoCard(IconData icon, String text) {
     return Container(
       margin: const EdgeInsets.fromLTRB(20, 16, 20, 0),
-      padding: const EdgeInsets.symmetric(
-        horizontal: 12,
-        vertical: 10,
-      ),
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
       decoration: BoxDecoration(
         color: const Color(0xfff5f5f5),
         borderRadius: BorderRadius.circular(8),
       ),
       child: Row(
         children: [
-          Icon(
-            icon,
-            size: 19,
-            color: const Color(0xff222222),
-          ),
+          Icon(icon, size: 19, color: const Color(0xff222222)),
           const SizedBox(width: 12),
           Expanded(
             child: Text(
               text,
-              style: const TextStyle(
-                fontSize: 11,
-                height: 1.35,
-              ),
+              style: const TextStyle(fontSize: 11, height: 1.35),
             ),
           ),
         ],
@@ -1155,8 +1616,79 @@ class _PlaceDetailUIState extends State<PlaceDetailUI> {
     );
   }
 
+  List<Map<String, dynamic>> _getFilteredReviews() {
+    final reviews = _reviews
+        .whereType<Map<String, dynamic>>()
+        .where((review) {
+      final status = review['status']?.toString().toUpperCase();
+
+      // Only show active reviews.
+      return status == null || status == 'ACTIVE';
+    })
+        .where((review) {
+      // Don't show the current user's review again
+      // in the "other users" section.
+      if (_myReview == null) {
+        return true;
+      }
+
+      return review['reviewId'] != _myReview!['reviewId'];
+    })
+        .toList();
+
+    switch (_selectedFilter) {
+      case 'Newest':
+        reviews.sort((a, b) {
+          final aDate =
+          DateTime.tryParse(a['createdAt']?.toString() ?? '');
+          final bDate =
+          DateTime.tryParse(b['createdAt']?.toString() ?? '');
+
+          if (aDate == null && bDate == null) return 0;
+          if (aDate == null) return 1;
+          if (bDate == null) return -1;
+
+          return bDate.compareTo(aDate);
+        });
+        break;
+
+      case 'Highest Rating':
+        reviews.sort((a, b) {
+          final aRating = (a['rating'] as num?)?.toDouble() ?? 0;
+          final bRating = (b['rating'] as num?)?.toDouble() ?? 0;
+
+          return bRating.compareTo(aRating);
+        });
+        break;
+
+      case 'Lowest Rating':
+        reviews.sort((a, b) {
+          final aRating = (a['rating'] as num?)?.toDouble() ?? 0;
+          final bRating = (b['rating'] as num?)?.toDouble() ?? 0;
+
+          return aRating.compareTo(bRating);
+        });
+        break;
+
+      case 'With Photo':
+        reviews.removeWhere((review) {
+          final photos = review['photos'];
+
+          if (photos is! List) {
+            return true;
+          }
+
+          return photos.isEmpty;
+        });
+        break;
+    }
+
+    return reviews;
+  }
+
   Widget _buildReviewsPreview() {
-    final otherReviews = _reviews.where((review) {
+    final otherReviews = _reviews
+        .where((review) {
       final reviewMap = review as Map<String, dynamic>;
 
       if (_myReview == null) {
@@ -1164,7 +1696,9 @@ class _PlaceDetailUIState extends State<PlaceDetailUI> {
       }
 
       return reviewMap['reviewId'] != _myReview!['reviewId'];
-    }).take(2).toList();
+    })
+        .take(2)
+        .toList();
 
     return Padding(
       padding: const EdgeInsets.fromLTRB(14, 16, 14, 0),
@@ -1173,10 +1707,7 @@ class _PlaceDetailUIState extends State<PlaceDetailUI> {
         children: [
           const Text(
             'Reviews',
-            style: TextStyle(
-              fontSize: 15,
-              fontWeight: FontWeight.w600,
-            ),
+            style: TextStyle(fontSize: 15, fontWeight: FontWeight.w600),
           ),
           const SizedBox(height: 9),
 
@@ -1190,10 +1721,7 @@ class _PlaceDetailUIState extends State<PlaceDetailUI> {
           else if (otherReviews.isEmpty)
             const Text(
               'No reviews yet.',
-              style: TextStyle(
-                fontSize: 12,
-                color: Colors.grey,
-              ),
+              style: TextStyle(fontSize: 12, color: Colors.grey),
             )
           else
             ...otherReviews.map((review) {
@@ -1202,20 +1730,26 @@ class _PlaceDetailUIState extends State<PlaceDetailUI> {
               final username =
                   reviewMap['username']?.toString() ?? 'Unknown User';
 
-              final rating =
-                  (reviewMap['rating'] as num?)?.toInt() ?? 0;
+              final profilePhotoUrl =
+              _getReviewProfilePhotoUrl(reviewMap);
 
-              final comment =
-                  reviewMap['comment']?.toString() ?? '';
+              final rating = (reviewMap['rating'] as num?)?.toInt() ?? 0;
 
-              final createdAt =
-              reviewMap['createdAt']?.toString();
+              final comment = reviewMap['comment']?.toString() ?? '';
+
+              final createdAt = reviewMap['createdAt']?.toString();
+
+              final photos =
+                  (reviewMap['photos'] as List<dynamic>?) ?? [];
 
               return _review(
                 username,
                 comment,
+                reviewId: (reviewMap['reviewId'] as num).toInt(),
                 rating: rating,
                 time: _formatReviewTime(createdAt),
+                photos: photos,
+                profilePhotoUrl: profilePhotoUrl,
               );
             }),
         ],
@@ -1233,8 +1767,6 @@ class _PlaceDetailUIState extends State<PlaceDetailUI> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-
-
           // =========================
           // YOUR REVIEW
           // =========================
@@ -1257,60 +1789,56 @@ class _PlaceDetailUIState extends State<PlaceDetailUI> {
           // FILTERS
           // =========================
           Row(
-            mainAxisAlignment: MainAxisAlignment.start,
             children: [
-              _reviewFilter(
-                'Most Relevant',
-                selected: _selectedFilter == 'Most Relevant',
-                onTap: () {
-                  setState(() {
-                    _selectedFilter = 'Most Relevant';
-                  });
-                },
+              Expanded(
+                child: _reviewFilter(
+                  'Newest',
+                  selected: _selectedFilter == 'Newest',
+                  onTap: () {
+                    setState(() {
+                      _selectedFilter = 'Newest';
+                    });
+                  },
+                ),
               ),
               const SizedBox(width: 4),
 
-              _reviewFilter(
-                'Newest',
-                selected: _selectedFilter == 'Newest',
-                onTap: () {
-                  setState(() {
-                    _selectedFilter = 'Newest';
-                  });
-                },
+              Expanded(
+                child: _reviewFilter(
+                  'Highest Rating',
+                  selected: _selectedFilter == 'Highest Rating',
+                  onTap: () {
+                    setState(() {
+                      _selectedFilter = 'Highest Rating';
+                    });
+                  },
+                ),
               ),
               const SizedBox(width: 4),
 
-              _reviewFilter(
-                'Highest Rating',
-                selected: _selectedFilter == 'Highest Rating',
-                onTap: () {
-                  setState(() {
-                    _selectedFilter = 'Highest Rating';
-                  });
-                },
+              Expanded(
+                child: _reviewFilter(
+                  'Lowest Rating',
+                  selected: _selectedFilter == 'Lowest Rating',
+                  onTap: () {
+                    setState(() {
+                      _selectedFilter = 'Lowest Rating';
+                    });
+                  },
+                ),
               ),
               const SizedBox(width: 4),
 
-              _reviewFilter(
-                'Lowest Rating',
-                selected: _selectedFilter == 'Lowest Rating',
-                onTap: () {
-                  setState(() {
-                    _selectedFilter = 'Lowest Rating';
-                  });
-                },
-              ),
-              const SizedBox(width: 4),
-
-              _reviewFilter(
-                'With Photo',
-                selected: _selectedFilter == 'With Photo',
-                onTap: () {
-                  setState(() {
-                    _selectedFilter = 'With Photo';
-                  });
-                },
+              Expanded(
+                child: _reviewFilter(
+                  'With Photo',
+                  selected: _selectedFilter == 'With Photo',
+                  onTap: () {
+                    setState(() {
+                      _selectedFilter = 'With Photo';
+                    });
+                  },
+                ),
               ),
             ],
           ),
@@ -1327,40 +1855,32 @@ class _PlaceDetailUIState extends State<PlaceDetailUI> {
                 child: CircularProgressIndicator(),
               ),
             )
-          else if (_reviews.isEmpty)
+          else if (_getFilteredReviews().isEmpty)
             const Padding(
               padding: EdgeInsets.all(20),
               child: Center(
                 child: Text(
                   'No reviews yet.',
-                  style: TextStyle(
-                    fontSize: 12,
-                    color: Colors.grey,
-                  ),
+                  style: TextStyle(fontSize: 12, color: Colors.grey),
                 ),
               ),
             )
           else
-            ..._reviews
-                .where((review) {
-              final reviewMap = review as Map<String, dynamic>;
+            ..._getFilteredReviews().map((reviewMap) {
+              final username =
+                  reviewMap['username']?.toString() ?? 'Unknown User';
 
-              // Don't show the current user's review again
-              // in the "other users" section.
-              if (_myReview == null) {
-                return true;
-              }
+              final profilePhotoUrl =
+              _getReviewProfilePhotoUrl(reviewMap);
 
-              return reviewMap['reviewId'] != _myReview!['reviewId'];
-            })
-                .map((review) {
-              final reviewMap = review as Map<String, dynamic>;
+              final rating =
+                  (reviewMap['rating'] as num?)?.toInt() ?? 0;
 
-              final username = reviewMap['username']?.toString() ?? 'Unknown User';
-              final rating = (reviewMap['rating'] as num?)?.toInt() ?? 0;
-              final comment = reviewMap['comment']?.toString() ?? '';
+              final comment =
+                  reviewMap['comment']?.toString() ?? '';
 
-              final createdAt = reviewMap['createdAt']?.toString();
+              final createdAt =
+              reviewMap['createdAt']?.toString();
 
               final photos =
                   (reviewMap['photos'] as List<dynamic>?) ?? [];
@@ -1370,9 +1890,11 @@ class _PlaceDetailUIState extends State<PlaceDetailUI> {
                   _review(
                     username,
                     comment,
+                    reviewId: (reviewMap['reviewId'] as num).toInt(),
                     rating: rating,
                     time: _formatReviewTime(createdAt),
                     photos: photos,
+                    profilePhotoUrl: profilePhotoUrl,
                   ),
                   const Divider(
                     height: 1,
@@ -1399,10 +1921,7 @@ class _PlaceDetailUIState extends State<PlaceDetailUI> {
         children: [
           const Text(
             'Your review',
-            style: TextStyle(
-              fontSize: 14,
-              fontWeight: FontWeight.w600,
-            ),
+            style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600),
           ),
           const SizedBox(height: 12),
           Row(
@@ -1425,20 +1944,27 @@ class _PlaceDetailUIState extends State<PlaceDetailUI> {
                 children: List.generate(
                   5,
                       (index) => GestureDetector(
-                    onTap: () {
-                      Navigator.push(
+                    onTap: () async {
+                      final result = await Navigator.push<bool>(
                         context,
                         MaterialPageRoute(
                           builder: (_) => CreateReviewUI(
                             initialRating: index + 1,
                             placeId: widget.place.placeId,
                             placeName: widget.place.title,
-                            placeType: widget.reviewTargetType == PlaceReviewTargetType.system
+                            placeType:
+                            widget.reviewTargetType ==
+                                PlaceReviewTargetType.system
                                 ? ReviewPlaceType.system
                                 : ReviewPlaceType.google,
                           ),
                         ),
                       );
+
+                      if (result == true && mounted) {
+                        await _loadMyReview();
+                        await _loadReviews();
+                      }
                     },
                     child: Padding(
                       padding: const EdgeInsets.only(right: 12),
@@ -1463,39 +1989,39 @@ class _PlaceDetailUIState extends State<PlaceDetailUI> {
   // ============================================================
 
   Widget _buildExistingUserReview() {
-    final photos =
-        (_myReview?['photos'] as List<dynamic>?) ?? [];
+    final photos = (_myReview?['photos'] as List<dynamic>?) ?? [];
 
     return Padding(
-      padding: const EdgeInsets.only(
-        left: 8,
-        right: 0,
-      ),
+      padding: const EdgeInsets.only(left: 8, right: 0),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           const Text(
             'Your review',
-            style: TextStyle(
-              fontSize: 14,
-              fontWeight: FontWeight.w600,
-            ),
+            style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600),
           ),
           const SizedBox(height: 12),
 
           Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const CircleAvatar(
+              CircleAvatar(
                 radius: 22,
-                backgroundColor: Color(0xffffd7cf),
-                child: Text(
-                  'B',
-                  style: TextStyle(
+                backgroundColor: const Color(0xffffd7cf),
+                backgroundImage: _getReviewProfilePhotoUrl(_myReview ?? {}) != null
+                    ? NetworkImage(_getReviewProfilePhotoUrl(_myReview ?? {})!)
+                    : null,
+                child: _getReviewProfilePhotoUrl(_myReview ?? {}) == null
+                    ? Text(
+                  (_myReview?['username']?.toString().isNotEmpty ?? false)
+                      ? _myReview!['username'].toString()[0].toUpperCase()
+                      : '?',
+                  style: const TextStyle(
                     color: accent,
                     fontWeight: FontWeight.w600,
                   ),
-                ),
+                )
+                    : null,
               ),
               const SizedBox(width: 14),
 
@@ -1535,7 +2061,9 @@ class _PlaceDetailUIState extends State<PlaceDetailUI> {
                                   const SizedBox(width: 4),
 
                                   Text(
-                                    _formatReviewTime(_myReview?['createdAt']?.toString()),
+                                    _formatReviewTime(
+                                      _myReview?['createdAt']?.toString(),
+                                    ),
                                     style: TextStyle(
                                       color: Colors.grey.shade500,
                                       fontSize: 9,
@@ -1547,7 +2075,9 @@ class _PlaceDetailUIState extends State<PlaceDetailUI> {
                               const SizedBox(height: 3),
 
                               Text(
-                                '★' * ((_myReview?['rating'] as num?)?.toInt() ?? 0),
+                                '★' *
+                                    ((_myReview?['rating'] as num?)?.toInt() ??
+                                        0),
                                 style: const TextStyle(
                                   color: accent,
                                   fontSize: 12,
@@ -1578,24 +2108,39 @@ class _PlaceDetailUIState extends State<PlaceDetailUI> {
                             ),
                           ),
                           elevation: 2,
-                          onSelected: (value) {
+                          onSelected: (value) async {
                             if (value == 'edit') {
-                              Navigator.push(
+                              final result = await Navigator.push<bool>(
                                 context,
                                 MaterialPageRoute(
                                   builder: (_) => CreateReviewUI(
-                                    initialRating: (_myReview?['rating'] as num?)?.toInt() ?? 0,
-                                    initialReviewText: _myReview?['comment']?.toString() ?? '',
+                                    initialRating:
+                                    (_myReview?['rating'] as num?)
+                                        ?.toInt() ??
+                                        0,
+                                    initialReviewText:
+                                    _myReview?['comment']?.toString() ?? '',
                                     placeId: widget.place.placeId,
                                     placeName: widget.place.title,
-                                    placeType: widget.reviewTargetType == PlaceReviewTargetType.system
+                                    placeType:
+                                    widget.reviewTargetType ==
+                                        PlaceReviewTargetType.system
                                         ? ReviewPlaceType.system
                                         : ReviewPlaceType.google,
                                     isEdit: true,
                                     reviewId: _myReview?['reviewId'],
+                                    initialPhotos:
+                                    (_myReview?['photos']
+                                    as List<dynamic>?) ??
+                                        [],
                                   ),
                                 ),
                               );
+
+                              if (result == true && mounted) {
+                                await _loadMyReview();
+                                await _loadReviews();
+                              }
                             } else if (value == 'delete') {
                               showDialog<void>(
                                 context: context,
@@ -1610,11 +2155,14 @@ class _PlaceDetailUIState extends State<PlaceDetailUI> {
                                     ),
                                     content: const Text(
                                       'Deleted reviews cannot be recovered.',
-                                      style: TextStyle(
-                                        fontSize: 14,
-                                      ),
+                                      style: TextStyle(fontSize: 14),
                                     ),
-                                    actionsPadding: const EdgeInsets.fromLTRB(12, 0, 12, 14),
+                                    actionsPadding: const EdgeInsets.fromLTRB(
+                                      12,
+                                      0,
+                                      12,
+                                      14,
+                                    ),
                                     actions: [
                                       Row(
                                         children: [
@@ -1624,11 +2172,19 @@ class _PlaceDetailUIState extends State<PlaceDetailUI> {
                                                 Navigator.pop(dialogContext);
                                               },
                                               style: TextButton.styleFrom(
-                                                backgroundColor: const Color(0xffe5e5e5),
-                                                foregroundColor: const Color(0xff333333),
-                                                padding: const EdgeInsets.symmetric(vertical: 10),
+                                                backgroundColor: const Color(
+                                                  0xffe5e5e5,
+                                                ),
+                                                foregroundColor: const Color(
+                                                  0xff333333,
+                                                ),
+                                                padding:
+                                                const EdgeInsets.symmetric(
+                                                  vertical: 10,
+                                                ),
                                                 shape: RoundedRectangleBorder(
-                                                  borderRadius: BorderRadius.circular(22),
+                                                  borderRadius:
+                                                  BorderRadius.circular(22),
                                                 ),
                                               ),
                                               child: const Text(
@@ -1646,14 +2202,19 @@ class _PlaceDetailUIState extends State<PlaceDetailUI> {
                                           Expanded(
                                             child: TextButton(
                                               onPressed: () async {
-                                                final reviewId = _myReview?['reviewId'];
+                                                final reviewId =
+                                                _myReview?['reviewId'];
 
                                                 if (reviewId == null) {
                                                   Navigator.pop(dialogContext);
 
-                                                  ScaffoldMessenger.of(context).showSnackBar(
+                                                  ScaffoldMessenger.of(
+                                                    context,
+                                                  ).showSnackBar(
                                                     const SnackBar(
-                                                      content: Text('Review ID not found.'),
+                                                      content: Text(
+                                                        'Review ID not found.',
+                                                      ),
                                                     ),
                                                   );
 
@@ -1661,8 +2222,12 @@ class _PlaceDetailUIState extends State<PlaceDetailUI> {
                                                 }
 
                                                 try {
-                                                  await context.read<ReviewProvider>().deleteReview(
-                                                    reviewId: (reviewId as num).toInt(),
+                                                  await context
+                                                      .read<ReviewProvider>()
+                                                      .deleteReview(
+                                                    reviewId:
+                                                    (reviewId as num)
+                                                        .toInt(),
                                                   );
 
                                                   if (!mounted) return;
@@ -1674,20 +2239,15 @@ class _PlaceDetailUIState extends State<PlaceDetailUI> {
                                                     _hasUserReviewed = false;
                                                   });
 
-                                                  ScaffoldMessenger.of(context).showSnackBar(
-                                                    const SnackBar(
-                                                      content: Text('Review deleted successfully.'),
-                                                    ),
-                                                  );
+                                                  await _loadReviews();
 
-                                                  setState(() {
-                                                    _myReview = null;
-                                                    _hasUserReviewed = false;
-                                                  });
-
-                                                  ScaffoldMessenger.of(context).showSnackBar(
+                                                  ScaffoldMessenger.of(
+                                                    context,
+                                                  ).showSnackBar(
                                                     const SnackBar(
-                                                      content: Text('Review deleted successfully.'),
+                                                      content: Text(
+                                                        'Review deleted successfully.',
+                                                      ),
                                                     ),
                                                   );
                                                 } catch (e) {
@@ -1695,9 +2255,13 @@ class _PlaceDetailUIState extends State<PlaceDetailUI> {
 
                                                   Navigator.of(context).pop();
 
-                                                  ScaffoldMessenger.of(context).showSnackBar(
+                                                  ScaffoldMessenger.of(
+                                                    context,
+                                                  ).showSnackBar(
                                                     SnackBar(
-                                                      content: Text('Failed to delete review: $e'),
+                                                      content: Text(
+                                                        'Failed to delete review: $e',
+                                                      ),
                                                     ),
                                                   );
                                                 }
@@ -1705,9 +2269,13 @@ class _PlaceDetailUIState extends State<PlaceDetailUI> {
                                               style: TextButton.styleFrom(
                                                 backgroundColor: accent,
                                                 foregroundColor: Colors.white,
-                                                padding: const EdgeInsets.symmetric(vertical: 10),
+                                                padding:
+                                                const EdgeInsets.symmetric(
+                                                  vertical: 10,
+                                                ),
                                                 shape: RoundedRectangleBorder(
-                                                  borderRadius: BorderRadius.circular(22),
+                                                  borderRadius:
+                                                  BorderRadius.circular(22),
                                                 ),
                                               ),
                                               child: const Text(
@@ -1734,9 +2302,7 @@ class _PlaceDetailUIState extends State<PlaceDetailUI> {
                               padding: EdgeInsets.symmetric(horizontal: 12),
                               child: Text(
                                 'Edit review',
-                                style: TextStyle(
-                                  fontSize: 13,
-                                ),
+                                style: TextStyle(fontSize: 13),
                               ),
                             ),
                             PopupMenuItem(
@@ -1745,9 +2311,7 @@ class _PlaceDetailUIState extends State<PlaceDetailUI> {
                               padding: EdgeInsets.symmetric(horizontal: 12),
                               child: Text(
                                 'Delete review',
-                                style: TextStyle(
-                                  fontSize: 13,
-                                ),
+                                style: TextStyle(fontSize: 13),
                               ),
                             ),
                           ],
@@ -1762,10 +2326,7 @@ class _PlaceDetailUIState extends State<PlaceDetailUI> {
                         children: [
                           Text(
                             _myReview?['comment']?.toString() ?? '',
-                            style: const TextStyle(
-                              fontSize: 11,
-                              height: 1.35,
-                            ),
+                            style: const TextStyle(fontSize: 11, height: 1.35),
                           ),
 
                           const SizedBox(height: 9),
@@ -1781,7 +2342,8 @@ class _PlaceDetailUIState extends State<PlaceDetailUI> {
                                 const SizedBox(width: 8),
                                 itemBuilder: (context, index) {
                                   final photoUrl =
-                                      photos[index]['photoUrl']?.toString() ?? '';
+                                      photos[index]['photoUrl']?.toString() ??
+                                          '';
 
                                   return ClipRRect(
                                     borderRadius: BorderRadius.circular(9),
@@ -1790,7 +2352,8 @@ class _PlaceDetailUIState extends State<PlaceDetailUI> {
                                       width: 180,
                                       height: 180,
                                       fit: BoxFit.cover,
-                                      errorBuilder: (context, error, stackTrace) {
+                                      errorBuilder:
+                                          (context, error, stackTrace) {
                                         return Container(
                                           width: 180,
                                           height: 180,
@@ -1830,16 +2393,9 @@ class _PlaceDetailUIState extends State<PlaceDetailUI> {
         children: [
           SizedBox(
             width: 12,
-            child: Text(
-              '$rating',
-              style: const TextStyle(fontSize: 9),
-            ),
+            child: Text('$rating', style: const TextStyle(fontSize: 9)),
           ),
-          const Icon(
-            Icons.star,
-            size: 10,
-            color: accent,
-          ),
+          const Icon(Icons.star, size: 10, color: accent),
           const SizedBox(width: 4),
           Expanded(
             child: ClipRRect(
@@ -1865,40 +2421,27 @@ class _PlaceDetailUIState extends State<PlaceDetailUI> {
     return GestureDetector(
       onTap: onTap,
       child: Container(
-        padding: const EdgeInsets.symmetric(
-          horizontal: 7,
-          vertical: 4,
-        ),
+        padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 4),
         decoration: BoxDecoration(
           color: selected ? accent : Colors.white,
           borderRadius: BorderRadius.circular(20),
           border: Border.all(
-            color: selected
-                ? accent
-                : const Color(0xffd9d9d9),
+            color: selected ? accent : const Color(0xffd9d9d9),
           ),
         ),
         child: Row(
-          mainAxisSize: MainAxisSize.min,
+          mainAxisAlignment: MainAxisAlignment.center,
           children: [
             if (selected) ...[
-              const Icon(
-                Icons.check,
-                color: Colors.white,
-                size: 11,
-              ),
+              const Icon(Icons.check, color: Colors.white, size: 11),
               const SizedBox(width: 2),
             ],
             Text(
               label,
               style: TextStyle(
-                color: selected
-                    ? Colors.white
-                    : Colors.black,
-                fontSize: 9,
-                fontWeight: selected
-                    ? FontWeight.w600
-                    : FontWeight.w400,
+                color: selected ? Colors.white : Colors.black,
+                fontSize: 8.5,
+                fontWeight: selected ? FontWeight.w600 : FontWeight.w400,
               ),
             ),
           ],
@@ -1912,26 +2455,106 @@ class _PlaceDetailUIState extends State<PlaceDetailUI> {
   // =========================
 
   Widget _buildPhotoTab() {
+    final photos = _getPlacePhotoUrls();
+
     return Padding(
-      padding: const EdgeInsets.all(14),
-      child: GridView.builder(
-        shrinkWrap: true,
-        physics: const NeverScrollableScrollPhysics(),
-        itemCount: 6,
-        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-          crossAxisCount: 2,
-          crossAxisSpacing: 6,
-          mainAxisSpacing: 6,
-          childAspectRatio: 1.25,
-        ),
-        itemBuilder: (context, index) {
-          return _imagePlaceholder(
-            radius: 8,
-            iconSize: 30,
-          );
-        },
+      padding: const EdgeInsets.fromLTRB(14, 0, 14, 0),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          const Padding(
+            padding: EdgeInsets.fromLTRB(2, 8, 2, 6),
+            child: Text(
+              'All Photos',
+              style: TextStyle(fontSize: 15, fontWeight: FontWeight.w600),
+            ),
+          ),
+
+          if (photos.isEmpty)
+            Padding(
+              padding: const EdgeInsets.only(top: 28),
+              child: Center(
+                child: Column(
+                  children: [
+                    Icon(
+                      Icons.photo_library_outlined,
+                      size: 42,
+                      color: Colors.grey.shade400,
+                    ),
+                    const SizedBox(height: 10),
+                    Text(
+                      'No photos yet',
+                      style: TextStyle(
+                        fontSize: 12,
+                        color: Colors.grey.shade500,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            )
+          else
+            MasonryGridView.count(
+              crossAxisCount: 2,
+              crossAxisSpacing: 6,
+              mainAxisSpacing: 6,
+              shrinkWrap: true,
+              padding: EdgeInsets.zero,
+              physics: const NeverScrollableScrollPhysics(),
+              itemCount: photos.length,
+              itemBuilder: (context, index) {
+                return _photoTabImage(photos[index]);
+              },
+            ),
+        ],
       ),
     );
+  }
+
+  Widget _photoTabImage(String photoUrl) {
+    return GestureDetector(
+      onTap: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (_) => _FullScreenPhotoViewer(photoUrl: photoUrl),
+          ),
+        );
+      },
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(8),
+        child: Image.network(
+          photoUrl,
+          width: double.infinity,
+          fit: BoxFit.fitWidth,
+          errorBuilder: (_, __, ___) {
+            return _imagePlaceholder(radius: 8, iconSize: 30);
+          },
+        ),
+      ),
+    );
+  }
+
+  String? _getReviewProfilePhotoUrl(Map<String, dynamic> review) {
+    const possibleKeys = [
+      'profilePhotoUrl',
+      'profilePictureUrl',
+      'profileImageUrl',
+      'avatarUrl',
+      'profilePhoto',
+      'profilePicture',
+      'profileImage',
+    ];
+
+    for (final key in possibleKeys) {
+      final value = review[key]?.toString().trim();
+
+      if (value != null && value.isNotEmpty) {
+        return value;
+      }
+    }
+
+    return null;
   }
 
   // =========================
@@ -1941,16 +2564,16 @@ class _PlaceDetailUIState extends State<PlaceDetailUI> {
   Widget _review(
       String name,
       String text, {
+        required int reviewId,
         String time = '2 months ago',
         int rating = 5,
         List<dynamic> photos = const [],
+        String? profilePhotoUrl,
       }) {
+    final reviewProvider = context.read<ReviewProvider>();
+
     return Padding(
-      padding: const EdgeInsets.only(
-        left: 8,
-        right: 0,
-        bottom: 14,
-      ),
+      padding: const EdgeInsets.only(left: 8, right: 0, bottom: 14),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -1960,14 +2583,19 @@ class _PlaceDetailUIState extends State<PlaceDetailUI> {
           CircleAvatar(
             radius: 22,
             backgroundColor: const Color(0xffffd7cf),
-            child: Text(
-              name.substring(0, 1).toUpperCase(),
+            backgroundImage: profilePhotoUrl != null
+                ? NetworkImage(profilePhotoUrl)
+                : null,
+            child: profilePhotoUrl == null
+                ? Text(
+              name.isNotEmpty ? name.substring(0, 1).toUpperCase() : '?',
               style: const TextStyle(
                 color: accent,
                 fontWeight: FontWeight.w600,
                 fontSize: 12,
               ),
-            ),
+            )
+                : null,
           ),
 
           const SizedBox(width: 14),
@@ -2052,7 +2680,8 @@ class _PlaceDetailUIState extends State<PlaceDetailUI> {
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                              builder: (_) => const ReportReviewUI(),
+                              builder: (_) =>
+                                  ReportReviewUI(reviewId: reviewId),
                             ),
                           );
                         }
@@ -2064,9 +2693,7 @@ class _PlaceDetailUIState extends State<PlaceDetailUI> {
                           padding: EdgeInsets.symmetric(horizontal: 12),
                           child: Text(
                             'Report review',
-                            style: TextStyle(
-                              fontSize: 13,
-                            ),
+                            style: TextStyle(fontSize: 13),
                           ),
                         ),
                       ],
@@ -2082,10 +2709,7 @@ class _PlaceDetailUIState extends State<PlaceDetailUI> {
                     children: [
                       Text(
                         text,
-                        style: const TextStyle(
-                          fontSize: 11,
-                          height: 1.35,
-                        ),
+                        style: const TextStyle(fontSize: 11, height: 1.35),
                       ),
 
                       if (photos.isNotEmpty) ...[
@@ -2133,11 +2757,59 @@ class _PlaceDetailUIState extends State<PlaceDetailUI> {
                 ),
               ],
             ),
-
           ),
         ],
       ),
+    );
+  }
+}
 
+class _FullScreenPhotoViewer extends StatelessWidget {
+  final String photoUrl;
+
+  const _FullScreenPhotoViewer({required this.photoUrl});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: Colors.black,
+      body: Stack(
+        children: [
+          // Full-screen image
+          Positioned.fill(
+            child: Center(
+              child: InteractiveViewer(
+                minScale: 0.5,
+                maxScale: 4.0,
+                child: Image.network(
+                  photoUrl,
+                  fit: BoxFit.contain,
+                  errorBuilder: (_, __, ___) {
+                    return const Icon(
+                      Icons.broken_image_outlined,
+                      color: Colors.white,
+                      size: 60,
+                    );
+                  },
+                ),
+              ),
+            ),
+          ),
+
+          // Back button
+          SafeArea(
+            child: Align(
+              alignment: Alignment.topLeft,
+              child: IconButton(
+                icon: const Icon(Icons.arrow_back, color: Colors.white),
+                onPressed: () {
+                  Navigator.pop(context);
+                },
+              ),
+            ),
+          ),
+        ],
+      ),
     );
   }
 }

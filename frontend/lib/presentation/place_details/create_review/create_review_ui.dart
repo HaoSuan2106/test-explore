@@ -85,6 +85,15 @@ class _CreateReviewUIState extends State<CreateReviewUI> {
       return;
     }
 
+    if (_reviewController.text.trim().isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Please write a review before posting.'),
+        ),
+      );
+      return;
+    }
+
     if (widget.placeId == null || widget.placeId!.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
@@ -258,7 +267,7 @@ class _CreateReviewUIState extends State<CreateReviewUI> {
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
                       Text(
-                        widget.placeName ?? 'RING Café',
+                        widget.placeName ?? 'this place',
                         style: TextStyle(
                           fontSize: 25,
                           fontWeight: FontWeight.w500,
@@ -292,7 +301,7 @@ class _CreateReviewUIState extends State<CreateReviewUI> {
                         radius: 23,
                         backgroundColor: Color(0xffffd7cf),
                         child: Text(
-                          'B',
+                          'Y',
                           style: TextStyle(
                             color: accent,
                             fontSize: 18,
@@ -304,7 +313,7 @@ class _CreateReviewUIState extends State<CreateReviewUI> {
                       const SizedBox(width: 18),
 
                       const Text(
-                        'Boon Boon',
+                        'You',
                         style: TextStyle(
                           fontSize: 17,
                           fontWeight: FontWeight.w500,

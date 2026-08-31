@@ -1,4 +1,5 @@
 using ExploreMy.Api.Domain.Entities;
+using ExploreMy.Api.DTOs.FootTracker;
 using ExploreMy.Api.DTOs.PostReview;
 
 namespace ExploreMy.Api.Application.PostReview;
@@ -95,6 +96,7 @@ public static class PostDtoMapper
         Reason = report.Reason,
         Status = report.Status,
         CreatedAt = report.CreatedAt,
+        WithdrawnAt = report.WithdrawnAt,
         PostTitle = report.Post?.Title ?? string.Empty,
         PostedBy = report.Post?.Author?.Username ?? string.Empty,
         TaggedPlaceName = report.Post?.TaggedPlace?.Name ?? string.Empty,
@@ -107,12 +109,17 @@ public static class PostDtoMapper
         CommentCount = report.Post?.Comments.Count(c => c.Status == PostCommentStatus.Active) ?? 0,
     };
 
-    public static EligibleAttractionDto ToEligibleAttraction(Place place) => new()
+    /// <summary>
+    /// Maps a real FootTracker visit (VisitLogDto) into the API response DTO.
+    /// VisitLogDto carries no Description field, so that property is mapped
+    /// as null (reported in the Recommendation migration audit).
+    /// </summary>
+    public static VisitedAttractionDto ToVisitedAttraction(VisitLogDto visit) => new()
     {
-        PlaceId = place.PlaceId,
-        Name = place.Name,
-        Address = place.Address,
-        Category = place.Category,
-        Description = place.Description,
+        PlaceId = visit.PlaceId ?? string.Empty,
+        Name = visit.Title ?? string.Empty,
+        Address = visit.Address ?? string.Empty,
+        Category = visit.PrimaryType ?? string.Empty,
+        Description = null, // VisitLogDto has no description field
     };
 }

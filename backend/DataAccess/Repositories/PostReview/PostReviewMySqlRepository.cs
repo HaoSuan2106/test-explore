@@ -36,19 +36,19 @@ public class PostReviewMySqlRepository : IPostReviewRepository
                     .Skip((page - 1) * pageSize)
                     .Take(pageSize)
                     .Include(p => p.Author)
-                    .Include(p => p.TaggedPlace)
                     .Include(p => p.Images)
                     .Include(p => p.Reactions)
                     .Include(p => p.Comments)
                     .Include(p => p.Reports);
 
-                return await savedQuery.ToListAsync();
+                var savedPosts = await savedQuery.ToListAsync();
+                await HydrateTaggedPlacesAsync(savedPosts);
+                return savedPosts;
             }
 
             IQueryable<Post> query = _context.Posts
                 .Where(p => p.Status == PostStatus.Active)
                 .Include(p => p.Author)
-                .Include(p => p.TaggedPlace)
                 .Include(p => p.Images)
                 .Include(p => p.Reactions)
                 .Include(p => p.Comments)
@@ -77,10 +77,12 @@ public class PostReviewMySqlRepository : IPostReviewRepository
                 query = query.OrderByDescending(p => p.CreatedAt);
             }
 
-            return await query
+            var feedPosts = await query
                 .Skip((page - 1) * pageSize)
                 .Take(pageSize)
                 .ToListAsync();
+            await HydrateTaggedPlacesAsync(feedPosts);
+            return feedPosts;
         }
         catch (Exception ex)
         {
@@ -96,11 +98,10 @@ public class PostReviewMySqlRepository : IPostReviewRepository
     {
         try
         {
-            return await _context.Posts
+            var commentedPosts = await _context.Posts
                 .Where(p => p.Status == PostStatus.Active
                             && p.Comments.Any(c => c.AuthorId == userId && c.Status == PostCommentStatus.Active))
                 .Include(p => p.Author)
-                .Include(p => p.TaggedPlace)
                 .Include(p => p.Images)
                 .Include(p => p.Reactions)
                 .Include(p => p.Comments)
@@ -109,6 +110,8 @@ public class PostReviewMySqlRepository : IPostReviewRepository
                 .Skip((page - 1) * pageSize)
                 .Take(pageSize)
                 .ToListAsync();
+            await HydrateTaggedPlacesAsync(commentedPosts);
+            return commentedPosts;
         }
         catch (Exception ex)
         {
@@ -124,11 +127,10 @@ public class PostReviewMySqlRepository : IPostReviewRepository
     {
         try
         {
-            return await _context.Posts
+            var reportedPosts = await _context.Posts
                 .Where(p => p.Status == PostStatus.Active
                             && p.Reports.Any(r => r.ReporterId == userId && r.Status == PostReportStatus.Active))
                 .Include(p => p.Author)
-                .Include(p => p.TaggedPlace)
                 .Include(p => p.Images)
                 .Include(p => p.Reactions)
                 .Include(p => p.Comments)
@@ -137,6 +139,8 @@ public class PostReviewMySqlRepository : IPostReviewRepository
                 .Skip((page - 1) * pageSize)
                 .Take(pageSize)
                 .ToListAsync();
+            await HydrateTaggedPlacesAsync(reportedPosts);
+            return reportedPosts;
         }
         catch (Exception ex)
         {
@@ -163,21 +167,22 @@ public class PostReviewMySqlRepository : IPostReviewRepository
                 .Where(p => p.Status == PostStatus.Active
                             && (p.Title != null && p.Title.Contains(trimmed)
                                 || p.Description.Contains(trimmed)
-                                || (p.TaggedPlace != null && p.TaggedPlace.Name.Contains(trimmed))
-                                || (p.TaggedPlace != null && p.TaggedPlace.Address.Contains(trimmed))
+                                || _context.Places.Any(pl => pl.PlaceId == p.TaggedPlaceId && pl.Name.Contains(trimmed))
+                                || _context.Places.Any(pl => pl.PlaceId == p.TaggedPlaceId && pl.Address.Contains(trimmed))
                                 || (p.Author != null && p.Author.Username.Contains(trimmed))))
                 .Include(p => p.Author)
-                .Include(p => p.TaggedPlace)
                 .Include(p => p.Images)
                 .Include(p => p.Reactions)
                 .Include(p => p.Comments)
                 .Include(p => p.Reports)
                 .OrderByDescending(p => p.CreatedAt);
 
-            return await queryable
+            var searchResults = await queryable
                 .Skip((page - 1) * pageSize)
                 .Take(pageSize)
                 .ToListAsync();
+            await HydrateTaggedPlacesAsync(searchResults);
+            return searchResults;
         }
         catch (Exception ex)
         {
@@ -190,15 +195,19 @@ public class PostReviewMySqlRepository : IPostReviewRepository
     {
         try
         {
-            return await _context.Posts
+            var post = await _context.Posts
                 .Include(p => p.Author)
-                .Include(p => p.TaggedPlace)
                 .Include(p => p.Images)
                 .Include(p => p.Reactions)
                 .Include(p => p.Comments).ThenInclude(c => c.Author)
                 .Include(p => p.Reports)
                 .Where(p => p.PostId == postId && p.Status == PostStatus.Active)
                 .FirstOrDefaultAsync();
+            if (post != null)
+            {
+                await HydrateTaggedPlacesAsync(new[] { post });
+            }
+            return post;
         }
         catch (Exception ex)
         {
@@ -211,15 +220,16 @@ public class PostReviewMySqlRepository : IPostReviewRepository
     {
         try
         {
-            return await _context.Posts
+            var authorPosts = await _context.Posts
                 .Where(p => p.AuthorId == authorId && p.Status == PostStatus.Active)
                 .Include(p => p.Author)
-                .Include(p => p.TaggedPlace)
                 .Include(p => p.Images)
                 .Include(p => p.Reactions)
                 .Include(p => p.Comments)
                 .OrderByDescending(p => p.CreatedAt)
                 .ToListAsync();
+            await HydrateTaggedPlacesAsync(authorPosts);
+            return authorPosts;
         }
         catch (Exception ex)
         {
@@ -497,17 +507,53 @@ public class PostReviewMySqlRepository : IPostReviewRepository
     {
         try
         {
-            return await _context.PostReports
-                .Where(r => r.ReporterId == reporterId && r.Status == PostReportStatus.Active)
+            var reports = await _context.PostReports
+                .Where(r => r.ReporterId == reporterId)
                 .Include(r => r.Post).ThenInclude(p => p!.Author)
-                .Include(r => r.Post).ThenInclude(p => p!.TaggedPlace)
                 .Include(r => r.Post).ThenInclude(p => p!.Images)
                 .OrderByDescending(r => r.CreatedAt)
                 .ToListAsync();
+            foreach (var report in reports)
+            {
+                await HydrateReportPostTaggedPlaceAsync(report);
+            }
+            return reports;
         }
         catch (Exception ex)
         {
             _logger.LogError(ex, "Database error while loading reports of reporter {ReporterId}.", reporterId);
+            throw;
+        }
+    }
+
+    public async Task<PostReport?> GetReportByIdAsync(string reportId)
+    {
+        try
+        {
+            var report = await _context.PostReports
+                .Include(r => r.Post).ThenInclude(p => p!.Author)
+                .Include(r => r.Post).ThenInclude(p => p!.Images)
+                .FirstOrDefaultAsync(r => r.ReportId == reportId);
+            await HydrateReportPostTaggedPlaceAsync(report);
+            return report;
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Database error while loading report {ReportId}.", reportId);
+            throw;
+        }
+    }
+
+    public async Task UpdateReportAsync(PostReport report)
+    {
+        try
+        {
+            _context.PostReports.Update(report);
+            await _context.SaveChangesAsync();
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Database error while updating report {ReportId}.", report.ReportId);
             throw;
         }
     }
@@ -635,23 +681,42 @@ public class PostReviewMySqlRepository : IPostReviewRepository
         }
     }
 
-    // ---------------- Eligible attractions ----------------
+    // ---------------- Tagged place hydration (Priority 3) ----------------
+    //
+    // community_posts.tagged_place_id is a reference-only field (no FK). EF
+    // loads the scalar column; we hydrate the runtime TaggedPlace reference
+    // from the places table so the DTO mapper can still surface the tagged
+    // place name/address without any EF relationship.
 
-    public async Task<List<Place>> GetEligibleAttractionsAsync(int userId)
+    private async Task HydrateTaggedPlacesAsync(IEnumerable<Post> posts)
     {
-        try
+        var ids = posts
+            .Where(p => !string.IsNullOrEmpty(p.TaggedPlaceId))
+            .Select(p => p.TaggedPlaceId)
+            .Distinct()
+            .ToList();
+        if (ids.Count == 0)
         {
-            return await _context.FootTrackerLogs
-                .Where(l => l.UserId == userId && l.PlaceId != null)
-                .Select(l => l.Place!)
-                .Distinct()
-                .OrderBy(p => p.Name)
-                .ToListAsync();
+            return;
         }
-        catch (Exception ex)
+
+        var places = await _context.Places
+            .Where(pl => ids.Contains(pl.PlaceId))
+            .ToDictionaryAsync(pl => pl.PlaceId);
+        foreach (var post in posts)
         {
-            _logger.LogError(ex, "Database error while loading eligible attractions for user {UserId}.", userId);
-            throw;
+            if (places.TryGetValue(post.TaggedPlaceId, out var place))
+            {
+                post.TaggedPlace = place;
+            }
+        }
+    }
+
+    private async Task HydrateReportPostTaggedPlaceAsync(PostReport? report)
+    {
+        if (report?.Post != null && !string.IsNullOrEmpty(report.Post.TaggedPlaceId))
+        {
+            await HydrateTaggedPlacesAsync(new[] { report.Post });
         }
     }
 }

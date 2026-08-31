@@ -19,6 +19,7 @@ class WithdrawRecommendationModal extends StatefulWidget {
 
 class _WithdrawRecommendationModalState extends State<WithdrawRecommendationModal> {
   bool _confirmed = false;
+  bool _mutating = false;
 
   @override
   Widget build(BuildContext context) {
@@ -73,8 +74,9 @@ class _WithdrawRecommendationModalState extends State<WithdrawRecommendationModa
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(place?.name ?? 'Recommended place', style: AppTypography.headlineMd.copyWith(fontSize: 16)),
-                if (place != null)
-                  Text('📍 ${place.address}', style: AppTypography.labelSm),
+                if (place?.latitude != null && place?.longitude != null)
+                  Text('📍 ${place!.latitude!.toStringAsFixed(5)}, ${place.longitude!.toStringAsFixed(5)}',
+                      style: AppTypography.labelSm),
                 const SizedBox(height: 6),
                 if (place != null)
                   Text(place.description.isEmpty ? 'No description provided.' : place.description,
@@ -84,7 +86,7 @@ class _WithdrawRecommendationModalState extends State<WithdrawRecommendationModa
                   place == null
                       ? 'Place not found.'
                       : 'Status: ${place.isUnderVoting ? 'Under Voting' : place.status} '
-                          '(Submitted on ${place.submittedAt.day}/${place.submittedAt.month}/${place.submittedAt.year})',
+                          '(Submitted on ${place.submittedAt.toLocal().day}/${place.submittedAt.toLocal().month}/${place.submittedAt.toLocal().year})',
                   style: AppTypography.labelSm.copyWith(
                     color: place?.isUnderVoting == true ? AppColors.warning : AppColors.textSecondary,
                   ),
@@ -153,9 +155,10 @@ class _WithdrawRecommendationModalState extends State<WithdrawRecommendationModa
                 child: AppButton(
                   text: 'Withdraw',
                   variant: AppButtonVariant.destructive,
-                  isLoading: placeProvider.isLoading,
-                  onPressed: _confirmed && widget.placeId.isNotEmpty
+                  isLoading: _mutating,
+                  onPressed: _confirmed && widget.placeId.isNotEmpty && !_mutating
                       ? () async {
+                    setState(() => _mutating = true);
                     final provider = context.read<HiddenPlaceProvider>();
                     final success = await provider.withdrawRecommendation(widget.placeId);
                     if (!context.mounted) return;
@@ -165,6 +168,7 @@ class _WithdrawRecommendationModalState extends State<WithdrawRecommendationModa
                       if (!context.mounted) return;
                       Navigator.of(context).pop();
                     } else {
+                      setState(() => _mutating = false);
                       AppFeedback.show(context,
                         message: provider.errorMessage ?? 'Failed to withdraw the recommendation. Please try again.',
                         isSuccess: false,

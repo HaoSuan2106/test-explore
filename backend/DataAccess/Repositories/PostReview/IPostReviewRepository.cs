@@ -48,6 +48,8 @@ public interface IPostReviewRepository
 
     // ---- Reports ----
     Task CreateReportAsync(PostReport report);
+    Task<PostReport?> GetReportByIdAsync(string reportId);
+    Task UpdateReportAsync(PostReport report);
     Task<List<PostReport>> GetReportsByReporterAsync(int reporterId);
     Task<int> GetActiveReportCountAsync(string postId);
     Task<bool> HasActiveReportAsync(string postId, int reporterId);
@@ -67,7 +69,4 @@ public interface IPostReviewRepository
 
     /// <summary>Loads a post to validate it for save/unsave operations.</summary>
     Task<Post?> GetPostForSaveValidationAsync(string postId);
-
-    // ---- Eligible attractions ----
-    Task<List<Place>> GetEligibleAttractionsAsync(int userId);
 }

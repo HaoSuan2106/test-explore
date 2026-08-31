@@ -450,7 +450,7 @@ public class ReviewService : IReviewService
     long reviewId,
     string reason)
     {
-        const int reportThreshold = 1;
+        const int reportThreshold = 5;
 
         var review = await _repository.GetByIdAsync(reviewId);
 

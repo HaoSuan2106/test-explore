@@ -4,18 +4,25 @@ import '../../../../theme/app_theme.dart';
 import '../../../../widgets/app_header.dart';
 import '../../../../widgets/app_button.dart';
 import '../../../../providers/auth_profile/profile_provider.dart';
-import '../../../../utils/time_format.dart';
+import '../../../../widgets/app_error_state.dart';
 import '../../../../widgets/app_feedback.dart';
 import '../../../../widgets/content_constraint.dart';
 import '../../../providers/post_review/post_provider.dart';
-import '../../../models/community/message_model.dart';
-import '../../community/share_to_chat/share_to_chat_sheet.dart';
 import '../../navigation/app_navigation.dart';
 import '../report/report_reason_sheet.dart';
+import 'post_card.dart';
 import 'post_filter_sheet.dart';
 
 class PostUI extends StatefulWidget {
-  const PostUI({super.key});
+  const PostUI({super.key, this.onSearchActiveChanged});
+
+  /// Called whenever the Post Feed's inline-search state changes. Reports
+  /// `true` while search results are shown or text is typed — i.e. the states
+  /// where PostUI's own PopScope consumes the system back to clear the search.
+  /// Reports `false` when the feed is in its normal idle state. MainPage uses
+  /// this to decide whether it may switch tabs on system back (instead of
+  /// letting the app exit) without stealing PostUI's search-clearing back.
+  final ValueChanged<bool>? onSearchActiveChanged;
 
   @override
   State<PostUI> createState() => _PostUIState();
@@ -56,6 +63,7 @@ class _PostUIState extends State<PostUI> {
       _searchActive = true;
       _lastSearchQuery = query;
     });
+    _notifySearchActive();
     context.read<PostProvider>().searchPosts(query);
   }
 
@@ -66,6 +74,15 @@ class _PostUIState extends State<PostUI> {
       _searchActive = false;
       _lastSearchQuery = '';
     });
+    _notifySearchActive();
+  }
+
+  /// True while search results are shown or text is typed — the states where
+  /// PostUI's own PopScope consumes the system back to clear the search.
+  bool get _searchStateActive => _searchActive || _searchController.text.isNotEmpty;
+
+  void _notifySearchActive() {
+    widget.onSearchActiveChanged?.call(_searchStateActive);
   }
 
   /// The posts shown for the active filter. My Activity sections derive from
@@ -84,9 +101,9 @@ class _PostUIState extends State<PostUI> {
         final range = _feedFilter.popularityRange;
         return provider.feedPosts
             .where((p) {
-              final engagement = p.likes + p.commentsCount;
-              return engagement >= range.start && engagement <= range.end;
-            })
+          final engagement = p.likes + p.commentsCount;
+          return engagement >= range.start && engagement <= range.end;
+        })
             .toList()
           ..sort((a, b) =>
               (b.likes + b.commentsCount).compareTo(a.likes + a.commentsCount));
@@ -102,10 +119,26 @@ class _PostUIState extends State<PostUI> {
       current: _feedFilter,
       onApply: (filter) {
         setState(() => _feedFilter = filter);
-        // Keep Discover ordering current when switching to it. Popularity
-        // requests the server-side engagement sort and range (D2).
-        final popularity = filter.option == FeedFilterOption.popularity;
-        context.read<PostProvider>().loadFeed(
+        final provider = context.read<PostProvider>();
+
+        switch (filter.option) {
+          case FeedFilterOption.posted:
+          case FeedFilterOption.commented:
+          case FeedFilterOption.reported:
+          case FeedFilterOption.saved:
+            // MY ACTIVITY sections read from provider.userPosts /
+            // commentedPosts / reportedPosts / savedPosts. Those collections
+            // are only populated by loadMyActivity() — which runs the three
+            // sub-loads (my posts, my comments, my reports) plus saved posts,
+            // so every My Activity option renders real data on first use.
+            provider.loadMyActivity();
+            break;
+          case FeedFilterOption.newest:
+          case FeedFilterOption.popularity:
+            // Discover: keep ordering current. Popularity requests the
+            // server-side engagement sort and range (D2).
+            final popularity = filter.option == FeedFilterOption.popularity;
+            provider.loadFeed(
               category: 'discover',
               sort: popularity ? 'popularity' : 'newest',
               min: popularity
@@ -113,6 +146,8 @@ class _PostUIState extends State<PostUI> {
                   : null,
               max: popularity ? filter.popularityRange.end.round() : null,
             );
+            break;
+        }
       },
     );
   }
@@ -127,12 +162,24 @@ class _PostUIState extends State<PostUI> {
 
   @override
   Widget build(BuildContext context) {
-    final postProvider = context.watch<PostProvider>();
+    // Coarse-grained subscriptions — rebuild only when the feed list, loading
+    // or search state actually changes (not on every single-post mutation).
+    final postProvider = context.read<PostProvider>();
+    context.select<PostProvider, int>((p) => p.dataVersion);
+    final isLoading = context.select<PostProvider, bool>((p) => p.isLoading);
+    final errorMessage = context.select<PostProvider, String?>((p) => p.errorMessage);
+    final isSearching = context.select<PostProvider, bool>((p) => p.isSearching);
+    final searchError = context.select<PostProvider, String?>((p) => p.searchError);
+    // Profile changes rarely; read once for all cards.
+    final currentUserId = context.select<ProfileProvider, String?>(
+        (p) => p.profile?.userId.toString());
+
     final posts = _visiblePosts(postProvider);
     final searchResults = postProvider.searchResults;
-    final isSearching = postProvider.isSearching;
-    final searchError = postProvider.searchError;
     final showSearchResults = _searchActive;
+    final isMyActivity = _feedFilter.category == FeedFilterCategory.myActivity;
+    final isActivityLoading = postProvider.isActivityLoading;
+    final activityError = postProvider.activityErrorMessage;
 
     return Scaffold(
       backgroundColor: AppColors.background,
@@ -178,38 +225,70 @@ class _PostUIState extends State<PostUI> {
               Expanded(
                 child: showSearchResults
                     ? _buildSearchContent(
-                        postProvider, searchResults, isSearching, searchError)
-                    : postProvider.isLoading
+                    postProvider, searchResults, isSearching, searchError, currentUserId)
+                    : isMyActivity && isActivityLoading && posts.isEmpty
                     ? const Center(child: CircularProgressIndicator())
-                    : postProvider.errorMessage != null && posts.isEmpty
-                    ? _buildFeedErrorState(postProvider.errorMessage!)
+                    : isMyActivity && activityError != null && posts.isEmpty
+                    ? _buildFeedErrorState(activityError)
+                    : isLoading
+                    ? const Center(child: CircularProgressIndicator())
+                    : errorMessage != null && posts.isEmpty
+                    ? _buildFeedErrorState(errorMessage)
                     : posts.isEmpty
                     ? _buildEmptyFeedState()
-                    : ListView.builder(
+                    : RefreshIndicator(
+                    onRefresh: () {
+                      final provider = context.read<PostProvider>();
+                      if (isMyActivity) {
+                        return provider.loadMyActivity();
+                      }
+                      final popularity =
+                          _feedFilter.option == FeedFilterOption.popularity;
+                      return provider.loadFeed(
+                        category: 'discover',
+                        sort: popularity ? 'popularity' : 'newest',
+                        min: popularity
+                            ? _feedFilter.popularityRange.start.round()
+                            : null,
+                        max: popularity
+                            ? _feedFilter.popularityRange.end.round()
+                            : null,
+                      );
+                    },
+                    child: ListView.builder(
                   padding: const EdgeInsets.symmetric(
                     horizontal: AppSpacing.containerMargin,
                     vertical: AppSpacing.stackSm,
                   ),
-                  itemCount: posts.length,
+                  itemCount: posts.length + 1,
                   itemBuilder: (context, i) {
+                    if (i == posts.length) {
+                      return _buildLabelLegend();
+                    }
                     final post = posts[i];
                     return Padding(
                       padding: const EdgeInsets.only(bottom: AppSpacing.gutterMd),
-                      child: _buildFeedCard(context, post),
+                      child: RepaintBoundary(
+                        child: _buildPostCard(context, postProvider, post, currentUserId),
+                      ),
                     );
                   },
                 ),
-              ),
-            ],
+                  ),
+                ),
+              ],
+            ),
           ),
         ),
-      ),
-    );
-  }
+      );
+    }
 
   /// Search field rendered directly on the Post Feed. Submitting runs the
   /// search; the suffix clear button clears the query and returns to the
-  /// normal feed.
+  /// normal feed. A camera shortcut on the right launches the create-post flow.
+  /// Search field rendered directly on the Post Feed.
+  /// Submitting runs search. Clear button removes query.
+  /// Camera shortcut launches create-post flow.
   Widget _buildSearchBar() {
     return Padding(
       padding: const EdgeInsets.fromLTRB(
@@ -222,13 +301,14 @@ class _PostUIState extends State<PostUI> {
         controller: _searchController,
         style: AppTypography.bodyMd,
         decoration: InputDecoration(
-          hintText: 'Search posts by title, place, author…',
+          hintText: 'What\'s on your mind?',
           prefixIcon: const Icon(Icons.search, size: 20),
           suffixIcon: _searchActive || _searchController.text.isNotEmpty
               ? IconButton(
-                  icon: const Icon(Icons.clear, size: 18),
-                  onPressed: _clearSearch,
-                )
+            icon: const Icon(Icons.clear, size: 20),
+            tooltip: 'Clear search',
+            onPressed: _clearSearch,
+          )
               : null,
           filled: true,
           fillColor: AppColors.surfaceCard,
@@ -240,7 +320,15 @@ class _PostUIState extends State<PostUI> {
           isDense: true,
         ),
         onSubmitted: (_) => _performSearch(),
-        onChanged: (_) => setState(() {}),
+        onChanged: (value) {
+          final wasEmpty = _searchController.text.isEmpty;
+          final isEmpty = value.isEmpty;
+
+          if (wasEmpty != isEmpty) {
+            setState(() {});
+          }
+          _notifySearchActive();
+        },
         textInputAction: TextInputAction.search,
       ),
     );
@@ -248,34 +336,16 @@ class _PostUIState extends State<PostUI> {
 
   /// Search results area shown within the Post Feed (loading / error / empty /
   /// results states).
-  Widget _buildSearchContent(
-      PostProvider provider, List<PostModel> results, bool isSearching, String? searchError) {
+  Widget _buildSearchContent(PostProvider provider, List<PostModel> results,
+      bool isSearching, String? searchError, String? currentUserId) {
     if (isSearching) {
       return const Center(child: CircularProgressIndicator());
     }
     if (searchError != null) {
-      return Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            const Icon(Icons.cloud_off_outlined, size: 64, color: AppColors.error),
-            const SizedBox(height: AppSpacing.stackMd),
-            Text('Search failed', style: AppTypography.headlineMd),
-            const SizedBox(height: 4),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 24),
-              child: Text(searchError, style: AppTypography.bodyMd, textAlign: TextAlign.center),
-            ),
-            const SizedBox(height: AppSpacing.stackMd),
-            AppButton(
-              text: 'Retry',
-              icon: Icons.refresh,
-              variant: AppButtonVariant.outline,
-              height: 44,
-              onPressed: _performSearch,
-            ),
-          ],
-        ),
+      return AppErrorState(
+        title: 'Search failed',
+        message: searchError,
+        onRetry: _performSearch,
       );
     }
     if (results.isEmpty) {
@@ -316,7 +386,9 @@ class _PostUIState extends State<PostUI> {
         final post = results[i];
         return Padding(
           padding: const EdgeInsets.only(bottom: AppSpacing.gutterMd),
-          child: _buildFeedCard(context, post),
+          child: RepaintBoundary(
+            child: _buildPostCard(context, provider, post, currentUserId),
+          ),
         );
       },
     );
@@ -374,43 +446,41 @@ class _PostUIState extends State<PostUI> {
   }
 
   Widget _buildEmptyFeedState() {
+    final isMyActivity = _feedFilter.category == FeedFilterCategory.myActivity;
     return Center(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          const Icon(Icons.article_outlined, size: 64, color: AppColors.textMuted),
+          Icon(
+            isMyActivity ? Icons.person_outline : Icons.article_outlined,
+            size: 64,
+            color: AppColors.textMuted,
+          ),
           const SizedBox(height: AppSpacing.stackMd),
-          Text('No posts yet', style: AppTypography.headlineMd),
+          Text(
+            isMyActivity ? 'No activity yet' : 'No posts yet',
+            style: AppTypography.headlineMd,
+          ),
           const SizedBox(height: 4),
-          Text('Be the first explorer to share a story!', style: AppTypography.bodyMd),
+          Text(
+            isMyActivity
+                ? 'Your posts, comments, reports and saved places will appear here.'
+                : 'Be the first explorer to share a story!',
+            style: AppTypography.bodyMd,
+          ),
         ],
       ),
     );
   }
 
   Widget _buildFeedErrorState(String message) {
-    return Center(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          const Icon(Icons.cloud_off_outlined, size: 64, color: AppColors.error),
-          const SizedBox(height: AppSpacing.stackMd),
-          Text('Could not load the feed', style: AppTypography.headlineMd),
-          const SizedBox(height: 4),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 24),
-            child: Text(message, style: AppTypography.bodyMd, textAlign: TextAlign.center),
-          ),
-          const SizedBox(height: AppSpacing.stackMd),
-          AppButton(
-            text: 'Retry',
-            icon: Icons.refresh,
-            variant: AppButtonVariant.outline,
-            height: 44,
-            onPressed: () => context.read<PostProvider>().loadFeed(),
-          ),
-        ],
-      ),
+    final isMyActivity = _feedFilter.category == FeedFilterCategory.myActivity;
+    return AppErrorState(
+      title: isMyActivity ? 'Could not load your activity' : 'Could not load the feed',
+      message: message,
+      onRetry: () => isMyActivity
+          ? context.read<PostProvider>().loadMyActivity()
+          : context.read<PostProvider>().loadFeed(),
     );
   }
 
@@ -435,7 +505,7 @@ class _PostUIState extends State<PostUI> {
                 context,
                 heading: 'Deleting Post',
                 message:
-                    'We are safely deleting your post. Please wait a moment.',
+                'We are safely deleting your post. Please wait a moment.',
               );
               context.read<PostProvider>().deletePost(post.id).then((success) {
                 if (!context.mounted) return;
@@ -467,387 +537,93 @@ class _PostUIState extends State<PostUI> {
     );
   }
 
-  Widget _buildFeedCard(BuildContext context, PostModel post) {
-    final postProvider = context.watch<PostProvider>();
-    // Ownership is resolved against the current user id, compared as strings:
-    // in demo mode the demo identity owns the seeded posts (the real profile
-    // id differs from the demo seed ids); in real mode the authenticated
-    // profile id must equal the post's authorId.
-    final currentUserId = postProvider.demoMode
-        ? postProvider.demoCurrentUserId
-        : context.watch<ProfileProvider>().profile?.userId.toString();
+  /// Builds a [PostCard] for the feed, wiring all user actions to the
+  /// screen-level handlers that own provider orchestration. Derived flags
+  /// (isCommented / isLikeInFlight / myCommentPreview) are computed inside
+  /// [PostCard] from the provider, so only the affected card rebuilds.
+  Widget _buildPostCard(
+      BuildContext context, PostProvider postProvider, PostModel post, String? currentUserId) {
     final isOwner = currentUserId != null && post.authorId == currentUserId;
 
-    return InkWell(
-      onTap: () => AppNavigation.toPostDetails(context, postId: post.id),
-      borderRadius: AppRadii.roundedLg,
-      child: Container(
-        padding: const EdgeInsets.all(AppSpacing.gutterMd),
-        decoration: BoxDecoration(
-          color: AppColors.background,
-          borderRadius: AppRadii.roundedLg,
-          border: Border.all(color: AppColors.outline),
-          boxShadow: AppShadows.softElevation,
-        ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            // Top author row with 3-dot popup menu
-            Row(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                ClipRRect(
-                  borderRadius: AppRadii.roundedFull,
-                  child: Image.network(
-                    post.authorAvatar,
-                    width: 40,
-                    height: 40,
-                    fit: BoxFit.cover,
-                    errorBuilder: (_, _, _) => const CircleAvatar(
-                      radius: 20,
-                      backgroundColor: AppColors.primary,
-                      child: Icon(Icons.person, color: Colors.white, size: 22),
-                    ),
-                  ),
-                ),
-                const SizedBox(width: AppSpacing.stackSm),
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Row(
-                        children: [
-                          Flexible(
-                            child: Text(
-                              post.authorName,
-                              overflow: TextOverflow.ellipsis,
-                              style: AppTypography.labelLg.copyWith(
-                                fontWeight: FontWeight.w700,
-                                color: AppColors.textPrimary,
-                              ),
-                            ),
-                          ),
-                          const Spacer(),
-                          Text(
-                            timeAgo(post.createdAt),
-                            overflow: TextOverflow.ellipsis,
-                            style: AppTypography.labelSm.copyWith(color: AppColors.textMuted),
-                          ),
-                          const SizedBox(width: 4),
-                          _buildCardPopupMenu(context, post, isOwner),
-                        ],
-                      ),
-                      Text(
-                        post.location,
-                        style: AppTypography.labelSm.copyWith(color: AppColors.textSecondary),
-                      ),
-                    ],
-                  ),
-                ),
-              ],
-            ),
-            if (isOwner ||
-                (post.isReportedByCurrentUser && !isOwner) ||
-                (postProvider.commentedPostIds.contains(post.id) && !isOwner) ||
-                (post.isSaved && !isOwner)) ...[
-              const SizedBox(height: AppSpacing.stackSm),
-              _buildCardLabels(context, post, isOwner),
-            ],
-            const SizedBox(height: AppSpacing.stackMd),
-
-            // Large rounded post image
-            ClipRRect(
-              borderRadius: AppRadii.roundedDefault,
-              child: AspectRatio(
-                aspectRatio: 16 / 10,
-                child: Image.network(
-                  post.imageUrl,
-                  fit: BoxFit.cover,
-                  errorBuilder: (_, _, _) => Container(
-                    color: AppColors.surfaceVariant,
-                    child: const Icon(Icons.image, size: 40, color: AppColors.textMuted),
-                  ),
-                ),
-              ),
-            ),
-            const SizedBox(height: AppSpacing.stackMd),
-
-            // Title and Description
-            Text(
-              post.title,
-              style: AppTypography.headlineMd.copyWith(
-                fontSize: 18,
-                fontWeight: FontWeight.w700,
-              ),
-            ),
-            const SizedBox(height: AppSpacing.stackSm),
-            Text(
-              post.description,
-              style: AppTypography.bodyMd.copyWith(
-                color: AppColors.textSecondary,
-                height: 1.4,
-              ),
-              maxLines: 3,
-              overflow: TextOverflow.ellipsis,
-            ),
-            const SizedBox(height: AppSpacing.stackMd),
-
-            // Engagement footer — Wrap allows actions to flow to the next
-            // line on narrow screens so no button is clipped.
-            Wrap(
-              spacing: AppSpacing.gutterMd,
-              runSpacing: 6,
-              crossAxisAlignment: WrapCrossAlignment.center,
-              children: [
-                InkWell(
-                  onTap: post.isReportedByCurrentUser
-                      ? null
-                      : postProvider.isLikeInFlight(post.id)
-                          ? null
-                          : () => _toggleLike(post.id),
-                  borderRadius: BorderRadius.circular(4),
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 4),
-                    child: Row(
-                      children: [
-                        postProvider.isLikeInFlight(post.id)
-                            ? const SizedBox(
-                                width: 18,
-                                height: 18,
-                                child: CircularProgressIndicator(strokeWidth: 2),
-                              )
-                            : Icon(
-                                post.isLiked
-                                    ? Icons.favorite
-                                    : Icons.favorite_border,
-                                size: 18,
-                                color: post.isReportedByCurrentUser
-                                    ? AppColors.textMuted
-                                    : post.isLiked
-                                        ? AppColors.primary
-                                        : AppColors.textMuted,
-                              ),
-                        const SizedBox(width: 6),
-                        Text(
-                          '${post.likes}',
-                          style: AppTypography.labelSm.copyWith(
-                            color: AppColors.textPrimary,
-                            fontWeight: FontWeight.w600,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-                Row(
-                  children: [
-                    const Icon(
-                      Icons.chat_bubble_outline,
-                      size: 18,
-                      color: AppColors.textMuted,
-                    ),
-                    const SizedBox(width: 6),
-                    Text(
-                      '${post.commentsCount}',
-                      style: AppTypography.labelSm.copyWith(
-                        color: AppColors.textPrimary,
-                        fontWeight: FontWeight.w600,
-                      ),
-                    ),
-                  ],
-                ),
-                InkWell(
-                  onTap: () => showShareToChatSheet(
-                    context,
-                    sharedPost: SharedPostRequest(
-                      postId: post.id,
-                      postTitle: post.title,
-                      postImageUrl: post.imageUrl,
-                      postLocation: post.location,
-                    ),
-                  ),
-                  borderRadius: BorderRadius.circular(4),
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 4),
-                    child: Row(
-                      children: [
-                        const Icon(Icons.share_outlined, size: 18, color: AppColors.textMuted),
-                        const SizedBox(width: 4),
-                        Text(
-                          'Share',
-                          style: AppTypography.labelSm.copyWith(
-                            color: AppColors.textSecondary,
-                            fontWeight: FontWeight.w600,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          ],
-        ),
+    return PostCard(
+      post: post,
+      isOwner: isOwner,
+      onTap: () => AppNavigation.toPostDetails(
+        context,
+        postId: post.id,
       ),
+      onReaction: () => _toggleLike(post.id),
+      onSave: () => _toggleSave(context, post),
+      onReport: () => ReportReasonSheet.show(context, postId: post.id),
+      onEdit: () => AppNavigation.toEditPost(context, postId: post.id),
+      onDelete: () => _confirmDeletePost(context, post),
     );
   }
 
-  /// Small status chips on the feed card that make the post's relationship to
-  /// the current user explicit:
-  ///   - "MY POST"   (own post → Edit/Delete available)
-  ///   - "REPORTED"  (current user reported this post)
-  ///   - "YOU COMMENTED" (current user commented on this post)
-  ///   - "SAVED"     (current user saved this post)
-  /// A normal community post shows no chip.
-  Widget _buildCardLabels(BuildContext context, PostModel post, bool isOwner) {
-    final provider = context.watch<PostProvider>();
-    final isCommented = provider.commentedPostIds.contains(post.id);
-    final chips = <Widget>[];
-    if (isOwner) {
-      chips.add(_labelChip('MY POST', AppColors.primary));
-    } else {
-      if (post.isReportedByCurrentUser) {
-        chips.add(_labelChip('REPORTED', AppColors.error));
-      }
-      if (isCommented) {
-        chips.add(_labelChip('YOU COMMENTED', const Color(0xFF5C6BC0)));
-      }
-      if (post.isSaved) {
-        chips.add(_labelChip('SAVED', const Color(0xFF7B61FF)));
-      }
-    }
-    if (chips.isEmpty) return const SizedBox.shrink();
-    return Wrap(
-      spacing: 6,
-      runSpacing: 6,
-      children: chips,
-    );
-  }
-
-  Widget _labelChip(String label, Color color) {
+  /// Explicit label legend at the bottom of the feed explaining the four key
+  /// relationship states shown on post cards.
+  Widget _buildLabelLegend() {
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+      width: double.infinity,
+      margin: const EdgeInsets.only(top: 4, bottom: AppSpacing.gutterMd),
+      padding: const EdgeInsets.all(AppSpacing.gutterMd),
       decoration: BoxDecoration(
-        color: color.withValues(alpha: 0.10),
-        borderRadius: AppRadii.roundedFull,
-        border: Border.all(color: color.withValues(alpha: 0.35), width: 1),
+        color: AppColors.surfaceCard,
+        borderRadius: AppRadii.roundedDefault,
+        border: Border.all(color: AppColors.outlineVariant, width: 1),
       ),
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Icon(
-            label == 'MY POST'
-                ? Icons.person_outline
-                : label == 'REPORTED'
-                    ? Icons.flag_outlined
-                    : label == 'SAVED'
-                        ? Icons.bookmark
-                        : Icons.chat_bubble_outline,
-            size: 12,
-            color: color,
-          ),
-          const SizedBox(width: 4),
           Text(
-            label,
-            style: AppTypography.labelSm.copyWith(
-              color: color,
+            'Label Legend',
+            style: AppTypography.labelLg.copyWith(
+              color: AppColors.textPrimary,
               fontWeight: FontWeight.w700,
             ),
           ),
+          const SizedBox(height: AppSpacing.stackSm),
+          Wrap(
+            spacing: 8,
+            runSpacing: 8,
+            children: [
+              _legendItem(Icons.person_outline, AppColors.success, 'My Post'),
+              _legendItem(Icons.flag_outlined, AppColors.error, 'Reported'),
+              _legendItem(
+                  Icons.chat_bubble_outline, const Color(0xFF5C6BC0), 'You Commented'),
+              _legendItem(Icons.bookmark, const Color(0xFF7B61FF), 'Saved'),
+            ],
+          ),
+          const SizedBox(height: 4),
+          Text(
+            'My Post takes priority when you are the author.',
+            style: AppTypography.labelSm.copyWith(color: AppColors.textSecondary),
+          ),
         ],
       ),
     );
   }
 
-  Widget _buildCardPopupMenu(BuildContext context, PostModel post, bool isOwner) {
-    return PopupMenuButton<String>(
-      icon: const Icon(Icons.more_vert, size: 20, color: AppColors.textMuted),
-      padding: EdgeInsets.zero,
-      constraints: const BoxConstraints(),
-      shape: RoundedRectangleBorder(borderRadius: AppRadii.roundedDefault),
-      onSelected: (val) {
-        if (val == 'edit') {
-          AppNavigation.toEditPost(context, postId: post.id);
-        } else if (val == 'delete') {
-          _confirmDeletePost(context, post);
-        } else if (val == 'report') {
-          ReportReasonSheet.show(context, postId: post.id);
-        } else if (val == 'save') {
-          _toggleSave(context, post);
-        } else if (val == 'unsave') {
-          _toggleSave(context, post);
-        }
-      },
-      itemBuilder: (context) => [
-        if (isOwner) ...[
-          const PopupMenuItem(
-            value: 'edit',
-            child: Row(
-              children: [
-                Icon(Icons.edit_outlined, size: 18, color: AppColors.textPrimary),
-                SizedBox(width: 8),
-                Text('Edit'),
-              ],
-            ),
+  Widget _legendItem(IconData icon, Color color, String label) {
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Icon(icon, size: 14, color: color),
+        const SizedBox(width: 4),
+        Text(
+          label,
+          style: AppTypography.labelSm.copyWith(
+            color: AppColors.textPrimary,
+            fontWeight: FontWeight.w600,
           ),
-          const PopupMenuItem(
-            value: 'delete',
-            child: Row(
-              children: [
-                Icon(Icons.delete_outline, size: 18, color: AppColors.error),
-                SizedBox(width: 8),
-                Text('Delete', style: TextStyle(color: AppColors.error)),
-              ],
-            ),
-          ),
-        ] else if (post.isReportedByCurrentUser) ...[
-          // Final scope: a report is recorded and cannot be withdrawn, so the
-          // reported post card shows a non-actionable indicator only.
-          const PopupMenuItem(
-            enabled: false,
-            child: Row(
-              children: [
-                Icon(Icons.flag_outlined, size: 18, color: AppColors.textSecondary),
-                SizedBox(width: 8),
-                Text('Reported', style: TextStyle(color: AppColors.textSecondary)),
-              ],
-            ),
-          ),
-        ] else ...[
-          PopupMenuItem(
-            value: post.isSaved ? 'unsave' : 'save',
-            child: Row(
-              children: [
-                Icon(
-                  post.isSaved
-                      ? Icons.bookmark
-                      : Icons.bookmark_border,
-                  size: 18,
-                  color: AppColors.textPrimary,
-                ),
-                const SizedBox(width: 8),
-                Text(post.isSaved ? 'Unsave' : 'Save'),
-              ],
-            ),
-          ),
-          const PopupMenuItem(
-            value: 'report',
-            child: Row(
-              children: [
-                Icon(Icons.flag_outlined, size: 18, color: AppColors.error),
-                SizedBox(width: 8),
-                Text('Report', style: TextStyle(color: AppColors.error)),
-              ],
-            ),
-          ),
-        ],
+        ),
       ],
     );
   }
 
   Future<void> _toggleSave(BuildContext context, PostModel post) async {
     final success =
-        await context.read<PostProvider>().toggleSavePost(post.id);
+    await context.read<PostProvider>().toggleSavePost(post.id);
     if (!context.mounted) return;
     if (success) {
       AppFeedback.show(context,
@@ -860,3 +636,6 @@ class _PostUIState extends State<PostUI> {
     }
   }
 }
+
+
+

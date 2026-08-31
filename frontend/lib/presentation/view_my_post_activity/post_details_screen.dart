@@ -1,15 +1,16 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import '../../../theme/app_theme.dart';
 import '../../../widgets/app_header.dart';
 import '../../../widgets/app_button.dart';
 import '../../../providers/post_review/post_provider.dart';
 import '../../../providers/auth_profile/profile_provider.dart';
-import '../../../models/community/message_model.dart';
-import '../community/share_to_chat/share_to_chat_sheet.dart';
 import '../navigation/app_navigation.dart';
 import '../post_review/comment/edit_comment_screen.dart';
 import '../post_review/report/report_reason_sheet.dart';
+import '../post_review/post/post_image_sizes.dart';
 import '../../../utils/time_format.dart';
 import '../../../widgets/app_feedback.dart';
 import '../../../widgets/content_constraint.dart';
@@ -219,33 +220,34 @@ class _PostDetailsScreenState extends State<PostDetailsScreen>
     }
   }
 
-  /// Shares the post into a chosen community's chat.
+  /// Shares the post by copying a shareable text to the clipboard (no backend
+  /// dependency in Phase 1).
   Future<void> _sharePost() async {
     final post = context.read<PostProvider>().getPostById(widget.postId);
-    if (post == null) {
-      AppFeedback.show(context, message: 'This post is no longer available.', isSuccess: false);
-      return;
-    }
-    await showShareToChatSheet(
-      context,
-      sharedPost: SharedPostRequest(
-        postId: post.id,
-        postTitle: post.title,
-        postImageUrl: post.imageUrl,
-        postLocation: post.location,
-      ),
-    );
+    final text = post == null
+        ? 'Check out this community post on ExploreMY!'
+        : 'Check out "${post.title}" at ${post.location} on ExploreMY!';
+    await Clipboard.setData(ClipboardData(text: text));
+    if (!mounted) return;
+    AppFeedback.show(context,
+        message: 'Post details copied to clipboard.', isSuccess: true);
   }
 
   @override
   Widget build(BuildContext context) {
-    final postProvider = context.watch<PostProvider>();
-    final profile = context.watch<ProfileProvider>().profile;
-    final currentUserId = profile?.userId.toString();
+    // Targeted subscriptions: rebuild only when this post's data changes or
+    // loading/error state flips. Unrelated provider notifications (like a
+    // like on a different post) do NOT rebuild this screen.
+    final postProvider = context.read<PostProvider>();
+    final isLoading = context.select<PostProvider, bool>((p) => p.isLoading);
+    final errorMessage = context.select<PostProvider, String?>((p) => p.errorMessage);
+    context.select<PostProvider, int>((p) => p.postRevision(widget.postId));
+    final currentUserId = context.select<ProfileProvider, String?>(
+        (p) => p.profile?.userId.toString());
     final post = postProvider.getPostById(widget.postId);
     final comments = postProvider.getCommentsForPost(widget.postId);
 
-    if (postProvider.isLoading && post == null) {
+    if (isLoading && post == null) {
       return Scaffold(
         backgroundColor: AppColors.background,
         appBar: const AppHeader(title: 'Post Details', showBack: true),
@@ -262,17 +264,17 @@ class _PostDetailsScreenState extends State<PostDetailsScreen>
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Icon(
-                postProvider.errorMessage != null
+                errorMessage != null
                     ? Icons.cloud_off_outlined
                     : Icons.search_off,
                 size: 64,
-                color: postProvider.errorMessage != null
+                color: errorMessage != null
                     ? AppColors.error
                     : AppColors.textMuted,
               ),
               const SizedBox(height: AppSpacing.stackMd),
               Text(
-                postProvider.errorMessage != null
+                errorMessage != null
                     ? 'Could not load this post'
                     : 'Post not found or has been deleted.',
                 style: AppTypography.headlineMd,
@@ -281,7 +283,7 @@ class _PostDetailsScreenState extends State<PostDetailsScreen>
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 32),
                 child: Text(
-                  postProvider.errorMessage ?? '',
+                  errorMessage ?? '',
                   style: AppTypography.bodyMd,
                   textAlign: TextAlign.center,
                 ),
@@ -329,64 +331,118 @@ class _PostDetailsScreenState extends State<PostDetailsScreen>
       body: SafeArea(
         child: ContentConstraint(
           maxWidth: 800,
-          child: SingleChildScrollView(
+          child: CustomScrollView(
             controller: _scrollController,
-            child: Padding(
-            padding: const EdgeInsets.symmetric(
-              horizontal: AppSpacing.containerMargin,
-              vertical: AppSpacing.gutterMd,
-            ),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                // Author row matching reference
-                _buildAuthorHeader(post),
-                const SizedBox(height: AppSpacing.stackLg),
+            slivers: [
+              // Header section (everything before comments) — built once.
+              SliverPadding(
+                padding: const EdgeInsets.fromLTRB(
+                  AppSpacing.containerMargin,
+                  AppSpacing.gutterMd,
+                  AppSpacing.containerMargin,
+                  0,
+                ),
+                sliver: SliverToBoxAdapter(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      // Author row matching reference
+                      _buildAuthorHeader(post),
+                      const SizedBox(height: AppSpacing.stackLg),
 
-                // Saved indicator (SAVED state: the current user saved this
-                // post — visible within Post Details, consistent with the
-                // "My Post / You Commented / Reported" chips on the feed).
-                if (!isOwner && post.isSaved) ...[
-                  _buildSavedIndicator(),
-                  const SizedBox(height: AppSpacing.stackMd),
-                ],
+                      // Saved indicator (SAVED state: the current user saved
+                      // this post — visible within Post Details, consistent
+                      // with the "My Post / You Commented / Reported" chips
+                      // on the feed).
+                      if (!isOwner && post.isSaved) ...[
+                        _buildSavedIndicator(),
+                        const SizedBox(height: AppSpacing.stackMd),
+                      ],
 
-                // Post Title & Description
-                _buildPostContent(post),
-                const SizedBox(height: AppSpacing.stackLg),
+                      // Post Title & Description
+                      _buildPostContent(post),
+                      const SizedBox(height: AppSpacing.stackLg),
 
-                // Report indicator (REPORTED flow: the user is shown that
-                // their report was recorded. No admin review wording and no
-                // withdraw action per the final scope.)
-                if (post.isReportedByCurrentUser) ...[
-                  _buildReportStatusBanner(),
-                  const SizedBox(height: AppSpacing.stackLg),
-                ],
+                      // Report indicator (REPORTED flow: the user is shown
+                      // that their report was recorded. No admin review
+                      // wording and no withdraw action per the final scope.)
+                      if (post.isReportedByCurrentUser) ...[
+                        _buildReportStatusBanner(),
+                        const SizedBox(height: AppSpacing.stackLg),
+                      ],
 
-                // Uploaded images (REQ501_2)
-                if (post.galleryImages.isNotEmpty) ...[
-                  _buildPostImages(post.galleryImages),
-                  const SizedBox(height: AppSpacing.stackLg),
-                ],
+                      // Uploaded images (REQ501_2)
+                      if (post.galleryImages.isNotEmpty) ...[
+                        _buildPostImages(post.galleryImages),
+                        const SizedBox(height: AppSpacing.stackLg),
+                      ],
 
-                // Engagement row (Likes, Comments, Share)
-                _buildEngagementRow(post, comments.length),
-                const SizedBox(height: AppSpacing.gutterMd),
+                      // Engagement row (Likes, Comments, Share)
+                      _buildEngagementRow(post, comments.length),
+                      const SizedBox(height: AppSpacing.gutterMd),
 
-                // Comments header (all comments render inline; no pagination,
-                // so no "See all" action per FIX-13 decision).
-                _buildCommentsHeader(comments.length),
-                const SizedBox(height: AppSpacing.stackMd),
+                      // Comments header
+                      _buildCommentsHeader(comments.length),
+                      const SizedBox(height: AppSpacing.stackMd),
+                    ],
+                  ),
+                ),
+              ),
 
-                // Comment Cards with 3-dot action popups
-                ...comments.map((c) => Padding(
-                  padding: const EdgeInsets.only(bottom: AppSpacing.stackMd),
-                  child: _buildCommentCard(context, c),
-                )),
-                const SizedBox(height: AppSpacing.sectionGap),
-              ],
-            ),
-            ),
+              // Comment Cards — lazily built via SliverList.builder so only
+              // visible comments incur widget/build cost.
+              SliverPadding(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: AppSpacing.containerMargin,
+                ),
+                sliver: comments.isEmpty
+                    ? SliverToBoxAdapter(
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(
+                            vertical: AppSpacing.stackLg,
+                          ),
+                          child: Column(
+                            children: [
+                              const Icon(
+                                Icons.chat_bubble_outline,
+                                size: 40,
+                                color: AppColors.textMuted,
+                              ),
+                              const SizedBox(height: AppSpacing.stackMd),
+                              Text(
+                                'No comments yet',
+                                style: AppTypography.bodyMd.copyWith(
+                                  color: AppColors.textMuted,
+                                ),
+                              ),
+                              const SizedBox(height: 4),
+                              Text(
+                                'Be the first to start the conversation.',
+                                style: AppTypography.labelSm.copyWith(
+                                  color: AppColors.textMuted,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      )
+                    : SliverList.builder(
+                  itemCount: comments.length,
+                  itemBuilder: (context, i) => Padding(
+                    padding: const EdgeInsets.only(
+                      bottom: AppSpacing.stackMd,
+                    ),
+                    child: _buildCommentCard(context, comments[i]),
+                  ),
+                ),
+              ),
+
+              // Bottom spacing (replaces the SizedBox at the end of the
+              // original Column — now outside the lazy list).
+              const SliverToBoxAdapter(
+                child: SizedBox(height: AppSpacing.sectionGap),
+              ),
+            ],
           ),
         ),
       ),
@@ -526,16 +582,23 @@ class _PostDetailsScreenState extends State<PostDetailsScreen>
   }
 
   /// Uploaded image gallery (REQ501_2: details include uploaded images).
+  /// Details screen decodes at higher resolution than the feed thumbnail.
   Widget _buildPostImages(List<String> imageUrls) {
     if (imageUrls.length == 1) {
       return ClipRRect(
         borderRadius: AppRadii.roundedDefault,
         child: AspectRatio(
           aspectRatio: 16 / 10,
-          child: Image.network(
-            imageUrls.first,
+          child: CachedNetworkImage(
+            imageUrl: imageUrls.first,
             fit: BoxFit.cover,
-            errorBuilder: (_, _, _) => Container(
+            memCacheWidth: PostImageSizes.detailsWidth,
+            memCacheHeight: PostImageSizes.detailsHeight,
+            placeholder: (_, _) => Container(
+              color: AppColors.surfaceVariant,
+              child: const Icon(Icons.image, size: 40, color: AppColors.textMuted),
+            ),
+            errorWidget: (_, _, _) => Container(
               color: AppColors.surfaceVariant,
               child: const Icon(Icons.image, size: 40, color: AppColors.textMuted),
             ),
@@ -552,11 +615,18 @@ class _PostDetailsScreenState extends State<PostDetailsScreen>
         separatorBuilder: (_, _) => const SizedBox(width: AppSpacing.gutterMd),
         itemBuilder: (context, i) => ClipRRect(
           borderRadius: AppRadii.roundedDefault,
-          child: Image.network(
-            imageUrls[i],
+          child: CachedNetworkImage(
+            imageUrl: imageUrls[i],
             width: 340,
             fit: BoxFit.cover,
-            errorBuilder: (_, _, _) => Container(
+            memCacheWidth: PostImageSizes.detailsGalleryWidth,
+            memCacheHeight: PostImageSizes.detailsGalleryHeight,
+            placeholder: (_, _) => Container(
+              width: 340,
+              color: AppColors.surfaceVariant,
+              child: const Icon(Icons.image, size: 40, color: AppColors.textMuted),
+            ),
+            errorWidget: (_, _, _) => Container(
               width: 340,
               color: AppColors.surfaceVariant,
               child: const Icon(Icons.image, size: 40, color: AppColors.textMuted),
@@ -568,7 +638,7 @@ class _PostDetailsScreenState extends State<PostDetailsScreen>
   }
 
   Widget _buildEngagementRow(PostModel post, int commentsCount) {
-    final postProvider = context.watch<PostProvider>();
+    final postProvider = context.read<PostProvider>();
     return Row(
       children: [
         InkWell(
@@ -665,7 +735,9 @@ class _PostDetailsScreenState extends State<PostDetailsScreen>
   }
 
   Widget _buildCommentCard(BuildContext context, UserCommentItem comment) {
-    final currentUserId = context.watch<ProfileProvider>().profile?.userId.toString();
+    // Read (not watch): the screen build() already subscribes to the profile
+    // userId, so per-comment watch subscriptions are unnecessary rebuilds.
+    final currentUserId = context.read<ProfileProvider>().profile?.userId.toString();
     // Owner of comment can Edit/Delete
     final isCommentOwner = comment.authorId.toString() == currentUserId;
 
@@ -728,21 +800,6 @@ class _PostDetailsScreenState extends State<PostDetailsScreen>
                     color: AppColors.textPrimary,
                     height: 1.4,
                   ),
-                ),
-                const SizedBox(height: AppSpacing.stackSm),
-                Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    const Icon(Icons.thumb_up_alt_outlined, size: 14, color: AppColors.textSecondary),
-                    const SizedBox(width: 5),
-                    Text(
-                      '${comment.likes}',
-                      style: AppTypography.labelSm.copyWith(
-                        color: AppColors.textSecondary,
-                        fontWeight: FontWeight.w600,
-                      ),
-                    ),
-                  ],
                 ),
               ],
             ),
@@ -862,7 +919,7 @@ class _PostDetailsScreenState extends State<PostDetailsScreen>
   /// Bottom bar for the post owner: keeps the like action but hides the
   /// comment input (users must not comment on their own post).
   Widget _buildOwnerBottomBar() {
-    final postProvider = context.watch<PostProvider>();
+    final postProvider = context.read<PostProvider>();
     final post = postProvider.getPostById(widget.postId);
     final isLiked = post?.isLiked ?? false;
     return Container(
@@ -900,7 +957,7 @@ class _PostDetailsScreenState extends State<PostDetailsScreen>
 
   /// Bottom bar for the reporter: like button disabled + view-only message.
   Widget _buildReportedBottomBar() {
-    final postProvider = context.watch<PostProvider>();
+    final postProvider = context.read<PostProvider>();
     final post = postProvider.getPostById(widget.postId);
     final isLiked = post?.isLiked ?? false;
     return Container(
@@ -934,9 +991,13 @@ class _PostDetailsScreenState extends State<PostDetailsScreen>
   }
 
   Widget _buildBottomComposer() {
-    final postProvider = context.watch<PostProvider>();
+    final postProvider = context.read<PostProvider>();
     final post = postProvider.getPostById(widget.postId);
     final isLiked = post?.isLiked ?? false;
+    // Targeted subscription: rebuild only the send-button spinner when the
+    // comment-submitting flag flips, not the whole screen.
+    final isCommentSubmitting =
+        context.select<PostProvider, bool>((p) => p.isCommentSubmitting);
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: AppSpacing.containerMargin, vertical: 10),
       decoration: const BoxDecoration(
@@ -981,7 +1042,7 @@ class _PostDetailsScreenState extends State<PostDetailsScreen>
             ),
             const SizedBox(width: AppSpacing.stackSm),
             IconButton(
-              icon: context.watch<PostProvider>().isCommentSubmitting
+              icon: isCommentSubmitting
                   ? const SizedBox(
                       width: 22,
                       height: 22,

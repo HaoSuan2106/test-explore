@@ -1,5 +1,7 @@
 namespace ExploreMy.Api.Domain.Entities;
 
+using System.ComponentModel.DataAnnotations.Schema;
+
 /// <summary>
 /// A community post created by an authenticated user, optionally tagging an
 /// attraction from the user's exploration history and carrying up to five images.
@@ -19,12 +21,20 @@ public class Post
 
     // Navigation
     public User? Author { get; set; }
-    public Place? TaggedPlace { get; set; }
     public ICollection<PostImage> Images { get; set; } = new List<PostImage>();
     public ICollection<PostComment> Comments { get; set; } = new List<PostComment>();
     public ICollection<PostReaction> Reactions { get; set; } = new List<PostReaction>();
     public ICollection<PostReport> Reports { get; set; } = new List<PostReport>();
     public ICollection<UserSavedPost> Saves { get; set; } = new List<UserSavedPost>();
+
+    /// <summary>
+    /// Priority 3: <c>community_posts.tagged_place_id</c> is a reference-only
+    /// field — the database defines NO FK to <c>places</c>. This is a plain
+    /// runtime reference populated by the repository when the tagged place name
+    /// is needed; it is NOT mapped as an EF relationship.
+    /// </summary>
+    [NotMapped]
+    public Place? TaggedPlace { get; set; }
 }
 
 public static class PostStatus

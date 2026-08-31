@@ -21,8 +21,8 @@ public interface IPostReviewService
     Task<SavePostResponseDto> SavePostAsync(int currentUserId, string postId);
     Task<SavePostResponseDto> UnsavePostAsync(int currentUserId, string postId);
 
-    Task<List<EligibleAttractionDto>> GetEligibleAttractionsAsync(int currentUserId);
-    Task<bool> HasEligibleAttractionsAsync(int currentUserId);
+    Task<List<VisitedAttractionDto>> GetVisitedAttractionsAsync(int currentUserId);
+    Task<bool> HasVisitedAttractionsAsync(int currentUserId);
     Task<string> UploadPostImageAsync(int currentUserId, Stream fileStream, string fileName, string contentType);
 
     // ---- Comments ----
@@ -37,6 +37,7 @@ public interface IPostReviewService
 
     // ---- Reports ----
     Task<CreateReportResponseDto> CreateReportAsync(int currentUserId, string postId, CreateReportRequestDto request);
+    Task<PostReportDto> WithdrawReportAsync(int currentUserId, string postId, string reportId);
     Task<List<PostReportDto>> GetMyReportsAsync(int currentUserId);
     IReadOnlyList<string> GetReportReasons();
 }

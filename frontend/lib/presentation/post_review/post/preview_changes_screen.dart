@@ -6,6 +6,7 @@ import '../../../../widgets/app_button.dart';
 import '../../../../widgets/app_feedback.dart';
 import '../../../../widgets/content_constraint.dart';
 import '../../../../providers/post_review/post_provider.dart';
+import '../../../../providers/auth_profile/profile_provider.dart';
 
 class PreviewChangesScreen extends StatelessWidget {
   final String? postId;
@@ -14,7 +15,17 @@ class PreviewChangesScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final postProvider = context.watch<PostProvider>();
+    // Targeted subscriptions: only the draft fields, draft version, profile
+    // and loading flag drive this preview. A like/save elsewhere must not
+    // rebuild the preview screen.
+    final profile = context.select<ProfileProvider, dynamic>((p) => p.profile);
+    final postProvider = context.read<PostProvider>();
+    context.select<PostProvider, int>((p) => p.draftVersion);
+    final isSaving = context.select<PostProvider, bool>((p) => p.isLoading);
+    final username =
+        (profile?.username != null && profile!.username.isNotEmpty)
+            ? profile.username
+            : 'Traveler';
     final title = postProvider.draftTitle.isNotEmpty ? postProvider.draftTitle : 'Untitled Post';
     final description = postProvider.draftDescription.isNotEmpty
         ? postProvider.draftDescription
@@ -70,7 +81,7 @@ class PreviewChangesScreen extends StatelessWidget {
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Text(
-                                  'Aisyah Nur',
+                                  username,
                                   maxLines: 1,
                                   overflow: TextOverflow.ellipsis,
                                   style: AppTypography.labelLg,
@@ -138,7 +149,7 @@ class PreviewChangesScreen extends StatelessWidget {
                     child: AppButton(
                       text: 'Publish Changes',
                       icon: Icons.publish,
-                      isLoading: postProvider.isLoading,
+                      isLoading: isSaving,
                       onPressed: () async {
                         final provider = context.read<PostProvider>();
                         // Post title is compulsory (business decision H-4);

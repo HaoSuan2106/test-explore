@@ -29,6 +29,8 @@ public class HiddenPlaceReviewDto
     public int UserId { get; set; }
 
     public string? Username { get; set; }
+
+    public string? ProfilePictureUrl { get; set; }
     public List<HiddenPlaceReviewPhotoDto> Photos { get; set; } = new();
 
     public decimal Rating { get; set; }

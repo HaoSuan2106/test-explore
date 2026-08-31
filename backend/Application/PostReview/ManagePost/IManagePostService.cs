@@ -16,7 +16,7 @@ public interface IManagePostService
     Task<SavePostResponseDto> SavePostAsync(int currentUserId, string postId);
     Task<SavePostResponseDto> UnsavePostAsync(int currentUserId, string postId);
 
-    Task<List<EligibleAttractionDto>> GetEligibleAttractionsAsync(int currentUserId);
-    Task<bool> HasEligibleAttractionsAsync(int currentUserId);
+    Task<List<VisitedAttractionDto>> GetVisitedAttractionsAsync(int currentUserId);
+    Task<bool> HasVisitedAttractionsAsync(int currentUserId);
     Task<string> UploadPostImageAsync(int currentUserId, Stream fileStream, string fileName, string contentType);
 }

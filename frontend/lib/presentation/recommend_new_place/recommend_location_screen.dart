@@ -11,9 +11,11 @@ import 'wizard_step_indicator.dart';
 /// STEP 2 of the Recommend Place wizard — Direct Map Location.
 ///
 /// The user sees a full-screen map with a fixed centre pin. Dragging the map
-/// moves the area under the pin; the location (address + lat/lng) is
-/// determined from the map centre. This replaces the old tap-to-place marker
-/// pattern.
+/// moves the area under the pin; the location (latitude + longitude) is taken
+/// from the map centre. No reverse-geocoded address is requested or shown —
+/// the selected map coordinates are the only location source (Part C/H).
+///
+/// Google Places remains POSTPONED; the map stays on OpenStreetMap.
 class RecommendLocationScreen extends StatefulWidget {
   final RecommendPlaceDraft draft;
 
@@ -32,8 +34,10 @@ class _RecommendLocationScreenState extends State<RecommendLocationScreen> {
   /// draft if the user already picked a location, otherwise falls back to KL.
   late LatLng _selectedPoint;
 
-  /// Mock address derived deterministically from the current centre.
-  late String _currentAddress;
+  /// Notifies the bottom location panel of the latest map centre during a
+  /// drag, so only that small panel rebuilds — NOT the whole screen (the map
+  /// tiles keep rendering without a full rebuild per camera move).
+  late final ValueNotifier<LatLng> _selectedNotifier;
 
   @override
   void initState() {
@@ -42,34 +46,21 @@ class _RecommendLocationScreenState extends State<RecommendLocationScreen> {
     _selectedPoint = (d.latitude != null && d.longitude != null)
         ? LatLng(d.latitude!, d.longitude!)
         : _defaultCenter;
-    _currentAddress = _mockAddressFor(_selectedPoint);
+    _selectedNotifier = ValueNotifier<LatLng>(_selectedPoint);
   }
 
-  /// Deterministic KL-area address based on lat/lng so the map always produces
-  /// a plausible street name without a real reverse-geocoder.
-  String _mockAddressFor(LatLng point) {
-    const streets = [
-      'Jalan Tun H.S. Lee, Kuala Lumpur',
-      'Jalan Ampang, Kuala Lumpur',
-      'Jalan Bukit Bintang, Kuala Lumpur',
-      'Jalan Petaling, Kuala Lumpur',
-      'Jalan Alor, Kuala Lumpur',
-      'Jalan Raja Chulan, Kuala Lumpur',
-      'Jalan Sultan Ismail, Kuala Lumpur',
-      'Jalan P. Ramlee, Kuala Lumpur',
-    ];
-    final index = ((point.latitude * 10000).round() +
-            (point.longitude * 10000).round() * 3)
-        .abs() %
-        streets.length;
-    return streets[index];
+  /// High-frequency map movement: cheaply track the centre so the "Use This
+  /// Location" action is always correct, and push it to the bottom panel
+  /// notifier. No full-screen setState per move; no address lookup occurs.
+  void _onPositionChanged(MapCamera camera, bool hasGesture) {
+    _selectedPoint = camera.center;
+    _selectedNotifier.value = camera.center;
   }
 
   void _onUseLocation() {
     AppNavigation.toRecommendLocationPreview(
       context,
       draft: widget.draft.copyWith(
-        address: _currentAddress,
         latitude: _selectedPoint.latitude,
         longitude: _selectedPoint.longitude,
       ),
@@ -79,6 +70,7 @@ class _RecommendLocationScreenState extends State<RecommendLocationScreen> {
   @override
   void dispose() {
     _mapController.dispose();
+    _selectedNotifier.dispose();
     super.dispose();
   }
 
@@ -109,12 +101,7 @@ class _RecommendLocationScreenState extends State<RecommendLocationScreen> {
                     options: MapOptions(
                       initialCenter: _selectedPoint,
                       initialZoom: 14,
-                      onPositionChanged: (camera, hasGesture) {
-                        setState(() {
-                          _selectedPoint = camera.center;
-                          _currentAddress = _mockAddressFor(camera.center);
-                        });
-                      },
+                      onPositionChanged: _onPositionChanged,
                     ),
                     children: [
                       TileLayer(
@@ -172,41 +159,26 @@ class _RecommendLocationScreenState extends State<RecommendLocationScreen> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  // Address card
-                  Container(
-                    width: double.infinity,
-                    padding: const EdgeInsets.all(12),
-                    decoration: BoxDecoration(
-                      color: AppColors.surfaceCard,
-                      borderRadius: AppRadii.roundedDefault,
-                      border: Border.all(color: AppColors.outlineVariant),
-                    ),
-                    child: Row(
-                      children: [
-                        const Icon(
-                          Icons.location_on_outlined,
-                          size: 18,
-                          color: AppColors.primary,
-                        ),
-                        const SizedBox(width: 8),
-                        Expanded(
-                          child: Text(
-                            _currentAddress,
-                            style: AppTypography.bodyMd.copyWith(
-                              fontWeight: FontWeight.w600,
+                  // The coordinates update while the map is dragged. A
+                  // ValueListenableBuilder scopes the coordinate rebuild to
+                  // just this panel, so the map never re-builds per move.
+                  ValueListenableBuilder<LatLng>(
+                    valueListenable: _selectedNotifier,
+                    builder: (context, point, _) {
+                      return Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Text(
+                            '${point.latitude.toStringAsFixed(6)}, '
+                            '${point.longitude.toStringAsFixed(6)}',
+                            style: AppTypography.labelSm.copyWith(
+                              color: AppColors.textSecondary,
                             ),
                           ),
-                        ),
-                      ],
-                    ),
-                  ),
-                  const SizedBox(height: 6),
-                  Text(
-                    '${_selectedPoint.latitude.toStringAsFixed(6)}, '
-                    '${_selectedPoint.longitude.toStringAsFixed(6)}',
-                    style: AppTypography.labelSm.copyWith(
-                      color: AppColors.textSecondary,
-                    ),
+                        ],
+                      );
+                    },
                   ),
                   const SizedBox(height: 12),
                   SizedBox(

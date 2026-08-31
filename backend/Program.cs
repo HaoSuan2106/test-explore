@@ -1,10 +1,6 @@
 using ExploreMy.Api.Application.AuthProfile.Authentication;
 using ExploreMy.Api.Application.AuthProfile.Facade;
 using ExploreMy.Api.Application.AuthProfile.ManageProfile;
-using ExploreMy.Api.Application.Community.Communication;
-using ExploreMy.Api.Application.Community.ExploreCommunity;
-using ExploreMy.Api.Application.Community.Facade;
-using ExploreMy.Api.Application.FootTracker.ExplorationHistory;
 using ExploreMy.Api.Application.FootTracker.ExplorationHistory;
 using ExploreMy.Api.Application.FootTracker.Facade;
 using ExploreMy.Api.Application.FootTracker.FavouritePlace;
@@ -18,18 +14,15 @@ using ExploreMy.Api.Application.PostReview.Facade;
 using ExploreMy.Api.Application.PostReview.ManagePost;
 using ExploreMy.Api.Application.PostReview.SocialEngagement;
 using ExploreMy.Api.Common.Helpers;
-using ExploreMy.Api.Common.Helpers;
 using ExploreMy.Api.Configuration;
 using ExploreMy.Api.DataAccess.ExternalClients.GooglePlaces;
 using ExploreMy.Api.DataAccess.ExternalClients.OpenRouteService;
 using ExploreMy.Api.DataAccess.ExternalClients.SupabaseStorage;
 using ExploreMy.Api.DataAccess.Repositories.AuthProfile;
-using ExploreMy.Api.DataAccess.Repositories.Community;
 using ExploreMy.Api.DataAccess.Repositories.FootTracker;
 using ExploreMy.Api.DataAccess.Repositories.HiddenPlace;
 using ExploreMy.Api.DataAccess.Repositories.PlacePhotos;
 using ExploreMy.Api.DataAccess.Repositories.PostReview;
-using ExploreMy.Api.Hubs;
 using ExploreMy.Api.Infrastructure.Repositories.HiddenPlace.Review;
 using ExploreMy.Api.Middleware;
 using ExploreMy.Api.Persistence.DbContext;
@@ -49,6 +42,7 @@ builder.Services.Configure<JwtSettings>(builder.Configuration.GetSection("Jwt"))
 builder.Services.Configure<SmtpSettings>(builder.Configuration.GetSection("Smtp"));
 builder.Services.Configure<SupabaseSettings>(builder.Configuration.GetSection("Supabase"));
 builder.Services.Configure<GoogleApiSettings>(builder.Configuration.GetSection("GoogleApi"));
+builder.Services.AddSingleton<IDistrictLookupService, DistrictLookupService>();
 var jwtSettings = builder.Configuration.GetSection("Jwt").Get<JwtSettings>()!;
 var supabaseSettings = builder.Configuration.GetSection("Supabase").Get<SupabaseSettings>()!;
 
@@ -101,6 +95,10 @@ builder.Services.AddScoped<
     IReviewPhotoRepository,
     ReviewPhotoMySqlRepository>();
 
+builder.Services.AddScoped<
+    IReviewReportRepository,
+    ReviewReportMySqlRepository>();
+
 builder.Services.AddScoped<IReviewService, ReviewService>();
 
 // FootTracker modules services
@@ -109,13 +107,6 @@ builder.Services.AddScoped<IFavouritePlaceService, FavouritePlaceService>();
 builder.Services.AddScoped<IFootTrackerService, FootTrackerService>();
 builder.Services.Configure<OpenRouteServiceSettings>(builder.Configuration.GetSection("OpenRouteService"));
 builder.Services.AddScoped<IExplorationHistoryService, ExplorationHistoryService>();
-
-// Community module
-builder.Services.AddScoped<ICommunityRepository, CommunityMySqlRepository>();
-builder.Services.AddScoped<IExploreCommunityService, ExploreCommunityService>();
-builder.Services.AddScoped<ICommunicationService, CommunicationService>();
-builder.Services.AddScoped<ICommunityService, CommunityService>();
-builder.Services.AddSignalR();
 
 builder.Services.AddHttpClient<IStorageClient, SupabaseStorageClient>(client =>
 {
@@ -128,6 +119,7 @@ builder.Services.AddHttpClient<IPlacesApiClient, GooglePlacesApiClient>(client =
 {
     client.BaseAddress = new Uri("https://places.googleapis.com");
 });
+builder.Services.AddSingleton<IDistrictLookupService, DistrictLookupService>();
 
 // Its HttpClient is deliberately bare: no BaseAddress, no API key, no auth header. It only ever
 // downloads image bytes from whatever CDN URI Google hands back, and those URIs are already signed.
@@ -157,22 +149,6 @@ builder.Services.AddAuthentication(options =>
             ValidIssuer = jwtSettings.Issuer,
             ValidAudience = jwtSettings.Audience,
             IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtSettings.Key))
-        };
-
-        // SignalR/WebSocket clients can't set an Authorization header, so the
-        // CommunityChatHub connection carries its JWT on the query string instead.
-        options.Events = new JwtBearerEvents
-        {
-            OnMessageReceived = context =>
-            {
-                var accessToken = context.Request.Query["access_token"];
-                if (!string.IsNullOrEmpty(accessToken) &&
-                    context.HttpContext.Request.Path.StartsWithSegments("/hubs/community-chat"))
-                {
-                    context.Token = accessToken;
-                }
-                return Task.CompletedTask;
-            }
         };
     });
 
@@ -271,15 +247,20 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
-app.MapHub<CommunityChatHub>("/hubs/community-chat");
 
 app.Run();
 
 /// <summary>
-/// D-06: serializes <see cref="DateTime"/> values that MySql.Data returned as
-/// Kind=Local (the raw UTC wall-clock stored by the app) as their true UTC
-/// instant. Only the Kind is relabelled - the clock value is never shifted -
-/// so no +8h hard-coding is involved.
+/// D-06: serializes <see cref="DateTime"/> values as their true UTC instant.
+/// The app's storage contract is "every app write uses DateTime.UtcNow, so the
+/// database holds UTC wall-clock values" — but the MySQL driver reads those
+/// back with different Kind markers depending on column type:
+///   - TIMESTAMP columns come back as Kind=Local (raw UTC wall-clock value);
+///   - DATETIME(6) columns come back as Kind=Unspecified (raw UTC wall-clock).
+/// Both must be relabelled to Kind=Utc so the emitted JSON carries the "Z"
+/// suffix. Only the Kind is relabelled — the clock value is never shifted —
+/// so no +8h hard-coding is involved, and the Flutter client can then convert
+/// the instant to the device's local time for display.
 /// </summary>
 internal sealed class UtcDateTimeConverter : System.Text.Json.Serialization.JsonConverter<System.DateTime>
 {
@@ -294,10 +275,12 @@ internal sealed class UtcDateTimeConverter : System.Text.Json.Serialization.Json
         System.DateTime value,
         System.Text.Json.JsonSerializerOptions options)
     {
-        if (value.Kind == DateTimeKind.Local)
+        if (value.Kind == DateTimeKind.Local || value.Kind == DateTimeKind.Unspecified)
         {
             // Relabel the UTC wall-clock value as Utc so the emitted string
-            // carries the "Z" suffix (the correct instant).
+            // carries the "Z" suffix (the correct instant). DATETIME(6) reads
+            // arrive as Unspecified and were previously emitted with no suffix,
+            // which made the Flutter client treat the UTC clock as local time.
             value = DateTime.SpecifyKind(value, DateTimeKind.Utc);
         }
 

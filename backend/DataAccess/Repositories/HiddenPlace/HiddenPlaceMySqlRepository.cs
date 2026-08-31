@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using ExploreMy.Api.Persistence.DbContext;
+using ExploreMy.Api.Common.Helpers;
 using HiddenPlaceEntity = ExploreMy.Api.Domain.Entities.HiddenPlace;
 using ExploreMy.Api.Domain.Entities;
 
@@ -79,6 +80,28 @@ public class HiddenPlaceMySqlRepository : IHiddenPlaceRepository
             throw;
         }
     }
+
+    /// <summary>
+    /// Distinct non-empty <c>primary_type</c> values from <c>hidden_place_cache</c>, used only as a
+    /// read-only option source for the Recommend New Place Primary Type selector.
+    /// </summary>
+    public async Task<List<string>> GetDistinctPrimaryTypesAsync()
+    {
+        try
+        {
+            return await _context.HiddenPlaces
+                .Where(p => p.PrimaryType != null && p.PrimaryType.Trim() != "")
+                .Select(p => p.PrimaryType.Trim())
+                .Distinct()
+                .OrderBy(t => t)
+                .ToListAsync();
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Database error reading distinct primary types from hidden-place cache.");
+            throw;
+        }
+    }
     //private readonly MySqlDbContext _context;
     //private readonly ILogger<HiddenPlaceMySqlRepository> _logger;
 
@@ -88,16 +111,32 @@ public class HiddenPlaceMySqlRepository : IHiddenPlaceRepository
     //    _logger = logger;
     //}
 
-    // ---------------- Recommended Places ----------------
-
-    public async Task<List<RecommendedPlace>> GetBySubmitterAsync(int userId)
+    public async Task<HiddenPlaceEntity?> GetGooglePlaceByIdAsync(string placeId)
     {
         try
         {
-            return await _context.RecommendedPlaces
+            return await _context.HiddenPlaces
+                .AsNoTracking()
+                .Where(p => p.PlaceId == placeId)
+                .FirstOrDefaultAsync();
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Database error while looking up Google place {PlaceId}.", placeId);
+            throw;
+        }
+    }
+
+    // ---------------- Recommended Places (normalized: canonical place + submission) ----------------
+
+    public async Task<List<PlaceSubmission>> GetBySubmitterAsync(int userId)
+    {
+        try
+        {
+            return await _context.PlaceSubmissions
                 .Where(p => p.SubmitterId == userId)
+                .Include(p => p.Place)
                 .Include(p => p.Verifications.Where(v => v.Status == RecommendedPlaceVerificationStatus.Active))
-                .Include(p => p.Reports.Where(r => r.Status == RecommendedPlaceReportStatus.Active))
                 .OrderByDescending(p => p.CreatedAt)
                 .ToListAsync();
         }
@@ -108,14 +147,14 @@ public class HiddenPlaceMySqlRepository : IHiddenPlaceRepository
         }
     }
 
-    public async Task<List<RecommendedPlace>> GetPublishedPlacesAsync()
+    public async Task<List<PlaceSubmission>> GetPublishedPlacesAsync()
     {
         try
         {
-            return await _context.RecommendedPlaces
+            return await _context.PlaceSubmissions
                 .Where(p => p.Status == RecommendedPlaceStatus.Verified)
+                .Include(p => p.Place)
                 .Include(p => p.Verifications.Where(v => v.Status == RecommendedPlaceVerificationStatus.Active))
-                .Include(p => p.Reports.Where(r => r.Status == RecommendedPlaceReportStatus.Active))
                 .OrderByDescending(p => p.CreatedAt)
                 .ToListAsync();
         }
@@ -126,15 +165,15 @@ public class HiddenPlaceMySqlRepository : IHiddenPlaceRepository
         }
     }
 
-    public async Task<RecommendedPlace?> GetByIdAsync(string submissionId)
+    public async Task<PlaceSubmission?> GetByIdAsync(string submissionId)
     {
         try
         {
-            return await _context.RecommendedPlaces
+            return await _context.PlaceSubmissions
                 .Where(p => p.SubmissionId == submissionId)
                 .Include(p => p.Submitter)
+                .Include(p => p.Place)
                 .Include(p => p.Verifications.Where(v => v.Status == RecommendedPlaceVerificationStatus.Active))
-                .Include(p => p.Reports.Where(r => r.Status == RecommendedPlaceReportStatus.Active))
                 .FirstOrDefaultAsync();
         }
         catch (Exception ex)
@@ -144,14 +183,15 @@ public class HiddenPlaceMySqlRepository : IHiddenPlaceRepository
         }
     }
 
-    public async Task<bool> ExistsByNameAndAddressAsync(string name, string address)
+    public async Task<bool> ExistsByNameAsync(string name)
     {
         try
         {
-            return await _context.RecommendedPlaces.AnyAsync(p =>
+            // The canonical place is checked together with its submissions: a place only
+            // counts as a duplicate when at least one of its submissions is not withdrawn.
+            return await _context.RecommendPlaces.AnyAsync(p =>
                 p.Name == name
-                && p.LocationAddress == address
-                && p.Status != RecommendedPlaceStatus.Withdrawn);
+                && p.Submissions.Any(s => s.Status != RecommendedPlaceStatus.Withdrawn));
         }
         catch (Exception ex)
         {
@@ -161,23 +201,21 @@ public class HiddenPlaceMySqlRepository : IHiddenPlaceRepository
     }
 
     /// <summary>
-    /// True when a non-withdrawn recommended place has coordinates within
-    /// [radiusMeters] of the given point (REQ502_5 proximity duplicate check).
+    /// True when a non-withdrawn recommended submission has a canonical place with coordinates
+    /// within [radiusMeters] of the given point (REQ502_5 proximity duplicate check).
     /// </summary>
     public async Task<bool> ExistsNearbyAsync(decimal latitude, decimal longitude, double radiusMeters)
     {
         try
         {
-            var places = await _context.RecommendedPlaces
-                .Where(p => p.Status != RecommendedPlaceStatus.Withdrawn
-                            && p.Latitude != null
-                            && p.Longitude != null)
+            var places = await _context.RecommendPlaces
+                .Where(p => p.Submissions.Any(s => s.Status != RecommendedPlaceStatus.Withdrawn))
                 .Select(p => new { p.Latitude, p.Longitude })
                 .ToListAsync();
 
             // Haversine distance in meters; any hit within the radius counts.
             return places.Any(p =>
-                HaversineMeters((double)p.Latitude!, (double)p.Longitude!,
+                HaversineMeters(p.Latitude, p.Longitude,
                     (double)latitude, (double)longitude) <= radiusMeters);
         }
         catch (Exception ex)
@@ -201,13 +239,23 @@ public class HiddenPlaceMySqlRepository : IHiddenPlaceRepository
         return earthRadiusM * c;
     }
 
-    public async Task CreatePlaceAsync(RecommendedPlace place)
+    /// <summary>
+    /// Inserts the canonical place row first, then the submission row referencing it, in a single
+    /// transaction (PART K: place before submission).
+    /// Contract: place_submissions.created_at/updated_at store Malaysia wall-clock via the explicit
+    /// Asia/Kuala_Lumpur timezone (MalaysiaTime.Now) — never the server OS timezone and never a
+    /// hard-coded +8h offset. Both fields are stamped from the SAME captured instant.
+    /// </summary>
+    public async Task CreateSubmissionAsync(RecommendPlace place, PlaceSubmission submission)
     {
         try
         {
-            place.CreatedAt = DateTime.UtcNow;
-            place.UpdatedAt = place.CreatedAt;
-            _context.RecommendedPlaces.Add(place);
+            var now = MalaysiaTime.Now;
+            submission.CreatedAt = now;
+            submission.UpdatedAt = now;
+            _context.RecommendPlaces.Add(place);
+            submission.RecommendPlaceId = place.RecommendPlaceId;
+            _context.PlaceSubmissions.Add(submission);
             await _context.SaveChangesAsync();
         }
         catch (Exception ex)
@@ -217,28 +265,53 @@ public class HiddenPlaceMySqlRepository : IHiddenPlaceRepository
         }
     }
 
-    public async Task UpdatePlaceAsync(RecommendedPlace place)
+    public async Task UpdateSubmissionAsync(PlaceSubmission submission)
     {
         try
         {
-            place.UpdatedAt = DateTime.UtcNow;
-            _context.RecommendedPlaces.Update(place);
+            // Malaysia wall-clock via explicit Asia/Kuala_Lumpur; created_at is untouched by EF.
+            submission.UpdatedAt = MalaysiaTime.Now;
+            _context.PlaceSubmissions.Update(submission);
             await _context.SaveChangesAsync();
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "Database error while updating recommended place {SubmissionId}.", place.SubmissionId);
+            _logger.LogError(ex, "Database error while updating recommended place {SubmissionId}.", submission.SubmissionId);
+            throw;
+        }
+    }
+
+    /// <summary>
+    /// Updates BOTH halves of a recommendation atomically in one transaction:
+    /// the canonical place data (<c>recommended_places</c>) and the submission
+    /// timestamp (<c>place_submissions.updated_at</c>). This is the UPDATE half of
+    /// the recommendation lifecycle — without it an edit would refresh only one
+    /// table and the two would drift apart.
+    /// </summary>
+    public async Task UpdateRecommendationAsync(RecommendPlace place, PlaceSubmission submission)
+    {
+        try
+        {
+            // Malaysia wall-clock via explicit Asia/Kuala_Lumpur; created_at is untouched by EF.
+            submission.UpdatedAt = MalaysiaTime.Now;
+            _context.RecommendPlaces.Update(place);
+            _context.PlaceSubmissions.Update(submission);
+            await _context.SaveChangesAsync();
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Database error while updating recommendation {SubmissionId}.", submission.SubmissionId);
             throw;
         }
     }
 
     // ---------------- Verifications (voting) ----------------
 
-    public async Task<RecommendedPlaceVerification?> GetActiveVerificationAsync(string submissionId, int userId)
+    public async Task<PlaceSubmissionVerification?> GetActiveVerificationAsync(string submissionId, int userId)
     {
         try
         {
-            return await _context.RecommendedPlaceVerifications
+            return await _context.PlaceSubmissionVerifications
                 .FirstOrDefaultAsync(v => v.SubmissionId == submissionId
                                           && v.UserId == userId
                                           && v.Status == RecommendedPlaceVerificationStatus.Active);
@@ -250,11 +323,11 @@ public class HiddenPlaceMySqlRepository : IHiddenPlaceRepository
         }
     }
 
-    public async Task<RecommendedPlaceVerification?> GetAnyVerificationAsync(string submissionId, int userId)
+    public async Task<PlaceSubmissionVerification?> GetAnyVerificationAsync(string submissionId, int userId)
     {
         try
         {
-            return await _context.RecommendedPlaceVerifications
+            return await _context.PlaceSubmissionVerifications
                 .FirstOrDefaultAsync(v => v.SubmissionId == submissionId
                                           && v.UserId == userId);
         }
@@ -265,12 +338,12 @@ public class HiddenPlaceMySqlRepository : IHiddenPlaceRepository
         }
     }
 
-    public async Task CreateVerificationAsync(RecommendedPlaceVerification verification)
+    public async Task CreateVerificationAsync(PlaceSubmissionVerification verification)
     {
         try
         {
             verification.CreatedAt = DateTime.UtcNow;
-            _context.RecommendedPlaceVerifications.Add(verification);
+            _context.PlaceSubmissionVerifications.Add(verification);
             await _context.SaveChangesAsync();
         }
         catch (Exception ex)
@@ -280,11 +353,11 @@ public class HiddenPlaceMySqlRepository : IHiddenPlaceRepository
         }
     }
 
-    public async Task UpdateVerificationAsync(RecommendedPlaceVerification verification)
+    public async Task UpdateVerificationAsync(PlaceSubmissionVerification verification)
     {
         try
         {
-            _context.RecommendedPlaceVerifications.Update(verification);
+            _context.PlaceSubmissionVerifications.Update(verification);
             await _context.SaveChangesAsync();
         }
         catch (Exception ex)
@@ -294,65 +367,31 @@ public class HiddenPlaceMySqlRepository : IHiddenPlaceRepository
         }
     }
 
+    public async Task DeleteVerificationAsync(PlaceSubmissionVerification verification)
+    {
+        try
+        {
+            _context.PlaceSubmissionVerifications.Remove(verification);
+            await _context.SaveChangesAsync();
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Database error while deleting verification {VerificationId}.", verification.VerificationId);
+            throw;
+        }
+    }
+
     public async Task<int> GetActiveVerificationCountAsync(string submissionId)
     {
         try
         {
-            return await _context.RecommendedPlaceVerifications
+            return await _context.PlaceSubmissionVerifications
                 .CountAsync(v => v.SubmissionId == submissionId
                                  && v.Status == RecommendedPlaceVerificationStatus.Active);
         }
         catch (Exception ex)
         {
             _logger.LogError(ex, "Database error while counting verifications for place {SubmissionId}.", submissionId);
-            throw;
-        }
-    }
-
-    // ---------------- Reports ----------------
-
-    public async Task<RecommendedPlaceReport?> GetActiveReportAsync(string submissionId, int userId)
-    {
-        try
-        {
-            return await _context.RecommendedPlaceReports
-                .FirstOrDefaultAsync(r => r.SubmissionId == submissionId
-                                          && r.ReporterId == userId
-                                          && r.Status == RecommendedPlaceReportStatus.Active);
-        }
-        catch (Exception ex)
-        {
-            _logger.LogError(ex, "Database error while loading report of user {UserId} for place {SubmissionId}.", userId, submissionId);
-            throw;
-        }
-    }
-
-    public async Task CreateReportAsync(RecommendedPlaceReport report)
-    {
-        try
-        {
-            report.CreatedAt = DateTime.UtcNow;
-            _context.RecommendedPlaceReports.Add(report);
-            await _context.SaveChangesAsync();
-        }
-        catch (Exception ex)
-        {
-            _logger.LogError(ex, "Database error while creating report.");
-            throw;
-        }
-    }
-
-    public async Task<int> GetActiveReportCountAsync(string submissionId)
-    {
-        try
-        {
-            return await _context.RecommendedPlaceReports
-                .CountAsync(r => r.SubmissionId == submissionId
-                                 && r.Status == RecommendedPlaceReportStatus.Active);
-        }
-        catch (Exception ex)
-        {
-            _logger.LogError(ex, "Database error while counting reports for place {SubmissionId}.", submissionId);
             throw;
         }
     }

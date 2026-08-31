@@ -16,7 +16,6 @@ import '../view_my_post_activity/post_details_screen.dart';
 import '../post_review/post/edit_post_screen.dart';
 import '../post_review/post/preview_changes_screen.dart';
 import '../recommend_new_place/my_recommended_places_screen.dart';
-import '../recommend_new_place/place_details_screen.dart';
 import '../recommend_new_place/recommend_place_screen.dart';
 import '../recommend_new_place/recommend_location_screen.dart';
 import '../recommend_new_place/recommend_location_preview_screen.dart';
@@ -25,7 +24,6 @@ import '../recommend_new_place/recommendation_success_screen.dart';
 import '../recommend_new_place/recommend_place_draft.dart';
 import '../post_review/status/status_feedback_screen.dart';
 import '../post_review/status/loading_state_screen.dart';
-import '../../theme/app_theme.dart';
 
 final GlobalKey<NavigatorState> rootNavigatorKey = GlobalKey<NavigatorState>();
 
@@ -119,26 +117,6 @@ final GoRouter appRouter = GoRouter(
 
     // 4. Place Domain
     GoRoute(
-      path: '/places/details/verified',
-      builder: (context, state) {
-        final placeId = state.uri.queryParameters['placeId'];
-        return PlaceDetailsScreen(
-          status: PlaceStatus.verified,
-          placeId: placeId,
-        );
-      },
-    ),
-    GoRoute(
-      path: '/places/details/under-voting',
-      builder: (context, state) {
-        final placeId = state.uri.queryParameters['placeId'];
-        return PlaceDetailsScreen(
-          status: PlaceStatus.underVoting,
-          placeId: placeId,
-        );
-      },
-    ),
-    GoRoute(
       path: '/places/recommend',
       builder: (context, state) => RecommendPlaceScreen(
         // Pre-fill the form when returning from "Edit Details" on the Review
@@ -163,7 +141,15 @@ final GoRouter appRouter = GoRouter(
     ),
     GoRoute(
       path: '/places/recommend/success',
-      builder: (context, state) => const RecommendationSuccessScreen(),
+      builder: (context, state) {
+        final args = state.extra is RecommendationSuccessArgs
+            ? (state.extra as RecommendationSuccessArgs)
+            : null;
+        return RecommendationSuccessScreen(
+          submissionId: args?.submissionId,
+          isUpdate: args?.isUpdate ?? false,
+        );
+      },
     ),
 
     // 5. Transient Status Feedback
@@ -182,34 +168,8 @@ final GoRouter appRouter = GoRouter(
       },
     ),
     GoRoute(
-      path: '/status/post-updated',
-      builder: (context, state) => StatusFeedbackScreen(
-        title: 'Update Successful',
-        heading: 'Post Updated Successfully!',
-        message: 'Your latest changes are now live and published across the platform.',
-        icon: Icons.check,
-        iconColor: AppColors.primary,
-        iconBgColor: AppColors.primaryContainer,
-        primaryButtonText: 'Return',
-        onPrimaryPressed: () => context.pop(),
-      ),
-    ),
-    GoRoute(
       path: '/post/select-attraction',
       builder: (context, state) => const SelectAttractionScreen(),
-    ),
-    GoRoute(
-      path: '/status/post-deleted',
-      builder: (context, state) => StatusFeedbackScreen(
-        title: '',
-        heading: 'Post deleted',
-        message: 'Your post has been successfully deleted.',
-        icon: Icons.description_outlined,
-        iconColor: AppColors.primary,
-        iconBgColor: const Color(0xFFFDECE7),
-        primaryButtonText: 'Back to Post Feed',
-        onPrimaryPressed: () => context.go('/main?tab=post'),
-      ),
     ),
     GoRoute(
       path: '/status/report-submitted',

@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
 import '../../api_communication/http_client/http_client.dart';
@@ -15,6 +17,13 @@ String? _messageFor(DioException e) {
     return data['message'] as String;
   }
   return null;
+}
+
+/// True when [path] is an absolute http/https URL (an already-persisted photo
+/// reference from photos_json). Such entries are kept as-is during submit/update
+/// instead of being uploaded again as local files.
+bool _isRemotePhotoUrl(String path) {
+  return path.startsWith('http://') || path.startsWith('https://');
 }
 
 /// State manager for the "Hidden Place Recommendation" module
@@ -72,8 +81,11 @@ class HiddenPlaceProvider extends ChangeNotifier implements SessionScopedProvide
   bool isLoading = false;
   String? errorMessage;
 
-  bool isDiscoverLoading = false;
-  String? discoverErrorMessage;
+  /// Set to true when [reportPlace] fails with a 409 Conflict (duplicate report
+  /// by the same user on the same place). The calling UI can read this to
+  /// reflect the already-reported state (disabled card) instead of showing a
+  /// long error message. Reset to false at the start of every [reportPlace] call.
+  bool lastReportWasDuplicate = false;
 
   final List<RecommendedPlaceModel> _userRecommendations = [];
 
@@ -87,17 +99,31 @@ class HiddenPlaceProvider extends ChangeNotifier implements SessionScopedProvide
   int get verifiedCount =>
       _userRecommendations.where((r) => r.status == 'VERIFIED').length;
 
-  /// Predefined report reasons (REQ502_13/22).
-  List<String> reportReasons = const [
-    'Inappropriate or misleading location imagery',
-    'Commercial Spam Promotion',
-    'Unauthorized Private Property Access',
-    'Inaccurate or outdated place details',
-    'Other violation',
-  ];
+  // ============================================================
+  // Primary Type options (sourced from hidden_place_cache — read-only)
+  // ============================================================
 
-  /// Public discovery (REQ502_20): VERIFIED places from the discover endpoint.
-  List<RecommendedPlaceSummaryModel> publishedPlaces = [];
+  List<String> primaryTypes = [];
+  bool isPrimaryTypesLoading = false;
+  String? primaryTypesError;
+
+  /// Loads the distinct Primary Type options for the Recommend Place form from the
+  /// backend, which reads them from `hidden_place_cache.primary_type` (read-only).
+  /// The UI shows exactly what the cache holds — no invented fallback categories.
+  Future<void> loadPrimaryTypes() async {
+    isPrimaryTypesLoading = true;
+    primaryTypesError = null;
+    notifyListeners();
+
+    try {
+      primaryTypes = await _httpClient.getPrimaryTypes();
+    } on DioException {
+      primaryTypesError = 'Failed to load Primary Type options.';
+    } finally {
+      isPrimaryTypesLoading = false;
+      notifyListeners();
+    }
+  }
 
   RecommendedPlaceModel? getPlaceById(String placeId) {
     try {
@@ -110,24 +136,6 @@ class HiddenPlaceProvider extends ChangeNotifier implements SessionScopedProvide
   // ============================================================
   // Data loading
   // ============================================================
-
-  /// Loads the public list of VERIFIED recommended places (REQ502_20).
-  Future<void> loadPublishedPlaces() async {
-    isDiscoverLoading = true;
-    discoverErrorMessage = null;
-    notifyListeners();
-
-    try {
-      publishedPlaces
-        ..clear()
-        ..addAll(await _httpClient.getPublishedPlaces());
-    } on DioException {
-      discoverErrorMessage = 'Failed to load verified places.';
-    } finally {
-      isDiscoverLoading = false;
-      notifyListeners();
-    }
-  }
 
   /// Loads the current user's own recommendations (REQ502_26/27/28).
   Future<void> loadMyRecommendations() async {
@@ -148,44 +156,29 @@ class HiddenPlaceProvider extends ChangeNotifier implements SessionScopedProvide
     }
   }
 
-  /// Loads the predefined report reasons (REQ502_13).
-  Future<void> loadReportReasons() async {
-    try {
-      reportReasons = await _httpClient.getRecommendedPlaceReportReasons();
-    } on DioException {
-      // Non-fatal: fall back to the predefined list.
-      reportReasons = const [
-        'Inappropriate or misleading location imagery',
-        'Commercial Spam Promotion',
-        'Unauthorized Private Property Access',
-        'Inaccurate or outdated place details',
-        'Other violation',
-      ];
-    }
-    notifyListeners();
-  }
-
   /// Loads a single recommendation's details for the details screen (REQ502_29/30/31).
+  /// Returns the loaded place or null if the API call fails.
   Future<RecommendedPlaceModel?> loadRecommendationDetails(String placeId) async {
-    await refreshPlace(placeId);
+    try {
+      await refreshPlace(placeId);
+    } catch (_) {
+      return null;
+    }
     return getPlaceById(placeId);
   }
 
   /// Reloads a single place after a mutation so counts/status stay in sync.
+  /// Throws [DioException] on failure so callers can surface the error.
   Future<void> refreshPlace(String placeId) async {
-    try {
-      final details = await _httpClient.getRecommendedPlaceDetails(placeId);
-      final updated = RecommendedPlaceModel.fromDetails(details);
-      final index = _userRecommendations.indexWhere((p) => p.id == placeId);
-      if (index >= 0) {
-        _userRecommendations[index] = updated;
-      } else {
-        _userRecommendations.insert(0, updated);
-      }
-      notifyListeners();
-    } on DioException {
-      // Ignore refresh failures; next full reload will correct state.
+    final details = await _httpClient.getRecommendedPlaceDetails(placeId);
+    final updated = RecommendedPlaceModel.fromDetails(details);
+    final index = _userRecommendations.indexWhere((p) => p.id == placeId);
+    if (index >= 0) {
+      _userRecommendations[index] = updated;
+    } else {
+      _userRecommendations.insert(0, updated);
     }
+    notifyListeners();
   }
 
   // ============================================================
@@ -193,27 +186,48 @@ class HiddenPlaceProvider extends ChangeNotifier implements SessionScopedProvide
   // ============================================================
 
   /// Submit a new recommended place (REQ502_1/3/11). Returns the new id or null.
+  ///
+  /// Step 1 fields priceLevel / businessStatus are forwarded verbatim, and any
+  /// locally selected [photoPaths] are uploaded first (via
+  /// POST /api/recommended-places/images/upload) so only permanent public URLs
+  /// land in photosJson — never local device paths.
   Future<String?> submitRecommendation({
     required String name,
-    required String address,
-    required String category,
+    required String primaryType,
     required String description,
     required double latitude,
     required double longitude,
+    int? priceLevel,
+    String? businessStatus,
+    List<String>? photoPaths,
   }) async {
     isLoading = true;
     errorMessage = null;
     notifyListeners();
 
     try {
+      final photosJson = <String>[];
+      for (final path in photoPaths ?? const <String>[]) {
+        // Existing public photo URLs (already persisted in photos_json) pass
+        // through UNCHANGED — they are never re-uploaded or re-downloaded.
+        // Only freshly picked local device paths are uploaded at submit time.
+        if (_isRemotePhotoUrl(path)) {
+          photosJson.add(path);
+          continue;
+        }
+        final url = await _httpClient.uploadRecommendedPlaceImage(File(path));
+        if (url.isNotEmpty) photosJson.add(url);
+      }
       final response = await _httpClient.submitRecommendedPlace(
         SubmitRecommendedPlaceRequest(
           name: name.trim(),
-          locationAddress: address.trim(),
           latitude: latitude,
           longitude: longitude,
-          category: category,
+          primaryType: primaryType,
           description: description.trim(),
+          priceLevel: priceLevel,
+          businessStatus: businessStatus,
+          photosJson: photosJson.isNotEmpty ? photosJson : null,
         ),
       );
       // Re-load the list so the new place appears at the top with server state.
@@ -221,6 +235,64 @@ class HiddenPlaceProvider extends ChangeNotifier implements SessionScopedProvide
       return response.submissionId;
     } on DioException catch (e) {
       errorMessage = _messageFor(e) ?? 'Failed to submit your recommendation.';
+      return null;
+    } finally {
+      isLoading = false;
+      notifyListeners();
+    }
+  }
+
+  /// Update an existing recommendation (Edit Recommendation). Mirrors
+  /// [submitRecommendation] but calls PUT instead of POST, and the server
+  /// updates BOTH `recommended_places` (canonical data) and
+  /// `place_submissions` (updated_at) in one transaction.
+  ///
+  /// Returns the submission id on success, or null on failure (errorMessage set).
+  Future<String?> updateRecommendation({
+    required String submissionId,
+    required String name,
+    required String primaryType,
+    required String description,
+    required double latitude,
+    required double longitude,
+    int? priceLevel,
+    String? businessStatus,
+    List<String>? photoPaths,
+  }) async {
+    isLoading = true;
+    errorMessage = null;
+    notifyListeners();
+
+    try {
+      final photosJson = <String>[];
+      for (final path in photoPaths ?? const <String>[]) {
+        // Edit-mode rule: existing photo URLs pass through unchanged (never
+        // re-uploaded / re-downloaded); only newly picked local files upload.
+        if (_isRemotePhotoUrl(path)) {
+          photosJson.add(path);
+          continue;
+        }
+        final url = await _httpClient.uploadRecommendedPlaceImage(File(path));
+        if (url.isNotEmpty) photosJson.add(url);
+      }
+      final response = await _httpClient.updateRecommendedPlace(
+        submissionId,
+        SubmitRecommendedPlaceRequest(
+          name: name.trim(),
+          latitude: latitude,
+          longitude: longitude,
+          primaryType: primaryType,
+          description: description.trim(),
+          priceLevel: priceLevel,
+          businessStatus: businessStatus,
+          photosJson: photosJson.isNotEmpty ? photosJson : null,
+        ),
+      );
+      // Re-load the list so the updated place appears with server state.
+      await loadMyRecommendations();
+      return response.submissionId;
+    } on DioException catch (e) {
+      errorMessage = _messageFor(e) ?? 'Failed to update your recommendation.';
       return null;
     } finally {
       isLoading = false;
@@ -267,34 +339,48 @@ class HiddenPlaceProvider extends ChangeNotifier implements SessionScopedProvide
     }
   }
 
-  /// Report a recommended place with a predefined reason (REQ502_12/13/14/15/30).
-  Future<bool> reportPlace(String placeId, String reason) async {
+  /// Records a PLACE report. Server-side the report is stored in
+  /// `hidden_place_suppression` as ONE row per (user, place) — the backend
+  /// derives the reporter from the authenticated JWT, never from the request
+  /// body. Returns the updated report state (count + status + server message),
+  /// or null on failure (errorMessage is set). A 409 Conflict (same user +
+  /// same place already reported) sets [lastReportWasDuplicate] = true so the
+  /// UI can flip to the already-reported state instead of showing an error.
+  Future<ReportPlaceResponse?> reportPlace(String submissionId, String reason) async {
+    lastReportWasDuplicate = false;
     isLoading = true;
     errorMessage = null;
     notifyListeners();
 
     try {
-      await _httpClient.reportRecommendedPlace(placeId, reason);
-      await refreshPlace(placeId);
-      return true;
+      final result = await _httpClient.reportPlace(submissionId, reason);
+      await refreshPlace(submissionId);
+      return result;
     } on DioException catch (e) {
+      lastReportWasDuplicate = e.response?.statusCode == 409;
       errorMessage = _messageFor(e) ?? 'Failed to report this place.';
-      return false;
+      return null;
     } finally {
       isLoading = false;
       notifyListeners();
     }
   }
 
+  /// Loads supported PLACE report reasons from the backend.
+  Future<List<String>> loadPlaceReportReasons() async {
+    try {
+      return await _httpClient.getRecommendedPlaceReportReasons();
+    } catch (_) {
+      return const [];
+    }
+  }
+
   @override
   void clearSessionData() {
     places = [];
-    publishedPlaces = [];
     _userRecommendations.clear();
     isLoading = false;
     errorMessage = null;
-    isDiscoverLoading = false;
-    discoverErrorMessage = null;
     notifyListeners();
   }
 }

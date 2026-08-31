@@ -32,6 +32,10 @@ class RouteNavigationActiveScreen extends StatefulWidget {
   final RouteResult route;
   final String profile;
   final String? destinationCategory;
+  /// Real place identifier (Google Place ID, or community submission UUID).
+  /// Recorded on the visit so PostReview can later match it as an eligible
+  /// tagged place. Null when the caller has no valid place id.
+  final String? destinationPlaceId;
 
   const RouteNavigationActiveScreen({
     super.key,
@@ -42,6 +46,7 @@ class RouteNavigationActiveScreen extends StatefulWidget {
     required this.route,
     required this.profile,
     required this.destinationCategory,
+    this.destinationPlaceId,
   });
 
   @override
@@ -230,7 +235,7 @@ class _RouteNavigationActiveScreenState extends State<RouteNavigationActiveScree
     if (!mounted) return;
     try {
       await context.read<NavigationProvider>().recordVisit(
-        placeId: null,
+        placeId: widget.destinationPlaceId,
         title: widget.destinationName,
         primaryType: widget.destinationCategory,
         address: widget.destinationAddress,

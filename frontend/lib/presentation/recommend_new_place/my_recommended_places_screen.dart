@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:provider/provider.dart';
 import '../../../theme/app_theme.dart';
 import '../../../widgets/app_header.dart';
@@ -6,7 +7,10 @@ import '../../../widgets/app_button.dart';
 import '../../../widgets/content_constraint.dart';
 import '../../../providers/hidden_place/hidden_place_provider.dart';
 import '../../models/hidden_place/recommended_place_model.dart';
+import '../hidden_place_discovery/hidden_place_discovery_ui.dart'
+    hide AppColors;
 import '../navigation/app_navigation.dart';
+import '../place_details/place_details_ui.dart';
 
 class MyRecommendedPlacesScreen extends StatefulWidget {
   const MyRecommendedPlacesScreen({super.key});
@@ -29,7 +33,6 @@ class _MyRecommendedPlacesScreenState extends State<MyRecommendedPlacesScreen> {
   @override
   Widget build(BuildContext context) {
     final placeProvider = context.watch<HiddenPlaceProvider>();
-    final places = placeProvider.userRecommendations;
 
     return Scaffold(
       backgroundColor: AppColors.background,
@@ -51,12 +54,15 @@ class _MyRecommendedPlacesScreenState extends State<MyRecommendedPlacesScreen> {
       body: SafeArea(
         child: ContentConstraint(
           maxWidth: 800,
-          child: SingleChildScrollView(
-            padding: const EdgeInsets.all(AppSpacing.containerMargin),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Container(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              // Stats header (always visible, not in the scrollable list).
+              Padding(
+                padding: const EdgeInsets.fromLTRB(
+                    AppSpacing.containerMargin, AppSpacing.containerMargin,
+                    AppSpacing.containerMargin, 0),
+                child: Container(
                 padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 12),
                 decoration: BoxDecoration(
                   color: AppColors.surfaceCard,
@@ -80,25 +86,20 @@ class _MyRecommendedPlacesScreenState extends State<MyRecommendedPlacesScreen> {
                   ],
                 ),
               ),
+              ),
               const SizedBox(height: AppSpacing.stackLg),
-              Text('Your Place Submissions', style: AppTypography.headlineMd.copyWith(fontSize: 16)),
+              Padding(
+                padding: const EdgeInsets.symmetric(
+                    horizontal: AppSpacing.containerMargin),
+                child: Text('Your Place Submissions',
+                    style: AppTypography.headlineMd.copyWith(fontSize: 16)),
+              ),
               const SizedBox(height: AppSpacing.stackSm),
-              if (placeProvider.isLoading && places.isEmpty)
-                const Padding(
-                  padding: EdgeInsets.symmetric(vertical: 40),
-                  child: Center(child: CircularProgressIndicator()),
-                )
-              else if (placeProvider.errorMessage != null && places.isEmpty)
-                _buildLoadErrorState(placeProvider.errorMessage!)
-              else if (places.isEmpty)
-                _buildEmptyPlacesState()
-              else
-                ...places.map((place) => Padding(
-                  padding: const EdgeInsets.only(bottom: AppSpacing.stackMd),
-                  child: _buildPlaceCard(context, place),
-                )),
+              // Lazy list of place cards.
+              Expanded(
+                child: _buildPlacesList(placeProvider),
+              ),
             ],
-          ),
           ),
         ),
       ),
@@ -135,19 +136,125 @@ class _MyRecommendedPlacesScreenState extends State<MyRecommendedPlacesScreen> {
   }
 
   Widget _buildEmptyPlacesState() {
-    return Container(
+    return SizedBox(
       width: double.infinity,
-      padding: const EdgeInsets.symmetric(vertical: 40),
       child: Center(
-        child: Column(
-          children: [
-            const Icon(Icons.place_outlined, size: 56, color: AppColors.textMuted),
-            const SizedBox(height: AppSpacing.stackMd),
-            Text('No recommendations yet', style: AppTypography.headlineMd),
-            const SizedBox(height: 4),
-            Text('Discover and recommend hidden gems to fellow travelers.', style: AppTypography.bodyMd),
-          ],
+        child: Padding(
+          padding: const EdgeInsets.symmetric(
+            horizontal: AppSpacing.containerMargin,
+            vertical: 40,
+          ),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              const Icon(
+                Icons.place_outlined,
+                size: 56,
+                color: AppColors.textMuted,
+              ),
+              const SizedBox(height: AppSpacing.stackMd),
+              Text(
+                'No recommendations yet',
+                style: AppTypography.headlineMd,
+                textAlign: TextAlign.center,
+              ),
+              const SizedBox(height: 4),
+              Text(
+                'Discover and recommend places to fellow travelers.',
+                style: AppTypography.bodyMd,
+                textAlign: TextAlign.center,
+              ),
+            ],
+          ),
         ),
+      ),
+    );
+  }
+  /// Opens the shared [PlaceDetailUI] for the selected recommendation.
+  ///
+  /// Refreshes the place's details first (list summaries omit lat/lng) and
+  /// maps the real model into the existing [PlaceData]. No-op when the place
+  /// cannot be loaded — never fabricates placeholder data.
+  Future<void> _openPlaceDetails(BuildContext context, String placeId) async {
+    final provider = context.read<HiddenPlaceProvider>();
+    await provider.loadRecommendationDetails(placeId);
+
+    if (!context.mounted) return;
+
+    final place = provider.getPlaceById(placeId);
+    if (place == null) return;
+
+    final photos = place.photosJson ?? const <String>[];
+
+    Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (_) => Scaffold(
+          backgroundColor: Colors.white,
+          body: PlaceDetailUI(
+            place: PlaceData(
+              placeId: place.id,
+              title: place.name,
+              category: place.primaryType,
+              primaryType: place.primaryType,
+              imageUrl: photos.isNotEmpty ? photos.first : '',
+              icon: Icons.place_outlined,
+              position: LatLng(place.latitude ?? 0, place.longitude ?? 0),
+              rating: 0,
+              ratingCount: 0,
+              priceLevel: place.priceLevel,
+              businessStatus: place.businessStatus ?? 'UNKNOWN',
+              // The list model's id IS the community submission id (UUID).
+              // It is the actual recommend_place_id the Place Details UI keys
+              // the Community / Verification Status UI on (isCommunity is a
+              // derived getter on PlaceData, never force-set).
+              recommendPlaceId: place.id,
+              isVerified: place.isVerified,
+              recommendedBy: place.submitterName,
+              isReportedByCurrentUser: place.isReportedByCurrentUser,
+              isVerifiedByCurrentUser: place.isVerifiedByCurrentUser,
+              isReportedClosed: place.status == 'REPORTED_CLOSED',
+              address: null,
+              phoneNumber: null,
+              websiteUri: null,
+              googleMapsUri: null,
+              photosJson: null,
+              regularOpeningHoursJson: null,
+            ),
+            reviewTargetType: PlaceReviewTargetType.system,
+          ),
+        ),
+      ),
+    );
+  }
+
+  /// Lazy-rendered list of the user's recommendation cards (loading / error /
+  /// empty states share the same scroll area so the stats header stays put).
+  Widget _buildPlacesList(HiddenPlaceProvider placeProvider) {
+    final places = placeProvider.userRecommendations;
+    if (placeProvider.isLoading && places.isEmpty) {
+      return const Padding(
+        padding: EdgeInsets.symmetric(vertical: 40),
+        child: Center(child: CircularProgressIndicator()),
+      );
+    }
+    if (placeProvider.errorMessage != null && places.isEmpty) {
+      return _buildLoadErrorState(placeProvider.errorMessage!);
+    }
+    if (places.isEmpty) {
+      return _buildEmptyPlacesState();
+    }
+    return ListView.builder(
+      padding: const EdgeInsets.fromLTRB(
+        AppSpacing.containerMargin,
+        0,
+        AppSpacing.containerMargin,
+        AppSpacing.stackLg,
+      ),
+      itemCount: places.length,
+      itemBuilder: (context, i) => Padding(
+        padding: const EdgeInsets.only(bottom: AppSpacing.stackMd),
+        child: _buildPlaceCard(context, places[i]),
       ),
     );
   }
@@ -162,7 +269,13 @@ class _MyRecommendedPlacesScreenState extends State<MyRecommendedPlacesScreen> {
             ? (AppColors.errorContainer, AppColors.error, 'Removed')
             : (AppColors.successContainer, AppColors.success, 'Verified');
 
-    return Container(
+    // The whole card frame is tappable → the shared PlaceDetailUI with the
+    // REAL data of the tapped recommendation (Edit / Withdraw remain as their
+    // own buttons and keep their individual onPressed handlers).
+    return GestureDetector(
+      behavior: HitTestBehavior.opaque,
+      onTap: () => _openPlaceDetails(context, place.id),
+      child: Container(
       padding: const EdgeInsets.all(AppSpacing.gutterMd),
       decoration: BoxDecoration(
         color: AppColors.background,
@@ -197,27 +310,35 @@ class _MyRecommendedPlacesScreenState extends State<MyRecommendedPlacesScreen> {
               const Icon(Icons.location_on_outlined, size: 14, color: AppColors.textMuted),
               const SizedBox(width: 4),
               Expanded(
-                child: Text(place.address, style: AppTypography.labelSm, overflow: TextOverflow.ellipsis),
+                child: Text(
+                  (place.latitude != null && place.longitude != null)
+                      ? '${place.latitude!.toStringAsFixed(5)}, ${place.longitude!.toStringAsFixed(5)}'
+                      : 'No location',
+                  style: AppTypography.labelSm,
+                  overflow: TextOverflow.ellipsis,
+                ),
               ),
             ],
           ),
-          Text('Submitted on ${place.submittedAt.day}/${place.submittedAt.month}/${place.submittedAt.year}', style: AppTypography.labelSm),
+          Text(
+            'Submitted on ${place.submittedAt.toLocal().day}/${place.submittedAt.toLocal().month}/${place.submittedAt.toLocal().year}',
+            style: AppTypography.labelSm,
+          ),
           const Divider(height: 24),
           Row(
             children: [
               Expanded(
                 child: AppButton(
-                  text: 'Details',
-                  icon: Icons.info_outline,
+                  text: 'Edit',
+                  icon: Icons.edit_outlined,
                   variant: AppButtonVariant.outline,
                   height: 40,
-                  onPressed: () {
-                    AppNavigation.toRecommendedPlaceDetails(
-                      context,
-                      placeId: place.id,
-                      isUnderVoting: isUnderVoting,
-                    );
-                  },
+                  onPressed: isUnderVoting
+                      ? () {
+                          AppNavigation.toEditRecommendation(
+                              context, place: place);
+                        }
+                      : null,
                 ),
               ),
               const SizedBox(width: AppSpacing.stackSm),
@@ -240,6 +361,7 @@ class _MyRecommendedPlacesScreenState extends State<MyRecommendedPlacesScreen> {
             ],
           ),
         ],
+      ),
       ),
     );
   }

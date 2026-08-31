@@ -68,7 +68,10 @@ class _ReportReasonSheetState extends State<ReportReasonSheet> {
 
   @override
   Widget build(BuildContext context) {
-    final provider = context.watch<PostProvider>();
+    // Subscribe to report-reasons version only — a like/save on another screen
+    // must not rebuild this modal bottom sheet.
+    context.select<PostProvider, int>((p) => p.reportReasonsVersion);
+    final provider = context.read<PostProvider>();
     final reasons = provider.reportReasons;
 
     return SafeArea(

@@ -15,7 +15,7 @@ class EditCommentBottomSheet extends StatefulWidget {
     super.key,
     required this.commentId,
     this.initialContent,
-    this.authorName = 'Aisyah Nur',
+    this.authorName = '',
   });
 
   @override
@@ -100,7 +100,7 @@ class _EditCommentBottomSheetState extends State<EditCommentBottomSheet> {
             ),
             const SizedBox(height: 2),
             Text(
-              _postTitle.isNotEmpty ? _postTitle : 'E2E Manual Post by Alice',
+              _postTitle.isNotEmpty ? _postTitle : 'Community Post',
               style: AppTypography.bodyMd.copyWith(
                 fontWeight: FontWeight.w700,
                 color: AppColors.textPrimary,

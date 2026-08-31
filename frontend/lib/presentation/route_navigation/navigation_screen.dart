@@ -24,6 +24,10 @@ class RouteNavigationScreen extends StatefulWidget {
   final double destinationLat;
   final double destinationLng;
   final String? destinationCategory;
+  /// Real place identifier (Google Place ID, or community submission UUID).
+  /// Recorded on the visit so PostReview can later match it as an eligible
+  /// tagged place. Null when the caller has no valid place id.
+  final String? destinationPlaceId;
 
 
   const RouteNavigationScreen({
@@ -33,6 +37,7 @@ class RouteNavigationScreen extends StatefulWidget {
     required this.destinationLat,
     required this.destinationLng,
     required this.destinationCategory,
+    this.destinationPlaceId,
   });
 
   @override
@@ -74,7 +79,7 @@ class _RouteNavigationScreenState extends State<RouteNavigationScreen> {
       await showAlreadyAtDestinationDialog(context);
       try {
         await context.read<NavigationProvider>().recordVisit(
-          placeId: null,
+          placeId: widget.destinationPlaceId,
           title: widget.destinationName,
           primaryType: widget.destinationCategory,
           address: widget.destinationAddress,
@@ -237,6 +242,7 @@ class _RouteNavigationScreenState extends State<RouteNavigationScreen> {
                         destinationLat: widget.destinationLat,
                         destinationLng: widget.destinationLng,
                         destinationCategory: widget.destinationCategory,
+                        destinationPlaceId: widget.destinationPlaceId,
                         route: currentRoute,
                         profile: _selectedMode.profile,
                       ),

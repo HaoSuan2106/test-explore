@@ -37,7 +37,6 @@ PlaceData _favouriteToPlaceData(FavouritePlace place) {
     priceLevel: null,
     businessStatus: 'UNKNOWN',
     photoAttribution: null,
-    isCommunity: false,
     address: place.location,
     phoneNumber: null,
     websiteUri: null,

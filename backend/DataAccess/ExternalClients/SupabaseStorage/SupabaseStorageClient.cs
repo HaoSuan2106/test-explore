@@ -1,5 +1,4 @@
 using System.Net.Http.Headers;
-using System.Net.Http.Json;
 using ExploreMy.Api.Configuration;
 using Microsoft.Extensions.Options;
 
@@ -45,12 +44,15 @@ public class SupabaseStorageClient : IStorageClient
         if (!response.IsSuccessStatusCode)
         {
             var body = await response.Content.ReadAsStringAsync();
-            _logger.LogError("Supabase upload to {Path} failed with {StatusCode}: {Body}", path, response.StatusCode, body);
+            _logger.LogError("Supabase upload to {Bucket}/{Path} failed with {StatusCode}: {Body}", bucket, path, response.StatusCode, body);
             throw new InvalidOperationException("Failed to upload file to storage.");
         }
 
         return GetPublicUrl(path, targetBucket);
     }
+
+    public async Task<string> UploadToBucketAsync(string bucket, string path, Stream content, string contentType)
+        => await UploadAsync(path, content, contentType, bucket: bucket);
 
     public async Task<bool> ExistsAsync(string path, string? bucket = null)
     {
@@ -83,38 +85,27 @@ public class SupabaseStorageClient : IStorageClient
         return $"{_settings.Url}/storage/v1/object/public/{targetBucket}/{path}";
     }
 
-    public async Task<string> MoveAsync(string fromPath, string toPath, string? bucket = null)
-    {
-        var targetBucket = string.IsNullOrWhiteSpace(bucket) ? _settings.Bucket : bucket;
-        var payload = new { bucketId = targetBucket, sourceKey = fromPath, destinationKey = toPath };
-        using var response = await _httpClient.PostAsJsonAsync("/storage/v1/object/move", payload);
-
-        if (!response.IsSuccessStatusCode)
-        {
-            var body = await response.Content.ReadAsStringAsync();
-            _logger.LogError("Supabase move from {From} to {To} failed with {StatusCode}: {Body}", fromPath, toPath, response.StatusCode, body);
-            throw new InvalidOperationException("Failed to finalize file in storage.");
-        }
-
-        return GetPublicUrl(toPath, targetBucket);
-    }
-
     public async Task DeleteAsync(string path)
+        => await DeleteFromBucketAsync(_settings.Bucket, path);
+
+    public async Task DeleteFromBucketAsync(string bucket, string path)
     {
-        var requestUri = $"/storage/v1/object/{_settings.Bucket}/{path}";
+        var requestUri = $"/storage/v1/object/{bucket}/{path}";
         using var response = await _httpClient.DeleteAsync(requestUri);
 
         if (!response.IsSuccessStatusCode)
         {
             var body = await response.Content.ReadAsStringAsync();
-            _logger.LogWarning("Supabase delete of {Path} failed with {StatusCode}: {Body}", path, response.StatusCode, body);
+            _logger.LogWarning("Supabase delete of {Bucket}/{Path} failed with {StatusCode}: {Body}", bucket, path, response.StatusCode, body);
         }
     }
 
-    public string? GetPathFromPublicUrl(string publicUrl, string? bucket = null)
+    public string? GetPathFromPublicUrl(string publicUrl)
+        => GetPathFromBucketUrl(_settings.Bucket, publicUrl);
+
+    public string? GetPathFromBucketUrl(string bucket, string publicUrl)
     {
-        var targetBucket = string.IsNullOrWhiteSpace(bucket) ? _settings.Bucket : bucket;
-        var marker = $"/storage/v1/object/public/{targetBucket}/";
+        var marker = $"/storage/v1/object/public/{bucket}/";
         var index = publicUrl.IndexOf(marker, StringComparison.Ordinal);
         return index < 0 ? null : publicUrl[(index + marker.Length)..];
     }

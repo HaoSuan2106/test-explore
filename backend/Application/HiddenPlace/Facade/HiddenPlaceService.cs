@@ -168,14 +168,14 @@ public class HiddenPlaceService : IHiddenPlaceService
             var published = await _hiddenPlaceRepository.GetPublishedPlacesAsync();
 
             return published
-                // A submission without coordinates cannot be placed on a map at all. It should not
+                // A submission without a place row cannot be placed on a map at all. It should not
                 // be possible, but a null here would crash the whole search rather than lose one pin.
-                .Where(p => p.Latitude.HasValue && p.Longitude.HasValue)
+                .Where(p => p.Place != null)
                 .Select(p => new
                 {
                     Place = p,
-                    Latitude = (double)p.Latitude!.Value,
-                    Longitude = (double)p.Longitude!.Value
+                    Latitude = p.Place!.Latitude,
+                    Longitude = p.Place!.Longitude
                 })
                 .Where(x => SearchGridPlanner.DistanceMeters(
                     request.Latitude, request.Longitude, x.Latitude, x.Longitude) <= request.RadiusMeters)
@@ -190,20 +190,20 @@ public class HiddenPlaceService : IHiddenPlaceService
     }
 
     private static HiddenPlaceResponseItemDto MapCommunityToResponseDto(
-        RecommendedPlace place, double latitude, double longitude) => new()
+        PlaceSubmission place, double latitude, double longitude) => new()
     {
         // The submission id stands in for a Google place id. It is a GUID, so it cannot collide with
         // a real one, and the client only ever uses this field as an identity key.
         PlaceId = place.SubmissionId,
-        Name = place.Name,
-        PrimaryType = MapCategoryToPlaceType(place.Category),
+        Name = place.Place!.Name,
+        PrimaryType = MapCategoryToPlaceType(place.Place!.PrimaryType),
         Latitude = latitude,
         Longitude = longitude,
-        FormattedAddress = place.LocationAddress,
 
-        // Left empty rather than faked. Rating, review count and HiddenScore all describe how many
-        // strangers on Google have been somewhere - a question a community submission has no answer
-        // to. Source is what tells the client to stop reading them.
+        // Left empty rather than faked. Rating, review count, HiddenScore and FormattedAddress all
+        // describe how many strangers on Google have been somewhere - a question a community
+        // submission has no answer to. Source is what tells the client to stop reading them.
+        FormattedAddress = null,
         Rating = null,
         UserRatingCount = 0,
         HiddenScore = 0,
@@ -395,18 +395,24 @@ public class HiddenPlaceService : IHiddenPlaceService
     public Task<SubmitRecommendedPlaceResponseDto> SubmitPlaceAsync(int currentUserId, SubmitRecommendedPlaceRequestDto request)
         => _contribution.SubmitPlaceAsync(currentUserId, request);
 
+    public Task<SubmitRecommendedPlaceResponseDto> UpdateRecommendationAsync(int currentUserId, string submissionId, SubmitRecommendedPlaceRequestDto request)
+        => _contribution.UpdateRecommendationAsync(currentUserId, submissionId, request);
+
+    public Task<string> UploadPlaceImageAsync(int currentUserId, Stream fileStream, string fileName, string contentType)
+        => _contribution.UploadPlaceImageAsync(currentUserId, fileStream, fileName, contentType);
+
     public Task<WithdrawRecommendedPlaceResponseDto> WithdrawPlaceAsync(int currentUserId, string submissionId)
         => _contribution.WithdrawPlaceAsync(currentUserId, submissionId);
 
     public Task<ToggleVerificationResponseDto> ToggleVerificationAsync(int currentUserId, string submissionId, bool verify)
         => _contribution.ToggleVerificationAsync(currentUserId, submissionId, verify);
 
-    public Task<ReportRecommendedPlaceResponseDto> ReportPlaceAsync(int currentUserId, string submissionId, string reason)
+    public Task<ReportPlaceResponseDto> ReportPlaceAsync(int currentUserId, string submissionId, string reason)
         => _contribution.ReportPlaceAsync(currentUserId, submissionId, reason);
-
-    public IReadOnlyList<string> GetReportReasons()
-        => _contribution.GetReportReasons();
 
     public Task<List<RecommendedPlaceSummaryDto>> GetPublishedPlacesAsync()
         => _discoverHiddenPlaceService.GetPublishedPlacesAsync();
+
+    public Task<List<string>> GetPrimaryTypeOptionsAsync()
+        => _contribution.GetPrimaryTypeOptionsAsync();
 }

@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
@@ -12,6 +13,7 @@ import '../../../../providers/auth_profile/profile_provider.dart';
 import '../../../../widgets/app_feedback.dart';
 import '../../../../widgets/content_constraint.dart';
 import '../../navigation/app_navigation.dart';
+import 'post_image_sizes.dart';
 
 class EditPostScreen extends StatefulWidget {
   final String? postId;
@@ -44,17 +46,52 @@ class _EditPostScreenState extends State<EditPostScreen> {
     super.initState();
     final provider = context.read<PostProvider>();
     if (widget.postId != null) {
-      final post = provider.getPostById(widget.postId!);
-      _titleCtrl = TextEditingController(text: post?.title ?? '');
-      _descCtrl = TextEditingController(text: post?.description ?? '');
-      _taggedLocation = post?.location ?? widget.initialTaggedLocation ?? 'Santorini Sunset Overlook, Greece';
-      _photos.addAll(post?.galleryImages ?? const []);
+      _initEdit(provider, widget.postId!);
     } else {
       _titleCtrl = TextEditingController(text: provider.draftTitle);
       _descCtrl = TextEditingController(text: provider.draftDescription);
       _taggedLocation = widget.initialTaggedLocation ?? provider.draftLocation;
       _taggedPlaceId = widget.initialTaggedPlaceId ?? provider.draftTaggedPlaceId;
     }
+  }
+
+  /// Prefills the edit form from the cached post, or fetches from the API
+  /// if the post is not cached (never shows an empty form for edit).
+  void _initEdit(PostProvider provider, String postId) {
+    final post = provider.getPostById(postId);
+
+    // Synchronous prefill from cache (fast path). When the post is not in
+    // the cache the fields start empty and are filled by the async fetch
+    // below, so the form is never silently presented as an empty edit.
+    _titleCtrl = TextEditingController(text: post?.title ?? '');
+    _descCtrl = TextEditingController(text: post?.description ?? '');
+    _taggedLocation = post?.location ?? widget.initialTaggedLocation ?? '';
+    _taggedPlaceId = widget.initialTaggedPlaceId ?? '';
+    _photos.addAll(post?.galleryImages ?? const []);
+
+    if (post != null) return; // prefill complete from cache.
+
+    // Post not cached — fetch from API asynchronously and backfill fields.
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      if (!mounted) return;
+      final fetched = await provider.fetchPostById(postId);
+      if (!mounted) return;
+      if (fetched == null) {
+        AppFeedback.show(context,
+          message: 'Could not load post data. Please try again.',
+          isSuccess: false,
+        );
+        return;
+      }
+      setState(() {
+        _titleCtrl.text = fetched.title;
+        _descCtrl.text = fetched.description;
+        _taggedLocation = fetched.location;
+        _photos
+          ..clear()
+          ..addAll(fetched.galleryImages);
+      });
+    });
   }
 
   @override
@@ -157,8 +194,7 @@ class _EditPostScreenState extends State<EditPostScreen> {
     setState(() => _isUploading = true);
 
     try {
-      // The provider routes to the real multipart upload in real mode and to
-      // a stable placeholder in demo mode (no backend session exists there).
+      // The provider routes to the real multipart upload endpoint.
       final url = await provider.uploadPostImage(file);
       if (url.isEmpty) {
         throw Exception('Empty URL returned from upload.');
@@ -197,9 +233,11 @@ class _EditPostScreenState extends State<EditPostScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final profile = context.watch<ProfileProvider>().profile;
-    final provider = context.watch<PostProvider>();
-    final isSaving = provider.isLoading;
+    // Targeted subscriptions: only the profile object and the loading flag
+    // drive this screen's build. A like/save/reaction elsewhere in the app
+    // (which notifies PostProvider) must NOT rebuild the whole editor.
+    final profile = context.select<ProfileProvider, dynamic>((p) => p.profile);
+    final isSaving = context.select<PostProvider, bool>((p) => p.isLoading);
 
     return PopScope(
       canPop: !_hasDraftInput(),
@@ -393,9 +431,8 @@ class _EditPostScreenState extends State<EditPostScreen> {
   Widget _buildProfileSection(dynamic profile) {
     final username = (profile?.username != null && profile!.username.isNotEmpty)
         ? profile.username
-        : 'Aisyah Nur';
-    // Locally cached copy when there is one, remote URL otherwise.
-    final avatarImage = context.watch<ProfileProvider>().avatarImage;
+        : 'Traveler';
+    final avatarUrl = profile?.profilePictureUrl;
 
     return Container(
       padding: const EdgeInsets.all(12),
@@ -408,13 +445,15 @@ class _EditPostScreenState extends State<EditPostScreen> {
         children: [
           ClipRRect(
             borderRadius: AppRadii.roundedFull,
-            child: avatarImage != null
-                ? Image(
-              image: avatarImage,
+            child: (avatarUrl != null && avatarUrl.isNotEmpty)
+                ? CachedNetworkImage(
+              imageUrl: avatarUrl,
               width: 48,
               height: 48,
               fit: BoxFit.cover,
-              errorBuilder: (_, _, _) => _buildDefaultAvatar(),
+              memCacheWidth: PostImageSizes.avatar,
+              memCacheHeight: PostImageSizes.avatar,
+              errorWidget: (_, _, _) => _buildDefaultAvatar(),
             )
                 : _buildDefaultAvatar(),
           ),
@@ -498,12 +537,14 @@ class _EditPostScreenState extends State<EditPostScreen> {
       children: [
         ClipRRect(
           borderRadius: AppRadii.roundedDefault,
-          child: Image.network(
-            url,
+          child: CachedNetworkImage(
+            imageUrl: url,
             width: 80,
             height: 80,
             fit: BoxFit.cover,
-            errorBuilder: (_, _, _) => Container(
+            memCacheWidth: PostImageSizes.editThumbnail,
+            memCacheHeight: PostImageSizes.editThumbnail,
+            errorWidget: (_, _, _) => Container(
               width: 80,
               height: 80,
               color: AppColors.surfaceVariant,

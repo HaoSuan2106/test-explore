@@ -20,16 +20,31 @@ class MainPage extends StatefulWidget {
 class _MainPageState extends State<MainPage> {
   late int _selectedIndex;
 
-  final List<Widget> _tabs = const [
-    HiddenPlaceDiscoveryUI(),
-    CommunicationUI(),
-    PostUI(),
-    AccountUI(),
+  /// True while the Post Feed tab has an active inline search (results shown
+  /// or text typed). In those states PostUI's own PopScope handles the
+  /// system back (clearing the search), so MainPage must not switch tabs.
+  bool _postSearchActive = false;
+
+  late final List<Widget> _tabs = [
+    const HiddenPlaceDiscoveryUI(),
+    const CommunicationUI(),
+    PostUI(onSearchActiveChanged: (active) {
+      if (mounted && active != _postSearchActive) {
+        setState(() => _postSearchActive = active);
+      }
+    }),
+    const AccountUI(),
   ];
 
   void _onNavTap(int navIndex) {
     setState(() => _selectedIndex = navIndex);
   }
+
+  /// Post Feed tab (index 2) with no active search: system back must switch
+  /// to the Explore tab (index 0, HiddenPlaceDiscoveryUI) instead of popping
+  /// the /main route and exiting the app.
+  bool get _backShouldSwitchToExplore =>
+      _selectedIndex == 2 && !_postSearchActive;
 
   @override
   void initState() {
@@ -41,17 +56,25 @@ class _MainPageState extends State<MainPage> {
   Widget build(BuildContext context) {
     final navIndex = _selectedIndex;
 
-    return Scaffold(
-      body: IndexedStack(index: _selectedIndex, children: _tabs),
-      bottomNavigationBar: CustomNavBar(
-        selectedIndex: navIndex,
-        onTap: _onNavTap,
-        items: const [
-          NavItemData(icon: Icons.explore_outlined, label: 'Explore'),
-          NavItemData(icon: Icons.forum_outlined, label: 'Community'),
-          NavItemData(icon: Icons.add_box_outlined, label: 'Post'),
-          NavItemData(icon: Icons.person, label: 'Profile'),
-        ],
+    return PopScope(
+      canPop: !_backShouldSwitchToExplore,
+      onPopInvokedWithResult: (didPop, _) {
+        if (!didPop && _backShouldSwitchToExplore) {
+          setState(() => _selectedIndex = 0);
+        }
+      },
+      child: Scaffold(
+        body: IndexedStack(index: _selectedIndex, children: _tabs),
+        bottomNavigationBar: CustomNavBar(
+          selectedIndex: navIndex,
+          onTap: _onNavTap,
+          items: const [
+            NavItemData(icon: Icons.explore_outlined, label: 'Explore'),
+            NavItemData(icon: Icons.forum_outlined, label: 'Community'),
+            NavItemData(icon: Icons.add_box_outlined, label: 'Post'),
+            NavItemData(icon: Icons.person, label: 'Profile'),
+          ],
+        ),
       ),
     );
   }

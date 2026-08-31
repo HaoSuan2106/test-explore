@@ -7,6 +7,7 @@ import 'api_communication/http_client/http_client.dart';
 import 'api_communication/secure_storage/secure_storage_service.dart';
 import 'providers/auth_profile/auth_provider.dart';
 import 'providers/auth_profile/profile_provider.dart';
+import 'providers/foot_tracker/exploration_map_provider.dart';
 import 'utilities/onboarding_preferences.dart';
 import 'presentation/authentication/login/login_ui.dart';
 import 'presentation/navigation/entry_page_ui.dart';
@@ -18,10 +19,14 @@ import 'presentation/navigation/app_router.dart';
 import 'providers/foot_tracker/navigation_provider.dart';
 import 'providers/hidden_place/review_provider.dart';
 import 'providers/session_scoped_provider.dart';
-import 'api_communication/signalr_client/signalr_client.dart';
-import 'providers/community/communication_provider.dart';
+import 'utilities/image_cache_guard.dart';
 
 void main() {
+  // Ensure the binding exists before registering the app-wide observer.
+  WidgetsFlutterBinding.ensureInitialized();
+  // Register the memory-pressure handler exactly once at startup.
+  // ImageCacheGuard.init() is idempotent — it never registers a duplicate.
+  ImageCacheGuard.init();
   runApp(const ExploreMYApp());
 }
 
@@ -38,7 +43,6 @@ class _ExploreMYAppState extends State<ExploreMYApp> {
   late final HttpClient _httpClient;
   late final AuthProvider _authProvider;
   late final ProfileProvider _profileProvider;
-  late final SignalrClient _signalrClient;
 
   @override
   void initState() {
@@ -47,10 +51,6 @@ class _ExploreMYAppState extends State<ExploreMYApp> {
     _authProvider =
         AuthProvider(httpClient: _httpClient, secureStorage: _secureStorage);
     _profileProvider = ProfileProvider(httpClient: _httpClient);
-    // Community module's real-time chat connection. Built once here (not
-    // per-build) so it isn't torn down and reconnected every time this
-    // widget rebuilds.
-    _signalrClient = SignalrClient(secureStorage: _secureStorage);
 
     // FR102-12: a session that can no longer be refreshed (expired, revoked or
     // suspended mid-use) must not leave the user sitting on signed-in screens
@@ -84,6 +84,9 @@ class _ExploreMYAppState extends State<ExploreMYApp> {
           create: (_) => FavouriteProvider(httpClient: httpClient),
         ),
         ChangeNotifierProvider(
+          create: (_) => ExplorationMapProvider(httpClient: httpClient),
+        ),
+        ChangeNotifierProvider(
           create: (_) => NavigationProvider(httpClient: httpClient),
         ),
         ChangeNotifierProvider(
@@ -96,10 +99,7 @@ class _ExploreMYAppState extends State<ExploreMYApp> {
             httpClient: httpClient,
           ),
         ),
-        ChangeNotifierProvider(create: (_) => PostProvider(httpClient: httpClient, demoMode: true)),
-        ChangeNotifierProvider(
-          create: (_) => CommunicationProvider(httpClient: httpClient, signalrClient: _signalrClient),
-        ),
+        ChangeNotifierProvider(create: (_) => PostProvider(httpClient: httpClient)),
       ],
       child: MaterialApp.router(
         title: 'ExploreMY',

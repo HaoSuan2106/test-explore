@@ -1,6 +1,48 @@
 using System.ComponentModel.DataAnnotations;
+using System.Text.Json;
+using System.Text.Json.Serialization;
+using ExploreMy.Api.Common.Helpers;
 
 namespace ExploreMy.Api.DTOs.HiddenPlace;
+
+/// <summary>
+/// Serializes a stored Malaysia wall-clock DATETIME(6) value as ISO-8601 with an
+/// explicit +08:00 offset (e.g. 2026-08-30T21:16:00.123456+08:00) so the Flutter
+/// client can parse it unambiguously and render the correct local instant.
+///
+/// Contract: <c>place_submissions.created_at/updated_at</c> hold MALAYSIA WALL-CLOCK
+/// time. EF reads DATETIME(6) back as <c>DateTimeKind.Unspecified</c> whose wall-clock
+/// IS Malaysia time, so we attach the explicit Asia/Kuala_Lumpur offset (from
+/// <see cref="MalaysiaTime"/>) and let the "K" format specifier emit "+08:00". No +8
+/// arithmetic and no reliance on the server OS timezone — the offset comes from the
+/// resolved Malaysia <see cref="TimeZoneInfo"/>.
+/// </summary>
+internal sealed class MalaysiaLocalDateTimeConverter : JsonConverter<DateTime>
+{
+    public override DateTime Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
+        => reader.GetDateTime();
+
+    public override void Write(Utf8JsonWriter writer, DateTime value, JsonSerializerOptions options)
+    {
+        // Values may arrive as:
+        //  - Unspecified (DATETIME(6) read-back): wall-clock IS Malaysia time → attach offset as-is;
+        //  - Utc: an actual UTC instant → convert to Malaysia wall-clock first;
+        //  - Local: host-local wall-clock → convert to Malaysia wall-clock first.
+        var malaysiaWallClock = value.Kind switch
+        {
+            DateTimeKind.Utc => MalaysiaTime.FromUtc(value),
+            DateTimeKind.Local => TimeZoneInfo.ConvertTime(value, MalaysiaTime.Zone),
+            _ => value,
+        };
+
+        var offset = new DateTimeOffset(
+            DateTime.SpecifyKind(malaysiaWallClock, DateTimeKind.Unspecified),
+            MalaysiaTime.Zone.GetUtcOffset(malaysiaWallClock));
+
+        writer.WriteStringValue(
+            offset.ToString("yyyy-MM-ddTHH:mm:ss.FFFFFFFK", System.Globalization.CultureInfo.InvariantCulture));
+    }
+}
 
 public class DiscoverHiddenPlaceRequestDto
 {
@@ -169,36 +211,56 @@ public class SubmitRecommendedPlaceRequestDto
     [Required, MaxLength(150)]
     public string Name { get; set; } = string.Empty;
 
-    [Required, MaxLength(250)]
-    public string LocationAddress { get; set; } = string.Empty;
-
     [Range(-90, 90)]
     public decimal? Latitude { get; set; }
 
     [Range(-180, 180)]
     public decimal? Longitude { get; set; }
 
-    [Required, MaxLength(50)]
-    public string Category { get; set; } = string.Empty;
+    [Required, MaxLength(100)]
+    public string PrimaryType { get; set; } = string.Empty;
 
-    [Required, MaxLength(500)]
+    [MaxLength(500)]
     public string? Description { get; set; }
+
+    /// <summary>
+    /// Optional price level, 0 (free) through 4 (very expensive). Rejected outside 0-4 server-side;
+    /// the UI only offers these five values.
+    /// </summary>
+    [Range(0, 4)]
+    public int? PriceLevel { get; set; }
+
+    /// <summary>
+    /// Optional operating status. Server defaults to "OPERATIONAL" when omitted and rejects anything
+    /// outside OPERATIONAL / CLOSED_TEMPORARILY. The frontend dropdown alone is not trusted.
+    /// </summary>
+    public string? BusinessStatus { get; set; }
+
+    /// <summary>
+    /// Optional list of up to 3 public photo URLs the user uploaded (references to our Supabase
+    /// bucket). Each entry must be an absolute http/https URL; local device paths are rejected.
+    /// </summary>
+    public List<string>? PhotosJson { get; set; }
 }
 
 public class RecommendedPlaceSummaryDto
 {
     public string SubmissionId { get; init; } = string.Empty;
     public string Name { get; init; } = string.Empty;
-    public string LocationAddress { get; init; } = string.Empty;
     public decimal? Latitude { get; init; }
     public decimal? Longitude { get; init; }
-    public string Category { get; init; } = string.Empty;
+    public string PrimaryType { get; init; } = string.Empty;
     public string? Description { get; init; }
+    public int? PriceLevel { get; init; }
+    public string BusinessStatus { get; init; } = string.Empty;
+    public string? PhotosJson { get; init; }
     public string Status { get; init; } = string.Empty;
     public int VerificationCount { get; init; }
     public int ReportCount { get; init; }
     public int RequiredVerifications { get; init; }
+    [JsonConverter(typeof(MalaysiaLocalDateTimeConverter))]
     public DateTime CreatedAt { get; init; }
+    [JsonConverter(typeof(MalaysiaLocalDateTimeConverter))]
     public DateTime UpdatedAt { get; init; }
 }
 
@@ -208,8 +270,13 @@ public class RecommendedPlaceDetailsDto : RecommendedPlaceSummaryDto
     public string SubmitterName { get; init; } = string.Empty;
     public bool IsCurrentUserSubmitter { get; init; }
     public bool IsVerifiedByCurrentUser { get; init; }
+
+    /// <summary>
+    /// True when the current user has already reported this place. Place Report is
+    /// ONE-TIME per (user, place) — the UI keeps the Report Place action disabled
+    /// based on this persisted value, not on same-session UI state.
+    /// </summary>
     public bool IsReportedByCurrentUser { get; init; }
-    public List<RecommendedPlaceReportDto> Reports { get; init; } = new();
 }
 
 public class SubmitRecommendedPlaceResponseDto
@@ -246,32 +313,29 @@ public class ToggleVerificationResponseDto
 }
 
 // ============================================================
-// Reports
+// Place reports — storage: hidden_place_suppression
+// One ACTIVE report per (user, place); NOT a toggle. report_count
+// is kept internally for the hide threshold but never shown in the UI.
 // ============================================================
 
-public class ReportRecommendedPlaceRequestDto
+public class ReportPlaceRequestDto
 {
+    /// <summary>One of the supported PLACE report reasons (see PlaceReportReasons).</summary>
     [Required, MaxLength(100)]
     public string Reason { get; set; } = string.Empty;
 }
 
-public class ReportRecommendedPlaceResponseDto
+public class ReportPlaceResponseDto
 {
-    public string ReportId { get; init; } = string.Empty;
     public string SubmissionId { get; init; } = string.Empty;
+
+    /// <summary>
+    /// Total number of reports against the place (aggregate of one-row-per-user
+    /// reports). Kept for the internal hide threshold — the UI must NOT display it.
+    /// </summary>
     public int ReportCount { get; init; }
     public string PlaceStatus { get; init; } = string.Empty;
     public string Message { get; init; } = string.Empty;
-}
-
-public class RecommendedPlaceReportDto
-{
-    public string ReportId { get; init; } = string.Empty;
-    public string SubmissionId { get; init; } = string.Empty;
-    public int ReporterId { get; init; }
-    public string Reason { get; init; } = string.Empty;
-    public string Status { get; init; } = string.Empty;
-    public DateTime CreatedAt { get; init; }
 }
 
 public class HiddenPlaceDtos

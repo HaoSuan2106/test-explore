@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 import '../../../../theme/app_theme.dart';
 import '../../../../widgets/app_header.dart';
 import '../../../../widgets/app_button.dart';
+import '../../../../widgets/app_error_state.dart';
 import '../../../../widgets/app_feedback.dart';
 import '../../../../providers/post_review/post_provider.dart';
 import '../../../../models/post_review/post_model.dart';
@@ -24,9 +25,8 @@ class _SelectAttractionScreenState extends State<SelectAttractionScreen> {
   @override
   void initState() {
     super.initState();
-    // Defer the load until after the first frame: the provider calls
-    // notifyListeners() synchronously in demo mode, which must not happen
-    // while the widget tree is still building.
+    // Defer the load until after the first frame so the provider's
+    // notifyListeners() never runs while the widget tree is still building.
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (mounted) _loadAttractions();
     });
@@ -273,29 +273,10 @@ class _SelectAttractionScreenState extends State<SelectAttractionScreen> {
             style: AppTypography.bodyMd.copyWith(color: AppColors.textSecondary),
           ),
           const Spacer(),
-          Center(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                const Icon(Icons.error_outline, size: 56, color: AppColors.error),
-                const SizedBox(height: AppSpacing.stackMd),
-                Text('Could not load attractions', style: AppTypography.headlineMd),
-                const SizedBox(height: 4),
-                Text(
-                  _loadError ?? 'Please try again.',
-                  style: AppTypography.bodyMd,
-                  textAlign: TextAlign.center,
-                ),
-                const SizedBox(height: AppSpacing.stackLg),
-                AppButton(
-                  text: 'Retry',
-                  icon: Icons.refresh,
-                  variant: AppButtonVariant.outline,
-                  height: 44,
-                  onPressed: _loadAttractions,
-                ),
-              ],
-            ),
+          AppErrorState(
+            title: 'Could not load attractions',
+            message: _loadError ?? 'Please try again.',
+            onRetry: _loadAttractions,
           ),
           const Spacer(),
         ],

@@ -134,14 +134,24 @@ CREATE TABLE IF NOT EXISTS place_photo (
 --
 -- Note this is only for GOOGLE places. A community submission is our own data, so hiding one is
 -- just a status change on its recommended_places row - see RecommendedPlaceStatus.REPORTED_CLOSED.
+-- One row = ONE user's report for ONE place (user_id + place_id UNIQUE). Place Report is NOT a
+-- toggle and NOT an anonymous aggregate. report_count stays at 1 per row and is summed for the
+-- hide threshold (legacy rows before user_id kept their historical counts under user_id = 0).
 CREATE TABLE IF NOT EXISTS hidden_place_suppression (
     hidden_place_suppression_id INT AUTO_INCREMENT PRIMARY KEY,
+    user_id INT NOT NULL DEFAULT 0,
     place_id VARCHAR(255) NOT NULL,
+    recommended_place_id VARCHAR(255) DEFAULT NULL,
     name VARCHAR(255) DEFAULT NULL,
     reason VARCHAR(100) DEFAULT NULL,
     report_count INT NOT NULL DEFAULT 0,
     suppressed_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
 
+    -- ONE USER + ONE PLACE = ONE ACTIVE REPORT (enforced at the database level).
+    UNIQUE KEY uq_hidden_place_suppression_user_place (user_id, place_id),
+
     -- One row per place, and the index the read-time exclusion uses.
-    UNIQUE KEY ix_hidden_place_suppression_place_id (place_id)
+    INDEX idx_hidden_place_suppression_place_id (place_id),
+    INDEX idx_hidden_place_suppression_recommended_place_id (recommended_place_id),
+    INDEX idx_hidden_place_suppression_suppressed_at (suppressed_at)
 );

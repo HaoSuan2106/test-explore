@@ -4,8 +4,6 @@ import 'package:dio/dio.dart';
 import '../secure_storage/secure_storage_service.dart';
 import '../../models/auth_profile/auth_model.dart';
 import '../../models/auth_profile/profile_model.dart';
-import '../../models/community/community_model.dart';
-import '../../models/community/message_model.dart';
 import '../../models/hidden_place/hidden_place_model.dart';
 import '../../models/foot_tracker/exploration_model.dart';
 import '../../models/post_review/post_model.dart';
@@ -94,7 +92,8 @@ class HttpClient {
   //   flutter run --dart-define=API_BASE_URL=http://192.168.1.23:5226
   static const baseUrl = String.fromEnvironment(
       'API_BASE_URL',
-      defaultValue: 'http://10.0.2.2:5226'
+      // defaultValue: 'http://10.0.2.2:5226'
+    defaultValue: 'http://0.0.0.0:5226'
   );
 
   final SecureStorageService _secureStorage;
@@ -107,7 +106,7 @@ class HttpClient {
   void Function()? onSessionExpired;
 
   Future<String> _refreshAccessToken() {
-    // Single-flight guard: refresh tokens rotate on every use, so if two
+    // Single-flight guard: refresh tokens rotate on every use, so if
     // requests 401 at the same moment, the second must wait for the first
     // refresh instead of firing its own (which would invalidate the first).
     return _refreshFuture ??= _performRefresh().whenComplete(() {
@@ -298,13 +297,13 @@ class HttpClient {
         .toList();
   }
 
-  Future<void> createHiddenPlaceReview({
+  Future<dynamic> createHiddenPlaceReview({
     String? googlePlaceId,
     String? recommendPlaceId,
     required int rating,
     required String comment,
   }) async {
-    await _dio.post(
+    final response = await _dio.post(
       '/api/hidden-places/reviews',
       data: {
         'googlePlaceId': googlePlaceId,
@@ -313,7 +312,41 @@ class HttpClient {
         'comment': comment,
       },
     );
+
+    return response.data;
   }
+
+  Future<List<dynamic>> uploadHiddenPlaceReviewPhotos({
+    required int reviewId,
+    required List<File> files,
+  }) async {
+    final formData = FormData();
+
+    for (final file in files) {
+      final fileName =
+          file.path.split(Platform.pathSeparator).last;
+
+      formData.files.add(
+        MapEntry(
+          'files',
+          await MultipartFile.fromFile(
+            file.path,
+            filename: fileName,
+          ),
+        ),
+      );
+    }
+
+    final response = await _dio.post(
+      '/api/hidden-places/reviews/$reviewId/photos',
+      data: formData,
+    );
+
+    return response.data as List<dynamic>;
+  }
+
+
+
 
   Future<dynamic> getMyGooglePlaceReview(
       String googlePlaceId,
@@ -357,6 +390,27 @@ class HttpClient {
     );
   }
 
+  Future<void> deleteHiddenPlaceReviewPhoto({
+    required int reviewId,
+    required int reviewPhotoId,
+  }) async {
+    await _dio.delete(
+      '/api/hidden-places/reviews/$reviewId/photos/$reviewPhotoId',
+    );
+  }
+
+  Future<void> reportHiddenPlaceReview({
+    required int reviewId,
+    required String reason,
+  }) async {
+    await _dio.post(
+      '/api/hidden-places/reviews/$reviewId/report',
+      data: {
+        'reason': reason,
+      },
+    );
+  }
+
   Future<List<dynamic>> getGooglePlaceReviews(
       String googlePlaceId,
       ) async {
@@ -375,6 +429,28 @@ class HttpClient {
     );
 
     return response.data as List<dynamic>;
+  }
+
+  //Foot Tracker Modules
+  Future<void> addFavouritePlace({
+    required String placeId,
+    required String name,
+    required String primaryType,
+    String? address,
+    required double latitude,
+    required double longitude,
+  }) async {
+    await _dio.post(
+      '/api/foot-tracker/favourite-places',
+      data: {
+        'placeId': placeId,
+        'name': name,
+        'primaryType': primaryType,
+        'address': address,
+        'latitude': latitude,
+        'longitude': longitude,
+      },
+    );
   }
 
   Future<List<FavouritePlace>> getFavouritePlaces() async {
@@ -444,6 +520,12 @@ class HttpClient {
     return (response.data as List<dynamic>)
         .map((e) => VisitLog.fromJson(e as Map<String, dynamic>))
         .toList();
+  }
+
+  Future<Map<String, int>> getExplorationMap() async {
+    final response = await _dio.get('/api/foot-tracker/exploration-map');
+    final data = response.data as Map<String, dynamic>? ?? const {};
+    return data.map((key, value) => MapEntry(key, value as int));
   }
 
   // ============================================================
@@ -651,9 +733,31 @@ class HttpClient {
         .toList();
   }
 
+  /// Available Primary Type options for the Recommend Place form, read from
+  /// the backend's `hidden_place_cache.primary_type` (read-only data source).
+  Future<List<String>> getPrimaryTypes() async {
+    final response = await _dio.get('/api/recommended-places/primary-types');
+    final list = response.data as List? ?? const [];
+    return list.map((e) => e.toString()).toList();
+  }
+
+  /// Details of a single recommended place (Place Details).
   Future<RecommendedPlaceDetailsModel> getRecommendedPlaceDetails(String submissionId) async {
     final response = await _dio.get('/api/recommended-places/$submissionId');
     return RecommendedPlaceDetailsModel.fromJson(response.data as Map<String, dynamic>);
+  }
+
+  /// Upload a place image (JPEG/PNG/WEBP, max 5 MB) and return its public URL.
+  /// Used by the recommended place submission flow (Step 1 photos).
+  Future<String> uploadRecommendedPlaceImage(File file) async {
+    final formData = FormData.fromMap({
+      'file': await MultipartFile.fromFile(file.path,
+          filename: file.uri.pathSegments.last),
+    });
+    final response =
+        await _dio.post('/api/recommended-places/images/upload', data: formData);
+    final data = response.data as Map<String, dynamic>? ?? const {};
+    return data['imageUrl'] as String? ?? '';
   }
 
   Future<SubmitRecommendedPlaceResponse> submitRecommendedPlace(
@@ -662,11 +766,21 @@ class HttpClient {
     return SubmitRecommendedPlaceResponse.fromJson(response.data as Map<String, dynamic>);
   }
 
+  /// Updates an existing recommendation (Edit Recommendation). The server updates
+  /// BOTH the canonical `recommended_places` row and the `place_submissions`
+  /// timestamp in one transaction.
+  Future<SubmitRecommendedPlaceResponse> updateRecommendedPlace(
+      String submissionId, SubmitRecommendedPlaceRequest request) async {
+    final response = await _dio.put('/api/recommended-places/$submissionId', data: request.toJson());
+    return SubmitRecommendedPlaceResponse.fromJson(response.data as Map<String, dynamic>);
+  }
+
   Future<WithdrawRecommendedPlaceResponse> withdrawRecommendedPlace(String submissionId) async {
     final response = await _dio.post('/api/recommended-places/$submissionId/withdraw');
     return WithdrawRecommendedPlaceResponse.fromJson(response.data as Map<String, dynamic>);
   }
 
+  /// Supported PLACE report reasons (NOT post-report reasons).
   Future<List<String>> getRecommendedPlaceReportReasons() async {
     final response = await _dio.get('/api/recommended-places/report-reasons');
     final data = response.data as Map<String, dynamic>? ?? const {};
@@ -682,84 +796,17 @@ class HttpClient {
     return ToggleVerificationResponse.fromJson(response.data as Map<String, dynamic>);
   }
 
-  Future<ReportRecommendedPlaceResponse> reportRecommendedPlace(
-      String submissionId, String reason) async {
+  /// Records ONE user's PLACE report. Stored server-side in
+  /// `hidden_place_suppression` as one row per (user, place). Place Report is
+  /// NOT a toggle and NOT an anonymous aggregate: the same user cannot create
+  /// a second active report for the same place (backend rejects with 400).
+  Future<ReportPlaceResponse> reportPlace(String submissionId, String reason) async {
     final response = await _dio.post(
       '/api/recommended-places/$submissionId/reports',
-      data: ReportRecommendedPlaceRequest(reason: reason).toJson(),
+      data: ReportPlaceRequest(reason: reason).toJson(),
     );
-    return ReportRecommendedPlaceResponse.fromJson(response.data as Map<String, dynamic>);
+    return ReportPlaceResponse.fromJson(response.data as Map<String, dynamic>);
   }
 
-  // ---------------- Community module ----------------
-
-  Future<List<CommunitySummary>> getJoinedCommunities() async {
-    final response = await _dio.get('/api/community/joined');
-    return (response.data as List).map((e) => CommunitySummary.fromJson(e as Map<String, dynamic>)).toList();
-  }
-
-  Future<List<CommunitySummary>> browseCommunities({String? keyword, String? state}) async {
-    final response = await _dio.post('/api/community/browse', data: {'keyword': keyword, 'state': state});
-    return (response.data as List).map((e) => CommunitySummary.fromJson(e as Map<String, dynamic>)).toList();
-  }
-
-  Future<CommunityDetail> getCommunityDetail(int communityId) async {
-    final response = await _dio.get('/api/community/$communityId');
-    return CommunityDetail.fromJson(response.data as Map<String, dynamic>);
-  }
-
-  Future<bool> joinCommunity(int communityId) async {
-    final response = await _dio.post('/api/community/join', data: {'communityId': communityId});
-    return (response.data as Map<String, dynamic>)['success'] as bool? ?? false;
-  }
-
-  Future<String> leaveCommunity(int communityId) async {
-    final response = await _dio.post('/api/community/$communityId/leave');
-    return (response.data as Map<String, dynamic>)['message'] as String? ?? 'Left the community.';
-  }
-
-  Future<List<MessageModel>> getMessages(int communityId, {int take = 30, int? beforeMessageId}) async {
-    final response = await _dio.get('/api/community/$communityId/messages', queryParameters: {
-      'take': take,
-      if (beforeMessageId != null) 'beforeMessageId': beforeMessageId,
-    });
-    return (response.data as List).map((e) => MessageModel.fromJson(e as Map<String, dynamic>)).toList();
-  }
-
-  Future<MessageModel> sendMessage(SendMessageRequest request) async {
-    final response = await _dio.post('/api/community/messages', data: request.toJson());
-    return MessageModel.fromJson(response.data as Map<String, dynamic>);
-  }
-
-  Future<void> deleteMessage(int messageId) async {
-    await _dio.delete('/api/community/messages/$messageId');
-  }
-
-  Future<void> reportMessage(int messageId, {String? reason}) async {
-    await _dio.post('/api/community/messages/$messageId/report', data: {'reason': reason});
-  }
-
-  Future<List<MessageModel>> searchMessages(int communityId, String keyword) async {
-    final response = await _dio.post('/api/community/messages/search', data: {
-      'communityId': communityId,
-      'keyword': keyword,
-    });
-    return (response.data as List).map((e) => MessageModel.fromJson(e as Map<String, dynamic>)).toList();
-  }
-
-  /// Uploads a "Share Media" image and returns its public URL, to pass into
-  /// SendMessageRequest.imageUrls.
-  Future<String> uploadMessageImage(int communityId, File file) async {
-    final fileName = file.path.split(Platform.pathSeparator).last;
-    final formData = FormData.fromMap({
-      'file': await MultipartFile.fromFile(file.path, filename: fileName),
-    });
-    final response = await _dio.post('/api/community/$communityId/media', data: formData);
-    return (response.data as Map<String, dynamic>)['url'] as String;
-  }
-
-  Future<List<ParticipantModel>> getParticipants(int communityId) async {
-    final response = await _dio.get('/api/community/$communityId/participants');
-    return (response.data as List).map((e) => ParticipantModel.fromJson(e as Map<String, dynamic>)).toList();
-  }
 }
+

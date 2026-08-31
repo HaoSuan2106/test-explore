@@ -40,7 +40,10 @@ class _SearchScreenState extends State<SearchScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final provider = context.watch<PostProvider>();
+    // Subscribe to search-scoped changes only. A like/save elsewhere must not
+    // rebuild this screen; only search start/results/error/clear do.
+    context.select<PostProvider, int>((p) => p.searchVersion);
+    final provider = context.read<PostProvider>();
     final results = provider.searchResults;
     final isSearching = provider.isSearching;
     final searchError = provider.searchError;

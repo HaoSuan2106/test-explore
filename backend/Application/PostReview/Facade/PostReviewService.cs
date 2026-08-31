@@ -48,11 +48,11 @@ public class PostReviewService : IPostReviewService
     public Task<SavePostResponseDto> UnsavePostAsync(int currentUserId, string postId)
         => _managePost.UnsavePostAsync(currentUserId, postId);
 
-    public Task<List<EligibleAttractionDto>> GetEligibleAttractionsAsync(int currentUserId)
-        => _managePost.GetEligibleAttractionsAsync(currentUserId);
+    public Task<List<VisitedAttractionDto>> GetVisitedAttractionsAsync(int currentUserId)
+        => _managePost.GetVisitedAttractionsAsync(currentUserId);
 
-    public Task<bool> HasEligibleAttractionsAsync(int currentUserId)
-        => _managePost.HasEligibleAttractionsAsync(currentUserId);
+    public Task<bool> HasVisitedAttractionsAsync(int currentUserId)
+        => _managePost.HasVisitedAttractionsAsync(currentUserId);
 
     public Task<string> UploadPostImageAsync(int currentUserId, Stream fileStream, string fileName, string contentType)
         => _managePost.UploadPostImageAsync(currentUserId, fileStream, fileName, contentType);
@@ -77,6 +77,9 @@ public class PostReviewService : IPostReviewService
 
     public Task<CreateReportResponseDto> CreateReportAsync(int currentUserId, string postId, CreateReportRequestDto request)
         => _socialEngagement.CreateReportAsync(currentUserId, postId, request);
+
+    public Task<PostReportDto> WithdrawReportAsync(int currentUserId, string postId, string reportId)
+        => _socialEngagement.WithdrawReportAsync(currentUserId, postId, reportId);
 
     public Task<List<PostReportDto>> GetMyReportsAsync(int currentUserId)
         => _socialEngagement.GetMyReportsAsync(currentUserId);

@@ -5,12 +5,8 @@
     <!-- Needed for hidden-place discovery to center the search on the device's real location. -->
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
-    <!-- Needed for the Communication module's "Share Media" gallery picker on
-         Android 12 and below. Android 13+ uses the system Photo Picker instead,
-         which needs no runtime permission, but declaring these is harmless and
-         keeps older devices working. -->
-    <uses-permission android:name="android.permission.READ_MEDIA_IMAGES"/>
-    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" android:maxSdkVersion="32"/>
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
     <application
         android:label="explore_my"
         android:name="${applicationName}"

@@ -290,18 +290,16 @@ public class DiscoverHiddenPlaceService : IDiscoverHiddenPlaceService
             .ToList();
     }
 
-    private static RecommendedPlaceSummaryDto ToSummaryDto(RecommendedPlace p) => new()
+    private static RecommendedPlaceSummaryDto ToSummaryDto(PlaceSubmission p) => new()
     {
         SubmissionId = p.SubmissionId,
-        Name = p.Name,
-        LocationAddress = p.LocationAddress,
-        Latitude = p.Latitude,
-        Longitude = p.Longitude,
-        Category = p.Category,
-        Description = p.Description,
+        Name = p.Place!.Name,
+        Latitude = (decimal)p.Place.Latitude,
+        Longitude = (decimal)p.Place.Longitude,
+        PrimaryType = p.Place.PrimaryType,
+        Description = p.Place.Description,
         Status = p.Status,
         VerificationCount = p.Verifications.Count,
-        ReportCount = p.Reports.Count,
         RequiredVerifications = RecommendedPlaceThresholds.RequiredVerifications,
         CreatedAt = p.CreatedAt,
         UpdatedAt = p.UpdatedAt,

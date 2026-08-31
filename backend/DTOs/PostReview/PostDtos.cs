@@ -99,6 +99,7 @@ public class PostReportDto
     public string Reason { get; init; } = string.Empty;
     public string Status { get; init; } = string.Empty;
     public DateTime CreatedAt { get; init; }
+    public DateTime? WithdrawnAt { get; init; }
     // Reported-post preview fields (populated from the report's Post navigation)
     public string PostTitle { get; init; } = string.Empty;
     public string PostedBy { get; init; } = string.Empty;
@@ -210,10 +211,13 @@ public class CreateReportResponseDto
 }
 
 // ============================================================
-// Eligible attractions 
+// Visited attractions (derived from the user's real FootTracker
+// visits via IFootTrackerService.GetVisitsAsync → List<VisitLogDto>).
+// The JSON shape is unchanged from the previous eligible-attractions
+// contract so the Post module API remains stable.
 // ============================================================
 
-public class EligibleAttractionDto
+public class VisitedAttractionDto
 {
     public string PlaceId { get; init; } = string.Empty;
     public string Name { get; init; } = string.Empty;

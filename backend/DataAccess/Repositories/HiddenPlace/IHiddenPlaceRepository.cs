@@ -22,24 +22,49 @@ public interface IHiddenPlaceRepository
     /// </summary>
     Task ReplaceBucketsAsync(
         IReadOnlyDictionary<string, List<HiddenPlaceEntity>> placesByBucketKey, DateTime fetchedAtUtc);
-    // ——— Recommended Places ———
-    Task<List<RecommendedPlace>> GetBySubmitterAsync(int userId);
-    Task<List<RecommendedPlace>> GetPublishedPlacesAsync();
-    Task<RecommendedPlace?> GetByIdAsync(string submissionId);
-    Task<bool> ExistsByNameAndAddressAsync(string name, string address);
+
+    /// <summary>
+    /// Reads the distinct, non-empty <c>primary_type</c> values currently present in the
+    /// <c>hidden_place_cache</c> table, sorted alphabetically. Used ONLY as a read-only data source
+    /// for the "Recommend New Place" Primary Type selector — the cache itself is never written here.
+    /// </summary>
+    Task<List<string>> GetDistinctPrimaryTypesAsync();
+
+    /// <summary>
+    /// Looks up a Google-sourced place by its Google Place ID from the
+    /// <c>hidden_place_cache</c> table. Returns <c>null</c> when the place is not
+    /// in the cache (e.g. the cache bucket was evicted since the place was displayed).
+    /// Used by the report flow to resolve a Google place ID sent by the UI's
+    /// Community Verification / Report Place screen (which is reachable from both
+    /// community recommendations and Google-sourced hidden places).
+    /// </summary>
+    Task<HiddenPlaceEntity?> GetGooglePlaceByIdAsync(string placeId);
+    // ——— Recommended Places (normalized: canonical place + submission) ———
+    Task<List<PlaceSubmission>> GetBySubmitterAsync(int userId);
+    Task<List<PlaceSubmission>> GetPublishedPlacesAsync();
+    Task<PlaceSubmission?> GetByIdAsync(string submissionId);
+    Task<bool> ExistsByNameAsync(string name);
     Task<bool> ExistsNearbyAsync(decimal latitude, decimal longitude, double radiusMeters);
-    Task CreatePlaceAsync(RecommendedPlace place);
-    Task UpdatePlaceAsync(RecommendedPlace place);
+
+    /// <summary>
+    /// Creates the canonical place row and the submission row in ONE transaction
+    /// (place first, then submission referencing it).
+    /// </summary>
+    Task CreateSubmissionAsync(RecommendPlace place, PlaceSubmission submission);
+    Task UpdateSubmissionAsync(PlaceSubmission submission);
+
+    /// <summary>
+    /// Updates the canonical place row (<c>recommended_places</c>) AND the
+    /// submission timestamp (<c>place_submissions.updated_at</c>) in ONE
+    /// transaction — the UPDATE half of the recommendation lifecycle.
+    /// </summary>
+    Task UpdateRecommendationAsync(RecommendPlace place, PlaceSubmission submission);
 
     // ——— Verifications (voting) ———
-    Task<RecommendedPlaceVerification?> GetActiveVerificationAsync(string submissionId, int userId);
-    Task<RecommendedPlaceVerification?> GetAnyVerificationAsync(string submissionId, int userId);
-    Task CreateVerificationAsync(RecommendedPlaceVerification verification);
-    Task UpdateVerificationAsync(RecommendedPlaceVerification verification);
+    Task<PlaceSubmissionVerification?> GetActiveVerificationAsync(string submissionId, int userId);
+    Task<PlaceSubmissionVerification?> GetAnyVerificationAsync(string submissionId, int userId);
+    Task CreateVerificationAsync(PlaceSubmissionVerification verification);
+    Task UpdateVerificationAsync(PlaceSubmissionVerification verification);
+    Task DeleteVerificationAsync(PlaceSubmissionVerification verification);
     Task<int> GetActiveVerificationCountAsync(string submissionId);
-
-    // ——— Reports ———
-    Task<RecommendedPlaceReport?> GetActiveReportAsync(string submissionId, int userId);
-    Task CreateReportAsync(RecommendedPlaceReport report);
-    Task<int> GetActiveReportCountAsync(string submissionId);
 }

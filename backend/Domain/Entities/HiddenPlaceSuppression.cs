@@ -18,17 +18,28 @@ public class HiddenPlaceSuppression
 {
     public int HiddenPlaceSuppressionId { get; set; }
 
-    /// <summary>Google's place id. The same key hidden_place_cache.place_id uses.</summary>
+    /// <summary>
+    /// The user who submitted this report. 0 = legacy / system-suppression rows
+    /// (anonymous aggregate reports created before the user_id column was added).
+    /// Real user reports always carry a positive user id.
+    ///
+    /// UNIQUE(user_id, place_id) enforces ONE ACTIVE REPORT per user+place,
+    /// making second attempts by the same user a database-level rejection.
+    /// </summary>
+    public int UserId { get; set; }
+
     public string PlaceId { get; set; } = string.Empty;
 
-    /// <summary>Name at the time it was suppressed, so the row is readable by a human later.</summary>
-    public string? Name { get; set; }
+    /// <summary>
+    /// When the suppression originates from a recommended place (created via
+    /// Recommend New Place), this holds the <c>recommend_place.place_id</c>
+    /// value. <c>null</c> for suppression records that come from ordinary
+    /// hidden places (Google Places data).
+    /// </summary>
+    public string? RecommendedPlaceId { get; set; }
 
-    /// <summary>Why - taken from the reports that triggered it.</summary>
-    public string? Reason { get; set; }
-
-    /// <summary>How many unique reports pushed it over the threshold. Kept as evidence.</summary>
+    public string Name { get; set; } = string.Empty;
+    public string Reason { get; set; } = string.Empty;
     public int ReportCount { get; set; }
-
     public DateTime SuppressedAt { get; set; }
 }

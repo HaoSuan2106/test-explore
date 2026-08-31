@@ -7,6 +7,7 @@ import '../../../widgets/app_feedback.dart';
 import '../../../widgets/content_constraint.dart';
 import '../../../providers/hidden_place/hidden_place_provider.dart';
 import '../navigation/app_navigation.dart';
+import 'photo_thumbnail.dart';
 import 'recommend_place_draft.dart';
 import 'wizard_step_indicator.dart';
 
@@ -34,21 +35,48 @@ class _RecommendReviewScreenState extends State<RecommendReviewScreen> {
     setState(() => _submitting = true);
 
     final provider = context.read<HiddenPlaceProvider>();
-    final id = await provider.submitRecommendation(
-      name: draft.name,
-      address: draft.address,
-      category: draft.category,
-      description: draft.description,
-      latitude: draft.latitude ?? 0,
-      longitude: draft.longitude ?? 0,
-    );
+    final String? id;
+
+    if (draft.editingSubmissionId != null) {
+      // Edit mode: update the existing recommendation.
+      id = await provider.updateRecommendation(
+        submissionId: draft.editingSubmissionId!,
+        name: draft.name,
+        primaryType: draft.primaryType,
+        description: draft.description,
+        latitude: draft.latitude ?? 0,
+        longitude: draft.longitude ?? 0,
+        priceLevel: draft.priceLevel,
+        businessStatus: draft.businessStatus,
+        photoPaths: draft.photoPaths.isNotEmpty ? draft.photoPaths : null,
+      );
+    } else {
+      // Create mode: submit a new recommendation.
+      id = await provider.submitRecommendation(
+        name: draft.name,
+        primaryType: draft.primaryType,
+        description: draft.description,
+        latitude: draft.latitude ?? 0,
+        longitude: draft.longitude ?? 0,
+        priceLevel: draft.priceLevel,
+        businessStatus: draft.businessStatus,
+        photoPaths: draft.photoPaths.isNotEmpty ? draft.photoPaths : null,
+      );
+    }
 
     if (!mounted) return;
     setState(() => _submitting = false);
 
     if (id != null) {
-      // Replace the review step so going back from Success skips it.
-      AppNavigation.toRecommendationSuccess(context);
+      // Replace the review step so going back from Success skips it, and carry
+      // the submission id so Success can link straight to its Details. Mark the
+      // terminal as an UPDATE when we were editing, so the success copy and the
+      // return flow match the operation that actually completed.
+      AppNavigation.toRecommendationSuccess(
+        context,
+        submissionId: id,
+        isUpdate: draft.editingSubmissionId != null,
+      );
     } else {
       AppFeedback.show(context,
         message: provider.errorMessage ??
@@ -108,8 +136,8 @@ class _RecommendReviewScreenState extends State<RecommendReviewScreen> {
                       const SizedBox(height: AppSpacing.stackSm),
                       _buildSummaryRow(
                         icon: Icons.category_outlined,
-                        label: 'Category',
-                        value: draft.category,
+                        label: 'Primary Type',
+                        value: draft.primaryType,
                       ),
                       const SizedBox(height: AppSpacing.stackSm),
                       _buildSummaryRow(
@@ -118,14 +146,22 @@ class _RecommendReviewScreenState extends State<RecommendReviewScreen> {
                         value: draft.description,
                       ),
                       const SizedBox(height: AppSpacing.stackSm),
-                      _buildSummaryRow(
-                        icon: Icons.location_on_outlined,
-                        label: 'Address',
-                        value: draft.address.isEmpty
-                            ? 'Not selected'
-                            : draft.address,
-                      ),
-                      const SizedBox(height: AppSpacing.stackSm),
+                      if (draft.priceLevel != null) ...[
+                        _buildSummaryRow(
+                          icon: Icons.paid_outlined,
+                          label: 'Price Level',
+                          value: _priceLevelLabel(draft.priceLevel!),
+                        ),
+                        const SizedBox(height: AppSpacing.stackSm),
+                      ],
+                      if (draft.businessStatus != null) ...[
+                        _buildSummaryRow(
+                          icon: Icons.storefront_outlined,
+                          label: 'Business Status',
+                          value: _businessStatusLabel(draft.businessStatus!),
+                        ),
+                        const SizedBox(height: AppSpacing.stackSm),
+                      ],
                       _buildSummaryRow(
                         icon: Icons.my_location,
                         label: 'Coordinates',
@@ -135,6 +171,17 @@ class _RecommendReviewScreenState extends State<RecommendReviewScreen> {
                                 '${draft.longitude!.toStringAsFixed(6)}'
                             : 'Not selected',
                       ),
+                      if (draft.photoPaths.isNotEmpty) ...[
+                        const SizedBox(height: AppSpacing.stackMd),
+                        Text(
+                          'Photos (${draft.photoPaths.length})',
+                          style: AppTypography.labelSm.copyWith(
+                            color: AppColors.textSecondary,
+                          ),
+                        ),
+                        const SizedBox(height: 8),
+                        _buildPhotoGrid(draft.photoPaths),
+                      ],
                       const SizedBox(height: AppSpacing.stackLg),
                     ],
                   ),
@@ -187,6 +234,64 @@ class _RecommendReviewScreenState extends State<RecommendReviewScreen> {
             ],
           ),
         ),
+      ),
+    );
+  }
+
+  /// Price-level label, kept in sync with Step 1's `_priceLevelLabel`.
+  String _priceLevelLabel(int value) {
+    switch (value) {
+      case 0:
+        return 'Free';
+
+      case 1:
+        return r'$';
+
+      case 2:
+        return r'$$';
+
+      case 3:
+        return r'$$$';
+
+      case 4:
+        return r'$$$$';
+
+      default:
+        return value.toString();
+    }
+  }
+
+  /// Business-status label, kept in sync with Step 1's `_businessStatusLabel`.
+  String _businessStatusLabel(String value) {
+    switch (value) {
+      case 'OPERATIONAL':
+        return 'Operational';
+
+      case 'CLOSED_TEMPORARILY':
+        return 'Closed Temporarily';
+
+      default:
+        return value;
+    }
+  }
+
+  /// Read-only photo thumbnails for the review. Uses the same local paths
+  /// carried in the draft (uploaded only at submission). Invalid/corrupt files
+  /// fall back to a broken-image placeholder — never a crash.
+  Widget _buildPhotoGrid(List<String> paths) {
+    return SizedBox(
+      height: 96,
+      child: ListView.separated(
+        scrollDirection: Axis.horizontal,
+        itemCount: paths.length,
+        separatorBuilder: (_, _) => const SizedBox(width: 8),
+        itemBuilder: (context, index) {
+          return PhotoThumb(
+            path: paths[index],
+            width: 96,
+            height: 96,
+          );
+        },
       ),
     );
   }

@@ -46,6 +46,11 @@ dependencies:
   path_provider: ^2.1.6
   google_fonts: ^8.2.1
 
+  # Disk + memory caching for network images (Post Feed / Post Details /
+  # Create-Edit galleries). Avoids re-downloading + re-decoding full images
+  # on the main isolate on every scroll/rebuild (performance fix).
+  cached_network_image: ^3.4.1
+
   dotted_border: ^2.1.0
 
   dio: ^5.7.0
@@ -55,9 +60,7 @@ dependencies:
   go_router: ^17.5.0
   flutter_map: ^8.3.1
   latlong2: ^0.10.1
-
-  # Real-time chat client for the Communication module (CommunityChatHub).
-  signalr_netcore: ^1.4.1
+  flutter_staggered_grid_view: ^0.7.0
 
   # Device GPS location, used to center the hidden-place-discovery search on
   # where the user actually is instead of a hardcoded city coordinate.
@@ -69,6 +72,10 @@ dependencies:
 
 dev_dependencies:
   flutter_test:
+    sdk: flutter
+  integration_test:
+    sdk: flutter
+  flutter_driver:
     sdk: flutter
 
   # The "flutter_lints" package below contains a set of recommended lints to
@@ -95,6 +102,7 @@ flutter:
   #   - images/a_dot_ham.jpeg
   assets:
     - assets/images/
+    - assets/geojson/
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/to/resolution-aware-images

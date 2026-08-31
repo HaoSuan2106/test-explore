@@ -6,14 +6,17 @@ import '../../../widgets/app_header.dart';
 import '../../../widgets/app_button.dart';
 import '../../../widgets/content_constraint.dart';
 import '../navigation/app_navigation.dart';
+import 'photo_thumbnail.dart';
 import 'recommend_place_draft.dart';
 import 'wizard_step_indicator.dart';
 
 /// STEP 3 of the Recommend Place wizard — Location Preview.
 ///
-/// Confirms the address + coordinates picked on the STEP 2 map. The map is
-/// read-only (fixed marker at the chosen point). "Change Location" pops back
-/// to the map; "Continue" advances to STEP 4 (Review).
+/// Confirms the coordinates picked on the STEP 2 map. The map is read-only
+/// (fixed marker at the chosen point). "Change Location" pops back to the map;
+/// "Continue" advances to STEP 4 (Review). Place information from Step 1
+/// (name, primaryType, description, photos) is also shown in preview.
+/// No address is displayed — location is the selected latitude/longitude only.
 class RecommendLocationPreviewScreen extends StatefulWidget {
   final RecommendPlaceDraft draft;
 
@@ -72,57 +75,106 @@ class _RecommendLocationPreviewScreenState
                       ),
                       const SizedBox(height: AppSpacing.stackLg),
 
-                      // Read-only map preview with the chosen marker
+                      // Read-only map preview with the chosen marker. When no
+                      // real coordinates were picked (point == null) an empty
+                      // state is shown — never a map centered on fake data.
                       ClipRRect(
                         borderRadius: AppRadii.roundedDefault,
                         child: SizedBox(
                           height: 260,
                           width: double.infinity,
-                          child: FlutterMap(
-                            options: MapOptions(
-                              initialCenter:
-                                  point ?? const LatLng(3.1390, 101.6869),
-                              initialZoom: 15,
-                              interactionOptions: const InteractionOptions(
-                                flags: InteractiveFlag.none,
-                              ),
-                            ),
-                            children: [
-                              TileLayer(
-                                urlTemplate:
-                                    'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
-                                userAgentPackageName: 'com.example.explore_my',
-                              ),
-                              if (point != null)
-                                MarkerLayer(
-                                  markers: [
-                                    Marker(
-                                      point: point,
-                                      width: 40,
-                                      height: 40,
-                                      child: const Icon(
-                                        Icons.location_on,
-                                        size: 40,
-                                        color: AppColors.primary,
+                          child: point == null
+                              ? Container(
+                                  decoration: BoxDecoration(
+                                    color: AppColors.surfaceCard,
+                                    borderRadius: AppRadii.roundedDefault,
+                                    border: Border.all(
+                                        color: AppColors.outlineVariant),
+                                  ),
+                                  child: const Center(
+                                    child: Text(
+                                      'No location selected yet.',
+                                      style: TextStyle(
+                                        color: Color(0xff777777),
+                                        fontSize: 13,
                                       ),
+                                    ),
+                                  ),
+                                )
+                              : FlutterMap(
+                                  options: MapOptions(
+                                    initialCenter: point,
+                                    initialZoom: 15,
+                                    interactionOptions:
+                                        const InteractionOptions(
+                                      flags: InteractiveFlag.none,
+                                    ),
+                                  ),
+                                  children: [
+                                    TileLayer(
+                                      urlTemplate:
+                                          'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
+                                      userAgentPackageName:
+                                          'com.example.explore_my',
+                                    ),
+                                    MarkerLayer(
+                                      markers: [
+                                        Marker(
+                                          point: point,
+                                          width: 40,
+                                          height: 40,
+                                          child: const Icon(
+                                            Icons.location_on,
+                                            size: 40,
+                                            color: AppColors.primary,
+                                          ),
+                                        ),
+                                      ],
                                     ),
                                   ],
                                 ),
-                            ],
-                          ),
                         ),
                       ),
                       const SizedBox(height: AppSpacing.stackMd),
 
-                      // Address card
-                      _buildInfoRow(
-                        icon: Icons.location_on_outlined,
-                        title: 'Address',
-                        value: draft.address.isEmpty
-                            ? 'No address selected'
-                            : draft.address,
-                      ),
-                      const SizedBox(height: AppSpacing.stackSm),
+                      // Place information carried from Step 1
+                      if (draft.name.trim().isNotEmpty) ...[
+                        _buildInfoRow(
+                          icon: Icons.place_outlined,
+                          title: 'Place Name',
+                          value: draft.name,
+                        ),
+                        const SizedBox(height: AppSpacing.stackSm),
+                      ],
+                      if (draft.primaryType.trim().isNotEmpty) ...[
+                        _buildInfoRow(
+                          icon: Icons.category_outlined,
+                          title: 'Primary Type',
+                          value: draft.primaryType,
+                        ),
+                        const SizedBox(height: AppSpacing.stackSm),
+                      ],
+                      if (draft.description.trim().isNotEmpty) ...[
+                        _buildInfoRow(
+                          icon: Icons.notes_outlined,
+                          title: 'Description',
+                          value: draft.description,
+                        ),
+                        const SizedBox(height: AppSpacing.stackSm),
+                      ],
+
+                      // Photos carried from Step 1
+                      if (draft.photoPaths.isNotEmpty) ...[
+                        Text(
+                          'Photos (${draft.photoPaths.length})',
+                          style: AppTypography.labelSm.copyWith(
+                            color: AppColors.textSecondary,
+                          ),
+                        ),
+                        const SizedBox(height: 8),
+                        _buildPhotoGrid(draft.photoPaths),
+                        const SizedBox(height: AppSpacing.stackMd),
+                      ],
 
                       // Coordinates card
                       _buildInfoRow(
@@ -167,6 +219,27 @@ class _RecommendLocationPreviewScreenState
             ],
           ),
         ),
+      ),
+    );
+  }
+
+  /// Read-only photo thumbnails for the preview. Uses the same local paths
+  /// carried in the draft (uploaded only at submission). Invalid/corrupt files
+  /// fall back to a broken-image placeholder — never a crash.
+  Widget _buildPhotoGrid(List<String> paths) {
+    return SizedBox(
+      height: 96,
+      child: ListView.separated(
+        scrollDirection: Axis.horizontal,
+        itemCount: paths.length,
+        separatorBuilder: (_, _) => const SizedBox(width: 8),
+        itemBuilder: (context, index) {
+          return PhotoThumb(
+            path: paths[index],
+            width: 96,
+            height: 96,
+          );
+        },
       ),
     );
   }

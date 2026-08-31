@@ -6,6 +6,8 @@
 /// returned by the API.
 library;
 
+import 'dart:convert';
+
 // ============================================================
 // Recommended Place
 // ============================================================
@@ -14,11 +16,13 @@ class RecommendedPlaceSummaryModel {
   const RecommendedPlaceSummaryModel({
     required this.submissionId,
     required this.name,
-    required this.locationAddress,
     this.latitude,
     this.longitude,
-    required this.category,
+    required this.primaryType,
     this.description,
+    this.priceLevel,
+    this.businessStatus,
+    this.photosJson,
     required this.status,
     required this.verificationCount,
     required this.reportCount,
@@ -29,11 +33,13 @@ class RecommendedPlaceSummaryModel {
 
   final String submissionId;
   final String name;
-  final String locationAddress;
   final double? latitude;
   final double? longitude;
-  final String category;
+  final String primaryType;
   final String? description;
+  final int? priceLevel;
+  final String? businessStatus;
+  final List<String>? photosJson;
   final String status; // UNDER_VOTING | VERIFIED | REPORTED_CLOSED | WITHDRAWN
   final int verificationCount;
   final int reportCount;
@@ -45,11 +51,13 @@ class RecommendedPlaceSummaryModel {
     return RecommendedPlaceSummaryModel(
       submissionId: json['submissionId'] as String? ?? '',
       name: json['name'] as String? ?? '',
-      locationAddress: json['locationAddress'] as String? ?? '',
       latitude: (json['latitude'] as num?)?.toDouble(),
       longitude: (json['longitude'] as num?)?.toDouble(),
-      category: json['category'] as String? ?? '',
+      primaryType: json['primaryType'] as String? ?? '',
       description: json['description'] as String?,
+      priceLevel: (json['priceLevel'] as num?)?.toInt(),
+      businessStatus: json['businessStatus'] as String?,
+      photosJson: _asStringList(json['photosJson']),
       status: json['status'] as String? ?? 'UNDER_VOTING',
       verificationCount: _asInt(json['verificationCount']),
       reportCount: _asInt(json['reportCount']),
@@ -64,11 +72,13 @@ class RecommendedPlaceDetailsModel extends RecommendedPlaceSummaryModel {
   const RecommendedPlaceDetailsModel({
     required super.submissionId,
     required super.name,
-    required super.locationAddress,
     super.latitude,
     super.longitude,
-    required super.category,
+    required super.primaryType,
     super.description,
+    super.priceLevel,
+    super.businessStatus,
+    super.photosJson,
     required super.status,
     required super.verificationCount,
     required super.reportCount,
@@ -80,7 +90,6 @@ class RecommendedPlaceDetailsModel extends RecommendedPlaceSummaryModel {
     required this.isCurrentUserSubmitter,
     required this.isVerifiedByCurrentUser,
     required this.isReportedByCurrentUser,
-    required this.reports,
   });
 
   final int submitterId;
@@ -88,17 +97,18 @@ class RecommendedPlaceDetailsModel extends RecommendedPlaceSummaryModel {
   final bool isCurrentUserSubmitter;
   final bool isVerifiedByCurrentUser;
   final bool isReportedByCurrentUser;
-  final List<RecommendedPlaceReportModel> reports;
 
   factory RecommendedPlaceDetailsModel.fromJson(Map<String, dynamic> json) {
     return RecommendedPlaceDetailsModel(
       submissionId: json['submissionId'] as String? ?? '',
       name: json['name'] as String? ?? '',
-      locationAddress: json['locationAddress'] as String? ?? '',
       latitude: (json['latitude'] as num?)?.toDouble(),
       longitude: (json['longitude'] as num?)?.toDouble(),
-      category: json['category'] as String? ?? '',
+      primaryType: json['primaryType'] as String? ?? '',
       description: json['description'] as String?,
+      priceLevel: (json['priceLevel'] as num?)?.toInt(),
+      businessStatus: json['businessStatus'] as String?,
+      photosJson: _asStringList(json['photosJson']),
       status: json['status'] as String? ?? 'UNDER_VOTING',
       verificationCount: _asInt(json['verificationCount']),
       reportCount: _asInt(json['reportCount']),
@@ -110,9 +120,6 @@ class RecommendedPlaceDetailsModel extends RecommendedPlaceSummaryModel {
       isCurrentUserSubmitter: json['isCurrentUserSubmitter'] as bool? ?? false,
       isVerifiedByCurrentUser: json['isVerifiedByCurrentUser'] as bool? ?? false,
       isReportedByCurrentUser: json['isReportedByCurrentUser'] as bool? ?? false,
-      reports: (json['reports'] as List? ?? const [])
-          .map((e) => RecommendedPlaceReportModel.fromJson(e as Map<String, dynamic>))
-          .toList(),
     );
   }
 }
@@ -124,28 +131,34 @@ class RecommendedPlaceDetailsModel extends RecommendedPlaceSummaryModel {
 class SubmitRecommendedPlaceRequest {
   const SubmitRecommendedPlaceRequest({
     required this.name,
-    required this.locationAddress,
     required this.latitude,
     required this.longitude,
-    required this.category,
+    required this.primaryType,
     this.description,
+    this.priceLevel,
+    this.businessStatus,
+    this.photosJson,
   });
 
   final String name;
-  final String locationAddress;
   final double latitude;
   final double longitude;
-  final String category;
+  final String primaryType;
   final String? description;
+  final int? priceLevel;
+  final String? businessStatus;
+  final List<String>? photosJson;
 
   Map<String, dynamic> toJson() => {
-        'name': name,
-        'locationAddress': locationAddress,
-        'latitude': latitude,
-        'longitude': longitude,
-        'category': category,
-        if (description != null && description!.isNotEmpty) 'description': description,
-      };
+    'name': name,
+    'latitude': latitude,
+    'longitude': longitude,
+    'primaryType': primaryType,
+    if (description != null && description!.isNotEmpty) 'description': description,
+    if (priceLevel != null) 'priceLevel': priceLevel,
+    if (businessStatus != null && businessStatus!.isNotEmpty) 'businessStatus': businessStatus,
+    if (photosJson != null && photosJson!.isNotEmpty) 'photosJson': photosJson,
+  };
 }
 
 class ToggleVerificationRequest {
@@ -156,8 +169,8 @@ class ToggleVerificationRequest {
   Map<String, dynamic> toJson() => {'verify': verify};
 }
 
-class ReportRecommendedPlaceRequest {
-  const ReportRecommendedPlaceRequest({required this.reason});
+class ReportPlaceRequest {
+  const ReportPlaceRequest({required this.reason});
 
   final String reason;
 
@@ -225,60 +238,25 @@ class ToggleVerificationResponse {
       );
 }
 
-class ReportRecommendedPlaceResponse {
-  const ReportRecommendedPlaceResponse({
-    required this.reportId,
+class ReportPlaceResponse {
+  const ReportPlaceResponse({
     required this.submissionId,
     required this.reportCount,
     required this.placeStatus,
     required this.message,
   });
 
-  final String reportId;
   final String submissionId;
   final int reportCount;
   final String placeStatus;
   final String message;
 
-  factory ReportRecommendedPlaceResponse.fromJson(Map<String, dynamic> json) =>
-      ReportRecommendedPlaceResponse(
-        reportId: json['reportId'] as String? ?? '',
+  factory ReportPlaceResponse.fromJson(Map<String, dynamic> json) =>
+      ReportPlaceResponse(
         submissionId: json['submissionId'] as String? ?? '',
         reportCount: _asInt(json['reportCount']),
         placeStatus: json['placeStatus'] as String? ?? '',
         message: json['message'] as String? ?? '',
-      );
-}
-
-// ============================================================
-// Reports
-// ============================================================
-
-class RecommendedPlaceReportModel {
-  const RecommendedPlaceReportModel({
-    required this.reportId,
-    required this.submissionId,
-    required this.reporterId,
-    required this.reason,
-    required this.status,
-    required this.createdAt,
-  });
-
-  final String reportId;
-  final String submissionId;
-  final int reporterId;
-  final String reason;
-  final String status;
-  final DateTime createdAt;
-
-  factory RecommendedPlaceReportModel.fromJson(Map<String, dynamic> json) =>
-      RecommendedPlaceReportModel(
-        reportId: json['reportId'] as String? ?? '',
-        submissionId: json['submissionId'] as String? ?? '',
-        reporterId: _asInt(json['reporterId']),
-        reason: json['reason'] as String? ?? '',
-        status: json['status'] as String? ?? 'ACTIVE',
-        createdAt: _asDateTime(json['createdAt']) ?? DateTime.now(),
       );
 }
 
@@ -290,32 +268,42 @@ class RecommendedPlaceReportModel {
 class RecommendedPlaceModel {
   final String id;
   final String name;
-  final String address;
-  final String category;
+  final double? latitude;
+  final double? longitude;
+  final String primaryType;
   final String description;
+  final int? priceLevel;
+  final String? businessStatus;
+  final List<String>? photosJson;
   String status; // 'UNDER_VOTING', 'VERIFIED', 'REPORTED_CLOSED', 'WITHDRAWN'
   int currentVotes;
   int reportCount;
   final int requiredVotes;
   final DateTime submittedAt;
   bool isVerifiedByCurrentUser;
-  bool isReportedByCurrentUser;
   bool isCurrentUserSubmitter;
+  bool isReportedByCurrentUser;
+  final String submitterName;
 
   RecommendedPlaceModel({
     required this.id,
     required this.name,
-    required this.address,
-    required this.category,
+    this.latitude,
+    this.longitude,
+    required this.primaryType,
     required this.description,
+    this.priceLevel,
+    this.businessStatus,
+    this.photosJson,
     this.status = 'UNDER_VOTING',
     this.currentVotes = 2,
     this.reportCount = 0,
     this.requiredVotes = 5,
     required this.submittedAt,
     this.isVerifiedByCurrentUser = false,
-    this.isReportedByCurrentUser = false,
     this.isCurrentUserSubmitter = false,
+    this.isReportedByCurrentUser = false,
+    this.submitterName = '',
   });
 
   bool get isUnderVoting => status == 'UNDER_VOTING';
@@ -327,9 +315,13 @@ class RecommendedPlaceModel {
     return RecommendedPlaceModel(
       id: api.submissionId,
       name: api.name,
-      address: api.locationAddress,
-      category: api.category,
+      latitude: api.latitude,
+      longitude: api.longitude,
+      primaryType: api.primaryType,
       description: api.description ?? '',
+      priceLevel: api.priceLevel,
+      businessStatus: api.businessStatus,
+      photosJson: api.photosJson,
       status: api.status,
       currentVotes: api.verificationCount,
       reportCount: api.reportCount,
@@ -342,17 +334,22 @@ class RecommendedPlaceModel {
     return RecommendedPlaceModel(
       id: api.submissionId,
       name: api.name,
-      address: api.locationAddress,
-      category: api.category,
+      latitude: api.latitude,
+      longitude: api.longitude,
+      primaryType: api.primaryType,
       description: api.description ?? '',
+      priceLevel: api.priceLevel,
+      businessStatus: api.businessStatus,
+      photosJson: api.photosJson,
       status: api.status,
       currentVotes: api.verificationCount,
       reportCount: api.reportCount,
       requiredVotes: api.requiredVerifications,
       submittedAt: api.createdAt,
       isVerifiedByCurrentUser: api.isVerifiedByCurrentUser,
-      isReportedByCurrentUser: api.isReportedByCurrentUser,
       isCurrentUserSubmitter: api.isCurrentUserSubmitter,
+      isReportedByCurrentUser: api.isReportedByCurrentUser,
+      submitterName: api.submitterName,
     );
   }
 }
@@ -366,6 +363,35 @@ int _asInt(dynamic value) {
   if (value is int) return value;
   if (value is num) return value.toInt();
   return int.tryParse(value.toString()) ?? 0;
+}
+
+/// Parses a JSON value into a list of strings, tolerating either a real JSON
+/// array (ASP.NET serializes List<string>) or a pre-serialized JSON string.
+List<String>? _asStringList(dynamic value) {
+  if (value == null) return null;
+  if (value is List) {
+    return value.map((e) => e?.toString() ?? '').where((s) => s.isNotEmpty).toList();
+  }
+  if (value is String && value.trim().isNotEmpty) {
+    final decoded = _tryDecodeJsonArray(value);
+    if (decoded != null) return decoded;
+  }
+  return null;
+}
+
+List<String>? _tryDecodeJsonArray(String raw) {
+  try {
+    final decoded = jsonDecode(raw);
+    if (decoded is List) {
+      return decoded
+          .map((e) => e?.toString() ?? '')
+          .where((s) => s.isNotEmpty)
+          .toList();
+    }
+  } catch (_) {
+    // Not valid JSON — treat as absent.
+  }
+  return null;
 }
 
 DateTime? _asDateTime(dynamic value) {

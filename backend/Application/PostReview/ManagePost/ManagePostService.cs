@@ -1,7 +1,9 @@
+using ExploreMy.Api.Application.FootTracker.Facade;
 using ExploreMy.Api.Common.Exceptions;
 using ExploreMy.Api.DataAccess.ExternalClients.SupabaseStorage;
 using ExploreMy.Api.DataAccess.Repositories.PostReview;
 using ExploreMy.Api.Domain.Entities;
+using ExploreMy.Api.DTOs.FootTracker;
 using ExploreMy.Api.DTOs.PostReview;
 
 namespace ExploreMy.Api.Application.PostReview.ManagePost;
@@ -11,15 +13,18 @@ public class ManagePostService : IManagePostService
     private readonly IPostReviewRepository _repository;
     private readonly IStorageClient _storageClient;
     private readonly ILogger<ManagePostService> _logger;
+    private readonly IFootTrackerService _footTrackerService;
 
     public ManagePostService(
         IPostReviewRepository repository,
         IStorageClient storageClient,
-        ILogger<ManagePostService> logger)
+        ILogger<ManagePostService> logger,
+        IFootTrackerService footTrackerService)
     {
         _repository = repository;
         _storageClient = storageClient;
         _logger = logger;
+        _footTrackerService = footTrackerService;
     }
 
     /// <summary>
@@ -71,7 +76,7 @@ public class ManagePostService : IManagePostService
         post.ViewsCount = await _repository.IncrementViewsAsync(postId);
 
         var comments = (await _repository.GetCommentsByPostAsync(postId))
-            .Select(PostDtoMapper.ToComment)
+            .Select(MapComment)
             .ToList();
 
         var savedPostIds = await _repository.GetSavedPostIdsAsync(currentUserId);
@@ -113,9 +118,11 @@ public class ManagePostService : IManagePostService
         }
 
         // F12: the tagged place must be one the user has actually explored
-        // (eligible attractions), not merely any existing place.
-        var eligible = await _repository.GetEligibleAttractionsAsync(currentUserId);
-        if (!eligible.Any(p => p.PlaceId == request.TaggedPlaceId))
+        // (real FootTracker visits), not merely any existing place. The
+        // Recommendation module reads that data through IFootTrackerService
+        // (GetVisitsAsync → List<VisitLogDto>) instead of querying the DB.
+        var visits = await _footTrackerService.GetVisitsAsync(currentUserId);
+        if (!visits.Any(v => v.PlaceId != null && v.PlaceId == request.TaggedPlaceId))
         {
             throw new ValidationException("The tagged place is not in your explored places. Please select from your eligible attractions.");
         }
@@ -236,27 +243,43 @@ public class ManagePostService : IManagePostService
         };
     }
 
-    public async Task<List<EligibleAttractionDto>> GetEligibleAttractionsAsync(int currentUserId)
+    /// <summary>
+    /// Builds the list of visited attractions (recommendation candidates) from
+    /// the user's real FootTracker visit data. The Recommendation module
+    /// consumes List&lt;VisitLogDto&gt; produced by IFootTrackerService and
+    /// owns the mapping/rules; it never touches foot_tracker_log directly.
+    /// </summary>
+    public async Task<List<VisitedAttractionDto>> GetVisitedAttractionsAsync(int currentUserId)
     {
-        var places = await _repository.GetEligibleAttractionsAsync(currentUserId);
-        return places.Select(PostDtoMapper.ToEligibleAttraction).ToList();
+        var visits = await _footTrackerService.GetVisitsAsync(currentUserId);
+        return visits
+            .Where(v => !string.IsNullOrEmpty(v.PlaceId))
+            .GroupBy(v => v.PlaceId!)
+            .Select(g => g.OrderByDescending(v => v.EndedAt).First())
+            .OrderBy(v => v.Title)
+            .Select(PostDtoMapper.ToVisitedAttraction)
+            .ToList();
     }
 
-    public async Task<bool> HasEligibleAttractionsAsync(int currentUserId)
+    public async Task<bool> HasVisitedAttractionsAsync(int currentUserId)
     {
-        var places = await _repository.GetEligibleAttractionsAsync(currentUserId);
-        return places.Count > 0;
+        var visits = await _footTrackerService.GetVisitsAsync(currentUserId);
+        return visits.Any(v => !string.IsNullOrEmpty(v.PlaceId));
     }
 
     /// <summary>
     /// Uploads a post image to storage and returns its public URL (REQ501_4/5).
     /// Format and size are validated by the controller before this call.
+    /// Uploads into the dedicated <c>post-images</c> bucket. Because images are
+    /// selected before the post is created (draft phase), the post id does not
+    /// exist yet, so the object path is scoped per user with a unique file name.
     /// </summary>
     public async Task<string> UploadPostImageAsync(int currentUserId, Stream fileStream, string fileName, string contentType)
     {
+        const string bucket = "post-images";
         var extension = Path.GetExtension(fileName);
         var path = $"posts/{currentUserId}/{Guid.NewGuid()}{extension}";
-        var url = await _storageClient.UploadAsync(path, fileStream, contentType);
+        var url = await _storageClient.UploadToBucketAsync(bucket, path, fileStream, contentType);
         _logger.LogInformation("User {UserId} uploaded post image {Path}.", currentUserId, path);
         return url;
     }
@@ -322,4 +345,23 @@ public class ManagePostService : IManagePostService
         var savedPostIds = await _repository.GetSavedPostIdsAsync(currentUserId);
         return posts.Select(p => PostDtoMapper.ToSummary(p, currentUserId, savedPostIds)).ToList();
     }
+
+    /// <summary>
+    /// Local PostComment → PostCommentDto mapping for the Post Details
+    /// comment list. Kept private to this read path; the shared PostDtoMapper
+    /// entry point is still used by comment CRUD in SocialEngagementService.
+    /// </summary>
+    private static PostCommentDto MapComment(PostComment comment) => new()
+    {
+        CommentId = comment.CommentId,
+        PostId = comment.PostId,
+        PostTitle = comment.Post?.Title ?? string.Empty,
+        AuthorId = comment.AuthorId.ToString(),
+        AuthorName = comment.Author?.Username ?? string.Empty,
+        AuthorAvatarUrl = comment.Author?.ProfilePictureUrl,
+        Content = comment.Content,
+        LikesCount = comment.LikesCount,
+        CreatedAt = comment.CreatedAt,
+        UpdatedAt = comment.UpdatedAt,
+    };
 }

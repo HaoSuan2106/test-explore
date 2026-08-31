@@ -22,6 +22,8 @@ public class MySqlDbContext : Microsoft.EntityFrameworkCore.DbContext
     public DbSet<Review> Reviews => Set<Review>();
     public DbSet<ReviewPhoto> ReviewPhotos => Set<ReviewPhoto>();
 
+    public DbSet<ReviewReport> ReviewReports => Set<ReviewReport>();
+
     // -------------------------------------------------------------------------
     // The Property(...) calls below exist to make `dotnet ef database update`
     // produce the SAME column types, lengths, defaults and index names as
@@ -48,17 +50,10 @@ public class MySqlDbContext : Microsoft.EntityFrameworkCore.DbContext
     public DbSet<Place> Places => Set<Place>();
     public DbSet<FootTrackerLog> FootTrackerLogs => Set<FootTrackerLog>();
 
-    // My Recommended Places module
-    public DbSet<RecommendedPlace> RecommendedPlaces => Set<RecommendedPlace>();
-    public DbSet<RecommendedPlaceVerification> RecommendedPlaceVerifications => Set<RecommendedPlaceVerification>();
-    public DbSet<RecommendedPlaceReport> RecommendedPlaceReports => Set<RecommendedPlaceReport>();
-
-    // Community module
-    public DbSet<Community> Communities => Set<Community>();
-    public DbSet<CommunityMember> CommunityMembers => Set<CommunityMember>();
-    public DbSet<Message> Messages => Set<Message>();
-    public DbSet<MessageAttachment> MessageAttachments => Set<MessageAttachment>();
-    public DbSet<MessageReport> MessageReports => Set<MessageReport>();
+    // My Recommended Places module (normalized schema: canonical place + submissions)
+    public DbSet<RecommendPlace> RecommendPlaces => Set<RecommendPlace>();
+    public DbSet<PlaceSubmission> PlaceSubmissions => Set<PlaceSubmission>();
+    public DbSet<PlaceSubmissionVerification> PlaceSubmissionVerifications => Set<PlaceSubmissionVerification>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -213,6 +208,44 @@ public class MySqlDbContext : Microsoft.EntityFrameworkCore.DbContext
             entity.HasIndex(r => r.UserId);
         });
 
+        modelBuilder.Entity<ReviewReport>(entity =>
+        {
+            entity.ToTable("hidden_place_review_report");
+
+            entity.HasKey(e => e.ReportId);
+
+            entity.Property(e => e.ReportId)
+                .HasColumnName("report_id");
+
+            entity.Property(e => e.ReviewId)
+                .HasColumnName("review_id");
+
+            entity.Property(e => e.UserId)
+                .HasColumnName("user_id");
+
+            entity.Property(e => e.Reason)
+                .HasColumnName("reason")
+                .HasMaxLength(50)
+                .IsRequired();
+
+            entity.Property(e => e.CreatedAt)
+                .HasColumnName("created_at");
+
+            entity.HasIndex(e => e.ReviewId);
+
+            entity.HasIndex(e => new
+            {
+                e.ReviewId,
+                e.UserId
+            })
+            .IsUnique();
+
+            entity.HasOne<Review>()
+                .WithMany()
+                .HasForeignKey(e => e.ReviewId)
+                .OnDelete(DeleteBehavior.Cascade);
+        });
+
         modelBuilder.Entity<ReviewPhoto>(entity =>
         {
             entity.ToTable("hidden_place_review_photo");
@@ -332,7 +365,7 @@ public class MySqlDbContext : Microsoft.EntityFrameworkCore.DbContext
             entity.HasIndex(s => s.PlaceId).IsUnique();
         });
 
-
+        // Foot Tracker Modules
         modelBuilder.Entity<FavouritePlace>(entity =>
         {
             entity.ToTable("favourite_place");
@@ -346,14 +379,31 @@ public class MySqlDbContext : Microsoft.EntityFrameworkCore.DbContext
                 .HasColumnType("timestamp")
                 .HasDefaultValueSql("CURRENT_TIMESTAMP");
 
+            // Rich-detail snapshot columns (Google-sourced favourites only)
+            entity.Property(f => f.BusinessStatus).HasMaxLength(50);
+            entity.Property(f => f.GoogleMapsUri).HasMaxLength(500);
+            entity.Property(f => f.NationalPhoneNumber).HasMaxLength(50);
+            entity.Property(f => f.WebsiteUri).HasMaxLength(500);
+            entity.Property(f => f.PhotosJson).HasColumnType("json");
+            entity.Property(f => f.RegularOpeningHoursJson).HasColumnType("json");
+            entity.Property(f => f.UserRatingCount).HasDefaultValue(0);
+
+            // Recommend-sourced favourites (Recommended Places module). FK to
+            // recommended_places(submission_id) intentionally not added yet — see
+            // schema-favourite-place-design notes; add once that feature is built.
+            entity.Property(f => f.RecommendPlaceId).HasMaxLength(36);
+
             entity.HasOne<User>()
                 .WithMany()
                 .HasForeignKey(f => f.UserId)
                 .OnDelete(DeleteBehavior.Cascade);
 
-            // A user should only be able to favourite a given real-world place once.
-            // This composite index also covers lookups by user_id alone, so no
-            // separate FK index is needed.
+            // A user should only be able to favourite a given Google place once.
+            // NOTE: once recommend-sourced favouriting exists, this alone won't stop
+            // duplicate recommend-place favourites — MySQL treats every NULL as
+            // distinct, so multiple rows with the same UserId and PlaceId = NULL are
+            // allowed. A second unique index on (UserId, RecommendPlaceId) will be
+            // needed at that point.
             entity.HasIndex(f => new { f.UserId, f.PlaceId })
                 .IsUnique()
                 .HasDatabaseName("uq_user_place");
@@ -385,13 +435,10 @@ public class MySqlDbContext : Microsoft.EntityFrameworkCore.DbContext
                 .HasForeignKey(p => p.AuthorId)
                 .OnDelete(DeleteBehavior.Cascade);
 
-            entity.HasOne(p => p.TaggedPlace)
-                .WithMany()
-                .HasForeignKey(p => p.TaggedPlaceId)
-                .OnDelete(DeleteBehavior.Restrict);
+            // Priority 3: tagged_place_id is a reference-only field (latest_v2.sql
+            // defines NO FK and NO index on it). No relationship and no index here.
 
             entity.HasIndex(p => p.AuthorId);
-            entity.HasIndex(p => p.TaggedPlaceId);
             entity.HasIndex(p => p.Status);
         });
 
@@ -464,6 +511,7 @@ public class MySqlDbContext : Microsoft.EntityFrameworkCore.DbContext
             entity.Property(r => r.ReportId).HasMaxLength(36);
             entity.Property(r => r.Reason).HasMaxLength(100).IsRequired();
             entity.Property(r => r.Status).HasMaxLength(20).IsRequired();
+            entity.Property(r => r.WithdrawnAt);
 
             entity.HasOne(r => r.Post)
                 .WithMany(p => p.Reports)
@@ -477,7 +525,9 @@ public class MySqlDbContext : Microsoft.EntityFrameworkCore.DbContext
 
             entity.HasIndex(r => r.PostId);
             entity.HasIndex(r => r.ReporterId);
-            entity.HasIndex(r => new { r.PostId, r.ReporterId }).IsUnique();
+            // NOTE: NO unique index on (PostId, ReporterId) — the schema and
+            // seed data (latest_v2.sql) allow duplicate reports from the same
+            // reporter on the same post.
         });
 
         modelBuilder.Entity<UserSavedPost>(entity =>
@@ -514,28 +564,39 @@ public class MySqlDbContext : Microsoft.EntityFrameworkCore.DbContext
                 .HasForeignKey(l => l.UserId)
                 .OnDelete(DeleteBehavior.Cascade);
 
-            entity.HasOne(l => l.Place)
-                .WithMany()
-                .HasForeignKey(l => l.PlaceId)
-                .OnDelete(DeleteBehavior.SetNull);
+            // FK to places dropped — foot_tracker_log no longer needs this durability
+            // now that favourite_place self-contains its own snapshot. PlaceId stays
+            // as a plain, unconstrained column here.
 
             entity.HasIndex(l => l.UserId);
             entity.HasIndex(l => l.PlaceId);
         });
 
-        // ---------------- My Recommended Places module ----------------
+        // ---------------- My Recommended Places module (normalized schema) ----------------
 
-        modelBuilder.Entity<RecommendedPlace>(entity =>
+        modelBuilder.Entity<RecommendPlace>(entity =>
         {
             entity.ToTable("recommended_places");
+            entity.HasKey(p => p.RecommendPlaceId);
+            entity.Property(p => p.RecommendPlaceId).HasColumnName("recommend_place_id").HasMaxLength(255);
+            entity.Property(p => p.Name).HasMaxLength(255).IsRequired();
+            entity.Property(p => p.PrimaryType).HasMaxLength(100).IsRequired();
+            // No address column. Location is represented ONLY by Latitude + Longitude.
+            entity.Property(p => p.Latitude).IsRequired();
+            entity.Property(p => p.Longitude).IsRequired();
+            entity.Property(p => p.Rating);
+            entity.Property(p => p.UserRatingCount).HasDefaultValue(0);
+            entity.Property(p => p.PriceLevel);
+            entity.Property(p => p.BusinessStatus).HasMaxLength(50).IsRequired();
+            entity.Property(p => p.Description).HasColumnType("text");
+            entity.Property(p => p.PhotosJson).HasColumnName("photo_json").HasColumnType("json");
+        });
+
+        modelBuilder.Entity<PlaceSubmission>(entity =>
+        {
+            entity.ToTable("place_submissions");
             entity.HasKey(p => p.SubmissionId);
             entity.Property(p => p.SubmissionId).HasMaxLength(36);
-            entity.Property(p => p.Name).HasMaxLength(150).IsRequired();
-            entity.Property(p => p.LocationAddress).HasMaxLength(250).IsRequired();
-            entity.Property(p => p.Latitude).HasPrecision(10, 7);
-            entity.Property(p => p.Longitude).HasPrecision(10, 7);
-            entity.Property(p => p.Category).HasMaxLength(50).IsRequired();
-            entity.Property(p => p.Description).HasMaxLength(500);
             entity.Property(p => p.Status).HasMaxLength(30).IsRequired();
 
             entity.HasOne(p => p.Submitter)
@@ -543,18 +604,25 @@ public class MySqlDbContext : Microsoft.EntityFrameworkCore.DbContext
                 .HasForeignKey(p => p.SubmitterId)
                 .OnDelete(DeleteBehavior.Cascade);
 
+            entity.HasOne(p => p.Place)
+                .WithMany(p => p.Submissions)
+                .HasForeignKey(p => p.RecommendPlaceId)
+                .HasPrincipalKey(p => p.RecommendPlaceId)
+                .OnDelete(DeleteBehavior.Cascade);
+
             entity.HasIndex(p => p.SubmitterId);
+            entity.HasIndex(p => p.RecommendPlaceId);
             entity.HasIndex(p => p.Status);
         });
 
-        modelBuilder.Entity<RecommendedPlaceVerification>(entity =>
+        modelBuilder.Entity<PlaceSubmissionVerification>(entity =>
         {
             entity.ToTable("recommended_place_verifications");
             entity.HasKey(v => v.VerificationId);
             entity.Property(v => v.VerificationId).HasMaxLength(36);
             entity.Property(v => v.Status).HasMaxLength(20).IsRequired();
 
-            entity.HasOne(v => v.Place)
+            entity.HasOne(v => v.Submission)
                 .WithMany(p => p.Verifications)
                 .HasForeignKey(v => v.SubmissionId)
                 .OnDelete(DeleteBehavior.Cascade);
@@ -564,106 +632,27 @@ public class MySqlDbContext : Microsoft.EntityFrameworkCore.DbContext
                 .HasForeignKey(v => v.UserId)
                 .OnDelete(DeleteBehavior.Cascade);
 
-            entity.HasIndex(v => new { v.SubmissionId, v.UserId }).IsUnique();
+            entity.HasIndex(v => new { v.SubmissionId, v.UserId }).HasDatabaseName("uq_recommended_place_verifications_submission_user").IsUnique();
             entity.HasIndex(v => v.UserId);
         });
 
-        modelBuilder.Entity<RecommendedPlaceReport>(entity =>
+        modelBuilder.Entity<HiddenPlaceSuppression>(entity =>
         {
-            entity.ToTable("recommended_place_reports");
-            entity.HasKey(r => r.ReportId);
-            entity.Property(r => r.ReportId).HasMaxLength(36);
-            entity.Property(r => r.Reason).HasMaxLength(100).IsRequired();
-            entity.Property(r => r.Status).HasMaxLength(20).IsRequired();
+            entity.ToTable("hidden_place_suppression");
+            entity.HasKey(s => s.HiddenPlaceSuppressionId);
+            entity.Property(s => s.HiddenPlaceSuppressionId).ValueGeneratedOnAdd();
+            entity.Property(s => s.UserId).IsRequired().HasDefaultValue(0);
+            entity.Property(s => s.PlaceId).HasMaxLength(255).IsRequired();
+            entity.Property(s => s.RecommendedPlaceId).HasMaxLength(255);
+            entity.Property(s => s.Name).HasMaxLength(255).IsRequired();
+            entity.Property(s => s.Reason).HasMaxLength(100).IsRequired();
+            entity.Property(s => s.ReportCount).HasDefaultValue(0);
+            entity.Property(s => s.SuppressedAt).HasColumnType("timestamp").HasDefaultValueSql("CURRENT_TIMESTAMP");
 
-            entity.HasOne(r => r.Place)
-                .WithMany(p => p.Reports)
-                .HasForeignKey(r => r.SubmissionId)
-                .OnDelete(DeleteBehavior.Cascade);
-
-            entity.HasOne(r => r.Reporter)
-                .WithMany()
-                .HasForeignKey(r => r.ReporterId)
-                .OnDelete(DeleteBehavior.Cascade);
-
-            entity.HasIndex(r => new { r.SubmissionId, r.ReporterId }).IsUnique();
-            entity.HasIndex(r => r.ReporterId);
-        });
-
-        // ---------------- Community module ----------------
-
-        modelBuilder.Entity<Community>(entity =>
-        {
-            entity.ToTable("community");
-            entity.HasKey(c => c.CommunityId);
-        });
-
-        modelBuilder.Entity<CommunityMember>(entity =>
-        {
-            entity.ToTable("community_member");
-            entity.HasKey(m => m.CommunityMemberId);
-
-            entity.HasOne<Community>()
-                .WithMany()
-                .HasForeignKey(m => m.CommunityId)
-                .OnDelete(DeleteBehavior.Cascade);
-
-            entity.HasOne<User>()
-                .WithMany()
-                .HasForeignKey(m => m.UserId)
-                .OnDelete(DeleteBehavior.Cascade);
-
-            // A user can only have one membership row per community.
-            entity.HasIndex(m => new { m.CommunityId, m.UserId }).IsUnique();
-        });
-
-        modelBuilder.Entity<Message>(entity =>
-        {
-            entity.ToTable("message");
-            entity.HasKey(m => m.MessageId);
-
-            entity.HasOne<Community>()
-                .WithMany()
-                .HasForeignKey(m => m.CommunityId)
-                .OnDelete(DeleteBehavior.Cascade);
-
-            entity.HasOne<User>()
-                .WithMany()
-                .HasForeignKey(m => m.SenderUserId)
-                .OnDelete(DeleteBehavior.Restrict);
-
-            entity.HasIndex(m => new { m.CommunityId, m.SentAt });
-        });
-
-        modelBuilder.Entity<MessageAttachment>(entity =>
-        {
-            entity.ToTable("message_attachment");
-            entity.HasKey(a => a.AttachmentId);
-
-            entity.HasOne<Message>()
-                .WithMany()
-                .HasForeignKey(a => a.MessageId)
-                .OnDelete(DeleteBehavior.Cascade);
-        });
-
-        modelBuilder.Entity<MessageReport>(entity =>
-        {
-            entity.ToTable("message_report");
-            entity.HasKey(r => r.ReportId);
-
-            entity.HasOne<Message>()
-                .WithMany()
-                .HasForeignKey(r => r.MessageId)
-                .OnDelete(DeleteBehavior.Cascade);
-
-            entity.HasOne<User>()
-                .WithMany()
-                .HasForeignKey(r => r.ReporterUserId)
-                .OnDelete(DeleteBehavior.Restrict);
-
-            // Reporting the same message twice just re-confirms it's a problem,
-            // not a new incident.
-            entity.HasIndex(r => new { r.MessageId, r.ReporterUserId }).IsUnique();
+            entity.HasIndex(s => s.PlaceId).HasDatabaseName("idx_hidden_place_suppression_place_id");
+            entity.HasIndex(s => s.RecommendedPlaceId).HasDatabaseName("idx_hidden_place_suppression_recommended_place_id");
+            entity.HasIndex(s => s.SuppressedAt).HasDatabaseName("idx_hidden_place_suppression_suppressed_at");
+            entity.HasIndex(s => new { s.UserId, s.PlaceId }).HasDatabaseName("uq_hidden_place_suppression_user_place").IsUnique();
         });
     }
 }

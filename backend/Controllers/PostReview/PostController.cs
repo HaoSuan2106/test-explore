@@ -219,34 +219,37 @@ public class PostController : ControllerBase
         }
     }
 
-    /// <summary>Eligible attractions from the authenticated user's exploration history.</summary>
+    /// <summary>
+    /// Visited attractions (recommendation candidates) from the authenticated
+    /// user's real FootTracker visits. Route and JSON shape are preserved.
+    /// </summary>
     [HttpGet("eligible-attractions")]
-    public async Task<IActionResult> GetEligibleAttractions()
+    public async Task<IActionResult> GetVisitedAttractions()
     {
         try
         {
-            var attractions = await _postReviewService.GetEligibleAttractionsAsync(CurrentUserId);
+            var attractions = await _postReviewService.GetVisitedAttractionsAsync(CurrentUserId);
             return Ok(attractions);
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "Unexpected error fetching eligible attractions for user {UserId}.", CurrentUserId);
+            _logger.LogError(ex, "Unexpected error fetching visited attractions for user {UserId}.", CurrentUserId);
             return StatusCode(StatusCodes.Status500InternalServerError, new { message = "An unexpected error occurred." });
         }
     }
 
-    /// <summary>Whether the authenticated user has any eligible attractions.</summary>
+    /// <summary>Whether the authenticated user has any visited attractions.</summary>
     [HttpGet("eligible-attractions/has")]
-    public async Task<IActionResult> HasEligibleAttractions()
+    public async Task<IActionResult> HasVisitedAttractions()
     {
         try
         {
-            var has = await _postReviewService.HasEligibleAttractionsAsync(CurrentUserId);
+            var has = await _postReviewService.HasVisitedAttractionsAsync(CurrentUserId);
             return Ok(new { hasEligibleAttractions = has });
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "Unexpected error checking eligible attractions for user {UserId}.", CurrentUserId);
+            _logger.LogError(ex, "Unexpected error checking visited attractions for user {UserId}.", CurrentUserId);
             return StatusCode(StatusCodes.Status500InternalServerError, new { message = "An unexpected error occurred." });
         }
     }
@@ -539,6 +542,37 @@ public class PostController : ControllerBase
         catch (Exception ex)
         {
             _logger.LogError(ex, "Unexpected error fetching own reports for user {UserId}.", CurrentUserId);
+            return StatusCode(StatusCodes.Status500InternalServerError, new { message = "An unexpected error occurred." });
+        }
+    }
+
+    /// <summary>
+    /// Withdraw one of the authenticated user's own reports on a post.
+    /// Moves the report ACTIVE → WITHDRAWN and stamps withdrawn_at.
+    /// </summary>
+    [HttpPost("{postId}/reports/{reportId}/withdraw")]
+    public async Task<IActionResult> WithdrawReport(string postId, string reportId)
+    {
+        try
+        {
+            var result = await _postReviewService.WithdrawReportAsync(CurrentUserId, postId, reportId);
+            return Ok(result);
+        }
+        catch (NotFoundException ex)
+        {
+            return NotFound(new { message = ex.Message });
+        }
+        catch (ForbiddenException ex)
+        {
+            return StatusCode(StatusCodes.Status403Forbidden, new { message = ex.Message });
+        }
+        catch (ValidationException ex)
+        {
+            return BadRequest(new { message = ex.Message });
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Unexpected error withdrawing report {ReportId} on post {PostId} for user {UserId}.", reportId, postId, CurrentUserId);
             return StatusCode(StatusCodes.Status500InternalServerError, new { message = "An unexpected error occurred." });
         }
     }
