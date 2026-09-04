@@ -174,14 +174,14 @@ PlaceData _visitToPlaceData(VisitLog visit) {
     title: visit.title,
     category: FavouritePlace.mapToUiCategory(rawType),
     primaryType: rawType,
-    imageUrl: '',
+    imageUrl: visit.photoUrl ?? '',
     icon: Icons.place,
     position: LatLng(visit.latitude!, visit.longitude!),
     rating: 0.0,
     ratingCount: 0,
     priceLevel: null,
     businessStatus: 'UNKNOWN',
-    photoAttribution: null,
+    photoAttribution: visit.photoAttribution,
     address: visit.address,
     phoneNumber: null,
     websiteUri: null,
@@ -210,7 +210,20 @@ class _VisitedPlaceCard extends StatelessWidget {
         children: [
           ClipRRect(
             borderRadius: BorderRadius.circular(12),
-            child: Container(
+            child: visit.photoUrl != null && visit.photoUrl!.isNotEmpty
+                ? Image.network(
+              visit.photoUrl!,
+              width: 64,
+              height: 64,
+              fit: BoxFit.cover,
+              errorBuilder: (_, __, ___) => Container(
+                width: 64,
+                height: 64,
+                color: Colors.grey.shade200,
+                child: Icon(Icons.photo, color: Colors.grey.shade400),
+              ),
+            )
+                : Container(
               width: 64,
               height: 64,
               color: Colors.grey.shade200,

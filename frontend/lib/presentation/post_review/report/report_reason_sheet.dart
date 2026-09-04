@@ -4,7 +4,11 @@ import '../../../providers/post_review/post_provider.dart';
 import '../../../theme/app_theme.dart';
 import '../../../widgets/app_button.dart';
 import '../../../widgets/app_feedback.dart';
-import '../../navigation/app_navigation.dart';
+
+/// Standardized result contract for report sheets.
+/// [submitted] — report was accepted by the server.
+/// [cancelled] — user dismissed the sheet without submitting.
+enum ReportResult { submitted, cancelled }
 
 /// Bottom sheet that lets the user pick a predefined report reason, submits
 /// the report via the API, and navigates to the Report Details screen.
@@ -13,8 +17,8 @@ class ReportReasonSheet extends StatefulWidget {
 
   const ReportReasonSheet({super.key, required this.postId});
 
-  static Future<void> show(BuildContext context, {required String postId}) {
-    return showModalBottomSheet(
+  static Future<ReportResult?> show(BuildContext context, {required String postId}) {
+    return showModalBottomSheet<ReportResult>(
       context: context,
       isScrollControlled: true,
       backgroundColor: AppColors.background,
@@ -60,16 +64,15 @@ class _ReportReasonSheetState extends State<ReportReasonSheet> {
       setState(() => _submitting = false);
       return;
     }
-    Navigator.of(context).pop();
-    // Report success lands on the shared Thank You screen; the report status
-    // is shown inside Post Details (no separate Report Details screen).
-    AppNavigation.toReportSubmittedSuccess(context);
+    // Return the success result to the caller; the caller navigates
+    // to the success screen and handles any state updates.
+    Navigator.of(context).pop(ReportResult.submitted);
   }
 
   @override
   Widget build(BuildContext context) {
     // Subscribe to report-reasons version only — a like/save on another screen
-    // must not rebuild this modal bottom sheet.
+    // must not rebuild this modals bottom sheet.
     context.select<PostProvider, int>((p) => p.reportReasonsVersion);
     final provider = context.read<PostProvider>();
     final reasons = provider.reportReasons;
@@ -95,7 +98,7 @@ class _ReportReasonSheetState extends State<ReportReasonSheet> {
                 ),
                 IconButton(
                   icon: const Icon(Icons.close, color: AppColors.textPrimary),
-                  onPressed: () => Navigator.of(context).pop(),
+                  onPressed: () => Navigator.of(context).pop(ReportResult.cancelled),
                 ),
               ],
             ),

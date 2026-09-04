@@ -5,19 +5,8 @@ import 'package:flutter/foundation.dart';
 import '../../api_communication/http_client/http_client.dart';
 import '../../models/hidden_place/hidden_place_model.dart';
 import '../../models/hidden_place/recommended_place_model.dart';
+import '../../utilities/error_message.dart';
 import '../session_scoped_provider.dart';
-
-/// Surfaces the backend's actual error message when one is present, matching
-/// the team pattern used in auth_provider.dart / profile_provider.dart.
-/// Returns null when there is no server-provided message (e.g. network error),
-/// letting the caller fall back to its fixed friendly string.
-String? _messageFor(DioException e) {
-  final data = e.response?.data;
-  if (data is Map && data['message'] is String) {
-    return data['message'] as String;
-  }
-  return null;
-}
 
 /// True when [path] is an absolute http/https URL (an already-persisted photo
 /// reference from photos_json). Such entries are kept as-is during submit/update
@@ -226,7 +215,7 @@ class HiddenPlaceProvider extends ChangeNotifier implements SessionScopedProvide
           primaryType: primaryType,
           description: description.trim(),
           priceLevel: priceLevel,
-          businessStatus: businessStatus,
+          businessStatus: businessStatus ?? 'OPERATIONAL',
           photosJson: photosJson.isNotEmpty ? photosJson : null,
         ),
       );
@@ -234,7 +223,7 @@ class HiddenPlaceProvider extends ChangeNotifier implements SessionScopedProvide
       await loadMyRecommendations();
       return response.submissionId;
     } on DioException catch (e) {
-      errorMessage = _messageFor(e) ?? 'Failed to submit your recommendation.';
+      errorMessage = messageForError(e) ?? 'Failed to submit your recommendation.';
       return null;
     } finally {
       isLoading = false;
@@ -292,27 +281,8 @@ class HiddenPlaceProvider extends ChangeNotifier implements SessionScopedProvide
       await loadMyRecommendations();
       return response.submissionId;
     } on DioException catch (e) {
-      errorMessage = _messageFor(e) ?? 'Failed to update your recommendation.';
+      errorMessage = messageForError(e) ?? 'Failed to update your recommendation.';
       return null;
-    } finally {
-      isLoading = false;
-      notifyListeners();
-    }
-  }
-
-  /// Withdraw one of the user's own recommendations (REQ502_32/33/34/35).
-  Future<bool> withdrawRecommendation(String placeId) async {
-    isLoading = true;
-    errorMessage = null;
-    notifyListeners();
-
-    try {
-      await _httpClient.withdrawRecommendedPlace(placeId);
-      await loadMyRecommendations();
-      return true;
-    } on DioException catch (e) {
-      errorMessage = _messageFor(e) ?? 'Failed to withdraw your recommendation.';
-      return false;
     } finally {
       isLoading = false;
       notifyListeners();
@@ -331,7 +301,29 @@ class HiddenPlaceProvider extends ChangeNotifier implements SessionScopedProvide
       await refreshPlace(placeId);
       return true;
     } on DioException catch (e) {
-      errorMessage = _messageFor(e) ?? 'Failed to update your vote.';
+      errorMessage = messageForError(e) ?? 'Failed to update your vote.';
+      return false;
+    } finally {
+      isLoading = false;
+      notifyListeners();
+    }
+  }
+
+  /// OWNER WITHDRAWAL — the submitter/owner withdraws their own recommendation.
+  /// This is a COMPLETELY SEPARATE function from place reporting. The submission
+  /// status becomes WITHDRAWN (place_submissions.status). Only the owner may
+  /// withdraw; a non-owner gets 403 Forbidden from the backend.
+  Future<bool> withdrawRecommendation(String submissionId) async {
+    isLoading = true;
+    errorMessage = null;
+    notifyListeners();
+
+    try {
+      await _httpClient.withdrawRecommendedPlace(submissionId);
+      await refreshPlace(submissionId);
+      return true;
+    } on DioException catch (e) {
+      errorMessage = messageForError(e) ?? 'Failed to withdraw recommendation.';
       return false;
     } finally {
       isLoading = false;
@@ -354,11 +346,22 @@ class HiddenPlaceProvider extends ChangeNotifier implements SessionScopedProvide
 
     try {
       final result = await _httpClient.reportPlace(submissionId, reason);
-      await refreshPlace(submissionId);
+
+      // Best-effort refresh only. For Explorer / Google places the
+      // `submissionId` parameter holds the Google place_id, which is NOT a
+      // place_submissions submission_id — the recommended-place details
+      // endpoint 404s for it. A refresh failure must NOT swallow the
+      // successful report result, so it is isolated in its own try/catch.
+      try {
+        await refreshPlace(submissionId);
+      } catch (_) {
+        // Ignore: refreshPlace only applies to recommended places.
+      }
+
       return result;
     } on DioException catch (e) {
       lastReportWasDuplicate = e.response?.statusCode == 409;
-      errorMessage = _messageFor(e) ?? 'Failed to report this place.';
+      errorMessage = messageForError(e) ?? 'Failed to report this place.';
       return null;
     } finally {
       isLoading = false;
@@ -372,6 +375,20 @@ class HiddenPlaceProvider extends ChangeNotifier implements SessionScopedProvide
       return await _httpClient.getRecommendedPlaceReportReasons();
     } catch (_) {
       return const [];
+    }
+  }
+
+  /// Checks whether the CURRENT user has already reported the given place.
+  /// [placeId] is a recommended-place submission GUID or a Google-sourced
+  /// place_id — the backend resolves the correct `hidden_place_suppression`
+  /// identity. Returns null on failure so the UI can distinguish "definitely
+  /// not reported" (false) from "unknown yet" (null, e.g. network error) and
+  /// keep the button safe while the report state is still being loaded.
+  Future<bool?> checkPlaceReportStatus(String placeId) async {
+    try {
+      return await _httpClient.isPlaceReportedByCurrentUser(placeId);
+    } catch (_) {
+      return null;
     }
   }
 

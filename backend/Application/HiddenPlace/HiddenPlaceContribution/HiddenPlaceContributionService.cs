@@ -1,5 +1,7 @@
 using ExploreMy.Api.Common.Exceptions;
+using ExploreMy.Api.Configuration;
 using ExploreMy.Api.DataAccess.ExternalClients.SupabaseStorage;
+using Microsoft.Extensions.Options;
 using ExploreMy.Api.DataAccess.Repositories.HiddenPlace;
 using ExploreMy.Api.Domain.Entities;
 using ExploreMy.Api.DTOs.HiddenPlace;
@@ -12,17 +14,20 @@ public class HiddenPlaceContributionService : IHiddenPlaceContributionService
     private readonly IHiddenPlaceSuppressionRepository _suppressionRepository;
     private readonly IStorageClient _storageClient;
     private readonly ILogger<HiddenPlaceContributionService> _logger;
+    private readonly SupabaseSettings _supabase;
 
     public HiddenPlaceContributionService(
         IHiddenPlaceRepository repository,
         IHiddenPlaceSuppressionRepository suppressionRepository,
         IStorageClient storageClient,
-        ILogger<HiddenPlaceContributionService> logger)
+        ILogger<HiddenPlaceContributionService> logger,
+        IOptions<SupabaseSettings> supabase)
     {
         _repository = repository;
         _suppressionRepository = suppressionRepository;
         _storageClient = storageClient;
         _logger = logger;
+        _supabase = supabase.Value;
     }
 
     /// <summary>
@@ -34,7 +39,7 @@ public class HiddenPlaceContributionService : IHiddenPlaceContributionService
     /// </summary>
     public async Task<string> UploadPlaceImageAsync(int currentUserId, Stream fileStream, string fileName, string contentType)
     {
-        const string bucket = "recommended-place-images";
+        var bucket = _supabase.RecommendedPlaceImageBucket;
         var extension = Path.GetExtension(fileName);
         var path = $"recommended-places/{currentUserId}/{Guid.NewGuid()}{extension}";
         var url = await _storageClient.UploadToBucketAsync(bucket, path, fileStream, contentType);
@@ -50,6 +55,22 @@ public class HiddenPlaceContributionService : IHiddenPlaceContributionService
         return places
             .OrderByDescending(p => p.CreatedAt)
             .Select(p => ToSummaryDto(p, reportCounts))
+            .ToList();
+    }
+
+    /// <summary>
+    /// List recommended places that reached the VERIFIED status and are publicly viewable.
+    /// Published places are a Contribution concern (submission lifecycle, status gates,
+    /// verifications), so the listing lives here.
+    /// </summary>
+    public async Task<List<RecommendedPlaceSummaryDto>> GetPublishedPlacesAsync()
+    {
+        var places = await _repository.GetPublishedPlacesAsync();
+
+        _logger.LogInformation("Loaded {Count} published recommended places.", places.Count);
+        return places
+            .OrderByDescending(p => p.CreatedAt)
+            .Select(p => ToSummaryDto(p))
             .ToList();
     }
 
@@ -127,10 +148,10 @@ public class HiddenPlaceContributionService : IHiddenPlaceContributionService
         // Business status is a closed set; the server is the final authority,
         // never the frontend dropdown alone. Missing → OPERATIONAL (backwards compatible).
         var businessStatus = string.IsNullOrWhiteSpace(request.BusinessStatus)
-            ? "OPERATIONAL"
+            ? BusinessStatus.Operational
             : request.BusinessStatus.Trim();
-        if (businessStatus is not ("OPERATIONAL" or "CLOSED_TEMPORARILY"))
-            throw new ValidationException($"Business status '{businessStatus}' is not supported. Allowed: OPERATIONAL, CLOSED_TEMPORARILY.");
+        if (!BusinessStatus.IsAllowed(businessStatus))
+            throw new ValidationException($"Business status '{businessStatus}' is not supported. Allowed: {string.Join(", ", BusinessStatus.Allowed)}.");
 
         // Photos must be public image URLs previously returned by the upload
         // endpoint (bucket references) — never local device paths or base64.
@@ -156,15 +177,17 @@ public class HiddenPlaceContributionService : IHiddenPlaceContributionService
         if (request.Longitude < -180m || request.Longitude > 180m)
             throw new ValidationException("Longitude must be between -180 and 180.");
 
-        // Duplicate prevention (REQ502_5): same name → reject.
-        var isDuplicate = await _repository.ExistsByNameAsync(name);
+        // Duplicate prevention (REQ502_5): same name → reject. A withdrawn submission no
+        // longer represents an existing place, so it does not block a new recommendation.
+        var isDuplicate = await _repository.ExistsByNameAsync(name, [RecommendedPlaceStatus.Withdrawn]);
         if (isDuplicate)
             throw new ValidationException("This place has already been recommended. Please check your submissions.");
 
         // Duplicate prevention (REQ502_5): coordinates within proximity radius
         // (e.g. <100 m) of an existing non-withdrawn place → reject.
         var isNearby = await _repository.ExistsNearbyAsync(
-            request.Latitude.Value, request.Longitude.Value, RecommendedPlaceThresholds.ProximityRadiusMeters);
+            request.Latitude.Value, request.Longitude.Value, RecommendedPlaceThresholds.ProximityRadiusMeters,
+            [RecommendedPlaceStatus.Withdrawn]);
         if (isNearby)
             throw new ValidationException("A place has already been recommended near these coordinates. Please check your submissions.");
 
@@ -248,10 +271,10 @@ public class HiddenPlaceContributionService : IHiddenPlaceContributionService
             throw new ValidationException("Price level must be between 0 and 4.");
 
         var businessStatus = string.IsNullOrWhiteSpace(request.BusinessStatus)
-            ? "OPERATIONAL"
+            ? BusinessStatus.Operational
             : request.BusinessStatus.Trim();
-        if (businessStatus is not ("OPERATIONAL" or "CLOSED_TEMPORARILY"))
-            throw new ValidationException($"Business status '{businessStatus}' is not supported. Allowed: OPERATIONAL, CLOSED_TEMPORARILY.");
+        if (!BusinessStatus.IsAllowed(businessStatus))
+            throw new ValidationException($"Business status '{businessStatus}' is not supported. Allowed: {string.Join(", ", BusinessStatus.Allowed)}.");
 
         var photoRefs = (request.PhotosJson ?? new List<string>())
             .Where(p => !string.IsNullOrWhiteSpace(p))
@@ -292,29 +315,6 @@ public class HiddenPlaceContributionService : IHiddenPlaceContributionService
         {
             SubmissionId = submission.SubmissionId,
             Message = "Your recommendation has been updated.",
-        };
-    }
-
-    public async Task<WithdrawRecommendedPlaceResponseDto> WithdrawPlaceAsync(int currentUserId, string submissionId)
-    {        var place = await _repository.GetByIdAsync(submissionId)
-            ?? throw new NotFoundException($"Recommended place '{submissionId}' was not found.");
-
-        if (place.SubmitterId != currentUserId)
-            throw new ForbiddenException("You can only withdraw your own recommendations.");
-        if (place.Status == RecommendedPlaceStatus.Withdrawn)
-            throw new ValidationException("This recommendation has already been withdrawn.");
-        if (place.Status == RecommendedPlaceStatus.Verified)
-            throw new ValidationException("Verified recommendations cannot be withdrawn.");
-
-        place.Status = RecommendedPlaceStatus.Withdrawn;
-        await _repository.UpdateSubmissionAsync(place);
-
-        _logger.LogInformation("User {UserId} withdrew recommended place {SubmissionId}.", currentUserId, submissionId);
-        return new WithdrawRecommendedPlaceResponseDto
-        {
-            SubmissionId = place.SubmissionId,
-            Status = place.Status,
-            Message = "Your recommendation has been withdrawn and removed from community voting.",
         };
     }
 
@@ -371,15 +371,41 @@ public class HiddenPlaceContributionService : IHiddenPlaceContributionService
 
             var count = await _repository.GetActiveVerificationCountAsync(submissionId);
 
-            // Verification only ever writes to recommended_place_verifications.
-            // It does NOT update place_submissions.status, recommended_places, or
-            // hidden_place_suppression.
+            // The vote that carries a submission over the line promotes it: UNDER_VOTING -> VERIFIED.
+            //
+            // This is what RequiredVerifications is FOR. Until now the constant was only ever read to
+            // fill in "x of 5" on screen, and nothing acted on it, so a submission stayed UNDER_VOTING
+            // no matter how many people agreed with it - it never entered the public discover listing
+            // and its map pin stayed drawn as unverified forever.
+            //
+            // One-way on purpose. The guard at the top of this method rejects any vote once the status
+            // leaves UNDER_VOTING, so a verified place cannot be un-verified by withdrawals afterwards.
+            // A place that flickers between verified and not - as people change their minds, or a
+            // single withdrawal drops it back to four - is worse than one that settles: this status is
+            // what other users decide whether to trust.
+            //
+            // Reports are the way back, and they are handled separately: enough of them move the place
+            // to REPORTED_CLOSED from VERIFIED as well as from UNDER_VOTING (see ReportPlaceAsync).
+            if (count >= RecommendedPlaceThresholds.RequiredVerifications
+                && place.Status == RecommendedPlaceStatus.UnderVoting)
+            {
+                place.Status = RecommendedPlaceStatus.Verified;
+                await _repository.UpdateSubmissionAsync(place);
+
+                _logger.LogInformation(
+                    "Recommended place {SubmissionId} reached {Count} verifications and is now VERIFIED.",
+                    submissionId, count);
+            }
+
             _logger.LogInformation("User {UserId} verified recommended place {SubmissionId} (count {Count}).", currentUserId, submissionId, count);
             return new ToggleVerificationResponseDto
             {
                 SubmissionId = submissionId,
                 IsVerified = true,
                 VerificationCount = count,
+
+                // Read AFTER the promotion above, so the client is told the new status by the very
+                // response to the vote that caused it rather than on some later refresh.
                 PlaceStatus = place.Status,
                 Message = "Thank you for verifying this place.",
             };
@@ -403,6 +429,46 @@ public class HiddenPlaceContributionService : IHiddenPlaceContributionService
         };
     }
 
+    /// <summary>
+    /// OWNER WITHDRAWAL — a COMPLETELY SEPARATE function from place reporting.
+    ///
+    /// The submitter/owner of a recommendation who no longer wants it to exist
+    /// withdraws their own recommendation. This moves the submission to
+    /// <c>WITHDRAWN</c> via the existing recommendation status mechanism
+    /// (<c>place_submissions.status</c>) — it NEVER writes to
+    /// <c>hidden_place_suppression</c> and is NOT a report.
+    ///
+    /// Ownership is enforced: only the submitter may withdraw. A non-owner is
+    /// rejected with <see cref="ForbiddenException"/>.
+    /// </summary>
+    public async Task<SubmitRecommendedPlaceResponseDto> WithdrawRecommendationAsync(int currentUserId, string submissionId)
+    {
+        var submission = await _repository.GetByIdAsync(submissionId)
+            ?? throw new NotFoundException($"Recommended place '{submissionId}' was not found.");
+
+        if (submission.SubmitterId != currentUserId)
+            throw new ForbiddenException("You can only withdraw your own recommendations.");
+
+        if (submission.Status == RecommendedPlaceStatus.Withdrawn)
+            throw new ValidationException("This recommendation has already been withdrawn.");
+
+        // WITHDRAWN is the owner's own removal reason. A place already moved to
+        // REPORTED_CLOSED by community reports is off the map for a different
+        // reason; re-stamping it as WITHDRAWN would rewrite why it was removed.
+        if (submission.Status == RecommendedPlaceStatus.ReportedClosed)
+            throw new ValidationException("This recommendation has been removed after community reports and cannot be withdrawn.");
+
+        submission.Status = RecommendedPlaceStatus.Withdrawn;
+        await _repository.UpdateSubmissionAsync(submission);
+
+        _logger.LogInformation("User {UserId} withdrew their own recommendation {SubmissionId}.", currentUserId, submissionId);
+        return new SubmitRecommendedPlaceResponseDto
+        {
+            SubmissionId = submission.SubmissionId,
+            Message = "Your recommendation has been withdrawn.",
+        };
+    }
+
     public async Task<ReportPlaceResponseDto> ReportPlaceAsync(int currentUserId, string submissionId, string reason)
     {
         if (string.IsNullOrWhiteSpace(reason) || reason.Length > 100)
@@ -421,6 +487,11 @@ public class HiddenPlaceContributionService : IHiddenPlaceContributionService
             return await ReportGooglePlaceAsync(currentUserId, submissionId, reason);
         }
 
+        // OWNER RESTRICTION (R9): the submitter/owner of a recommendation must NOT
+        // report their own place. They use "Withdraw Recommendation" instead.
+        if (place.SubmitterId == currentUserId)
+            throw new ForbiddenException("You cannot report your own recommendation. Use 'Withdraw Recommendation' instead.");
+
         if (place.Status == RecommendedPlaceStatus.Withdrawn)
             throw new ValidationException("Withdrawn recommendations cannot be reported.");
 
@@ -434,10 +505,13 @@ public class HiddenPlaceContributionService : IHiddenPlaceContributionService
         //                                        Google place id)
         var canonicalPlaceId = place.RecommendPlaceId;
 
-        // RecordReportAsync returns null when the same user has already reported this place
-        // (duplicate) — Place Report is NOT a toggle, so a second attempt is rejected outright.
-        // A 409 Conflict tells the client "already reported" (NOT a validation error the user
-        // should fix): the UI must reflect the disabled state, not re-prompt.
+        // ONE USER + ONE PLACE = ONE ACTIVE REPORT. The business decision ("reject duplicate
+        // with Conflict") lives in the service layer (V-11). The repository is responsible only
+        // for persistence and unique-constraint surfacing (its null-return is a concurrency backstop).
+        if (await _suppressionRepository.ExistsAsync(currentUserId, canonicalPlaceId))
+            throw new ConflictException("You have already reported this place. You can only report a place once.");
+
+        // RecordReportAsync returns null when a concurrent request hit the unique index first.
         var suppression = await _suppressionRepository.RecordReportAsync(
             currentUserId, canonicalPlaceId, canonicalPlaceId, place.Place!.Name, reason);
 
@@ -449,8 +523,17 @@ public class HiddenPlaceContributionService : IHiddenPlaceContributionService
         var totalReports = await _suppressionRepository.GetReportCountByPlaceIdAsync(canonicalPlaceId);
 
         // Threshold: REPORTED_CLOSED hides the submission from community voting + publishing.
+        //
+        // VERIFIED counts here as well as UNDER_VOTING. Being verified is not immunity: a place can
+        // pass verification and then close down, or turn out to be wrong, and that is exactly when
+        // reports start arriving. Gating this on UNDER_VOTING alone left those submissions on the
+        // map permanently - the reports were recorded and then acted on by nothing.
+        //
+        // WITHDRAWN and REPORTED_CLOSED are deliberately not listed: both are already off the map,
+        // and re-stamping a withdrawn place as reported would rewrite why its author removed it.
         if (totalReports >= RecommendedPlaceThresholds.HideThreshold
-            && place.Status == RecommendedPlaceStatus.UnderVoting)
+            && (place.Status == RecommendedPlaceStatus.UnderVoting
+                || place.Status == RecommendedPlaceStatus.Verified))
         {
             place.Status = RecommendedPlaceStatus.ReportedClosed;
             await _repository.UpdateSubmissionAsync(place);
@@ -485,9 +568,12 @@ public class HiddenPlaceContributionService : IHiddenPlaceContributionService
         var googlePlace = await _repository.GetGooglePlaceByIdAsync(googlePlaceId)
             ?? throw new NotFoundException($"Place '{googlePlaceId}' was not found.");
 
-        // RecordGooglePlaceReportAsync returns null when the same user has already reported this
-        // Google place — rejected outright (NOT a toggle). A 409 Conflict signals the client to
-        // reflect the already-reported state.
+        // The duplicate-report policy (one report per user per place) is a service-layer
+        // decision (V-11). The repository persists and surfaces the unique constraint; its
+        // null-return below is only the concurrency backstop.
+        if (await _suppressionRepository.ExistsAsync(currentUserId, googlePlace.PlaceId))
+            throw new ConflictException("You have already reported this place. You can only report a place once.");
+
         var suppression = await _suppressionRepository.RecordGooglePlaceReportAsync(
             currentUserId, googlePlace.PlaceId, googlePlace.Name, reason);
 
@@ -531,4 +617,21 @@ public class HiddenPlaceContributionService : IHiddenPlaceContributionService
         CreatedAt = p.CreatedAt,
         UpdatedAt = p.UpdatedAt,
     };
+
+    /// <inheritdoc/>
+    public async Task<PlaceReportStatusResponseDto> GetPlaceReportStatusAsync(int currentUserId, string placeId)
+    {
+        if (string.IsNullOrWhiteSpace(placeId))
+            throw new ValidationException("A place id is required.");
+
+        // Same identifier resolution as ReportPlaceAsync: a recommended-place submission GUID
+        // resolves to its canonical recommend_place_id; a Google-sourced place_id has no
+        // submission row and is checked directly. hidden_place_suppression is the single
+        // source of truth for "this user has already reported this place".
+        var submission = await _repository.GetByIdAsync(placeId);
+        var canonicalPlaceId = submission?.RecommendPlaceId ?? placeId;
+
+        var isReported = await _suppressionRepository.ExistsAsync(currentUserId, canonicalPlaceId);
+        return new PlaceReportStatusResponseDto { IsReportedByCurrentUser = isReported };
+    }
 }

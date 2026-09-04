@@ -1,6 +1,9 @@
 using ExploreMy.Api.Application.AuthProfile.Authentication;
 using ExploreMy.Api.Application.AuthProfile.Facade;
 using ExploreMy.Api.Application.AuthProfile.ManageProfile;
+using ExploreMy.Api.Application.Community.Communication;
+using ExploreMy.Api.Application.Community.ExploreCommunity;
+using ExploreMy.Api.Application.Community.Facade;
 using ExploreMy.Api.Application.FootTracker.ExplorationHistory;
 using ExploreMy.Api.Application.FootTracker.Facade;
 using ExploreMy.Api.Application.FootTracker.FavouritePlace;
@@ -22,7 +25,9 @@ using ExploreMy.Api.DataAccess.Repositories.AuthProfile;
 using ExploreMy.Api.DataAccess.Repositories.FootTracker;
 using ExploreMy.Api.DataAccess.Repositories.HiddenPlace;
 using ExploreMy.Api.DataAccess.Repositories.PlacePhotos;
+using ExploreMy.Api.DataAccess.Repositories.Community;
 using ExploreMy.Api.DataAccess.Repositories.PostReview;
+using ExploreMy.Api.Hubs;
 using ExploreMy.Api.Infrastructure.Repositories.HiddenPlace.Review;
 using ExploreMy.Api.Middleware;
 using ExploreMy.Api.Persistence.DbContext;
@@ -80,6 +85,13 @@ builder.Services.AddScoped<IManagePostService, ManagePostService>();
 builder.Services.AddScoped<ISocialEngagementService, SocialEngagementService>();
 builder.Services.AddScoped<IPostReviewService, PostReviewService>();
 
+// Communication (Community Chat) module services
+builder.Services.AddScoped<ICommunityRepository, CommunityMySqlRepository>();
+builder.Services.AddScoped<IExploreCommunityService, ExploreCommunityService>();
+builder.Services.AddScoped<ICommunicationService, CommunicationService>();
+builder.Services.AddScoped<ICommunityService, CommunityService>();
+builder.Services.AddSignalR();
+
 // HiddenPlace (My Recommended Places module) services
 builder.Services.AddScoped<IHiddenPlaceRepository, HiddenPlaceMySqlRepository>();
 builder.Services.AddScoped<IHiddenPlaceContributionService, HiddenPlaceContributionService>();
@@ -119,7 +131,6 @@ builder.Services.AddHttpClient<IPlacesApiClient, GooglePlacesApiClient>(client =
 {
     client.BaseAddress = new Uri("https://places.googleapis.com");
 });
-builder.Services.AddSingleton<IDistrictLookupService, DistrictLookupService>();
 
 // Its HttpClient is deliberately bare: no BaseAddress, no API key, no auth header. It only ever
 // downloads image bytes from whatever CDN URI Google hands back, and those URIs are already signed.
@@ -149,6 +160,25 @@ builder.Services.AddAuthentication(options =>
             ValidIssuer = jwtSettings.Issuer,
             ValidAudience = jwtSettings.Audience,
             IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtSettings.Key))
+        };
+
+        // SignalR's browser/WebSocket transports can't set an Authorization header on
+        // the initial handshake, so the client sends the JWT as an "access_token"
+        // query-string parameter instead (see SignalrClient on the Flutter side).
+        // Only pull it from the query string for the hub's own path — every other
+        // endpoint keeps using the standard Authorization header.
+        options.Events = new JwtBearerEvents
+        {
+            OnMessageReceived = context =>
+            {
+                var accessToken = context.Request.Query["access_token"];
+                var path = context.HttpContext.Request.Path;
+                if (!string.IsNullOrEmpty(accessToken) && path.StartsWithSegments("/hubs"))
+                {
+                    context.Token = accessToken;
+                }
+                return Task.CompletedTask;
+            },
         };
     });
 
@@ -247,6 +277,7 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
+app.MapHub<CommunityChatHub>("/hubs/community-chat");
 
 app.Run();
 

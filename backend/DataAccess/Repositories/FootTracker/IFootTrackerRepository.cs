@@ -11,4 +11,7 @@ public interface IFootTrackerRepository
     Task AddFootTrackerLogAsync(FootTrackerLog log);
     Task<List<FootTrackerLog>> GetVisitsByUserIdAsync(int userId);
     Task<DomainHiddenPlace?> GetLatestHiddenPlaceCacheByPlaceIdAsync(string placeId);
+    Task<Place?> GetPlaceByIdAsync(string placeId);
+    Task AddPlaceAsync(Place place);
+    Task UpdatePlaceAsync(Place place);
 }

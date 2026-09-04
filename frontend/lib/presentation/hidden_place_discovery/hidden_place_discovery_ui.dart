@@ -43,6 +43,20 @@ class AppColors {
   // their body colour because it is dark; this one cannot, so body and glyph are separated here.
   static const pinCommunityGlyph = Color(0xFF8A6100);
 
+  // Body fill for a community place that is on the map but NOT yet verified - someone recommended
+  // it and the votes have not arrived. Same hue as pinCommunity so the provenance still reads at a
+  // glance, but drained to near-white so it is plainly the lesser of the two: a hollow pin next to
+  // a solid one says "not confirmed yet" without needing a legend.
+  //
+  // Pale rather than semi-transparent on purpose. Transparency lets the basemap show through and
+  // the pin's colour then changes depending on whether it lands on land, water or a road label,
+  // which at ~30px turns into noise. A flat pale fill looks the same everywhere.
+  static const pinCommunityPending = Color(0xFFFDF1DC);
+
+  // The ring drawn around a pending community pin, over the white separator stroke. This is the
+  // part that carries the amber - the fill is too pale to do it on its own.
+  static const pinCommunityPendingRing = pinCommunity;
+
   static const textDark = Color(0xFF202124);
   static const textGrey = Color(0xFF5F6368);
   static const hairline = Color(0xFFE8E8E8);
@@ -431,6 +445,11 @@ PlaceData _toPlaceData(HiddenPlaceModel place) {
     // isCommunity is derived from this field (never force-set).
     recommendPlaceId: place.source == 'COMMUNITY' ? place.placeId : null,
 
+    // Community places now arrive in both states - verified and still under voting - so this can no
+    // longer be left at its default. It decides which of the two community pins gets drawn, and
+    // Place Details reads it for the Verified / Unverified badge.
+    isVerified: place.isCommunityVerified,
+
     address: place.formattedAddress,
     phoneNumber: place.nationalPhoneNumber,
     websiteUri: place.websiteUri,
@@ -455,15 +474,25 @@ class _MarkerFactory {
     required IconData icon,
     bool selected = false,
     bool community = false,
+    bool pending = false,
   }) async {
+    // [pending] only means anything for a community pin - a Google place has no verification state
+    // to be waiting on. Normalised here rather than trusted from the call site so a stray
+    // pending: true can never produce a hollow Google pin.
+    final isPendingCommunity = community && pending;
+
     // Selection wins over provenance: at most one pin on the map is ever coral, and losing the
     // yellow for as long as its card is open is a smaller cost than having two "special" colours
-    // on screen at once with no way to tell which one means what.
+    // on screen at once with no way to tell which one means what. It also wins over the pending
+    // treatment - while its card is open the question is "which pin did I tap", not "is this one
+    // verified", and that answer is in the card itself.
     final color = selected
         ? AppColors.pinSelected
-        : community
-            ? AppColors.pinCommunity
-            : AppColors.pin;
+        : isPendingCommunity
+            ? AppColors.pinCommunityPending
+            : community
+                ? AppColors.pinCommunity
+                : AppColors.pin;
 
     final glyphColor = !selected && community ? AppColors.pinCommunityGlyph : color;
     final double size = selected ? 64 : 52;
@@ -504,6 +533,19 @@ class _MarkerFactory {
         ..style = PaintingStyle.stroke
         ..strokeWidth = 4,
     );
+
+    // The amber ring that makes an unverified pin read as an outline rather than a washed-out
+    // solid. Drawn after the white stroke and thinner than it, so the white halo still separates
+    // the pin from the basemap and the ring sits inside that halo.
+    if (isPendingCommunity) {
+      canvas.drawPath(
+        pin,
+        Paint()
+          ..color = AppColors.pinCommunityPendingRing
+          ..style = PaintingStyle.stroke
+          ..strokeWidth = 2.5,
+      );
+    }
 
     // inner white disc
     canvas.drawCircle(center, radius * 0.6, Paint()..color = Colors.white);
@@ -584,6 +626,22 @@ class _HiddenPlaceDiscoveryUIState extends State<HiddenPlaceDiscoveryUI>
   bool _isLoadingPlaces = true;
   String? _placesError;
 
+  /// What the Explore Places sheet lists: everything in [_places] EXCEPT community submissions
+  /// that are still collecting verifications.
+  ///
+  /// The map and the list deliberately show different sets. A pin is a location - an unverified
+  /// one can be drawn hollow, right where it is, and reads as "somebody claims there is something
+  /// here". A card in the list is a recommendation, sitting in a row with places that earned their
+  /// place there by being verified, with nothing next to it to say it has not been. So an
+  /// unverified submission gets a pin and no card: visible to whoever looks at that spot on the
+  /// map (its author included, straight after submitting it), without being put forward to
+  /// everyone browsing the list as if it were an established place.
+  ///
+  /// It joins the list the moment its fifth verification lands and the backend promotes it to
+  /// VERIFIED - the same event that turns its pin solid.
+  List<PlaceData> get _listedPlaces =>
+      _places.where((p) => !p.isCommunity || p.isVerified).toList();
+
   // Which of _radiusOptionsMeters is currently active. Written out rather than taken from
   // _radiusOptionsMeters.first so reordering or extending that list can't silently change what the
   // screen opens on. Must be a value the backend's [AllowedValues] accepts, or the first search of
@@ -613,13 +671,18 @@ class _HiddenPlaceDiscoveryUIState extends State<HiddenPlaceDiscoveryUI>
     // isCommunity is part of the key, not just selected: the same glyph is rasterised in two
     // different colours depending on where the place came from, and without it the first place of a
     // given type to be drawn would decide the colour for every other place sharing that icon.
-    final key = '${place.icon.codePoint}_${selected}_${place.isCommunity}';
+    //
+    // Verification state is in the key for exactly the same reason - a community place now has two
+    // possible pins, and leaving it out would hand the first one drawn's bitmap to the other.
+    final pending = place.isCommunity && !place.isVerified;
+    final key = '${place.icon.codePoint}_${selected}_${place.isCommunity}_$pending';
     final cached = _pinIconCache[key];
     if (cached != null) return cached;
     final icon = await _MarkerFactory.pin(
       icon: place.icon,
       selected: selected,
       community: place.isCommunity,
+      pending: pending,
     );
     _pinIconCache[key] = icon;
     return icon;
@@ -884,6 +947,10 @@ class _HiddenPlaceDiscoveryUIState extends State<HiddenPlaceDiscoveryUI>
       double contentHeight,
       ScrollController scrollController,
       ) {
+    // Read once per build: _listedPlaces filters and allocates on every access, and the count, the
+    // empty check and the item builder below would otherwise each redo it.
+    final listedPlaces = _listedPlaces;
+
     return Container(
       width: double.infinity,
       // Clip the body to the rounded top, so the content scrolls under the corners instead of
@@ -947,7 +1014,7 @@ class _HiddenPlaceDiscoveryUIState extends State<HiddenPlaceDiscoveryUI>
                         ),
                       ),
                       Text(
-                        '${_places.length} nearby',
+                        '${listedPlaces.length} nearby',
                         style: const TextStyle(fontSize: 12, color: AppColors.textGrey),
                       ),
                     ],
@@ -971,7 +1038,7 @@ class _HiddenPlaceDiscoveryUIState extends State<HiddenPlaceDiscoveryUI>
                       ),
                     ),
                   )
-                      : _places.isEmpty
+                      : listedPlaces.isEmpty
                       ? const Center(
                     child: Text(
                       'No hidden places found nearby yet.',
@@ -981,10 +1048,10 @@ class _HiddenPlaceDiscoveryUIState extends State<HiddenPlaceDiscoveryUI>
                       : ListView.separated(
                     scrollDirection: Axis.horizontal,
                     padding: const EdgeInsets.symmetric(horizontal: 20),
-                    itemCount: _places.length,
+                    itemCount: listedPlaces.length,
                     separatorBuilder: (_, __) => const SizedBox(width: 12),
                     itemBuilder: (context, i) {
-                      final place = _places[i];
+                      final place = listedPlaces[i];
 
                       return SizedBox(
                         width: 150,

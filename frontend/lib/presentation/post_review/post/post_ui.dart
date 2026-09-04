@@ -95,6 +95,8 @@ class _PostUIState extends State<PostUI> {
         return provider.commentedPosts;
       case FeedFilterOption.reported:
         return provider.reportedPosts;
+      case FeedFilterOption.liked:
+        return provider.likedPosts;
       case FeedFilterOption.saved:
         return provider.savedPosts;
       case FeedFilterOption.popularity:
@@ -125,18 +127,20 @@ class _PostUIState extends State<PostUI> {
           case FeedFilterOption.posted:
           case FeedFilterOption.commented:
           case FeedFilterOption.reported:
+          case FeedFilterOption.liked:
           case FeedFilterOption.saved:
-            // MY ACTIVITY sections read from provider.userPosts /
-            // commentedPosts / reportedPosts / savedPosts. Those collections
-            // are only populated by loadMyActivity() — which runs the three
-            // sub-loads (my posts, my comments, my reports) plus saved posts,
-            // so every My Activity option renders real data on first use.
+          // MY ACTIVITY sections read from provider.userPosts /
+          // commentedPosts / reportedPosts / likedPosts / savedPosts. Those
+          // collections are only populated by loadMyActivity() — which runs
+          // the five sub-loads (my posts, my comments, my reports, my likes,
+          // saved posts), so every My Activity option renders real data on
+          // first use.
             provider.loadMyActivity();
             break;
           case FeedFilterOption.newest:
           case FeedFilterOption.popularity:
-            // Discover: keep ordering current. Popularity requests the
-            // server-side engagement sort and range (D2).
+          // Discover: keep ordering current. Popularity requests the
+          // server-side engagement sort and range (D2).
             final popularity = filter.option == FeedFilterOption.popularity;
             provider.loadFeed(
               category: 'discover',
@@ -172,7 +176,7 @@ class _PostUIState extends State<PostUI> {
     final searchError = context.select<PostProvider, String?>((p) => p.searchError);
     // Profile changes rarely; read once for all cards.
     final currentUserId = context.select<ProfileProvider, String?>(
-        (p) => p.profile?.userId.toString());
+            (p) => p.profile?.userId.toString());
 
     final posts = _visiblePosts(postProvider);
     final searchResults = postProvider.searchResults;
@@ -237,51 +241,51 @@ class _PostUIState extends State<PostUI> {
                     : posts.isEmpty
                     ? _buildEmptyFeedState()
                     : RefreshIndicator(
-                    onRefresh: () {
-                      final provider = context.read<PostProvider>();
-                      if (isMyActivity) {
-                        return provider.loadMyActivity();
-                      }
-                      final popularity =
-                          _feedFilter.option == FeedFilterOption.popularity;
-                      return provider.loadFeed(
-                        category: 'discover',
-                        sort: popularity ? 'popularity' : 'newest',
-                        min: popularity
-                            ? _feedFilter.popularityRange.start.round()
-                            : null,
-                        max: popularity
-                            ? _feedFilter.popularityRange.end.round()
-                            : null,
-                      );
-                    },
-                    child: ListView.builder(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: AppSpacing.containerMargin,
-                    vertical: AppSpacing.stackSm,
-                  ),
-                  itemCount: posts.length + 1,
-                  itemBuilder: (context, i) {
-                    if (i == posts.length) {
-                      return _buildLabelLegend();
+                  onRefresh: () {
+                    final provider = context.read<PostProvider>();
+                    if (isMyActivity) {
+                      return provider.loadMyActivity();
                     }
-                    final post = posts[i];
-                    return Padding(
-                      padding: const EdgeInsets.only(bottom: AppSpacing.gutterMd),
-                      child: RepaintBoundary(
-                        child: _buildPostCard(context, postProvider, post, currentUserId),
-                      ),
+                    final popularity =
+                        _feedFilter.option == FeedFilterOption.popularity;
+                    return provider.loadFeed(
+                      category: 'discover',
+                      sort: popularity ? 'popularity' : 'newest',
+                      min: popularity
+                          ? _feedFilter.popularityRange.start.round()
+                          : null,
+                      max: popularity
+                          ? _feedFilter.popularityRange.end.round()
+                          : null,
                     );
                   },
-                ),
+                  child: ListView.builder(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: AppSpacing.containerMargin,
+                      vertical: AppSpacing.stackSm,
+                    ),
+                    itemCount: posts.length + 1,
+                    itemBuilder: (context, i) {
+                      if (i == posts.length) {
+                        return _buildLabelLegend();
+                      }
+                      final post = posts[i];
+                      return Padding(
+                        padding: const EdgeInsets.only(bottom: AppSpacing.gutterMd),
+                        child: RepaintBoundary(
+                          child: _buildPostCard(context, postProvider, post, currentUserId),
+                        ),
+                      );
+                    },
                   ),
                 ),
-              ],
-            ),
+              ),
+            ],
           ),
         ),
-      );
-    }
+      ),
+    );
+  }
 
   /// Search field rendered directly on the Post Feed. Submitting runs the
   /// search; the suffix clear button clears the query and returns to the
@@ -349,30 +353,16 @@ class _PostUIState extends State<PostUI> {
       );
     }
     if (results.isEmpty) {
-      return Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            const Icon(Icons.search_off_outlined, size: 64, color: AppColors.textMuted),
-            const SizedBox(height: AppSpacing.stackMd),
-            Text('No results found', style: AppTypography.headlineMd),
-            const SizedBox(height: 4),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 24),
-              child: Text(
-                'No posts match "$_lastSearchQuery". Try a different search.',
-                style: AppTypography.bodyMd,
-                textAlign: TextAlign.center,
-              ),
-            ),
-            const SizedBox(height: AppSpacing.stackMd),
-            AppButton(
-              text: 'Clear Search',
-              variant: AppButtonVariant.outline,
-              height: 44,
-              onPressed: _clearSearch,
-            ),
-          ],
+      return _buildEmptyState(
+        icon: Icons.search_off_outlined,
+        title: 'No results found',
+        message:
+        'No posts match "$_lastSearchQuery". Try a different search.',
+        action: AppButton(
+          text: 'Clear Search',
+          variant: AppButtonVariant.outline,
+          height: 44,
+          onPressed: _clearSearch,
         ),
       );
     }
@@ -445,31 +435,63 @@ class _PostUIState extends State<PostUI> {
     );
   }
 
-  Widget _buildEmptyFeedState() {
-    final isMyActivity = _feedFilter.category == FeedFilterCategory.myActivity;
+  Widget _buildEmptyState({
+    required IconData icon,
+    required String title,
+    required String message,
+    Widget? action,
+  }) {
     return Center(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Icon(
-            isMyActivity ? Icons.person_outline : Icons.article_outlined,
-            size: 64,
-            color: AppColors.textMuted,
-          ),
-          const SizedBox(height: AppSpacing.stackMd),
-          Text(
-            isMyActivity ? 'No activity yet' : 'No posts yet',
-            style: AppTypography.headlineMd,
-          ),
-          const SizedBox(height: 4),
-          Text(
-            isMyActivity
-                ? 'Your posts, comments, reports and saved places will appear here.'
-                : 'Be the first explorer to share a story!',
-            style: AppTypography.bodyMd,
-          ),
-        ],
+      child: Padding(
+        padding: const EdgeInsets.symmetric(
+          horizontal: AppSpacing.containerMargin,
+        ),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(
+              icon,
+              size: 64,
+              color: AppColors.textMuted,
+            ),
+            const SizedBox(height: AppSpacing.stackMd),
+            Text(
+              title,
+              style: AppTypography.headlineMd,
+              textAlign: TextAlign.center,
+            ),
+            const SizedBox(height: AppSpacing.stackSm),
+            Text(
+              message,
+              style: AppTypography.bodyMd.copyWith(
+                color: AppColors.textSecondary,
+              ),
+              textAlign: TextAlign.center,
+            ),
+            if (action != null) ...[
+              const SizedBox(height: AppSpacing.stackMd),
+              action,
+            ],
+          ],
+        ),
       ),
+    );
+  }
+
+  Widget _buildEmptyFeedState() {
+    final isMyActivity =
+        _feedFilter.category == FeedFilterCategory.myActivity;
+
+    return _buildEmptyState(
+      icon: isMyActivity
+          ? Icons.person_outline
+          : Icons.article_outlined,
+      title: isMyActivity
+          ? 'No activity yet'
+          : 'No posts yet',
+      message: isMyActivity
+          ? 'Your posts, comments, reports and saved places will appear here.'
+          : 'Be the first explorer to share a story!',
     );
   }
 
@@ -554,7 +576,14 @@ class _PostUIState extends State<PostUI> {
       ),
       onReaction: () => _toggleLike(post.id),
       onSave: () => _toggleSave(context, post),
-      onReport: () => ReportReasonSheet.show(context, postId: post.id),
+      onReport: () async {
+        final result =
+        await ReportReasonSheet.show(context, postId: post.id);
+        if (!context.mounted) return;
+        if (result == ReportResult.submitted) {
+          AppNavigation.toReportSubmittedSuccess(context);
+        }
+      },
       onEdit: () => AppNavigation.toEditPost(context, postId: post.id),
       onDelete: () => _confirmDeletePost(context, post),
     );
@@ -591,6 +620,7 @@ class _PostUIState extends State<PostUI> {
               _legendItem(Icons.flag_outlined, AppColors.error, 'Reported'),
               _legendItem(
                   Icons.chat_bubble_outline, const Color(0xFF5C6BC0), 'You Commented'),
+              _legendItem(Icons.favorite, AppColors.primary, 'Liked'),
               _legendItem(Icons.bookmark, const Color(0xFF7B61FF), 'Saved'),
             ],
           ),

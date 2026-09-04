@@ -20,13 +20,13 @@ public interface IPostReviewRepository
     Task<List<Post>> GetFeedAsync(int currentUserId, PostFeedSort sort, int? minEngagement, int? maxEngagement, int page, int pageSize);
     Task<List<Post>> GetPostsCommentedByAsync(int userId, int page, int pageSize);
     Task<List<Post>> GetPostsReportedByAsync(int userId, int page, int pageSize);
+    Task<List<Post>> GetPostsLikedByAsync(int userId, int page, int pageSize);
     Task<Post?> GetByIdAsync(string postId, int currentUserId);
     Task<List<Post>> SearchPostsAsync(int currentUserId, string query, int page, int pageSize);
     Task<List<Post>> GetByAuthorAsync(int authorId);
     Task CreatePostAsync(Post post);
     Task UpdatePostAsync(Post post);
     Task<bool> PostExistsAsync(string postId);
-    Task<bool> PlaceExistsAsync(string placeId);
 
     /// <summary>Increments the view counter of a post without touching UpdatedAt.</summary>
     Task<int> IncrementViewsAsync(string postId);
@@ -37,7 +37,6 @@ public interface IPostReviewRepository
     Task<List<PostComment>> GetCommentsByAuthorAsync(int authorId);
     Task CreateCommentAsync(PostComment comment);
     Task UpdateCommentAsync(PostComment comment);
-    Task<bool> CommentExistsAsync(string commentId);
 
     // ---- Reactions ----
     Task<PostReaction?> GetActiveReactionAsync(string postId, int userId);
@@ -49,11 +48,11 @@ public interface IPostReviewRepository
     // ---- Reports ----
     Task CreateReportAsync(PostReport report);
     Task<PostReport?> GetReportByIdAsync(string reportId);
+    Task<PostReport?> GetReportByPostAndReporterAsync(string postId, int reporterId);
     Task UpdateReportAsync(PostReport report);
     Task<List<PostReport>> GetReportsByReporterAsync(int reporterId);
     Task<int> GetActiveReportCountAsync(string postId);
     Task<bool> HasActiveReportAsync(string postId, int reporterId);
-    Task<PostReport?> GetActiveReportAsync(string postId, int reporterId);
 
     // ---- Saved posts ----
     Task CreateSavedPostAsync(UserSavedPost savedPost);

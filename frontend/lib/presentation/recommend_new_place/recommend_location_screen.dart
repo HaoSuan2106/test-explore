@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
+import '../../../api_communication/location_service/device_location_service.dart';
 import '../../../theme/app_theme.dart';
 import '../../../widgets/app_header.dart';
 import '../../../widgets/app_button.dart';
@@ -15,6 +16,11 @@ import 'wizard_step_indicator.dart';
 /// from the map centre. No reverse-geocoded address is requested or shown —
 /// the selected map coordinates are the only location source (Part C/H).
 ///
+/// When the wizard has no location yet (new recommendation), the map starts
+/// centred on the user's current GPS position via [DeviceLocationService] and
+/// falls back to KL only if GPS is unavailable. If the draft already carries
+/// coordinates (edit mode / previously picked), those are kept as-is.
+///
 /// Google Places remains POSTPONED; the map stays on OpenStreetMap.
 class RecommendLocationScreen extends StatefulWidget {
   final RecommendPlaceDraft draft;
@@ -28,10 +34,12 @@ class RecommendLocationScreen extends StatefulWidget {
 
 class _RecommendLocationScreenState extends State<RecommendLocationScreen> {
   final MapController _mapController = MapController();
+  final DeviceLocationService _locationService = const DeviceLocationService();
   static const LatLng _defaultCenter = LatLng(3.1390, 101.6869); // KL, Malaysia
 
   /// The centre of the map (under the fixed pin) — initialised from the
-  /// draft if the user already picked a location, otherwise falls back to KL.
+  /// draft if the user already picked a location, otherwise falls back to KL
+  /// and is then re-centred on the user's GPS position when it resolves.
   late LatLng _selectedPoint;
 
   /// Notifies the bottom location panel of the latest map centre during a
@@ -47,6 +55,35 @@ class _RecommendLocationScreenState extends State<RecommendLocationScreen> {
         ? LatLng(d.latitude!, d.longitude!)
         : _defaultCenter;
     _selectedNotifier = ValueNotifier<LatLng>(_selectedPoint);
+
+    // New recommendation (no location picked yet): start the map on the
+    // user's current GPS position. Deferred past the first frame so the map
+    // is attached before _mapController.move() is called. Editing keeps the
+    // draft coordinates — never overwrite an explicitly chosen location.
+    if (d.latitude == null || d.longitude == null) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        _centerOnCurrentLocation();
+      });
+    }
+  }
+
+  /// Asks the device for the current GPS position and moves the map there.
+  /// [DeviceLocationService] returns null (instead of throwing) when services
+  /// are off, permission is denied, or no fix arrives in time — in every such
+  /// case the screen simply stays on the default centre.
+  Future<void> _centerOnCurrentLocation() async {
+    final position = await _locationService.getCurrentPosition();
+    if (!mounted || position == null) return;
+
+    final gpsPoint = LatLng(position.latitude, position.longitude);
+    _selectedPoint = gpsPoint;
+    _selectedNotifier.value = gpsPoint;
+    try {
+      _mapController.move(gpsPoint, 14);
+    } catch (_) {
+      // Map not attached — the onPositionChanged handler will still keep the
+      // selected point in sync with whatever the map settles on.
+    }
   }
 
   /// High-frequency map movement: cheaply track the centre so the "Use This

@@ -102,15 +102,6 @@ public class HiddenPlaceMySqlRepository : IHiddenPlaceRepository
             throw;
         }
     }
-    //private readonly MySqlDbContext _context;
-    //private readonly ILogger<HiddenPlaceMySqlRepository> _logger;
-
-    //public HiddenPlaceMySqlRepository(MySqlDbContext context, ILogger<HiddenPlaceMySqlRepository> logger)
-    //{
-    //    _context = context;
-    //    _logger = logger;
-    //}
-
     public async Task<HiddenPlaceEntity?> GetGooglePlaceByIdAsync(string placeId)
     {
         try
@@ -147,12 +138,15 @@ public class HiddenPlaceMySqlRepository : IHiddenPlaceRepository
         }
     }
 
-    public async Task<List<PlaceSubmission>> GetPublishedPlacesAsync()
+    public async Task<List<PlaceSubmission>> GetPublishedPlacesAsync(bool includeUnderVoting = false)
     {
         try
         {
+            // Listed positively rather than as "not withdrawn, not reported": a status added later
+            // then has to be named here to become visible, which is the safe direction to fail.
             return await _context.PlaceSubmissions
-                .Where(p => p.Status == RecommendedPlaceStatus.Verified)
+                .Where(p => p.Status == RecommendedPlaceStatus.Verified
+                    || (includeUnderVoting && p.Status == RecommendedPlaceStatus.UnderVoting))
                 .Include(p => p.Place)
                 .Include(p => p.Verifications.Where(v => v.Status == RecommendedPlaceVerificationStatus.Active))
                 .OrderByDescending(p => p.CreatedAt)
@@ -183,15 +177,17 @@ public class HiddenPlaceMySqlRepository : IHiddenPlaceRepository
         }
     }
 
-    public async Task<bool> ExistsByNameAsync(string name)
+    public async Task<bool> ExistsByNameAsync(string name, IEnumerable<string>? excludedStatuses = null)
     {
         try
         {
+            var excluded = (excludedStatuses ?? []).ToHashSet();
             // The canonical place is checked together with its submissions: a place only
-            // counts as a duplicate when at least one of its submissions is not withdrawn.
+            // counts as a duplicate when at least one of its submissions is not excluded
+            // (the caller decides which statuses do not block a new recommendation).
             return await _context.RecommendPlaces.AnyAsync(p =>
                 p.Name == name
-                && p.Submissions.Any(s => s.Status != RecommendedPlaceStatus.Withdrawn));
+                && p.Submissions.Any(s => !excluded.Contains(s.Status)));
         }
         catch (Exception ex)
         {
@@ -201,21 +197,23 @@ public class HiddenPlaceMySqlRepository : IHiddenPlaceRepository
     }
 
     /// <summary>
-    /// True when a non-withdrawn recommended submission has a canonical place with coordinates
-    /// within [radiusMeters] of the given point (REQ502_5 proximity duplicate check).
+    /// True when a recommended submission with a canonical place with coordinates
+    /// within [radiusMeters] of the given point is NOT in any excluded status
+    /// (REQ502_5 proximity duplicate check).
     /// </summary>
-    public async Task<bool> ExistsNearbyAsync(decimal latitude, decimal longitude, double radiusMeters)
+    public async Task<bool> ExistsNearbyAsync(decimal latitude, decimal longitude, double radiusMeters, IEnumerable<string>? excludedStatuses = null)
     {
         try
         {
+            var excluded = (excludedStatuses ?? []).ToHashSet();
             var places = await _context.RecommendPlaces
-                .Where(p => p.Submissions.Any(s => s.Status != RecommendedPlaceStatus.Withdrawn))
+                .Where(p => p.Submissions.Any(s => !excluded.Contains(s.Status)))
                 .Select(p => new { p.Latitude, p.Longitude })
                 .ToListAsync();
 
             // Haversine distance in meters; any hit within the radius counts.
             return places.Any(p =>
-                HaversineMeters(p.Latitude, p.Longitude,
+                GeoDistance.HaversineMeters(p.Latitude, p.Longitude,
                     (double)latitude, (double)longitude) <= radiusMeters);
         }
         catch (Exception ex)
@@ -223,20 +221,6 @@ public class HiddenPlaceMySqlRepository : IHiddenPlaceRepository
             _logger.LogError(ex, "Database error while checking nearby recommended place.");
             throw;
         }
-    }
-
-    private static double HaversineMeters(double lat1, double lon1, double lat2, double lon2)
-    {
-        const double earthRadiusM = 6371000.0;
-        double ToRad(double deg) => deg * Math.PI / 180.0;
-
-        var dLat = ToRad(lat2 - lat1);
-        var dLon = ToRad(lon2 - lon1);
-        var a = Math.Sin(dLat / 2) * Math.Sin(dLat / 2)
-                + Math.Cos(ToRad(lat1)) * Math.Cos(ToRad(lat2))
-                * Math.Sin(dLon / 2) * Math.Sin(dLon / 2);
-        var c = 2 * Math.Atan2(Math.Sqrt(a), Math.Sqrt(1 - a));
-        return earthRadiusM * c;
     }
 
     /// <summary>

@@ -1,3 +1,5 @@
+using ExploreMy.Api.Domain.Entities;
+
 namespace ExploreMy.Api.Application.HiddenPlace.DiscoverHiddenPlace;
 
 /// <summary>
@@ -29,7 +31,7 @@ public class PlaceCandidate
     public int? PriceLevel { get; init; }
 
     /// <summary>e.g. "OPERATIONAL", "CLOSED_TEMPORARILY", "CLOSED_PERMANENTLY".</summary>
-    public string BusinessStatus { get; init; } = "OPERATIONAL";
+    public string BusinessStatus { get; init; } = global::ExploreMy.Api.Domain.Entities.BusinessStatus.Operational;
 
     // ---- Presentation detail. None of the following is used by the scoring algorithm; it is carried
     // through so the app can show a place without a second round-trip to Google. ----

@@ -11,7 +11,7 @@ import '../../../../widgets/app_button.dart';
 enum FeedFilterCategory { myActivity, discover }
 
 /// The individual filter options inside the two sections.
-enum FeedFilterOption { posted, commented, reported, newest, popularity, saved }
+enum FeedFilterOption { posted, commented, reported, liked, newest, popularity, saved }
 
 /// An immutable selection of the two-section Post Feed filter, including the
 /// popularity engagement range used by DISCOVER → Popularity.
@@ -44,6 +44,8 @@ class FeedFilter {
         return 'Commented';
       case FeedFilterOption.reported:
         return 'Reported';
+      case FeedFilterOption.liked:
+        return 'Liked';
       case FeedFilterOption.newest:
         return 'Newest';
       case FeedFilterOption.popularity:
@@ -114,6 +116,7 @@ class _PostFilterSheetState extends State<PostFilterSheet> {
     FeedFilterOption.posted: 'Posted',
     FeedFilterOption.commented: 'Commented',
     FeedFilterOption.reported: 'Reported',
+    FeedFilterOption.liked: 'Liked',
     FeedFilterOption.newest: 'Newest',
     FeedFilterOption.popularity: 'Popularity',
     FeedFilterOption.saved: 'Saved',
@@ -157,6 +160,7 @@ class _PostFilterSheetState extends State<PostFilterSheet> {
             _sectionHeader('MY ACTIVITY'),
             _optionTile(FeedFilterOption.posted),
             _optionTile(FeedFilterOption.commented),
+            _optionTile(FeedFilterOption.liked),
             _optionTile(FeedFilterOption.reported),
             _optionTile(FeedFilterOption.saved),
 
@@ -244,6 +248,7 @@ class _PostFilterSheetState extends State<PostFilterSheet> {
       case FeedFilterOption.posted:
       case FeedFilterOption.commented:
       case FeedFilterOption.reported:
+      case FeedFilterOption.liked:
       case FeedFilterOption.saved:
         return FeedFilterCategory.myActivity;
       case FeedFilterOption.newest:

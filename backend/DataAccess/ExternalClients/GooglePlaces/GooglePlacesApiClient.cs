@@ -2,6 +2,7 @@ using System.Net.Http.Json;
 using System.Text.Json;
 using ExploreMy.Api.Application.HiddenPlace.DiscoverHiddenPlace;
 using ExploreMy.Api.Configuration;
+using ExploreMy.Api.Domain.Entities;
 using Microsoft.Extensions.Options;
 
 namespace ExploreMy.Api.DataAccess.ExternalClients.GooglePlaces;
@@ -196,7 +197,7 @@ public class GooglePlacesApiClient : IPlacesApiClient
             Rating = dto.Rating,
             UserRatingCount = dto.UserRatingCount ?? 0,
             PriceLevel = GooglePriceLevelMapper.ToNumericLevel(dto.PriceLevel),
-            BusinessStatus = dto.BusinessStatus ?? "OPERATIONAL",
+            BusinessStatus = dto.BusinessStatus ?? BusinessStatus.Operational,
             FormattedAddress = dto.FormattedAddress,
             GoogleMapsUri = dto.GoogleMapsUri,
             WebsiteUri = dto.WebsiteUri,

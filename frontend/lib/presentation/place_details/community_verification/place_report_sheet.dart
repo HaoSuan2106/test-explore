@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../../providers/hidden_place/hidden_place_provider.dart';
 import '../../../models/hidden_place/recommended_place_model.dart';
+import '../../../widgets/app_feedback.dart';
 
 /// Bottom sheet for PLACE reporting (ONE-TIME per user + place — NOT a toggle).
 ///
@@ -60,13 +61,20 @@ class _PlaceReportSheetState extends State<PlaceReportSheet> {
       _loadingReasons = true;
       _loadFailed = false;
     });
+
     final provider = context.read<HiddenPlaceProvider>();
     final reasons = await provider.loadPlaceReportReasons();
+
+    final filteredReasons = reasons
+        .where((reason) => reason != 'OTHER')
+        .toList();
+
     if (!mounted) return;
+
     setState(() {
-      _reasons = reasons;
+      _reasons = filteredReasons;
       _loadingReasons = false;
-      _loadFailed = reasons.isEmpty;
+      _loadFailed = filteredReasons.isEmpty;
     });
   }
 
@@ -81,8 +89,6 @@ class _PlaceReportSheetState extends State<PlaceReportSheet> {
         return 'Duplicate of another place';
       case 'DOES_NOT_EXIST':
         return 'This place does not exist';
-      case 'OTHER':
-        return 'Other reason';
       default:
         return code;
     }
@@ -111,8 +117,10 @@ class _PlaceReportSheetState extends State<PlaceReportSheet> {
       // Genuine network / server error: show a short friendly message and let the
       // user retry (the sheet stays open).
       final message = provider.errorMessage ?? 'Failed to submit report. Please try again.';
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(message)),
+      AppFeedback.show(
+        context,
+        message: message,
+        isSuccess: false,
       );
       setState(() => _submitting = false);
       return;

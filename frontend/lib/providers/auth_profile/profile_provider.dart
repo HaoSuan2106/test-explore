@@ -4,35 +4,9 @@ import 'package:flutter/widgets.dart';
 import 'package:dio/dio.dart';
 import '../../api_communication/http_client/http_client.dart';
 import '../../models/auth_profile/profile_model.dart';
+import '../../utilities/error_message.dart';
 import '../../utilities/profile_image_cache.dart';
 import '../session_scoped_provider.dart';
-
-String? _messageFor(DioException e) {
-  final data = e.response?.data;
-  if (data is! Map) return null;
-
-  if (data['message'] is String) return data['message'] as String;
-
-  // A rejected [ApiController] model replies with
-  // { errors: { Field: ["reason", ...] } } and no top-level message. Without
-  // this the real reason is dropped and every failure — a duplicate username,
-  // an out-of-range age — surfaces as the caller's generic fallback.
-  final errors = data['errors'];
-  if (errors is Map) {
-    for (final value in errors.values) {
-      if (value is String && value.isNotEmpty) return value;
-      if (value is List) {
-        final first = value.firstWhere(
-          (item) => item is String && item.isNotEmpty,
-          orElse: () => null,
-        );
-        if (first is String) return first;
-      }
-    }
-  }
-
-  return null;
-}
 
 class ProfileProvider extends ChangeNotifier implements SessionScopedProvider {
   ProfileProvider({
@@ -151,7 +125,7 @@ class ProfileProvider extends ChangeNotifier implements SessionScopedProvider {
       notifyListeners();
       return true;
     } on DioException catch (e) {
-      errorMessage = _messageFor(e) ?? 'Failed to update profile.';
+      errorMessage = messageForError(e) ?? 'Failed to update profile.';
       notifyListeners();
       return false;
     }
@@ -165,7 +139,7 @@ class ProfileProvider extends ChangeNotifier implements SessionScopedProvider {
       errorMessage = null;
       return true;
     } on DioException catch (e) {
-      errorMessage = _messageFor(e) ?? 'Could not send verification code.';
+      errorMessage = messageForError(e) ?? 'Could not send verification code.';
       notifyListeners();
       return false;
     }
@@ -179,7 +153,7 @@ class ProfileProvider extends ChangeNotifier implements SessionScopedProvider {
       errorMessage = null;
       return true;
     } on DioException catch (e) {
-      errorMessage = _messageFor(e) ?? 'Verification failed.';
+      errorMessage = messageForError(e) ?? 'Verification failed.';
       notifyListeners();
       return false;
     }
@@ -194,7 +168,7 @@ class ProfileProvider extends ChangeNotifier implements SessionScopedProvider {
       errorMessage = null;
       return true;
     } on DioException catch (e) {
-      errorMessage = _messageFor(e) ?? 'Could not send verification code.';
+      errorMessage = messageForError(e) ?? 'Could not send verification code.';
       notifyListeners();
       return false;
     }
@@ -208,7 +182,7 @@ class ProfileProvider extends ChangeNotifier implements SessionScopedProvider {
       notifyListeners();
       return true;
     } on DioException catch (e) {
-      errorMessage = _messageFor(e) ?? 'Verification failed.';
+      errorMessage = messageForError(e) ?? 'Verification failed.';
       notifyListeners();
       return false;
     }
@@ -221,7 +195,7 @@ class ProfileProvider extends ChangeNotifier implements SessionScopedProvider {
       errorMessage = null;
       return true;
     } on DioException catch (e) {
-      errorMessage = _messageFor(e) ?? 'Could not confirm your password.';
+      errorMessage = messageForError(e) ?? 'Could not confirm your password.';
       notifyListeners();
       return false;
     }
@@ -241,7 +215,7 @@ class ProfileProvider extends ChangeNotifier implements SessionScopedProvider {
       errorMessage = null;
       return true;
     } on DioException catch (e) {
-      errorMessage = _messageFor(e) ?? 'Could not update your password.';
+      errorMessage = messageForError(e) ?? 'Could not update your password.';
       notifyListeners();
       return false;
     }
@@ -254,7 +228,7 @@ class ProfileProvider extends ChangeNotifier implements SessionScopedProvider {
       errorMessage = null;
       return true;
     } on DioException catch (e) {
-      errorMessage = _messageFor(e) ?? 'Could not send verification code.';
+      errorMessage = messageForError(e) ?? 'Could not send verification code.';
       notifyListeners();
       return false;
     }
@@ -267,7 +241,7 @@ class ProfileProvider extends ChangeNotifier implements SessionScopedProvider {
       errorMessage = null;
       return true;
     } on DioException catch (e) {
-      errorMessage = _messageFor(e) ?? 'Verification failed.';
+      errorMessage = messageForError(e) ?? 'Verification failed.';
       notifyListeners();
       return false;
     }

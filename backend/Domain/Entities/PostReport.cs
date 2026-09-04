@@ -7,9 +7,9 @@ namespace ExploreMy.Api.Domain.Entities;
 ///
 /// Lifecycle: a report is created as ACTIVE (withdrawn_at = NULL). A reporter
 /// may withdraw their own report, moving it to WITHDRAWN and stamping
-/// withdrawn_at with the withdrawal timestamp. Multiple reports from the same
-/// user on the same post are allowed (the schema has no unique index on
-/// post_id + reporter_id).
+/// withdrawn_at with the withdrawal timestamp. A withdrawn report may be
+/// re-activated by reporting the same post again. The schema enforces
+/// UNIQUE(post_id, reporter_id) so only one row exists per (post, reporter).
 /// </summary>
 public class PostReport
 {

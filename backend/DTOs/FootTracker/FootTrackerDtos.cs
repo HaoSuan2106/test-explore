@@ -13,6 +13,8 @@ public class FavouritePlaceDto
     public double Longitude { get; set; }
     public DateTime? LastVisitAt { get; set; }
     public DateTime CreatedAt { get; set; }
+    public string? PhotoUrl { get; set; }
+    public string? PhotoAttribution { get; set; }
 }
 
 public class AddFavouritePlaceRequestDto
@@ -102,4 +104,6 @@ public class VisitLogDto
     public DateTime? StartedAt { get; set; }
     public DateTime? EndedAt { get; set; }
     public string Status { get; set; } = string.Empty;
+    public string? PhotoUrl { get; set; }
+    public string? PhotoAttribution { get; set; }
 }

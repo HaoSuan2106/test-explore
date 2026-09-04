@@ -48,8 +48,17 @@ public interface IStorageClient
     Task DeleteFromBucketAsync(string bucket, string path);
 
     /// Extracts the storage object path from a public URL previously returned by UploadAsync, or null if the URL isn't from the configured bucket.
-    string? GetPathFromPublicUrl(string publicUrl);
+    /// <param name="bucket">Bucket the URL is expected to belong to. Null uses the configured default (profile pictures) — unchanged behaviour for existing callers.</param>
+    string? GetPathFromPublicUrl(string publicUrl, string? bucket = null);
 
     /// Extracts the storage object path from a public URL previously returned by UploadToBucketAsync, or null if the URL isn't from the given bucket.
     string? GetPathFromBucketUrl(string bucket, string publicUrl);
+
+    /// <summary>
+    /// Moves/renames an object already in storage (within the same bucket) and returns its new
+    /// public URL. Used to relocate a file uploaded under a temporary path once the real identifier
+    /// it should be named after (e.g. a persisted message id) becomes known — see Community's
+    /// CommunicationService.SendMessageAsync.
+    /// </summary>
+    Task<string> MoveAsync(string fromPath, string toPath, string? bucket = null);
 }

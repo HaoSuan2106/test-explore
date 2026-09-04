@@ -47,7 +47,6 @@ class _RecommendReviewScreenState extends State<RecommendReviewScreen> {
         latitude: draft.latitude ?? 0,
         longitude: draft.longitude ?? 0,
         priceLevel: draft.priceLevel,
-        businessStatus: draft.businessStatus,
         photoPaths: draft.photoPaths.isNotEmpty ? draft.photoPaths : null,
       );
     } else {
@@ -59,7 +58,6 @@ class _RecommendReviewScreenState extends State<RecommendReviewScreen> {
         latitude: draft.latitude ?? 0,
         longitude: draft.longitude ?? 0,
         priceLevel: draft.priceLevel,
-        businessStatus: draft.businessStatus,
         photoPaths: draft.photoPaths.isNotEmpty ? draft.photoPaths : null,
       );
     }
@@ -68,6 +66,10 @@ class _RecommendReviewScreenState extends State<RecommendReviewScreen> {
     setState(() => _submitting = false);
 
     if (id != null) {
+      // Read the authoritative verification count from the provider (which
+      // reloaded the list inside submitRecommendation/updateRecommendation).
+      final count = provider.getPlaceById(id)?.currentVotes ?? 0;
+
       // Replace the review step so going back from Success skips it, and carry
       // the submission id so Success can link straight to its Details. Mark the
       // terminal as an UPDATE when we were editing, so the success copy and the
@@ -76,6 +78,7 @@ class _RecommendReviewScreenState extends State<RecommendReviewScreen> {
         context,
         submissionId: id,
         isUpdate: draft.editingSubmissionId != null,
+        verificationCount: count,
       );
     } else {
       AppFeedback.show(context,
@@ -151,14 +154,6 @@ class _RecommendReviewScreenState extends State<RecommendReviewScreen> {
                           icon: Icons.paid_outlined,
                           label: 'Price Level',
                           value: _priceLevelLabel(draft.priceLevel!),
-                        ),
-                        const SizedBox(height: AppSpacing.stackSm),
-                      ],
-                      if (draft.businessStatus != null) ...[
-                        _buildSummaryRow(
-                          icon: Icons.storefront_outlined,
-                          label: 'Business Status',
-                          value: _businessStatusLabel(draft.businessStatus!),
                         ),
                         const SizedBox(height: AppSpacing.stackSm),
                       ],
@@ -261,19 +256,6 @@ class _RecommendReviewScreenState extends State<RecommendReviewScreen> {
     }
   }
 
-  /// Business-status label, kept in sync with Step 1's `_businessStatusLabel`.
-  String _businessStatusLabel(String value) {
-    switch (value) {
-      case 'OPERATIONAL':
-        return 'Operational';
-
-      case 'CLOSED_TEMPORARILY':
-        return 'Closed Temporarily';
-
-      default:
-        return value;
-    }
-  }
 
   /// Read-only photo thumbnails for the review. Uses the same local paths
   /// carried in the draft (uploaded only at submission). Invalid/corrupt files

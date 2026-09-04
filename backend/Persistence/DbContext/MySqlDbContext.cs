@@ -55,6 +55,13 @@ public class MySqlDbContext : Microsoft.EntityFrameworkCore.DbContext
     public DbSet<PlaceSubmission> PlaceSubmissions => Set<PlaceSubmission>();
     public DbSet<PlaceSubmissionVerification> PlaceSubmissionVerifications => Set<PlaceSubmissionVerification>();
 
+    // Communication module (Community Chat)
+    public DbSet<Community> Communities => Set<Community>();
+    public DbSet<CommunityMember> CommunityMembers => Set<CommunityMember>();
+    public DbSet<Message> Messages => Set<Message>();
+    public DbSet<MessageAttachment> MessageAttachments => Set<MessageAttachment>();
+    public DbSet<MessageReport> MessageReports => Set<MessageReport>();
+
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);
@@ -347,78 +354,71 @@ public class MySqlDbContext : Microsoft.EntityFrameworkCore.DbContext
             entity.HasIndex(p => p.PlaceId).IsUnique();
         });
 
-        modelBuilder.Entity<HiddenPlaceSuppression>(entity =>
-        {
-            entity.ToTable("hidden_place_suppression");
-            entity.HasKey(s => s.HiddenPlaceSuppressionId);
-
-            entity.Property(s => s.PlaceId).HasMaxLength(255);
-            entity.Property(s => s.Name).HasMaxLength(255);
-            entity.Property(s => s.Reason).HasMaxLength(100);
-            entity.Property(s => s.SuppressedAt)
-                .HasColumnType("timestamp")
-                .HasDefaultValueSql("CURRENT_TIMESTAMP");
-
-            // Same reasoning as place_photo: no foreign key to hidden_place_cache. A suppression
-            // whose lifetime was tied to a cache row would be erased by the very refresh it is
-            // meant to survive, and the reported place would come straight back.
-            entity.HasIndex(s => s.PlaceId).IsUnique();
-        });
+        // hidden_place_suppression is configured further down, in one place, next to the rest of the
+        // reporting tables. It used to be configured HERE as well, and the two blocks disagreed: this
+        // one declared HasIndex(PlaceId).IsUnique(), the other declares the same index without it and
+        // puts the uniqueness on (UserId, PlaceId) instead. Two calls for the same property list are
+        // the SAME index, and the second only renamed it - the IsUnique() set here survived into the
+        // model, which is how a UNIQUE landed on place_id alone.
+        //
+        // That is not a cosmetic mismatch. One row per (user, place) is the whole storage design: a
+        // place is suppressed once HideThreshold DIFFERENT people report it, so a unique place_id
+        // means reporter number two gets a duplicate-key error and the threshold can never be
+        // reached. Do not reintroduce a second configuration block for this entity.
 
         // Foot Tracker Modules
         modelBuilder.Entity<FavouritePlace>(entity =>
         {
             entity.ToTable("favourite_place");
 
-            entity.Property(f => f.PlaceId).HasMaxLength(255);
-            entity.Property(f => f.Name).HasMaxLength(255);
-            entity.Property(f => f.PrimaryType).HasMaxLength(100);
-            entity.Property(f => f.Address).HasMaxLength(500);
+            entity.Property(f => f.PlaceId).IsRequired().HasMaxLength(255);
             entity.Property(f => f.LastVisitAt).HasColumnType("datetime");
             entity.Property(f => f.CreatedAt)
                 .HasColumnType("timestamp")
                 .HasDefaultValueSql("CURRENT_TIMESTAMP");
-
-            // Rich-detail snapshot columns (Google-sourced favourites only)
-            entity.Property(f => f.BusinessStatus).HasMaxLength(50);
-            entity.Property(f => f.GoogleMapsUri).HasMaxLength(500);
-            entity.Property(f => f.NationalPhoneNumber).HasMaxLength(50);
-            entity.Property(f => f.WebsiteUri).HasMaxLength(500);
-            entity.Property(f => f.PhotosJson).HasColumnType("json");
-            entity.Property(f => f.RegularOpeningHoursJson).HasColumnType("json");
-            entity.Property(f => f.UserRatingCount).HasDefaultValue(0);
-
-            // Recommend-sourced favourites (Recommended Places module). FK to
-            // recommended_places(submission_id) intentionally not added yet — see
-            // schema-favourite-place-design notes; add once that feature is built.
-            entity.Property(f => f.RecommendPlaceId).HasMaxLength(36);
 
             entity.HasOne<User>()
                 .WithMany()
                 .HasForeignKey(f => f.UserId)
                 .OnDelete(DeleteBehavior.Cascade);
 
-            // A user should only be able to favourite a given Google place once.
-            // NOTE: once recommend-sourced favouriting exists, this alone won't stop
-            // duplicate recommend-place favourites — MySQL treats every NULL as
-            // distinct, so multiple rows with the same UserId and PlaceId = NULL are
-            // allowed. A second unique index on (UserId, RecommendPlaceId) will be
-            // needed at that point.
+            entity.HasOne(f => f.Place)
+                .WithMany()
+                .HasForeignKey(f => f.PlaceId)
+                .OnDelete(DeleteBehavior.Cascade); // still your call vs Restrict
+
+            // A user should only be able to favourite a given place once.
             entity.HasIndex(f => new { f.UserId, f.PlaceId })
                 .IsUnique()
                 .HasDatabaseName("uq_user_place");
         });
 
-        // ---------------- Post module ----------------
-
         modelBuilder.Entity<Place>(entity =>
         {
             entity.ToTable("places");
             entity.HasKey(p => p.PlaceId);
-            entity.Property(p => p.Name).HasMaxLength(150).IsRequired();
-            entity.Property(p => p.Address).HasMaxLength(250).IsRequired();
-            entity.Property(p => p.Category).HasMaxLength(50).IsRequired();
+
+            entity.Property(p => p.PlaceId).HasMaxLength(255);
+            entity.Property(p => p.Name).IsRequired().HasMaxLength(150);
+            entity.Property(p => p.Address).IsRequired().HasMaxLength(500);
+            entity.Property(p => p.PrimaryType).IsRequired().HasMaxLength(100);
+            entity.Property(p => p.BusinessStatus).HasMaxLength(50);
+            entity.Property(p => p.GoogleMapsUri).HasMaxLength(500);
+            entity.Property(p => p.NationalPhoneNumber).HasMaxLength(50);
+            entity.Property(p => p.WebsiteUri).HasMaxLength(500);
+            entity.Property(p => p.ShortFormattedAddress).HasMaxLength(500);
+            entity.Property(p => p.PrimaryTypeDisplayName).HasMaxLength(100);
+            entity.Property(p => p.UserRatingCount).HasDefaultValue(0);
+
+            entity.Property(p => p.PhotosJson).HasColumnType("json");
+            entity.Property(p => p.RegularOpeningHoursJson).HasColumnType("json");
+            entity.Property(p => p.AccessibilityOptionsJson).HasColumnType("json");
+            entity.Property(p => p.AddressComponentsJson).HasColumnType("json");
+            entity.Property(p => p.GoogleMapsLinksJson).HasColumnType("json");
+            entity.Property(p => p.ViewportJson).HasColumnType("json");
         });
+
+        // ---------------- Post module ----------------
 
         modelBuilder.Entity<Post>(entity =>
         {
@@ -636,6 +636,125 @@ public class MySqlDbContext : Microsoft.EntityFrameworkCore.DbContext
             entity.HasIndex(v => v.UserId);
         });
 
+        // ---------------- Communication module (Community Chat) ----------------
+        // Kept in sync with database/scripts/CreateTable.sql's "MODULE: Communication" section.
+
+        modelBuilder.Entity<Community>(entity =>
+        {
+            entity.ToTable("community");
+            entity.HasKey(c => c.CommunityId);
+
+            entity.Property(c => c.Name).HasMaxLength(150).IsRequired();
+            entity.Property(c => c.Description).HasMaxLength(1000);
+            entity.Property(c => c.Area).HasMaxLength(100);
+            entity.Property(c => c.State).HasMaxLength(100);
+            entity.Property(c => c.ImageUrl).HasMaxLength(500);
+            entity.Property(c => c.CreatedAt)
+                .HasColumnType("timestamp")
+                .HasDefaultValueSql("CURRENT_TIMESTAMP");
+
+            entity.HasIndex(c => c.State).HasDatabaseName("idx_community_state");
+        });
+
+        modelBuilder.Entity<CommunityMember>(entity =>
+        {
+            entity.ToTable("community_member");
+            entity.HasKey(m => m.CommunityMemberId);
+
+            entity.Property(m => m.Role).HasMaxLength(20).HasDefaultValue("Member");
+            entity.Property(m => m.IsActive).HasDefaultValue(true);
+            entity.Property(m => m.JoinedAt)
+                .HasColumnType("timestamp")
+                .HasDefaultValueSql("CURRENT_TIMESTAMP");
+            entity.Property(m => m.LeftAt).HasColumnType("datetime");
+
+            entity.HasOne<Community>()
+                .WithMany()
+                .HasForeignKey(m => m.CommunityId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            entity.HasOne<User>()
+                .WithMany()
+                .HasForeignKey(m => m.UserId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            entity.HasIndex(m => new { m.CommunityId, m.UserId })
+                .IsUnique()
+                .HasDatabaseName("idx_member_community_user");
+        });
+
+        modelBuilder.Entity<Message>(entity =>
+        {
+            entity.ToTable("message");
+            entity.HasKey(m => m.MessageId);
+
+            entity.Property(m => m.Content).HasMaxLength(2000);
+            entity.Property(m => m.IsDeleted).HasDefaultValue(false);
+            entity.Property(m => m.SentAt)
+                .HasColumnType("timestamp")
+                .HasDefaultValueSql("CURRENT_TIMESTAMP");
+
+            entity.HasOne<Community>()
+                .WithMany()
+                .HasForeignKey(m => m.CommunityId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            entity.HasOne<User>()
+                .WithMany()
+                .HasForeignKey(m => m.SenderUserId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            entity.HasIndex(m => new { m.CommunityId, m.SentAt }).HasDatabaseName("idx_message_community_sent_at");
+        });
+
+        modelBuilder.Entity<MessageAttachment>(entity =>
+        {
+            entity.ToTable("message_attachment");
+            entity.HasKey(a => a.AttachmentId);
+
+            entity.Property(a => a.Type).HasMaxLength(20).IsRequired();
+            entity.Property(a => a.MediaUrl).HasMaxLength(500);
+            entity.Property(a => a.PlaceId).HasMaxLength(255);
+            entity.Property(a => a.PlaceName).HasMaxLength(255);
+            entity.Property(a => a.PlaceAddress).HasMaxLength(500);
+            entity.Property(a => a.PlaceImageUrl).HasMaxLength(500);
+            entity.Property(a => a.PlaceStatus).HasMaxLength(50);
+            entity.Property(a => a.PlacePrimaryType).HasMaxLength(100);
+            entity.Property(a => a.IsCommunityPlace).HasDefaultValue(false);
+
+            entity.HasOne<Message>()
+                .WithMany()
+                .HasForeignKey(a => a.MessageId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            entity.HasIndex(a => a.MessageId).HasDatabaseName("idx_attachment_message_id");
+        });
+
+        modelBuilder.Entity<MessageReport>(entity =>
+        {
+            entity.ToTable("message_report");
+            entity.HasKey(r => r.ReportId);
+
+            entity.Property(r => r.Reason).HasMaxLength(500);
+            entity.Property(r => r.CreatedAt)
+                .HasColumnType("timestamp")
+                .HasDefaultValueSql("CURRENT_TIMESTAMP");
+
+            entity.HasOne<Message>()
+                .WithMany()
+                .HasForeignKey(r => r.MessageId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            entity.HasOne<User>()
+                .WithMany()
+                .HasForeignKey(r => r.ReporterUserId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            entity.HasIndex(r => new { r.MessageId, r.ReporterUserId })
+                .IsUnique()
+                .HasDatabaseName("idx_report_message_reporter");
+        });
+
         modelBuilder.Entity<HiddenPlaceSuppression>(entity =>
         {
             entity.ToTable("hidden_place_suppression");
@@ -656,4 +775,3 @@ public class MySqlDbContext : Microsoft.EntityFrameworkCore.DbContext
         });
     }
 }
-

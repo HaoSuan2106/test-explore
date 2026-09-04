@@ -1,4 +1,4 @@
-@ExploreMy_Api_HostAddress = http://10.210.56.218:5226
+@ExploreMy_Api_HostAddress = http://10.255.28.218:5226
 
 GET {{ExploreMy_Api_HostAddress}}/weatherforecast/
 Accept: application/json

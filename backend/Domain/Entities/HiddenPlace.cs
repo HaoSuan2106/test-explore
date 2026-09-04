@@ -27,7 +27,7 @@ public class HiddenPlace
     public double? Rating { get; set; }
     public int UserRatingCount { get; set; }
     public int? PriceLevel { get; set; }
-    public string BusinessStatus { get; set; } = "OPERATIONAL";
+    public string BusinessStatus { get; set; } = global::ExploreMy.Api.Domain.Entities.BusinessStatus.Operational;
 
     // ---- Presentation detail. Cached purely so a place can be displayed without a second round-trip to
     // Google; none of it feeds the discovery algorithm. See PlaceCandidate for the per-field notes. ----

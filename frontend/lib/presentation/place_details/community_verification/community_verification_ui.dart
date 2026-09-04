@@ -14,6 +14,28 @@ enum CommunityUserVote {
   verify,
 }
 
+/// Navigation payload for routing to [CommunityVerificationUI] through GoRouter.
+class CommunityVerificationArgs {
+  final String placeId;
+  final CommunityPlaceStatus placeStatus;
+  final CommunityUserVote userVote;
+  final String placeName;
+  final String recommendedBy;
+  final int reportCount;
+  final bool isReportedClosed;
+  final bool hasReported;
+  const CommunityVerificationArgs({
+    required this.placeId,
+    this.placeStatus = CommunityPlaceStatus.unverified,
+    this.userVote = CommunityUserVote.none,
+    this.placeName = '',
+    this.recommendedBy = '',
+    this.reportCount = 0,
+    this.isReportedClosed = false,
+    this.hasReported = false,
+  });
+}
+
 /// Community verification screen for a RECOMMENDED PLACE.
 ///
 /// Shows:
@@ -431,7 +453,7 @@ class _CommunityVerificationUIState
             iconColor: Colors.green,
             title: 'Verify Place',
             description:
-            'This place exist and is worth recommending\nto other travelers.',
+            'This place exists and is worth recommending\nto other travelers.',
             onTap: _mutating
                 ? null
                 : () => _selectVote(CommunityUserVote.verify),

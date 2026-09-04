@@ -1,6 +1,7 @@
 using ExploreMy.Api.Application.HiddenPlace.DiscoverHiddenPlace;
 using ExploreMy.Api.Application.HiddenPlace.HiddenPlaceContribution;
 using ExploreMy.Api.Application.HiddenPlace.PlacePhotos;
+using ExploreMy.Api.Application.HiddenPlace.Review;
 using ExploreMy.Api.DataAccess.ExternalClients.GooglePlaces;
 using ExploreMy.Api.DataAccess.Repositories.HiddenPlace;
 using ExploreMy.Api.Domain.Entities;
@@ -51,6 +52,7 @@ public class HiddenPlaceService : IHiddenPlaceService
     private readonly IHiddenPlaceContributionService _contribution;
     private readonly IPlacePhotoService _placePhotoService;
     private readonly IHiddenPlaceSuppressionRepository _suppressionRepository;
+    private readonly IReviewService _reviewService;
 
     public HiddenPlaceService(
         IPlacesApiClient placesApiClient,
@@ -59,8 +61,10 @@ public class HiddenPlaceService : IHiddenPlaceService
         ILogger<HiddenPlaceService> logger,
         IHiddenPlaceContributionService contribution,
         IPlacePhotoService placePhotoService,
-        IHiddenPlaceSuppressionRepository suppressionRepository)
+        IHiddenPlaceSuppressionRepository suppressionRepository,
+        IReviewService reviewService)
     {
+        _reviewService = reviewService;
         _placesApiClient = placesApiClient;
         _hiddenPlaceRepository = hiddenPlaceRepository;
         _discoverHiddenPlaceService = discoverHiddenPlaceService;
@@ -109,10 +113,11 @@ public class HiddenPlaceService : IHiddenPlaceService
         // anywhere in that cell's own circle. Without this filter, a place at the far edge of an included
         // cell can end up well outside the radius the user actually asked for (e.g. a 5km search pulling
         // in a place ~9-10km away). This is the exact-distance check that enforces the promised radius.
-        // Places the community has reported out of existence. Applied HERE, on the way out, rather
-        // than by deleting cache rows: hidden_place_cache is refilled from Google every 30 days, so a
-        // deleted row simply comes back and the reports are silently undone. Excluding at read time
-        // is the only thing a refresh cannot overwrite.
+        // Places the community has reported out of existence - reported by at least HideThreshold
+        // separate people, not by one (the repository does the counting). Applied HERE, on the way
+        // out, rather than by deleting cache rows: hidden_place_cache is refilled from Google every
+        // 30 days, so a deleted row simply comes back and the reports are silently undone. Excluding
+        // at read time is the only thing a refresh cannot overwrite.
         var suppressedPlaceIds = await _suppressionRepository.GetSuppressedPlaceIdsAsync();
 
         var candidates = freshCache.Values.SelectMany(v => v)
@@ -149,7 +154,10 @@ public class HiddenPlaceService : IHiddenPlaceService
     }
 
     /// <summary>
-    /// Verified community submissions inside the searched radius, newest first.
+    /// Community submissions inside the searched radius, newest first - both the verified ones and
+    /// those still collecting verifications. Each carries its status out to the client, which draws
+    /// the two differently; showing only verified ones meant a person could recommend a place and
+    /// then not find it on their own map until five strangers agreed with them.
     ///
     /// These live in recommended_places, NOT in hidden_place_cache, and that separation is
     /// deliberate: the cache is deleted and rewritten wholesale on every refresh, so a user
@@ -164,10 +172,10 @@ public class HiddenPlaceService : IHiddenPlaceService
     {
         try
         {
-            // Already filtered to status VERIFIED and ordered newest-first by the repository.
-            var published = await _hiddenPlaceRepository.GetPublishedPlacesAsync();
+            // Ordered newest-first by the repository; UNDER_VOTING included alongside VERIFIED.
+            var published = await _hiddenPlaceRepository.GetPublishedPlacesAsync(includeUnderVoting: true);
 
-            return published
+            var visible = published
                 // A submission without a place row cannot be placed on a map at all. It should not
                 // be possible, but a null here would crash the whole search rather than lose one pin.
                 .Where(p => p.Place != null)
@@ -179,6 +187,25 @@ public class HiddenPlaceService : IHiddenPlaceService
                 })
                 .Where(x => SearchGridPlanner.DistanceMeters(
                     request.Latitude, request.Longitude, x.Latitude, x.Longitude) <= request.RadiusMeters)
+                .ToList();
+
+            // Reported-out community places, excluded the same way Google ones are: at read time.
+            //
+            // The status flip to REPORTED_CLOSED is the primary mechanism, but it cannot be the only
+            // one. It happens inside the report request, so anything that reaches the threshold by a
+            // path the report handler did not walk - or that was already VERIFIED when the reports
+            // arrived - keeps a publishable status while its suppression rows pile up unread. This
+            // check reads those rows and is what the map actually trusts.
+            //
+            // Matched on RecommendPlaceId, NOT on the DTO's PlaceId: suppression rows store the
+            // canonical recommend_place id, while the DTO advertises the submission id (see
+            // MapCommunityToResponseDto). Comparing the wrong one silently matches nothing.
+            var reportCounts = await _suppressionRepository.GetReportCountsByRecommendedPlaceIdsAsync(
+                visible.Select(x => x.Place.RecommendPlaceId).ToList());
+
+            return visible
+                .Where(x => !reportCounts.TryGetValue(x.Place.RecommendPlaceId, out var reports)
+                    || reports < RecommendedPlaceThresholds.HideThreshold)
                 .Select(x => MapCommunityToResponseDto(x.Place, x.Latitude, x.Longitude))
                 .ToList();
         }
@@ -191,25 +218,29 @@ public class HiddenPlaceService : IHiddenPlaceService
 
     private static HiddenPlaceResponseItemDto MapCommunityToResponseDto(
         PlaceSubmission place, double latitude, double longitude) => new()
-    {
-        // The submission id stands in for a Google place id. It is a GUID, so it cannot collide with
-        // a real one, and the client only ever uses this field as an identity key.
-        PlaceId = place.SubmissionId,
-        Name = place.Place!.Name,
-        PrimaryType = MapCategoryToPlaceType(place.Place!.PrimaryType),
-        Latitude = latitude,
-        Longitude = longitude,
+        {
+            // The submission id stands in for a Google place id. It is a GUID, so it cannot collide with
+            // a real one, and the client only ever uses this field as an identity key.
+            PlaceId = place.SubmissionId,
+            Name = place.Place!.Name,
+            PrimaryType = MapCategoryToPlaceType(place.Place!.PrimaryType),
+            Latitude = latitude,
+            Longitude = longitude,
 
-        // Left empty rather than faked. Rating, review count, HiddenScore and FormattedAddress all
-        // describe how many strangers on Google have been somewhere - a question a community
-        // submission has no answer to. Source is what tells the client to stop reading them.
-        FormattedAddress = null,
-        Rating = null,
-        UserRatingCount = 0,
-        HiddenScore = 0,
+            // Left empty rather than faked. Rating, review count, HiddenScore and FormattedAddress all
+            // describe how many strangers on Google have been somewhere - a question a community
+            // submission has no answer to. Source is what tells the client to stop reading them.
+            FormattedAddress = null,
+            Rating = null,
+            UserRatingCount = 0,
+            HiddenScore = 0,
 
-        Source = HiddenPlaceSource.Community
-    };
+            Source = HiddenPlaceSource.Community,
+
+            // VERIFIED or UNDER_VOTING - the client needs the difference to draw an unverified pin as
+            // the unconfirmed claim it is.
+            CommunityStatus = place.Status
+        };
 
     /// <summary>
     /// Translates a submission's category ("Scenic Point") into the Places API type string the app
@@ -401,18 +432,54 @@ public class HiddenPlaceService : IHiddenPlaceService
     public Task<string> UploadPlaceImageAsync(int currentUserId, Stream fileStream, string fileName, string contentType)
         => _contribution.UploadPlaceImageAsync(currentUserId, fileStream, fileName, contentType);
 
-    public Task<WithdrawRecommendedPlaceResponseDto> WithdrawPlaceAsync(int currentUserId, string submissionId)
-        => _contribution.WithdrawPlaceAsync(currentUserId, submissionId);
-
     public Task<ToggleVerificationResponseDto> ToggleVerificationAsync(int currentUserId, string submissionId, bool verify)
         => _contribution.ToggleVerificationAsync(currentUserId, submissionId, verify);
 
     public Task<ReportPlaceResponseDto> ReportPlaceAsync(int currentUserId, string submissionId, string reason)
         => _contribution.ReportPlaceAsync(currentUserId, submissionId, reason);
 
+    public Task<PlaceReportStatusResponseDto> GetPlaceReportStatusAsync(int currentUserId, string placeId)
+        => _contribution.GetPlaceReportStatusAsync(currentUserId, placeId);
+
+    public Task<SubmitRecommendedPlaceResponseDto> WithdrawRecommendationAsync(int currentUserId, string submissionId)
+        => _contribution.WithdrawRecommendationAsync(currentUserId, submissionId);
+
     public Task<List<RecommendedPlaceSummaryDto>> GetPublishedPlacesAsync()
         => _discoverHiddenPlaceService.GetPublishedPlacesAsync();
 
     public Task<List<string>> GetPrimaryTypeOptionsAsync()
         => _contribution.GetPrimaryTypeOptionsAsync();
+
+    public Task<HiddenPlaceReviewDto?> GetReviewByIdAsync(long reviewId)
+        => _reviewService.GetByIdAsync(reviewId);
+
+    public Task<List<HiddenPlaceReviewDto>> GetReviewsByGooglePlaceIdAsync(string googlePlaceId)
+        => _reviewService.GetByGooglePlaceIdAsync(googlePlaceId);
+
+    public Task<List<HiddenPlaceReviewDto>> GetReviewsByRecommendPlaceIdAsync(string recommendPlaceId)
+        => _reviewService.GetByRecommendPlaceIdAsync(recommendPlaceId);
+
+    public Task<HiddenPlaceReviewDto?> GetUserReviewForGooglePlaceAsync(int userId, string googlePlaceId)
+        => _reviewService.GetUserReviewForGooglePlaceAsync(userId, googlePlaceId);
+
+    public Task<HiddenPlaceReviewDto?> GetUserReviewForRecommendPlaceAsync(int userId, string recommendPlaceId)
+        => _reviewService.GetUserReviewForRecommendPlaceAsync(userId, recommendPlaceId);
+
+    public Task<HiddenPlaceReviewDto> CreateReviewAsync(int userId, CreateHiddenPlaceReviewRequestDto request)
+        => _reviewService.CreateAsync(userId, request);
+
+    public Task<HiddenPlaceReviewDto> UpdateReviewAsync(int userId, long reviewId, UpdateHiddenPlaceReviewRequestDto request)
+        => _reviewService.UpdateAsync(userId, reviewId, request);
+
+    public Task DeleteReviewAsync(int userId, long reviewId)
+        => _reviewService.DeleteAsync(userId, reviewId);
+
+    public Task<List<HiddenPlaceReviewPhotoDto>> UploadReviewPhotosAsync(int userId, long reviewId, List<IFormFile> files)
+        => _reviewService.UploadPhotosAsync(userId, reviewId, files);
+
+    public Task DeleteReviewPhotoAsync(int userId, long reviewId, long reviewPhotoId)
+        => _reviewService.DeletePhotoAsync(userId, reviewId, reviewPhotoId);
+
+    public Task ReportReviewAsync(int userId, long reviewId, string reason)
+        => _reviewService.ReportAsync(userId, reviewId, reason);
 }

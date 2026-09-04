@@ -1,3 +1,5 @@
+using ExploreMy.Api.Common.Helpers;
+
 namespace ExploreMy.Api.Application.HiddenPlace.Facade;
 
 /// <summary>One unit of work: "fetch this place type within this circle", plus the cache bucket key it maps to.</summary>
@@ -155,12 +157,5 @@ public static class SearchGridPlanner
     /// an included cell can be farther from the user than the radius they asked for. This method is the
     /// one source of truth for "how far is X from Y", reused for that exact-distance check.</summary>
     internal static double DistanceMeters(double lat1, double lng1, double lat2, double lng2)
-    {
-        // Equirectangular approximation - plenty accurate at a few-km scale, and much cheaper than
-        // full haversine for something evaluated dozens of times per request.
-        var metersPerDegreeLng = MetersPerDegreeLatitude * Math.Cos(DegreesToRadians((lat1 + lat2) / 2));
-        var dLat = (lat2 - lat1) * MetersPerDegreeLatitude;
-        var dLng = (lng2 - lng1) * metersPerDegreeLng;
-        return Math.Sqrt(dLat * dLat + dLng * dLng);
-    }
+        => GeoDistance.EquirectangularMeters(lat1, lng1, lat2, lng2);
 }

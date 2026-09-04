@@ -1,5 +1,8 @@
 using ExploreMy.Api.Common.Exceptions;
+using ExploreMy.Api.Common.Helpers;
+using ExploreMy.Api.Configuration;
 using ExploreMy.Api.DataAccess.ExternalClients.SupabaseStorage;
+using Microsoft.Extensions.Options;
 using ExploreMy.Api.Domain.Entities;
 using ExploreMy.Api.DTOs.HiddenPlace;
 using Microsoft.AspNetCore.Http;
@@ -9,6 +12,7 @@ namespace ExploreMy.Api.Application.HiddenPlace.Review;
 
 public class ReviewService : IReviewService
 {
+    private readonly SupabaseSettings _supabase;
     private readonly IReviewRepository _repository;
     private readonly IReviewPhotoRepository _reviewPhotoRepository;
     private readonly IStorageClient _storageClient;
@@ -19,12 +23,14 @@ public class ReviewService : IReviewService
     IReviewRepository repository,
     IReviewPhotoRepository reviewPhotoRepository,
     IStorageClient storageClient,
-    IReviewReportRepository reviewReportRepository)
+    IReviewReportRepository reviewReportRepository,
+    IOptions<SupabaseSettings> supabase)
     {
         _repository = repository;
         _reviewPhotoRepository = reviewPhotoRepository;
         _storageClient = storageClient;
         _reviewReportRepository = reviewReportRepository;
+        _supabase = supabase.Value;
     }
 
     public async Task<HiddenPlaceReviewDto?> GetByIdAsync(long reviewId)
@@ -215,11 +221,15 @@ public class ReviewService : IReviewService
         foreach (var photo in photos)
         {
             var storagePath =
-                _storageClient.GetPathFromPublicUrl(photo.PhotoUrl);
+                _storageClient.GetPathFromPublicUrl(
+                    photo.PhotoUrl,
+                    _supabase.ReviewPhotoBucket);
 
             if (!string.IsNullOrWhiteSpace(storagePath))
             {
-                await _storageClient.DeleteAsync(storagePath);
+                await _storageClient.DeleteFromBucketAsync(
+                    _supabase.ReviewPhotoBucket,
+                    storagePath);
             }
         }
 
@@ -310,16 +320,6 @@ public class ReviewService : IReviewService
                 "A review can have a maximum of 5 photos.");
         }
 
-        var allowedContentTypes = new HashSet<string>(
-            StringComparer.OrdinalIgnoreCase)
-    {
-        "image/jpeg",
-        "image/png",
-        "image/webp"
-    };
-
-        const long maxFileSize = 5 * 1024 * 1024;
-
         var photos = new List<ReviewPhoto>();
 
         for (var i = 0; i < files.Count; i++)
@@ -331,13 +331,13 @@ public class ReviewService : IReviewService
                 throw new ArgumentException("One of the uploaded files is empty.");
             }
 
-            if (file.Length > maxFileSize)
+            if (file.Length > ImageUploadPolicy.MaxSizeBytes)
             {
                 throw new ArgumentException(
                     "Each photo must not exceed 5MB.");
             }
 
-            if (!allowedContentTypes.Contains(file.ContentType))
+            if (!ImageUploadPolicy.IsAllowedImageType(file.ContentType, ImageUploadPolicy.ReviewImageContentTypes))
             {
                 throw new ArgumentException(
                     "Unsupported photo type. Allowed: jpeg, png, webp.");
@@ -354,14 +354,15 @@ public class ReviewService : IReviewService
             var fileName = $"{Guid.NewGuid():N}{extension}";
 
             var storagePath =
-                $"reviews/{reviewId}/{fileName}";
+                $"{reviewId}/{fileName}";
 
             await using var stream = file.OpenReadStream();
 
             var photoUrl = await _storageClient.UploadAsync(
                 storagePath,
                 stream,
-                file.ContentType);
+                file.ContentType,
+                bucket: _supabase.ReviewPhotoBucket);
 
             photos.Add(new ReviewPhoto
             {
@@ -434,11 +435,15 @@ public class ReviewService : IReviewService
 
         // Delete the file from Supabase Storage.
         var storagePath =
-            _storageClient.GetPathFromPublicUrl(photo.PhotoUrl);
+            _storageClient.GetPathFromPublicUrl(
+                photo.PhotoUrl,
+                _supabase.ReviewPhotoBucket);
 
         if (!string.IsNullOrWhiteSpace(storagePath))
         {
-            await _storageClient.DeleteAsync(storagePath);
+            await _storageClient.DeleteFromBucketAsync(
+                _supabase.ReviewPhotoBucket,
+                storagePath);
         }
 
         // Delete the database record.

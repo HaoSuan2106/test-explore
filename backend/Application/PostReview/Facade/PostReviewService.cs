@@ -33,6 +33,9 @@ public class PostReviewService : IPostReviewService
     public Task<List<PostSummaryDto>> GetMyPostsAsync(int currentUserId)
         => _managePost.GetMyPostsAsync(currentUserId);
 
+    public Task<List<PostSummaryDto>> GetMyLikedPostsAsync(int currentUserId, int page, int pageSize)
+        => _managePost.GetMyLikedPostsAsync(currentUserId, page, pageSize);
+
     public Task<CreatePostResponseDto> CreatePostAsync(int currentUserId, CreatePostRequestDto request)
         => _managePost.CreatePostAsync(currentUserId, request);
 

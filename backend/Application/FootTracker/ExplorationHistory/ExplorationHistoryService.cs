@@ -1,4 +1,5 @@
 ﻿using ExploreMy.Api.DataAccess.Repositories.FootTracker;
+using ExploreMy.Api.DataAccess.Repositories.PlacePhotos;
 using ExploreMy.Api.Domain.Entities;
 using ExploreMy.Api.DTOs.FootTracker;
 
@@ -8,13 +9,16 @@ public class ExplorationHistoryService : IExplorationHistoryService
 {
     private readonly IFootTrackerRepository _footTrackerRepository;
     private readonly IDistrictLookupService _districtLookupService;
+    private readonly IPlacePhotoRepository _photoRepository;
 
     public ExplorationHistoryService(
-    IFootTrackerRepository footTrackerRepository,
-    IDistrictLookupService districtLookupService)
+        IFootTrackerRepository footTrackerRepository,
+        IDistrictLookupService districtLookupService,
+        IPlacePhotoRepository photoRepository)
     {
         _footTrackerRepository = footTrackerRepository;
         _districtLookupService = districtLookupService;
+        _photoRepository = photoRepository;
     }
 
     public async Task<VisitLogDto> RecordVisitAsync(int userId, RecordVisitRequestDto request)
@@ -39,17 +43,36 @@ public class ExplorationHistoryService : IExplorationHistoryService
 
         await _footTrackerRepository.AddFootTrackerLogAsync(log);
 
-        return MapToDto(log);
+        var photos = string.IsNullOrEmpty(log.PlaceId)
+            ? new Dictionary<string, PlacePhoto>()
+            : await _photoRepository.GetByPlaceIdsAsync(new[] { log.PlaceId });
+
+        return MapToDto(log, photos);
     }
 
     public async Task<List<VisitLogDto>> GetVisitsAsync(int userId)
     {
         var logs = await _footTrackerRepository.GetVisitsByUserIdAsync(userId);
-        return logs.Select(MapToDto).ToList();
+
+        var placeIds = logs
+            .Where(l => !string.IsNullOrEmpty(l.PlaceId))
+            .Select(l => l.PlaceId!)
+            .Distinct()
+            .ToList();
+
+        var photos = await _photoRepository.GetByPlaceIdsAsync(placeIds);
+
+        return logs.Select(l => MapToDto(l, photos)).ToList();
     }
 
-    private static VisitLogDto MapToDto(FootTrackerLog log)
+    private static VisitLogDto MapToDto(FootTrackerLog log, IReadOnlyDictionary<string, PlacePhoto> photos)
     {
+        PlacePhoto? photo = null;
+        if (!string.IsNullOrEmpty(log.PlaceId))
+        {
+            photos.TryGetValue(log.PlaceId, out photo);
+        }
+
         return new VisitLogDto
         {
             LogId = log.LogId,
@@ -63,6 +86,8 @@ public class ExplorationHistoryService : IExplorationHistoryService
             StartedAt = log.StartedAt,
             EndedAt = log.EndedAt,
             Status = log.Status,
+            PhotoUrl = photo?.PhotoUrl,
+            PhotoAttribution = photo?.Attribution,
         };
     }
 

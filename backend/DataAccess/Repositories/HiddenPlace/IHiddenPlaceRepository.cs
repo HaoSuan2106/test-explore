@@ -41,10 +41,28 @@ public interface IHiddenPlaceRepository
     Task<HiddenPlaceEntity?> GetGooglePlaceByIdAsync(string placeId);
     // ——— Recommended Places (normalized: canonical place + submission) ———
     Task<List<PlaceSubmission>> GetBySubmitterAsync(int userId);
-    Task<List<PlaceSubmission>> GetPublishedPlacesAsync();
+
+    /// <summary>
+    /// Community submissions fit to be shown publicly, newest first.
+    ///
+    /// By default that means VERIFIED ones only, which is what the public "discover" listing wants.
+    /// Pass <paramref name="includeUnderVoting"/> to also get submissions still collecting
+    /// verifications - the map shows those too, drawn differently, so a recommendation appears the
+    /// moment it is made. WITHDRAWN and REPORTED_CLOSED are never returned either way.
+    /// </summary>
+    Task<List<PlaceSubmission>> GetPublishedPlacesAsync(bool includeUnderVoting = false);
     Task<PlaceSubmission?> GetByIdAsync(string submissionId);
-    Task<bool> ExistsByNameAsync(string name);
-    Task<bool> ExistsNearbyAsync(decimal latitude, decimal longitude, double radiusMeters);
+    /// <summary>
+    /// True when at least one submission with the given name is NOT in any of the
+    /// <paramref name="excludedStatuses"/> (by default all statuses are considered,
+    /// so only a truly duplicate submission returns true).
+    /// </summary>
+    Task<bool> ExistsByNameAsync(string name, IEnumerable<string>? excludedStatuses = null);
+    /// <summary>
+    /// True when at least one submission within [radiusMeters] of the given point
+    /// is NOT in any of the <paramref name="excludedStatuses"/>.
+    /// </summary>
+    Task<bool> ExistsNearbyAsync(decimal latitude, decimal longitude, double radiusMeters, IEnumerable<string>? excludedStatuses = null);
 
     /// <summary>
     /// Creates the canonical place row and the submission row in ONE transaction

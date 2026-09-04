@@ -246,9 +246,34 @@ public class SocialEngagementService : ISocialEngagementService
             throw new ForbiddenException("You cannot report your own post.");
         }
 
-        // NOTE: the schema allows multiple reports from the same reporter on the
-        // same post (latest_v2.sql seed rep-006 is an intentional duplicate).
-        // No duplicate-prevention check is enforced here.
+        // The schema has UNIQUE(post_id, reporter_id). Check for an existing row.
+        var existing = await _repository.GetReportByPostAndReporterAsync(postId, currentUserId);
+        if (existing != null)
+        {
+            if (existing.Status == PostReportStatus.Active)
+            {
+                throw new ConflictException("You have already reported this post.");
+            }
+
+            // Re-activate a previously-withdrawn report.
+            existing.Status = PostReportStatus.Active;
+            existing.WithdrawnAt = null;
+            existing.Reason = request.Reason;
+            await _repository.UpdateReportAsync(existing);
+
+            var reReportCount = await _repository.GetActiveReportCountAsync(postId);
+
+            _logger.LogInformation("User {UserId} re-reported post {PostId} with reason '{Reason}' (reactivated withdrawn report {ReportId}).",
+                currentUserId, postId, request.Reason, existing.ReportId);
+            return new CreateReportResponseDto
+            {
+                ReportId = existing.ReportId,
+                PostId = postId,
+                ReportCount = reReportCount,
+                Message = "Report re-submitted successfully.",
+            };
+        }
+
         var report = new PostReport
         {
             PostId = postId,

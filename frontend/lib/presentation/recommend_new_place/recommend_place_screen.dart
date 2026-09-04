@@ -18,7 +18,6 @@ import 'wizard_step_indicator.dart';
 /// - Place name
 /// - Primary Type (options sourced from hidden_place_cache, never hard-coded)
 /// - Price level
-/// - Business status
 /// - Description
 /// - Photos
 ///
@@ -50,12 +49,10 @@ class _RecommendPlaceScreenState
 
   String? _selectedPrimaryType;
   int? _selectedPriceLevel;
-  String? _selectedBusinessStatus;
 
   String? _placeNameError;
   String? _primaryTypeError;
   String? _priceLevelError;
-  String? _businessStatusError;
   String? _descriptionError;
   String? _photosError;
 
@@ -76,11 +73,6 @@ class _RecommendPlaceScreenState
     4,
   ];
 
-  static const List<String> _businessStatuses = [
-    'OPERATIONAL',
-    'CLOSED_TEMPORARILY',
-  ];
-
   @override
   void initState() {
     super.initState();
@@ -93,7 +85,6 @@ class _RecommendPlaceScreenState
 
       _selectedPrimaryType = draft.primaryType;
       _selectedPriceLevel = draft.priceLevel;
-      _selectedBusinessStatus = draft.businessStatus;
 
       _photoPaths = List<String>.from(
         draft.photoPaths,
@@ -167,11 +158,6 @@ class _RecommendPlaceScreenState
       // the database agree. Empty description and no price level are allowed.
       _priceLevelError = null;
 
-      _businessStatusError =
-      _selectedBusinessStatus == null
-          ? 'Please select a business status.'
-          : null;
-
       _descriptionError = null;
 
       _photosError =
@@ -183,7 +169,6 @@ class _RecommendPlaceScreenState
     if (_placeNameError != null ||
         _primaryTypeError != null ||
         _priceLevelError != null ||
-        _businessStatusError != null ||
         _descriptionError != null ||
         _photosError != null) {
       return;
@@ -194,7 +179,6 @@ class _RecommendPlaceScreenState
       primaryType: _selectedPrimaryType!,
       description: description,
       priceLevel: _selectedPriceLevel,
-      businessStatus: _selectedBusinessStatus!,
       photoPaths: _photoPaths,
       latitude: widget.initialDraft?.latitude,
       longitude: widget.initialDraft?.longitude,
@@ -293,19 +277,6 @@ class _RecommendPlaceScreenState
 
       default:
         return value.toString();
-    }
-  }
-
-  String _businessStatusLabel(String value) {
-    switch (value) {
-      case 'OPERATIONAL':
-        return 'Operational';
-
-      case 'CLOSED_TEMPORARILY':
-        return 'Closed Temporarily';
-
-      default:
-        return value;
     }
   }
 
@@ -444,33 +415,7 @@ class _RecommendPlaceScreenState
                       ),
 
                       // ==================================================
-                      // 4. BUSINESS STATUS
-                      // ==================================================
-
-                      _buildFieldLabel(
-                        'Business Status',
-                        isRequired: true,
-                      ),
-
-                      const SizedBox(
-                        height: AppSpacing.stackSm,
-                      ),
-
-                      _buildBusinessStatusDropdown(),
-
-                      if (_businessStatusError != null) ...[
-                        const SizedBox(height: 4),
-                        _buildErrorText(
-                          _businessStatusError!,
-                        ),
-                      ],
-
-                      const SizedBox(
-                        height: AppSpacing.stackLg,
-                      ),
-
-                      // ==================================================
-                      // 5. DESCRIPTION
+                      // 4. DESCRIPTION
                       // ==================================================
 
                       _buildFieldLabel(
@@ -496,7 +441,7 @@ class _RecommendPlaceScreenState
                       ),
 
                       // ==================================================
-                      // 6. PHOTOS
+                      // 5. PHOTOS
                       // ==================================================
 
                       _buildFieldLabel('Photos'),
@@ -783,45 +728,6 @@ class _RecommendPlaceScreenState
             setState(() {
               _selectedPriceLevel = value;
               _priceLevelError = null;
-            });
-          },
-        ),
-      ),
-    );
-  }
-
-  Widget _buildBusinessStatusDropdown() {
-    return _buildDropdownContainer(
-      hasError: _businessStatusError != null,
-      child: DropdownButtonHideUnderline(
-        child: DropdownButton<String>(
-          value: _selectedBusinessStatus,
-          hint: Text(
-            'Select business status',
-            style: AppTypography.bodyMd.copyWith(
-              color: AppColors.textMuted,
-            ),
-          ),
-          isExpanded: true,
-          icon: const Icon(
-            Icons.arrow_drop_down,
-            color: AppColors.textSecondary,
-          ),
-          items: _businessStatuses
-              .map(
-                (status) => DropdownMenuItem<String>(
-              value: status,
-              child: Text(
-                _businessStatusLabel(status),
-                style: AppTypography.bodyMd,
-              ),
-            ),
-          )
-              .toList(),
-          onChanged: (value) {
-            setState(() {
-              _selectedBusinessStatus = value;
-              _businessStatusError = null;
             });
           },
         ),

@@ -76,13 +76,6 @@ class RecommendPlaceDraft {
   /// or whatever values your UI/backend contract defines.
   final int? priceLevel;
 
-  /// Business status selected/returned for this place.
-  ///
-  /// Example:
-  /// OPERATIONAL
-  /// CLOSED_TEMPORARILY
-  final String? businessStatus;
-
   /// Optional best time information entered by user.
   final String? bestTime;
 
@@ -126,7 +119,6 @@ class RecommendPlaceDraft {
     required this.primaryType,
     required this.description,
     this.priceLevel,
-    this.businessStatus,
     this.bestTime,
     this.tips,
     List<String>? photoPaths,
@@ -161,7 +153,6 @@ class RecommendPlaceDraft {
       primaryType: primaryType ?? this.primaryType,
       description: description ?? this.description,
       priceLevel: priceLevel ?? this.priceLevel,
-      businessStatus: businessStatus ?? this.businessStatus,
       bestTime: bestTime ?? this.bestTime,
       tips: tips ?? this.tips,
       photoPaths: photoPaths ?? this.photoPaths,

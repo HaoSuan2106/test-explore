@@ -1,5 +1,5 @@
 ﻿using System.Security.Claims;
-using ExploreMy.Api.Application.AuthProfile.ManageProfile;
+using ExploreMy.Api.Application.AuthProfile.Facade;
 using ExploreMy.Api.Common.Exceptions;
 using ExploreMy.Api.DTOs.AuthProfile;
 using Microsoft.AspNetCore.Authorization;
@@ -13,12 +13,12 @@ namespace explore_my_backend.Controllers.AuthProfile;
 public class ProfileController : ControllerBase
 {
 
-    private readonly IManageProfileService _manageProfileService;
+    private readonly IAuthProfileService _authProfileService;
     private readonly ILogger<ProfileController> _logger;
 
-    public ProfileController(IManageProfileService manageProfileService, ILogger<ProfileController> logger)
+    public ProfileController(IAuthProfileService authProfileService, ILogger<ProfileController> logger)
     {
-        _manageProfileService = manageProfileService;
+        _authProfileService = authProfileService;
         _logger = logger;
     }
 
@@ -36,7 +36,7 @@ public class ProfileController : ControllerBase
 
         try
         {
-            var profile = await _manageProfileService.GetProfileAsync(userId);
+            var profile = await _authProfileService.GetProfileAsync(userId);
             return Ok(profile);
         }
         catch (NotFoundException ex)
@@ -58,7 +58,7 @@ public class ProfileController : ControllerBase
 
         try
         {
-            var profile = await _manageProfileService.UpdateProfileAsync(userId, request);
+            var profile = await _authProfileService.UpdateProfileAsync(userId, request);
             return Ok(profile);
         }
         catch (NotFoundException ex)
@@ -84,7 +84,7 @@ public class ProfileController : ControllerBase
 
         try
         {
-            await _manageProfileService.RequestCurrentEmailVerificationAsync(userId);
+            await _authProfileService.RequestCurrentEmailVerificationAsync(userId);
             return Ok(new { message = "Verification code sent." });
         }
         catch (NotFoundException ex)
@@ -106,7 +106,7 @@ public class ProfileController : ControllerBase
 
         try
         {
-            await _manageProfileService.VerifyCurrentEmailVerificationAsync(userId, request);
+            await _authProfileService.VerifyCurrentEmailVerificationAsync(userId, request);
             return Ok(new { message = "Code verified." });
         }
         catch (AuthenticationException ex)
@@ -128,7 +128,7 @@ public class ProfileController : ControllerBase
 
         try
         {
-            await _manageProfileService.RequestEmailChangeAsync(userId, request);
+            await _authProfileService.RequestEmailChangeAsync(userId, request);
             return Ok(new { message = "Verification code sent." });
         }
         catch (NotFoundException ex)
@@ -158,7 +158,7 @@ public class ProfileController : ControllerBase
 
         try
         {
-            var profile = await _manageProfileService.VerifyEmailChangeAsync(userId, request);
+            var profile = await _authProfileService.VerifyEmailChangeAsync(userId, request);
             return Ok(profile);
         }
         catch (NotFoundException ex)
@@ -190,7 +190,7 @@ public class ProfileController : ControllerBase
 
         try
         {
-            await _manageProfileService.CancelEmailChangeAsync(userId);
+            await _authProfileService.CancelEmailChangeAsync(userId);
             return Ok(new { message = "Email change cancelled." });
         }
         catch (Exception ex)
@@ -208,7 +208,7 @@ public class ProfileController : ControllerBase
 
         try
         {
-            await _manageProfileService.VerifyCurrentPasswordAsync(userId, request);
+            await _authProfileService.VerifyCurrentPasswordAsync(userId, request);
             return Ok(new { message = "Password confirmed." });
         }
         catch (AuthenticationException ex)
@@ -234,7 +234,7 @@ public class ProfileController : ControllerBase
 
         try
         {
-            await _manageProfileService.UpdatePasswordAsync(userId, request);
+            await _authProfileService.UpdatePasswordAsync(userId, request);
             return Ok(new { message = "Password updated successfully." });
         }
         catch (AuthenticationException ex)
@@ -264,7 +264,7 @@ public class ProfileController : ControllerBase
 
         try
         {
-            await _manageProfileService.RequestPasswordResetCodeAsync(userId);
+            await _authProfileService.RequestPasswordResetCodeAsync(userId);
             return Ok(new { message = "Verification code sent." });
         }
         catch (NotFoundException ex)
@@ -286,7 +286,7 @@ public class ProfileController : ControllerBase
 
         try
         {
-            await _manageProfileService.VerifyPasswordResetCodeAsync(userId, request);
+            await _authProfileService.VerifyPasswordResetCodeAsync(userId, request);
             return Ok(new { message = "Code verified." });
         }
         catch (AuthenticationException ex)
@@ -325,7 +325,7 @@ public class ProfileController : ControllerBase
         try
         {
             await using var stream = file.OpenReadStream();
-            var profile = await _manageProfileService.UpdateProfilePictureAsync(userId, stream, file.FileName, file.ContentType);
+            var profile = await _authProfileService.UpdateProfilePictureAsync(userId, stream, file.FileName, file.ContentType);
             return Ok(profile);
         }
         catch (NotFoundException ex)
@@ -347,7 +347,7 @@ public class ProfileController : ControllerBase
 
         try
         {
-            var profile = await _manageProfileService.RemoveProfilePictureAsync(userId);
+            var profile = await _authProfileService.RemoveProfilePictureAsync(userId);
             return Ok(profile);
         }
         catch (NotFoundException ex)

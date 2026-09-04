@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:explore_my/presentation/navigation/main_page.dart';
+import 'package:explore_my/presentation/navigation/app_navigation.dart';
 import '../registration/registration_ui.dart';
 import 'forgot_password_ui.dart';
 import 'package:provider/provider.dart';
@@ -99,9 +99,13 @@ class _LoginUiState extends State<LoginUi> with SingleTickerProviderStateMixin {
     setState(() => _isSubmitting = false);
 
     if (success) {
-      Navigator.of(
-        context,
-      ).pushReplacement(MaterialPageRoute(builder: (_) => const MainPage()));
+      // Navigate through the router (GoRouter) so GoRouter's internal state
+      // matches the visible screen. A raw Navigator.pushReplacement(MainPage)
+      // bypassed the router: GoRouter still believed we were on /login, so the
+      // FIRST router navigation from the newly-shown shell was issued against a
+      // stale location and could be swallowed. Going through the router keeps
+      // the shell's location (/main) in sync on the very first navigation.
+      AppNavigation.toMain(context);
     } else {
       _showLoginError(authProvider.errorMessage ?? 'Invalid email or password.');
     }

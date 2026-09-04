@@ -1,18 +1,20 @@
 import 'package:flutter/material.dart';
 import '../../models/foot_tracker/exploration_model.dart';
+import '../../models/hidden_place/recommended_place_model.dart';
 import '../../providers/hidden_place/hidden_place_provider.dart';
 import '../../widgets/app_feedback.dart';
 import 'community_verification/place_report_sheet.dart';
 import 'create_review/create_review_ui.dart';
-import 'report_review/report_review_ui.dart';
 import 'community_verification/community_verification_ui.dart';
+import '../navigation/app_navigation.dart';
 import '../hidden_place_discovery/hidden_place_discovery_ui.dart';
+import '../community/share_location/share_to_community_sheet.dart';
 import 'dart:convert';
 import 'package:provider/provider.dart';
 import '../../providers/hidden_place/review_provider.dart';
+import 'package:explore_my/providers/auth_profile/profile_provider.dart';
 
 // Import by Ian navigation screen
-import '../route_navigation/navigation_screen.dart';
 import '../../providers/foot_tracker/favourite_provider.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 
@@ -39,7 +41,44 @@ class PlaceDetailUI extends StatefulWidget {
 class _PlaceDetailUIState extends State<PlaceDetailUI> {
   static const Color accent = Color(0xFFFF6242);
 
-  late bool _hasReported = widget.place.isReportedByCurrentUser;
+  // ============================================================
+  // PROVIDER-BACKED AUTHORITATIVE STATE (PHASE 5)
+  // ============================================================
+  // For community recommendations, HiddenPlaceProvider is the single source of
+  // truth for verification/report state (castVote / reportPlace / refreshPlace
+  // all update the provider model). These getters prefer the provider's fresh
+  // model and fall back to local fields (correct for normal Google places,
+  // which the provider does not track).
+  //
+  // Aggregate isVerified (does the place meet the threshold) is kept separate
+  // from isVerifiedByCurrentUser (did THIS user vote) — never conflated.
+  RecommendedPlaceModel? get _communityModel {
+    final provider = context.read<HiddenPlaceProvider>();
+    final key = widget.place.recommendPlaceId ?? widget.place.placeId;
+    return provider.getPlaceById(key);
+  }
+
+  bool get _hasReported => _communityModel?.isReportedByCurrentUser
+      ?? _localHasReported;
+
+  bool get _hasUserVerified => _communityModel?.isVerifiedByCurrentUser
+      ?? _localHasUserVerified;
+
+  bool get _isReportedClosed => _communityModel?.isReportedClosed
+      ?? _localIsReportedClosed;
+
+  /// Local fallback for Google-place report state (provider does not track
+  /// Google places). Initialized from the widget snapshot at build time.
+  bool _localHasReported = false;
+  bool _localHasUserVerified = false;
+  bool _localIsReportedClosed = false;
+
+  /// True while the persisted report state is still being loaded from the
+  /// backend (`hidden_place_suppression`). While true the Report Place button
+  /// stays disabled so the user cannot accidentally submit a duplicate report
+  /// before the button knows whether it is already reported.
+  bool _isReportStatusLoading = true;
+
   int _selectedTab = 0;
 
   // ============================================================
@@ -52,12 +91,10 @@ class _PlaceDetailUIState extends State<PlaceDetailUI> {
   // can provide this value and the user's actual review data.
   bool _hasUserReviewed = false;
   bool _isLoadingMyReview = true;
-late bool _hasUserVerified = widget.place.isVerifiedByCurrentUser;
   //Add by Ian for favourite place
   bool _isFavourite = false;
   bool _isTogglingFavourite = false;
   Map<String, dynamic>? _myReview;
-  late bool _isReportedClosed = widget.place.isReportedClosed;
 
   List<dynamic> _reviews = [];
   bool _isLoadingReviews = true;
@@ -66,10 +103,56 @@ late bool _hasUserVerified = widget.place.isVerifiedByCurrentUser;
   void initState() {
     super.initState();
 
+    // Initialize local Google-place fallbacks from the widget snapshot. For
+    // community places the getters read the provider instead, so these only
+    // matter when the provider does not track this place (normal Google place).
+    _localHasReported = widget.place.isReportedByCurrentUser;
+    _localHasUserVerified = widget.place.isVerifiedByCurrentUser;
+    _localIsReportedClosed = widget.place.isReportedClosed;
+
+    _loadReportStatus();
     _loadMyReview();
     _loadReviews();
     //Added by Ian for favourite place
     _loadFavouriteStatus();
+  }
+
+  /// Loads the persisted report state from the backend (`hidden_place_suppression`)
+  /// so the Report Place button shows "Reported"/disabled on open, not only after
+  /// a duplicate-report attempt.
+  ///
+  /// - Recommended place: the existing recommendation-details endpoint already
+  ///   returns `isReportedByCurrentUser` (resolved via the canonical
+  ///   recommend_place_id on the backend) — refresh the provider model and let the
+  ///   `_communityModel` getter pick it up.
+  /// - Normal Google place: no submission row exists, so check `hidden_place_suppression`
+  ///   directly with the Google place_id via the report-status endpoint.
+  ///
+  /// Failure is safe: the flag flips false so the button becomes clickable, and the
+  /// existing 409-duplicate path still protects the user on submit.
+  Future<void> _loadReportStatus() async {
+    final provider = context.read<HiddenPlaceProvider>();
+    final recommendPlaceId = widget.place.recommendPlaceId;
+
+    if (recommendPlaceId != null) {
+      // Recommended place — details endpoint already carries the state.
+      await provider.loadRecommendationDetails(recommendPlaceId);
+    } else {
+      // Normal Google place — direct suppression check by Google place_id.
+      final reported = await provider.checkPlaceReportStatus(widget.place.placeId);
+      if (reported != null && mounted) {
+        setState(() {
+          _localHasReported = reported;
+          if (reported) {
+            _localIsReportedClosed = true;
+          }
+        });
+      }
+    }
+
+    if (mounted) {
+      setState(() => _isReportStatusLoading = false);
+    }
   }
 
   // Shows the compact title bar only after the original place
@@ -171,7 +254,7 @@ late bool _hasUserVerified = widget.place.isVerifiedByCurrentUser;
         await favouriteProvider.addFavouritePlace(
           placeId: widget.place.placeId,
           name: widget.place.title,
-          primaryType: FavouritePlace.mapToUiCategory(widget.place.primaryType),
+          primaryType: widget.place.primaryType,
           address: widget.place.address,
           latitude: widget.place.position.latitude,
           longitude: widget.place.position.longitude,
@@ -375,6 +458,10 @@ late bool _hasUserVerified = widget.place.isVerifiedByCurrentUser;
                             _buildDragHandle(),
                             _buildPlaceHeader(),
                             _buildActions(),
+                            // Community (recommended) places show their
+                            // aggregate Verification Status here; normal
+                            // Google places render nothing (returns shrink).
+                            _buildVerificationStatus(),
                             _buildPhotos(),
                             _buildTabs(),
                           ],
@@ -538,7 +625,7 @@ late bool _hasUserVerified = widget.place.isVerifiedByCurrentUser;
                     ),
                     const SizedBox(width: 4),
                     const Text(
-                      '4 minute(TODO)',
+                      'Distance',
                       style: TextStyle(fontSize: 12),
                     ),
                   ],
@@ -570,6 +657,68 @@ late bool _hasUserVerified = widget.place.isVerifiedByCurrentUser;
     );
   }
 
+  // ============================================================
+  // COMMUNITY / VERIFICATION STATUS
+  // ============================================================
+  // Shown ONLY for recommended (community) places — i.e. when
+  // [PlaceData.recommendPlaceId] is non-null. For normal Google places
+  // this renders an empty box so no Community / Verification UI appears.
+  //
+  // The badge reflects the AGGREGATE community verification status
+  // ([PlaceData.isVerified]), which is deliberately kept separate from the
+  // current user's own vote ([PlaceData.isVerifiedByCurrentUser]) — the
+  // Community Verification screen handles the per-user vote/withdraw.
+  Widget _buildVerificationStatus() {
+    if (widget.place.recommendPlaceId == null) {
+      return const SizedBox.shrink();
+    }
+
+    final bool verified = widget.place.isVerified;
+
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(20, 0, 20, 2),
+      child: Container(
+        width: double.infinity,
+        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+        decoration: BoxDecoration(
+          color: verified ? const Color(0xffe8f7ee) : const Color(0xfff3f3f3),
+          borderRadius: BorderRadius.circular(10),
+          border: Border.all(
+            color: verified ? const Color(0xffb7e3c8) : const Color(0xffdddddd),
+          ),
+        ),
+        child: Row(
+          children: [
+            Icon(
+              verified ? Icons.verified_outlined : Icons.schedule,
+              size: 17,
+              color: verified ? const Color(0xff25a35a) : const Color(0xff666666),
+            ),
+            const SizedBox(width: 8),
+            Expanded(
+              child: Text(
+                verified ? 'Verified' : 'Not yet verified',
+                style: TextStyle(
+                  fontSize: 13,
+                  fontWeight: FontWeight.w500,
+                  color: verified ? const Color(0xff1d7a44) : const Color(0xff555555),
+                ),
+              ),
+            ),
+            if (verified)
+              const Text(
+                'By the community',
+                style: TextStyle(
+                  fontSize: 11,
+                  color: Color(0xff888888),
+                ),
+              ),
+          ],
+        ),
+      ),
+    );
+  }
+
   // =========================
   // ACTION BUTTONS
   // =========================
@@ -577,6 +726,19 @@ late bool _hasUserVerified = widget.place.isVerifiedByCurrentUser;
   Widget _buildActions() {
     final bool isCommunity =
         widget.place.recommendPlaceId != null;
+
+    // Report Place is shown for BOTH place kinds. For a recommended place it
+    // appears NEXT TO Community (recommended places keep Community /
+    // Verification and gain Report Place). The button is disabled while the
+    // persisted report state is still loading, so the user cannot submit a
+    // duplicate report before the button knows whether it is already reported.
+    final reportButton = _actionButton(
+      _hasReported
+          ? Icons.check
+          : Icons.report_outlined,
+      _hasReported ? 'Reported' : 'Report Place',
+      enabled: !_hasReported && !_isReportStatusLoading,
+    );
 
     return Padding(
       padding: const EdgeInsets.fromLTRB(20, 4, 20, 4),
@@ -606,19 +768,15 @@ late bool _hasUserVerified = widget.place.isVerifiedByCurrentUser;
 
           const SizedBox(width: 6),
 
-          if (isCommunity)
+          if (isCommunity) ...[
             _actionButton(
               Icons.verified_outlined,
               'Community',
-            )
-          else
-            _actionButton(
-              _hasReported
-                  ? Icons.check
-                  : Icons.report_outlined,
-              _hasReported ? 'Reported' : 'Report Place',
-              enabled: !_hasReported,
             ),
+            const SizedBox(width: 6),
+            reportButton,
+          ] else
+            reportButton,
         ],
       ),
     );
@@ -662,43 +820,36 @@ late bool _hasUserVerified = widget.place.isVerifiedByCurrentUser;
               //       'submission_id=$recommendPlaceId',
               // );
 
+              // Community verification uses recommend_place_id,
+              // NOT Google place_id.
               final result =
-              await Navigator.push<CommunityUserVote>(
+              await AppNavigation.toCommunityVerification(
                 context,
-                MaterialPageRoute(
-                  builder: (_) => CommunityVerificationUI(
-                    // IMPORTANT:
-                    // Community verification uses recommend_place_id,
-                    // NOT Google place_id.
-                    placeId: recommendPlaceId,
-
-                    // Aggregate community status.
-                    placeStatus: widget.place.isVerified
-                        ? CommunityPlaceStatus.verified
-                        : CommunityPlaceStatus.unverified,
-
-                    // Current user's own verification state.
-                    userVote: _hasUserVerified
-                        ? CommunityUserVote.verify
-                        : CommunityUserVote.none,
-
-                    placeName: widget.place.title,
-                    recommendedBy: widget.place.recommendedBy,
-                    hasReported:
-                    widget.place.isReportedByCurrentUser,
-                    isReportedClosed:
-                    widget.place.isReportedClosed,
-                  ),
-                ),
+                placeId: recommendPlaceId,
+                placeStatus: widget.place.isVerified
+                    ? CommunityPlaceStatus.verified
+                    : CommunityPlaceStatus.unverified,
+                userVote: _hasUserVerified
+                    ? CommunityUserVote.verify
+                    : CommunityUserVote.none,
+                placeName: widget.place.title,
+                recommendedBy: widget.place.recommendedBy,
+                hasReported: _hasReported,
+                isReportedClosed: _isReportedClosed,
               );
 
               // Sync current user's verification state after returning.
+              // Prefer the provider's authoritative model (which was refreshed
+              // by the child's castVote call) over the raw result, so that any
+              // server-side enforcement (e.g. minimum voting period) is reflected.
               if (!mounted) return;
 
               if (result != null) {
+                final provider = context.read<HiddenPlaceProvider>();
+                final fresh = provider.getPlaceById(recommendPlaceId);
                 setState(() {
-                  _hasUserVerified =
-                      result == CommunityUserVote.verify;
+                  _localHasUserVerified = fresh?.isVerifiedByCurrentUser
+                      ?? (result == CommunityUserVote.verify);
                 });
               }
 
@@ -706,13 +857,12 @@ late bool _hasUserVerified = widget.place.isVerifiedByCurrentUser;
             }
 
             // ============================================================
-            // NORMAL GOOGLE PLACE REPORT
-            // Community recommendation cannot use this report flow.
+            // REPORT PLACE (both Google and recommended places)
+            // The sheet posts to /reports which the backend resolves: a
+            // recommended place's submission GUID maps to its canonical
+            // recommend_place_id; a Google place_id is used directly.
             // ============================================================
             if (text == 'Report Place') {
-              if (widget.place.recommendPlaceId != null) {
-                return;
-              }
               await _openPlaceReportSheet();
               return;
             }
@@ -721,29 +871,17 @@ late bool _hasUserVerified = widget.place.isVerifiedByCurrentUser;
             // DIRECTION
             // ============================================================
             if (text == 'Direction') {
-              Navigator.push(
+              // Pass real Google place_id so FootTracker
+              // can save the visited place correctly.
+              AppNavigation.toDirection(
                 context,
-                MaterialPageRoute(
-                  builder: (_) => RouteNavigationScreen(
-                    destinationName: widget.place.title,
-                    destinationAddress:
-                    widget.place.address ?? '',
-                    destinationLat:
-                    widget.place.position.latitude,
-                    destinationLng:
-                    widget.place.position.longitude,
-
-                    // IMPORTANT:
-                    // Pass real Google place_id so FootTracker
-                    // can save the visited place correctly.
-                    destinationPlaceId:
-                    widget.place.placeId,
-
-                    destinationCategory:
-                    FavouritePlace.mapToUiCategory(
-                      widget.place.primaryType,
-                    ),
-                  ),
+                destinationName: widget.place.title,
+                destinationAddress: widget.place.address ?? '',
+                destinationLat: widget.place.position.latitude,
+                destinationLng: widget.place.position.longitude,
+                destinationPlaceId: widget.place.placeId,
+                destinationCategory: FavouritePlace.mapToUiCategory(
+                  widget.place.primaryType,
                 ),
               );
 
@@ -755,6 +893,19 @@ late bool _hasUserVerified = widget.place.isVerifiedByCurrentUser;
             // ============================================================
             if (text == 'Save') {
               _toggleFavourite();
+              return;
+            }
+
+            // ============================================================
+            // SHARE
+            // Opens the Communication module's "share to a joined group
+            // chat" picker (Share Location). Added here as the entry point
+            // Place Details already has a stub button for; the picker,
+            // provider method, and message rendering all live in the
+            // Communication module.
+            // ============================================================
+            if (text == 'Share') {
+              await ShareToCommunitySheet.show(context, place: widget.place);
               return;
             }
 
@@ -800,14 +951,14 @@ late bool _hasUserVerified = widget.place.isVerifiedByCurrentUser;
   }
 
   Future<void> _openPlaceReportSheet() async {
-    // Only normal Google places can use this report flow.
-    if (widget.place.recommendPlaceId != null) {
-      return;
-    }
+    // PlaceReportSheet submits to POST /reports with a single identifier. For a
+    // recommended place that is the submission GUID (recommendPlaceId), which
+    // the backend resolves to the canonical recommend_place_id; for a Google
+    // place it is the Google place_id itself. Both identities are accepted.
+    final submissionId =
+        widget.place.recommendPlaceId ?? widget.place.placeId;
 
-    final placeId = widget.place.placeId;
-
-    if (placeId.isEmpty) {
+    if (submissionId.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
           content: Text('Unable to report this place.'),
@@ -818,7 +969,7 @@ late bool _hasUserVerified = widget.place.isVerifiedByCurrentUser;
 
     final result = await PlaceReportSheet.show(
       context,
-      submissionId: placeId,
+      submissionId: submissionId,
     );
 
     if (!mounted) return;
@@ -829,7 +980,7 @@ late bool _hasUserVerified = widget.place.isVerifiedByCurrentUser;
     if (result == null) {
       if (provider.lastReportWasDuplicate) {
         setState(() {
-          _hasReported = true;
+          _localHasReported = true;
         });
       }
       return;
@@ -837,8 +988,8 @@ late bool _hasUserVerified = widget.place.isVerifiedByCurrentUser;
 
     // Report succeeded.
     setState(() {
-      _hasReported = true;
-      _isReportedClosed =
+      _localHasReported = true;
+      _localIsReportedClosed =
           result.placeStatus == 'REPORTED_CLOSED';
     });
 
@@ -1914,6 +2065,7 @@ late bool _hasUserVerified = widget.place.isVerifiedByCurrentUser;
   // ============================================================
 
   Widget _buildStartUserReview() {
+    final profileProvider = context.watch<ProfileProvider>();
     return Padding(
       padding: const EdgeInsets.only(left: 8),
       child: Column(
@@ -1929,15 +2081,19 @@ late bool _hasUserVerified = widget.place.isVerifiedByCurrentUser;
               CircleAvatar(
                 radius: 22,
                 backgroundColor: const Color(0xffffd7cf),
-                child: Text(
-                  (_myReview?['username']?.toString().isNotEmpty ?? false)
-                      ? _myReview!['username'].toString()[0].toUpperCase()
+                backgroundImage: profileProvider.avatarImage,
+                child: profileProvider.avatarImage == null
+                    ? Text(
+                  profileProvider.profile?.username.isNotEmpty == true
+                      ? profileProvider.profile!.username[0].toUpperCase()
                       : '?',
                   style: const TextStyle(
                     color: accent,
                     fontWeight: FontWeight.w600,
+                    fontSize: 12,
                   ),
-                ),
+                )
+                    : null,
               ),
               const SizedBox(width: 28),
               Row(
@@ -1945,20 +2101,15 @@ late bool _hasUserVerified = widget.place.isVerifiedByCurrentUser;
                   5,
                       (index) => GestureDetector(
                     onTap: () async {
-                      final result = await Navigator.push<bool>(
+                      final result = await AppNavigation.toCreateReview(
                         context,
-                        MaterialPageRoute(
-                          builder: (_) => CreateReviewUI(
-                            initialRating: index + 1,
-                            placeId: widget.place.placeId,
-                            placeName: widget.place.title,
-                            placeType:
-                            widget.reviewTargetType ==
-                                PlaceReviewTargetType.system
-                                ? ReviewPlaceType.system
-                                : ReviewPlaceType.google,
-                          ),
-                        ),
+                        initialRating: index + 1,
+                        placeId: widget.place.placeId,
+                        placeName: widget.place.title,
+                        placeType: widget.reviewTargetType ==
+                            PlaceReviewTargetType.system
+                            ? ReviewPlaceType.system
+                            : ReviewPlaceType.google,
                       );
 
                       if (result == true && mounted) {
@@ -2110,31 +2261,22 @@ late bool _hasUserVerified = widget.place.isVerifiedByCurrentUser;
                           elevation: 2,
                           onSelected: (value) async {
                             if (value == 'edit') {
-                              final result = await Navigator.push<bool>(
+                              final result = await AppNavigation.toCreateReview(
                                 context,
-                                MaterialPageRoute(
-                                  builder: (_) => CreateReviewUI(
-                                    initialRating:
-                                    (_myReview?['rating'] as num?)
-                                        ?.toInt() ??
-                                        0,
-                                    initialReviewText:
+                                initialRating: (_myReview?['rating'] as num?)
+                                    ?.toInt() ?? 0,
+                                initialReviewText:
                                     _myReview?['comment']?.toString() ?? '',
-                                    placeId: widget.place.placeId,
-                                    placeName: widget.place.title,
-                                    placeType:
-                                    widget.reviewTargetType ==
-                                        PlaceReviewTargetType.system
-                                        ? ReviewPlaceType.system
-                                        : ReviewPlaceType.google,
-                                    isEdit: true,
-                                    reviewId: _myReview?['reviewId'],
-                                    initialPhotos:
-                                    (_myReview?['photos']
-                                    as List<dynamic>?) ??
-                                        [],
-                                  ),
-                                ),
+                                placeId: widget.place.placeId,
+                                placeName: widget.place.title,
+                                placeType: widget.reviewTargetType ==
+                                    PlaceReviewTargetType.system
+                                    ? ReviewPlaceType.system
+                                    : ReviewPlaceType.google,
+                                isEdit: true,
+                                reviewId: _myReview?['reviewId'],
+                                initialPhotos:
+                                    (_myReview?['photos'] as List<dynamic>?) ?? [],
                               );
 
                               if (result == true && mounted) {
@@ -2347,26 +2489,38 @@ late bool _hasUserVerified = widget.place.isVerifiedByCurrentUser;
 
                                   return ClipRRect(
                                     borderRadius: BorderRadius.circular(9),
-                                    child: Image.network(
-                                      photoUrl,
-                                      width: 180,
-                                      height: 180,
-                                      fit: BoxFit.cover,
-                                      errorBuilder:
-                                          (context, error, stackTrace) {
-                                        return Container(
-                                          width: 180,
-                                          height: 180,
-                                          color: const Color(0xffe1e1e1),
-                                          child: const Center(
-                                            child: Icon(
-                                              Icons.broken_image_outlined,
-                                              size: 34,
-                                              color: Color(0xffa0a0a0),
+                                    child: GestureDetector(
+                                      onTap: () {
+                                        Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                            builder: (_) => _FullScreenPhotoViewer(
+                                              photoUrl: photoUrl,
                                             ),
                                           ),
                                         );
                                       },
+                                      child: Image.network(
+                                        photoUrl,
+                                        width: 180,
+                                        height: 180,
+                                        fit: BoxFit.cover,
+                                        errorBuilder:
+                                            (context, error, stackTrace) {
+                                          return Container(
+                                            width: 180,
+                                            height: 180,
+                                            color: const Color(0xffe1e1e1),
+                                            child: const Center(
+                                              child: Icon(
+                                                Icons.broken_image_outlined,
+                                                size: 34,
+                                                color: Color(0xffa0a0a0),
+                                              ),
+                                            ),
+                                          );
+                                        },
+                                      ),
                                     ),
                                   );
                                 },
@@ -2677,12 +2831,9 @@ late bool _hasUserVerified = widget.place.isVerifiedByCurrentUser;
                       elevation: 2,
                       onSelected: (value) {
                         if (value == 'report') {
-                          Navigator.push(
+                          AppNavigation.toReportReview(
                             context,
-                            MaterialPageRoute(
-                              builder: (_) =>
-                                  ReportReviewUI(reviewId: reviewId),
-                            ),
+                            reviewId: reviewId,
                           );
                         }
                       },
@@ -2727,25 +2878,37 @@ late bool _hasUserVerified = widget.place.isVerifiedByCurrentUser;
 
                               return ClipRRect(
                                 borderRadius: BorderRadius.circular(9),
-                                child: Image.network(
-                                  photoUrl,
-                                  width: 180,
-                                  height: 150,
-                                  fit: BoxFit.cover,
-                                  errorBuilder: (context, error, stackTrace) {
-                                    return Container(
-                                      width: 180,
-                                      height: 150,
-                                      color: const Color(0xffe1e1e1),
-                                      child: const Center(
-                                        child: Icon(
-                                          Icons.broken_image_outlined,
-                                          size: 34,
-                                          color: Color(0xffa0a0a0),
+                                child: GestureDetector(
+                                  onTap: () {
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (_) => _FullScreenPhotoViewer(
+                                          photoUrl: photoUrl,
                                         ),
                                       ),
                                     );
                                   },
+                                  child: Image.network(
+                                    photoUrl,
+                                    width: 180,
+                                    height: 150,
+                                    fit: BoxFit.cover,
+                                    errorBuilder: (context, error, stackTrace) {
+                                      return Container(
+                                        width: 180,
+                                        height: 150,
+                                        color: const Color(0xffe1e1e1),
+                                        child: const Center(
+                                          child: Icon(
+                                            Icons.broken_image_outlined,
+                                            size: 34,
+                                            color: Color(0xffa0a0a0),
+                                          ),
+                                        ),
+                                      );
+                                    },
+                                  ),
                                 ),
                               );
                             },

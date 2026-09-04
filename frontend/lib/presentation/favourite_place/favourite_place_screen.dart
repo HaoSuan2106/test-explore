@@ -29,14 +29,14 @@ PlaceData _favouriteToPlaceData(FavouritePlace place) {
     title: place.name,
     category: place.category,
     primaryType: place.category,
-    imageUrl: '',
+    imageUrl: place.photoUrl ?? '',
     icon: Icons.place,
     position: LatLng(place.latitude, place.longitude),
     rating: 0.0,
     ratingCount: 0,
     priceLevel: null,
     businessStatus: 'UNKNOWN',
-    photoAttribution: null,
+    photoAttribution: place.photoAttribution,
     address: place.location,
     phoneNumber: null,
     websiteUri: null,
@@ -334,7 +334,20 @@ class _FavouritePlaceCard extends StatelessWidget {
                 children: [
                   ClipRRect(
                     borderRadius: BorderRadius.circular(12),
-                    child: Container(
+                    child: place.photoUrl != null && place.photoUrl!.isNotEmpty
+                        ? Image.network(
+                      place.photoUrl!,
+                      width: 64,
+                      height: 64,
+                      fit: BoxFit.cover,
+                      errorBuilder: (_, __, ___) => Container(
+                        width: 64,
+                        height: 64,
+                        color: Colors.grey.shade200,
+                        child: Icon(Icons.photo, color: Colors.grey.shade400),
+                      ),
+                    )
+                        : Container(
                       width: 64,
                       height: 64,
                       color: Colors.grey.shade200,

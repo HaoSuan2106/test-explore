@@ -23,6 +23,15 @@ import '../recommend_new_place/recommend_review_screen.dart';
 import '../recommend_new_place/recommendation_success_screen.dart';
 import '../recommend_new_place/recommend_place_draft.dart';
 import '../post_review/status/status_feedback_screen.dart';
+import '../place_details/community_verification/community_verification_ui.dart';
+import '../place_details/place_detail_args.dart';
+import '../place_details/place_details_ui.dart';
+import '../place_details/create_review/create_review_args.dart';
+import '../route_navigation/navigation_screen.dart';
+import '../place_details/report_review/report_review_args.dart';
+import '../place_details/report_review/report_review_ui.dart';
+import '../route_navigation/route_navigation_args.dart';
+import '../place_details/create_review/create_review_ui.dart';
 import '../post_review/status/loading_state_screen.dart';
 
 final GlobalKey<NavigatorState> rootNavigatorKey = GlobalKey<NavigatorState>();
@@ -30,6 +39,14 @@ final GlobalKey<NavigatorState> rootNavigatorKey = GlobalKey<NavigatorState>();
 // Runs once per app process: decides whether the very first screen should
 // be the entry page (first ever launch), Login (no/expired session), or
 // straight into the app (a stored session was successfully restored).
+//
+// NOTE: This flag is set SYNCHRONOUSLY before the async startup chain
+// (hasSeenEntryPage → tryAutoLogin → loadCachedAvatar → loadProfile) runs.
+// Empirical testing confirmed this is SAFE in GoRouter 17.5.0: the early
+// flag ensures any concurrent navigation during the pending startup window
+// gets a null redirect (skip the startup decision) and proceeds immediately,
+// rather than racing the still-resolving startup Future. See
+// test/first_launch_navigation_test.dart for the deterministic test.
 bool _hasCheckedStartupSession = false;
 
 /// Declarative router configuration
@@ -61,14 +78,17 @@ final GoRouter appRouter = GoRouter(
     // 1. Core Shell & Auth
     GoRoute(
       path: '/entry',
+      name: 'entry',
       builder: (context, state) => const EntryPageUi(),
     ),
     GoRoute(
       path: '/login',
+      name: 'login',
       builder: (context, state) => const LoginUi(),
     ),
     GoRoute(
       path: '/main',
+      name: 'main',
       builder: (context, state) {
         final tab = state.uri.queryParameters['tab'];
         // ?tab=post → Post Feed tab (index 2); default → Explore (index 0).
@@ -79,12 +99,14 @@ final GoRouter appRouter = GoRouter(
     // 2. Profile Domain
     GoRoute(
       path: '/profile/recommended-places',
+      name: 'profile-recommended-places',
       builder: (context, state) => const MyRecommendedPlacesScreen(),
     ),
 
     // 3. Post Domain
     GoRoute(
       path: '/post/create',
+      name: 'post-create',
       builder: (context, state) {
         final location = state.uri.queryParameters['location'];
         final placeId = state.uri.queryParameters['placeId'];
@@ -97,6 +119,7 @@ final GoRouter appRouter = GoRouter(
     ),
     GoRoute(
       path: '/post/details/:postId',
+      name: 'post-details',
       builder: (context, state) {
         final postId = state.pathParameters['postId'] ?? 'post-001';
         return PostDetailsScreen(postId: postId);
@@ -104,6 +127,7 @@ final GoRouter appRouter = GoRouter(
     ),
     GoRoute(
       path: '/post/edit/:postId',
+      name: 'post-edit',
       builder: (context, state) {
         final postId = state.pathParameters['postId'];
         return EditPostScreen(postId: postId);
@@ -111,6 +135,7 @@ final GoRouter appRouter = GoRouter(
     ),
     GoRoute(
       path: '/post/preview',
+      name: 'post-preview',
       builder: (context, state) =>
           PreviewChangesScreen(postId: state.extra as String?),
     ),
@@ -118,6 +143,7 @@ final GoRouter appRouter = GoRouter(
     // 4. Place Domain
     GoRoute(
       path: '/places/recommend',
+      name: 'places-recommend',
       builder: (context, state) => RecommendPlaceScreen(
         // Pre-fill the form when returning from "Edit Details" on the Review
         // step (the draft is carried back as navigation `extra`).
@@ -126,21 +152,95 @@ final GoRouter appRouter = GoRouter(
     ),
     GoRoute(
       path: '/places/recommend/location',
+      name: 'places-recommend-location',
       builder: (context, state) =>
           RecommendLocationScreen(draft: state.extra as RecommendPlaceDraft),
     ),
     GoRoute(
       path: '/places/recommend/preview',
+      name: 'places-recommend-preview',
       builder: (context, state) => RecommendLocationPreviewScreen(
           draft: state.extra as RecommendPlaceDraft),
     ),
     GoRoute(
       path: '/places/recommend/review',
+      name: 'places-recommend-review',
       builder: (context, state) =>
           RecommendReviewScreen(draft: state.extra as RecommendPlaceDraft),
     ),
     GoRoute(
+      path: '/place/details',
+      name: 'place-details',
+      builder: (context, state) {
+        final args = state.extra as PlaceDetailArgs;
+        return Scaffold(
+          backgroundColor: Colors.white,
+          body: PlaceDetailUI(
+            place: args.place,
+            reviewTargetType: args.reviewTargetType,
+          ),
+        );
+      },
+    ),
+    GoRoute(
+      path: '/place/review',
+      name: 'place-review',
+      builder: (context, state) {
+        final args = state.extra as CreateReviewArgs;
+        return CreateReviewUI(
+          initialRating: args.initialRating,
+          initialReviewText: args.initialReviewText,
+          placeId: args.placeId,
+          placeType: args.placeType,
+          placeName: args.placeName,
+          isEdit: args.isEdit,
+          reviewId: args.reviewId,
+          initialPhotos: args.initialPhotos,
+        );
+      },
+    ),
+    GoRoute(
+      path: '/place/direction',
+      name: 'place-direction',
+      builder: (context, state) {
+        final args = state.extra as RouteNavigationArgs;
+        return RouteNavigationScreen(
+          destinationName: args.destinationName,
+          destinationAddress: args.destinationAddress,
+          destinationLat: args.destinationLat,
+          destinationLng: args.destinationLng,
+          destinationCategory: args.destinationCategory,
+          destinationPlaceId: args.destinationPlaceId,
+        );
+      },
+    ),
+    GoRoute(
+      path: '/place/review-report',
+      name: 'place-review-report',
+      builder: (context, state) {
+        final args = state.extra as ReportReviewArgs;
+        return ReportReviewUI(reviewId: args.reviewId);
+      },
+    ),
+    GoRoute(
+      path: '/place/community-verification',
+      name: 'community-verification',
+      builder: (context, state) {
+        final args = state.extra as CommunityVerificationArgs;
+        return CommunityVerificationUI(
+          placeId: args.placeId,
+          placeStatus: args.placeStatus,
+          userVote: args.userVote,
+          placeName: args.placeName,
+          recommendedBy: args.recommendedBy,
+          hasReported: args.hasReported,
+          isReportedClosed: args.isReportedClosed,
+        );
+      },
+    ),
+    GoRoute(
       path: '/places/recommend/success',
+      name: 'places-recommend-success',
       builder: (context, state) {
         final args = state.extra is RecommendationSuccessArgs
             ? (state.extra as RecommendationSuccessArgs)
@@ -148,6 +248,7 @@ final GoRouter appRouter = GoRouter(
         return RecommendationSuccessScreen(
           submissionId: args?.submissionId,
           isUpdate: args?.isUpdate ?? false,
+          verificationCount: args?.verificationCount ?? 0,
         );
       },
     ),
@@ -155,6 +256,7 @@ final GoRouter appRouter = GoRouter(
     // 5. Transient Status Feedback
     GoRoute(
       path: '/status/loading',
+      name: 'status-loading',
       builder: (context, state) {
         final args = state.extra is LoadingStateArgs
             ? (state.extra as LoadingStateArgs)
@@ -169,10 +271,12 @@ final GoRouter appRouter = GoRouter(
     ),
     GoRoute(
       path: '/post/select-attraction',
+      name: 'post-select-attraction',
       builder: (context, state) => const SelectAttractionScreen(),
     ),
     GoRoute(
       path: '/status/report-submitted',
+      name: 'status-report-submitted',
       builder: (context, state) => StatusFeedbackScreen(
         title: '',
         heading: 'Thank you!',

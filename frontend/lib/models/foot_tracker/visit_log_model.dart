@@ -10,6 +10,8 @@ class VisitLog {
   final DateTime? startedAt;
   final DateTime? endedAt;
   final String status;
+  final String? photoUrl;
+  final String? photoAttribution;
 
   const VisitLog({
     required this.logId,
@@ -23,6 +25,8 @@ class VisitLog {
     this.startedAt,
     this.endedAt,
     required this.status,
+    this.photoUrl,
+    this.photoAttribution,
   });
 
   factory VisitLog.fromJson(Map<String, dynamic> json) {
@@ -38,6 +42,8 @@ class VisitLog {
       startedAt: json['startedAt'] != null ? DateTime.parse(json['startedAt'] as String) : null,
       endedAt: json['endedAt'] != null ? DateTime.parse(json['endedAt'] as String) : null,
       status: json['status'] as String? ?? '',
+      photoUrl: json['photoUrl'] as String?,
+      photoAttribution: json['photoAttribution'] as String?,
     );
   }
 }

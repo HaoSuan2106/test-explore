@@ -33,11 +33,4 @@
     <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="8.22.0" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Application\Community\Communication\" />
-    <Folder Include="Application\Community\ExploreCommunity\" />
-    <Folder Include="Application\Community\Facade\" />
-    <Folder Include="Application\PostReview\CommunityBroadcast\" />
-  </ItemGroup>
-
 </Project>

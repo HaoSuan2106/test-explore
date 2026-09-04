@@ -190,7 +190,7 @@ public class HiddenPlaceResponseItemDto
 
     /// <summary>
     /// Where this place came from: <c>"GOOGLE"</c> for a Places API result, <c>"COMMUNITY"</c> for
-    /// one a user submitted and five others verified.
+    /// one a user submitted.
     ///
     /// The client needs this because the two are not interchangeable. A community place has no
     /// Google rating, no review count, and no meaningful <see cref="HiddenScore"/> - those fields
@@ -199,6 +199,18 @@ public class HiddenPlaceResponseItemDto
     /// rather than blending in.
     /// </summary>
     public string Source { get; set; } = HiddenPlaceSource.Google;
+
+    /// <summary>
+    /// For a community place, the submission's status: <c>"VERIFIED"</c> once enough people have
+    /// verified it, <c>"UNDER_VOTING"</c> while it is still waiting for them. <c>null</c> for
+    /// Google places, which have no submission behind them.
+    ///
+    /// Both kinds are returned on the map, so a recommendation is visible to its author the moment
+    /// they make it rather than only after five strangers agree. The client is expected to draw the
+    /// two differently: an unverified pin is a claim, not yet a fact, and rendering it identically
+    /// to a verified one would put unreviewed data on the map with nothing to say so.
+    /// </summary>
+    public string? CommunityStatus { get; set; }
 }
 
 // Kept to match the original scaffold's file/class naming; the real DTOs above are what's actually used.
@@ -285,13 +297,6 @@ public class SubmitRecommendedPlaceResponseDto
     public string Message { get; init; } = string.Empty;
 }
 
-public class WithdrawRecommendedPlaceResponseDto
-{
-    public string SubmissionId { get; init; } = string.Empty;
-    public string Status { get; init; } = string.Empty;
-    public string Message { get; init; } = string.Empty;
-}
-
 // ============================================================
 // Verification (community voting)
 // ============================================================
@@ -336,6 +341,17 @@ public class ReportPlaceResponseDto
     public int ReportCount { get; init; }
     public string PlaceStatus { get; init; } = string.Empty;
     public string Message { get; init; } = string.Empty;
+}
+
+public class PlaceReportStatusResponseDto
+{
+    /// <summary>
+    /// True when the current user has already reported this place (has an active
+    /// row in <c>hidden_place_suppression</c>). For a recommended place the
+    /// identifier is resolved from the submission GUID to the canonical
+    /// <c>recommend_place_id</c> before the check.
+    /// </summary>
+    public bool IsReportedByCurrentUser { get; init; }
 }
 
 public class HiddenPlaceDtos

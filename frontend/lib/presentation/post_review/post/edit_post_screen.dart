@@ -15,6 +15,14 @@ import '../../../../widgets/content_constraint.dart';
 import '../../navigation/app_navigation.dart';
 import 'post_image_sizes.dart';
 
+/// Result contract returned to the parent screen when the editor closes.
+/// [updated] means the post was saved; [unchanged] is unused today but kept
+/// for explicit no-op return symmetry. A cancelled edit pops with no result.
+enum PostEditResult {
+  updated,
+  unchanged,
+}
+
 class EditPostScreen extends StatefulWidget {
   final String? postId;
   final String? initialTaggedLocation;
@@ -40,6 +48,9 @@ class _EditPostScreenState extends State<EditPostScreen> {
 
   final ImagePicker _imagePicker = ImagePicker();
   final List<String> _photos = [];
+
+  /// Authoritative backend limit: max images per post (PostImageLimits.MaxImages).
+  static const int _maxPhotos = 5;
 
   @override
   void initState() {
@@ -162,48 +173,73 @@ class _EditPostScreenState extends State<EditPostScreen> {
     return true;
   }
 
-  /// Pick an image from the gallery, validate format/size, upload to the
-  /// backend, and append the returned URL to the local photo list.
+  /// Pick one or more images from the gallery in a single selection, validate
+  /// format/size for each, upload them to the backend, and append the returned
+  /// URLs to the local photo list. Every selected image belongs to the SAME
+  /// post — the picker is multi-select (pickMultiImage) so the user can choose
+  /// several images in one gallery interaction instead of one tap per image.
   Future<void> _pickAndUploadImage() async {
     final provider = context.read<PostProvider>();
-    final picked = await _imagePicker.pickImage(
-      source: ImageSource.gallery,
+
+    // Enforce the authoritative max (5, REQ501_4) across the whole batch.
+    final remaining = _maxPhotos - _photos.length;
+    if (remaining <= 0) return;
+
+    final picked = await _imagePicker.pickMultiImage(
       maxWidth: 1920,
       imageQuality: 85,
     );
-    if (picked == null) return;
+    if (picked.isEmpty) return;
 
-    final file = File(picked.path);
-
-    // Validate file size (max 5 MB, REQ501_4)
-    final bytes = await file.length();
-    if (bytes > 5 * 1024 * 1024) {
-      if (!mounted) return;
-      AppFeedback.show(context, message: 'Image exceeds the 5 MB size limit.', isSuccess: false);
-      return;
-    }
-
-    // Validate format (JPEG/PNG only, REQ501_4)
-    final ext = picked.path.split('.').last.toLowerCase();
-    if (!['jpg', 'jpeg', 'png'].contains(ext)) {
-      if (!mounted) return;
-      AppFeedback.show(context, message: 'Unsupported image type. Allowed: JPEG, PNG.', isSuccess: false);
-      return;
-    }
+    // Honor the max-5 limit: only take as many as still fit.
+    final accepted = picked.take(remaining).toList();
+    final skippedCount = picked.length - accepted.length;
 
     setState(() => _isUploading = true);
 
     try {
-      // The provider routes to the real multipart upload endpoint.
-      final url = await provider.uploadPostImage(file);
-      if (url.isEmpty) {
-        throw Exception('Empty URL returned from upload.');
+      final uploadedUrls = <String>[];
+      for (final image in accepted) {
+        final file = File(image.path);
+
+        // Validate file size (max 5 MB, REQ501_4) — per image.
+        final bytes = await file.length();
+        if (bytes > 5 * 1024 * 1024) {
+          if (mounted) {
+            AppFeedback.show(context,
+              message: '${image.name} exceeds the 5 MB size limit.', isSuccess: false);
+          }
+          continue;
+        }
+
+        // Validate format (JPEG/PNG only, REQ501_4) — per image.
+        final ext = image.path.split('.').last.toLowerCase();
+        if (!['jpg', 'jpeg', 'png'].contains(ext)) {
+          if (mounted) {
+            AppFeedback.show(context,
+              message: '${image.name}: unsupported image type. Allowed: JPEG, PNG.',
+              isSuccess: false);
+          }
+          continue;
+        }
+
+        // The provider routes to the real multipart upload endpoint.
+        final url = await provider.uploadPostImage(file);
+        if (url.isNotEmpty) uploadedUrls.add(url);
       }
-      if (!mounted) return;
-      setState(() => _photos.add(url));
+
+      if (mounted && uploadedUrls.isNotEmpty) {
+        setState(() => _photos.addAll(uploadedUrls));
+      }
+      if (mounted && skippedCount > 0) {
+        AppFeedback.show(context,
+          message: 'You can add up to $_maxPhotos photos. '
+              '$skippedCount ${skippedCount == 1 ? 'image was' : 'images were'} skipped.',
+          isSuccess: false);
+      }
     } catch (e) {
       if (!mounted) return;
-      var message = 'Failed to upload image. Please try again.';
+      var message = 'Failed to upload images. Please try again.';
       if (e is DioException) {
         final data = e.response?.data;
         if (data is Map && data['message'] is String) {
@@ -402,8 +438,9 @@ class _EditPostScreenState extends State<EditPostScreen> {
                             isSuccess: true,
                           );
                           if (widget.postId != null) {
-                            // Edit flow: return to Post Details.
-                            Navigator.of(context).pop();
+                            // Edit flow: return to Post Details with the
+                            // result so the parent can refresh authoritative data.
+                            Navigator.of(context).pop(PostEditResult.updated);
                           } else {
                             // Create flow: return to the Feed (root shell).
                             Navigator.of(context).popUntil((route) => route.isFirst);

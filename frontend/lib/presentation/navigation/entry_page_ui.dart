@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../../utilities/onboarding_preferences.dart';
-import '../authentication/login/login_ui.dart';
 
 /// The very first screen a user sees when opening the app.
 /// Tapping "Get Started" records the choice in local storage
@@ -14,9 +14,12 @@ class EntryPageUi extends StatelessWidget {
   Future<void> _onGetStarted(BuildContext context) async {
     await onboardingPreferences.markEntryPageSeen();
     if (!context.mounted) return;
-    Navigator.of(context).pushReplacement(
-      MaterialPageRoute(builder: (_) => const LoginUi()),
-    );
+    // Navigate through the router (GoRouter) so the router's internal state
+    // stays in sync with the visible screen. A raw Navigator.pushReplacement
+    // here would leave GoRouter believing we are still on /entry, and the
+    // first router navigation after that would be issued against a stale
+    // location — which is what swallowed the first tap after a cold launch.
+    context.go('/login');
   }
 
   @override

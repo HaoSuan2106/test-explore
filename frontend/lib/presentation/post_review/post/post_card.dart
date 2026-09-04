@@ -200,7 +200,7 @@ class PostCard extends StatelessWidget {
   }
 
   /// Single primary relationship badge at the top right of the card,
-  /// prioritizing Owner > Reported > Commented > Saved.
+  /// prioritizing Owner > Reported > Commented > Liked > Saved.
   Widget _buildPrimaryBadge(bool isCommented) {
     final String? label;
     Color color;
@@ -217,6 +217,10 @@ class PostCard extends StatelessWidget {
       label = 'You Commented';
       color = const Color(0xFF5C6BC0);
       icon = Icons.chat_bubble_outline;
+    } else if (post.isLiked) {
+      label = 'Liked';
+      color = AppColors.primary;
+      icon = Icons.favorite;
     } else if (post.isSaved) {
       label = 'Saved';
       color = const Color(0xFF7B61FF);
@@ -381,11 +385,11 @@ class PostCard extends StatelessWidget {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                // const Icon(
-                //   Icons.chat_bubble_outline,
-                //   size: 18,
-                //   color: AppColors.textMuted,
-                // ),
+                const Icon(
+                  Icons.chat_bubble_outline,
+                  size: 18,
+                  color: AppColors.textMuted,
+                ),
                 const SizedBox(width: 6),
                 Text(
                   '${post.commentsCount}',

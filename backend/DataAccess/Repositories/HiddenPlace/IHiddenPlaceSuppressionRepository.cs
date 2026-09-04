@@ -10,7 +10,11 @@ namespace ExploreMy.Api.DataAccess.Repositories.HiddenPlace;
 public interface IHiddenPlaceSuppressionRepository
 {
     /// <summary>
-    /// Every suppressed Google place id, as a set ready for membership checks.
+    /// Every suppressed place id, as a set ready for membership checks.
+    ///
+    /// Suppressed means the reports against it total at least
+    /// <see cref="RecommendedPlaceThresholds.HideThreshold"/> - NOT merely that someone reported it
+    /// once. A row in this table is one person's report; it takes that many of them to hide a place.
     ///
     /// Loaded whole rather than queried per search because the list is small by nature - it only
     /// grows when five separate people report the same place - and one small read beats sending a
@@ -20,17 +24,10 @@ public interface IHiddenPlaceSuppressionRepository
     Task<HashSet<string>> GetSuppressedPlaceIdsAsync();
 
     /// <summary>
-    /// Records that a place must no longer be shown. Safe to call more than once for the same place:
-    /// a repeat is ignored rather than treated as an error, so a report flow does not need to check
-    /// first. System/legacy rows carry <see cref="HiddenPlaceSuppression.UserId"/> = 0.
+    /// Whether the user already has an active report row for this <c>place_id</c>
+    /// (works for both recommended places and Google-sourced places).
     /// </summary>
-    Task SuppressAsync(string placeId, string? name, string? reason, int reportCount);
-
-    /// <summary>
-    /// Returns the first suppression/tracking row for a recommended place (matched by its
-    /// <c>recommend_place_id</c>), or <c>null</c> when that place has never been reported.
-    /// </summary>
-    Task<HiddenPlaceSuppression?> GetByRecommendedPlaceIdAsync(string recommendedPlaceId);
+    Task<bool> ExistsAsync(int userId, string placeId);
 
     /// <summary>
     /// Whether ONE user has an active report against a recommended place (matched by
@@ -43,10 +40,10 @@ public interface IHiddenPlaceSuppressionRepository
     /// <summary>
     /// Applies ONE user's report against a recommended place. Storage is one row per (user, place):
     /// a report creates a new row (<see cref="HiddenPlaceSuppression.UserId"/> = <paramref name="userId"/>,
-    /// <c>ReportCount = 1</c>). Place Report is NOT a toggle and NOT an anonymous aggregate: when the
-    /// same user has already reported the same place, <c>null</c> is returned and nothing is written
-    /// (the UNIQUE(user_id, place_id) index backs this up at the database level). Returns the created
-    /// row on a fresh report.
+    /// <c>ReportCount = 1</c>). Place Report is NOT a toggle and NOT an anonymous aggregate: the
+    /// duplicate-report decision is the service layer's (it calls <see cref="ExistsAsync"/> first,
+    /// V-11). This method persists and surfaces the UNIQUE(user_id, place_id) constraint only —
+    /// a concurrent duplicate returns <c>null</c> as a backstop. Returns the created row on a fresh report.
     /// </summary>
     Task<HiddenPlaceSuppression?> RecordReportAsync(
         int userId, string recommendedPlaceId, string placeId, string name, string reason);
@@ -54,7 +51,8 @@ public interface IHiddenPlaceSuppressionRepository
     /// <summary>
     /// Applies ONE user's report against a Google-sourced place (no recommended-place submission).
     /// Storage is one row per (user, place): a report creates a new row with
-    /// <c>RecommendedPlaceId = null</c>. Same-user repeats are rejected (returns <c>null</c>).
+    /// <c>RecommendedPlaceId = null</c>. The service layer owns the duplicate-report decision
+    /// (<see cref="ExistsAsync"/>, V-11); the null return here is a concurrency backstop.
     /// Returns the created row on a fresh report.
     /// </summary>
     Task<HiddenPlaceSuppression?> RecordGooglePlaceReportAsync(int userId, string placeId, string name, string reason);

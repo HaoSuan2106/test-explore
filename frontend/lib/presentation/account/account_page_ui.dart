@@ -255,9 +255,9 @@ class _AccountUIState extends State<AccountUI> {
                     ),
                   )
                       : const Icon(Icons.person, size: 44, color: Colors.white),
-                  ),
                 ),
               ),
+            ),
           ],
         ),
       ),

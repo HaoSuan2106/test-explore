@@ -17,6 +17,7 @@ public class FootTrackerMySqlRepository : IFootTrackerRepository
     public async Task<List<FavouritePlace>> GetFavouritePlacesByUserIdAsync(int userId)
     {
         return await _context.FavouritePlaces
+            .Include(f => f.Place)
             .Where(f => f.UserId == userId)
             .OrderByDescending(f => f.CreatedAt)
             .ToListAsync();
@@ -64,5 +65,22 @@ public class FootTrackerMySqlRepository : IFootTrackerRepository
             .Where(h => h.PlaceId == placeId)
             .OrderByDescending(h => h.FetchedAtUtc)
             .FirstOrDefaultAsync();
+    }
+
+    public async Task<Place?> GetPlaceByIdAsync(string placeId)
+    {
+        return await _context.Places.FirstOrDefaultAsync(p => p.PlaceId == placeId);
+    }
+
+    public async Task AddPlaceAsync(Place place)
+    {
+        _context.Places.Add(place);
+        await _context.SaveChangesAsync();
+    }
+
+    public async Task UpdatePlaceAsync(Place place)
+    {
+        _context.Places.Update(place);
+        await _context.SaveChangesAsync();
     }
 }

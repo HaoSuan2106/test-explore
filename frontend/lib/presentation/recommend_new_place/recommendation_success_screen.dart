@@ -19,9 +19,15 @@ class RecommendationSuccessArgs {
   final String? submissionId;
   final bool isUpdate;
 
+  /// The authoritative, persisted verification count returned by the backend
+  /// for this recommendation (RecommendedPlaceDetailsDto.VerificationCount).
+  /// Drives the R-07 success copy ("by N explorers") — never a hardcoded 5.
+  final int? verificationCount;
+
   const RecommendationSuccessArgs({
     this.submissionId,
     this.isUpdate = false,
+    this.verificationCount,
   });
 }
 
@@ -42,10 +48,16 @@ class RecommendationSuccessScreen extends StatelessWidget {
   /// recommendation rather than submitting a new one.
   final bool isUpdate;
 
+  /// The authoritative, persisted verification count (R-07 Option A).
+  /// Comes from the backend's RecommendedPlaceDetailsDto.VerificationCount
+  /// and flows through the provider — never a hardcoded 5.
+  final int verificationCount;
+
   const RecommendationSuccessScreen({
     super.key,
     this.submissionId,
     this.isUpdate = false,
+    this.verificationCount = 0,
   });
 
   /// Loads the freshly submitted recommendation and opens its details in the
@@ -70,44 +82,39 @@ class RecommendationSuccessScreen extends StatelessWidget {
 
     final photos = place.photosJson ?? const <String>[];
 
-    Navigator.of(context).push(
-      MaterialPageRoute(
-        builder: (_) => Scaffold(
-          backgroundColor: Colors.white,
-          body: PlaceDetailUI(
-            place: PlaceData(
-              placeId: place.id,
-              title: place.name,
-              category: place.primaryType,
-              primaryType: place.primaryType,
-              imageUrl: photos.isNotEmpty ? photos.first : '',
-              icon: Icons.place_outlined,
-              position: LatLng(place.latitude ?? 0, place.longitude ?? 0),
-              rating: 0,
-              ratingCount: 0,
-              priceLevel: place.priceLevel,
-              businessStatus: place.businessStatus ?? 'UNKNOWN',
-              // place.id is the community submission id (UUID) — the actual
-              // recommend_place_id the Place Details UI keys the Community /
-              // Verification Status UI on (isCommunity is a derived getter on
-              // PlaceData, never force-set).
-              recommendPlaceId: place.id,
-              isVerified: place.isVerified,
-              recommendedBy: place.submitterName,
-              isReportedByCurrentUser: place.isReportedByCurrentUser,
-              isVerifiedByCurrentUser: place.isVerifiedByCurrentUser,
-              isReportedClosed: place.status == 'REPORTED_CLOSED',
-              address: null,
-              phoneNumber: null,
-              websiteUri: null,
-              googleMapsUri: null,
-              photosJson: null,
-              regularOpeningHoursJson: null,
-            ),
-            reviewTargetType: PlaceReviewTargetType.system,
-          ),
-        ),
+    // Route the recommendation's Place Details screen through GoRouter +
+    // typed AppNavigation (P6.1). place.id is the community submission id
+    // (UUID) — the actual recommend_place_id the Place Details UI keys the
+    // Community / Verification Status UI on (isCommunity is a derived getter
+    // on PlaceData, never force-set).
+    AppNavigation.toPlaceDetails(
+      context,
+      place: PlaceData(
+        placeId: place.id,
+        title: place.name,
+        category: place.primaryType,
+        primaryType: place.primaryType,
+        imageUrl: photos.isNotEmpty ? photos.first : '',
+        icon: Icons.place_outlined,
+        position: LatLng(place.latitude ?? 0, place.longitude ?? 0),
+        rating: 0,
+        ratingCount: 0,
+        priceLevel: place.priceLevel,
+        businessStatus: place.businessStatus ?? 'UNKNOWN',
+        recommendPlaceId: place.id,
+        isVerified: place.isVerified,
+        recommendedBy: place.submitterName,
+        isReportedByCurrentUser: place.isReportedByCurrentUser,
+        isVerifiedByCurrentUser: place.isVerifiedByCurrentUser,
+        isReportedClosed: place.status == 'REPORTED_CLOSED',
+        address: null,
+        phoneNumber: null,
+        websiteUri: null,
+        googleMapsUri: null,
+        photosJson: null,
+        regularOpeningHoursJson: null,
       ),
+      reviewTargetType: PlaceReviewTargetType.system,
     );
   }
 
@@ -120,7 +127,7 @@ class RecommendationSuccessScreen extends StatelessWidget {
     final navigator = Navigator.of(context);
     var reachedParent = false;
     navigator.popUntil((route) {
-      if (route.settings.name == '/profile/recommended-places') {
+      if (route.settings.name == 'profile-recommended-places') {
         reachedParent = true;
         return true;
       }
@@ -170,13 +177,12 @@ class RecommendationSuccessScreen extends StatelessWidget {
                 ),
                 const SizedBox(height: AppSpacing.stackSm),
                 Text(
-                  isUpdate
-                      ? 'Your changes are saved. The updated recommendation '
-                          'stays under community voting and is visible on '
-                          'your recommendations list.'
-                      : 'Your recommendation is now under community voting. '
-                          'It needs verifications from other community '
-                          'members to earn the Verified badge.',
+                  // R-07 Option A: communicate the number of explorers who
+                  // verified this recommendation. The count is the persisted
+                  // backend value (RecommendedPlaceDetailsDto.VerificationCount)
+                  // carried through the provider — never a hardcoded figure.
+                  'Your recommendation has been verified\n'
+                  'by $verificationCount explorers',
                   textAlign: TextAlign.center,
                   style: AppTypography.bodyMd.copyWith(
                     color: AppColors.textSecondary,

@@ -8,6 +8,8 @@ class FavouritePlace {
   final String lastVisit;
   final bool hasVisited;
   final String category;
+  final String? photoUrl;
+  final String? photoAttribution;
 
   const FavouritePlace({
     required this.id,
@@ -19,6 +21,8 @@ class FavouritePlace {
     required this.lastVisit,
     required this.hasVisited,
     required this.category,
+    this.photoUrl,
+    this.photoAttribution,
   });
 
   static const List<String> uiCategories = [
@@ -42,6 +46,8 @@ class FavouritePlace {
       '${date.day.toString().padLeft(2, '0')}/${date.month.toString().padLeft(2, '0')}/${date.year}',
       hasVisited: hasVisited,
       category: mapToUiCategory(json['primaryType'] as String),
+      photoUrl: json['photoUrl'] as String?,
+      photoAttribution: json['photoAttribution'] as String?,
     );
   }
 

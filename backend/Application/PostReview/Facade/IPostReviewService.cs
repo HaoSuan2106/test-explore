@@ -13,6 +13,7 @@ public interface IPostReviewService
     Task<List<PostSummaryDto>> SearchPostsAsync(int currentUserId, string query, int page, int pageSize);
     Task<PostDetailsDto> GetPostDetailsAsync(int currentUserId, string postId);
     Task<List<PostSummaryDto>> GetMyPostsAsync(int currentUserId);
+    Task<List<PostSummaryDto>> GetMyLikedPostsAsync(int currentUserId, int page, int pageSize);
     Task<CreatePostResponseDto> CreatePostAsync(int currentUserId, CreatePostRequestDto request);
     Task<UpdatePostResponseDto> UpdatePostAsync(int currentUserId, string postId, UpdatePostRequestDto request);
     Task<DeletePostResponseDto> DeletePostAsync(int currentUserId, string postId);

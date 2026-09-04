@@ -23,7 +23,7 @@ public class RecommendPlace
     public double? Rating { get; set; }
     public int UserRatingCount { get; set; }
     public int? PriceLevel { get; set; }
-    public string BusinessStatus { get; set; } = "OPERATIONAL";
+    public string BusinessStatus { get; set; } = global::ExploreMy.Api.Domain.Entities.BusinessStatus.Operational;
 
     /// <summary>Canonical place description; nullable because user submissions may omit it.</summary>
     public string? Description { get; set; }

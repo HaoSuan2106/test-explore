@@ -1,6 +1,6 @@
 ﻿using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
-using ExploreMy.Api.Application.HiddenPlace.Review;
+using ExploreMy.Api.Application.HiddenPlace.Facade;
 using ExploreMy.Api.Common.Exceptions;
 using ExploreMy.Api.DTOs.HiddenPlace;
 using Microsoft.AspNetCore.Authorization;
@@ -12,14 +12,14 @@ namespace ExploreMy.Api.Controllers.HiddenPlace;
 [Route("api/hidden-places/reviews")]
 public class ReviewController : ControllerBase
 {
-    private readonly IReviewService _reviewService;
+    private readonly IHiddenPlaceService _hiddenPlaceService;
     private readonly ILogger<ReviewController> _logger;
 
     public ReviewController(
-        IReviewService reviewService,
+        IHiddenPlaceService hiddenPlaceService,
         ILogger<ReviewController> logger)
     {
-        _reviewService = reviewService;
+        _hiddenPlaceService = hiddenPlaceService;
         _logger = logger;
     }
 
@@ -33,7 +33,7 @@ public class ReviewController : ControllerBase
     {
         try
         {
-            var result = await _reviewService.GetByIdAsync(reviewId);
+            var result = await _hiddenPlaceService.GetReviewByIdAsync(reviewId);
 
             if (result is null)
                 return NotFound(new { message = "Review not found." });
@@ -64,7 +64,7 @@ public class ReviewController : ControllerBase
         try
         {
             var result =
-                await _reviewService.GetByGooglePlaceIdAsync(
+                await _hiddenPlaceService.GetReviewsByGooglePlaceIdAsync(
                     googlePlaceId);
 
             return Ok(result);
@@ -93,7 +93,7 @@ public class ReviewController : ControllerBase
         try
         {
             var result =
-                await _reviewService.GetByRecommendPlaceIdAsync(
+                await _hiddenPlaceService.GetReviewsByRecommendPlaceIdAsync(
                     recommendPlaceId);
 
             return Ok(result);
@@ -125,7 +125,7 @@ public class ReviewController : ControllerBase
             var userId = GetCurrentUserId();
 
             var result =
-                await _reviewService.GetUserReviewForGooglePlaceAsync(
+                await _hiddenPlaceService.GetUserReviewForGooglePlaceAsync(
                     userId,
                     googlePlaceId);
 
@@ -164,7 +164,7 @@ public class ReviewController : ControllerBase
             var userId = GetCurrentUserId();
 
             var result =
-                await _reviewService.GetUserReviewForRecommendPlaceAsync(
+                await _hiddenPlaceService.GetUserReviewForRecommendPlaceAsync(
                     userId,
                     recommendPlaceId);
 
@@ -203,7 +203,7 @@ public class ReviewController : ControllerBase
             var userId = GetCurrentUserId();
 
             var result =
-                await _reviewService.CreateAsync(
+                await _hiddenPlaceService.CreateReviewAsync(
                     userId,
                     request);
 
@@ -250,7 +250,7 @@ public class ReviewController : ControllerBase
         {
             var userId = GetCurrentUserId();
 
-            var result = await _reviewService.UploadPhotosAsync(
+            var result = await _hiddenPlaceService.UploadReviewPhotosAsync(
                 userId,
                 reviewId,
                 files);
@@ -303,7 +303,7 @@ public class ReviewController : ControllerBase
             var userId = GetCurrentUserId();
 
             var result =
-                await _reviewService.UpdateAsync(
+                await _hiddenPlaceService.UpdateReviewAsync(
                     userId,
                     reviewId,
                     request);
@@ -353,7 +353,7 @@ public class ReviewController : ControllerBase
         {
             var userId = GetCurrentUserId();
 
-            await _reviewService.DeleteAsync(
+            await _hiddenPlaceService.DeleteReviewAsync(
                 userId,
                 reviewId);
 
@@ -400,7 +400,7 @@ public class ReviewController : ControllerBase
         {
             var userId = GetCurrentUserId();
 
-            await _reviewService.DeletePhotoAsync(
+            await _hiddenPlaceService.DeleteReviewPhotoAsync(
                 userId,
                 reviewId,
                 reviewPhotoId);
@@ -449,7 +449,7 @@ public class ReviewController : ControllerBase
         {
             var userId = GetCurrentUserId();
 
-            await _reviewService.ReportAsync(
+            await _hiddenPlaceService.ReportReviewAsync(
                 userId,
                 reviewId,
                 request.Reason);

@@ -1,12 +1,15 @@
 import 'package:explore_my/presentation/favourite_place/favourite_place_screen.dart';
 import 'package:explore_my/presentation/route_navigation/route_navigation_active_ui.dart';
 import 'package:explore_my/providers/post_review/post_provider.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'api_communication/http_client/http_client.dart';
 import 'api_communication/secure_storage/secure_storage_service.dart';
+import 'api_communication/signalr_client/signalr_client.dart';
 import 'providers/auth_profile/auth_provider.dart';
 import 'providers/auth_profile/profile_provider.dart';
+import 'providers/community/communication_provider.dart';
 import 'providers/foot_tracker/exploration_map_provider.dart';
 import 'utilities/onboarding_preferences.dart';
 import 'presentation/authentication/login/login_ui.dart';
@@ -24,9 +27,37 @@ import 'utilities/image_cache_guard.dart';
 void main() {
   // Ensure the binding exists before registering the app-wide observer.
   WidgetsFlutterBinding.ensureInitialized();
+
   // Register the memory-pressure handler exactly once at startup.
   // ImageCacheGuard.init() is idempotent — it never registers a duplicate.
   ImageCacheGuard.init();
+
+  // Global error handler: catch unexpected Flutter/framework errors so the
+  // app never crashes silently or shows a raw stack trace to the user. The
+  // real error is logged for debugging; the user sees nothing (the app may
+  // show a broken widget, but it does not crash outright).
+  // A third-party crash reporter (Sentry, Crashlytics) can be wired here.
+  FlutterError.onError = (FlutterErrorDetails details) {
+    final exception = details.exception;
+    // Log the full technical error for developers.
+    debugPrint('=== FLUTTER GLOBAL ERROR ===');
+    debugPrint('Exception: $exception');
+    debugPrint('Stack: ${details.stack}');
+    if (details.context != null) {
+      debugPrint('Context: ${details.context}');
+    }
+  };
+
+  // Platform-level error handler: catch errors that hit the OS-level dispatch
+  // (e.g. uncaught async errors in the event loop).
+  PlatformDispatcher.instance.onError = (Object error, StackTrace stack) {
+    debugPrint('=== PLATFORM GLOBAL ERROR ===');
+    debugPrint('Error: $error');
+    debugPrint('Stack: $stack');
+    // Return true to prevent the default crash dialog.
+    return true;
+  };
+
   runApp(const ExploreMYApp());
 }
 
@@ -41,6 +72,7 @@ class _ExploreMYAppState extends State<ExploreMYApp> {
   static const _secureStorage = SecureStorageService();
 
   late final HttpClient _httpClient;
+  late final SignalrClient _signalrClient;
   late final AuthProvider _authProvider;
   late final ProfileProvider _profileProvider;
 
@@ -48,6 +80,7 @@ class _ExploreMYAppState extends State<ExploreMYApp> {
   void initState() {
     super.initState();
     _httpClient = HttpClient(secureStorage: _secureStorage);
+    _signalrClient = SignalrClient(secureStorage: _secureStorage);
     _authProvider =
         AuthProvider(httpClient: _httpClient, secureStorage: _secureStorage);
     _profileProvider = ProfileProvider(httpClient: _httpClient);
@@ -100,6 +133,9 @@ class _ExploreMYAppState extends State<ExploreMYApp> {
           ),
         ),
         ChangeNotifierProvider(create: (_) => PostProvider(httpClient: httpClient)),
+        ChangeNotifierProvider(
+          create: (_) => CommunicationProvider(httpClient: httpClient, signalrClient: _signalrClient),
+        ),
       ],
       child: MaterialApp.router(
         title: 'ExploreMY',

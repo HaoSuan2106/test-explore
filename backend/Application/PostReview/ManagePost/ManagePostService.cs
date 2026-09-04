@@ -1,6 +1,8 @@
 using ExploreMy.Api.Application.FootTracker.Facade;
 using ExploreMy.Api.Common.Exceptions;
+using ExploreMy.Api.Configuration;
 using ExploreMy.Api.DataAccess.ExternalClients.SupabaseStorage;
+using Microsoft.Extensions.Options;
 using ExploreMy.Api.DataAccess.Repositories.PostReview;
 using ExploreMy.Api.Domain.Entities;
 using ExploreMy.Api.DTOs.FootTracker;
@@ -14,17 +16,20 @@ public class ManagePostService : IManagePostService
     private readonly IStorageClient _storageClient;
     private readonly ILogger<ManagePostService> _logger;
     private readonly IFootTrackerService _footTrackerService;
+    private readonly SupabaseSettings _supabase;
 
     public ManagePostService(
         IPostReviewRepository repository,
         IStorageClient storageClient,
         ILogger<ManagePostService> logger,
-        IFootTrackerService footTrackerService)
+        IFootTrackerService footTrackerService,
+        IOptions<SupabaseSettings> supabase)
     {
         _repository = repository;
         _storageClient = storageClient;
         _logger = logger;
         _footTrackerService = footTrackerService;
+        _supabase = supabase.Value;
     }
 
     /// <summary>
@@ -76,7 +81,7 @@ public class ManagePostService : IManagePostService
         post.ViewsCount = await _repository.IncrementViewsAsync(postId);
 
         var comments = (await _repository.GetCommentsByPostAsync(postId))
-            .Select(MapComment)
+            .Select(PostDtoMapper.ToComment)
             .ToList();
 
         var savedPostIds = await _repository.GetSavedPostIdsAsync(currentUserId);
@@ -86,6 +91,12 @@ public class ManagePostService : IManagePostService
     public async Task<List<PostSummaryDto>> GetMyPostsAsync(int currentUserId)
     {
         var posts = await _repository.GetByAuthorAsync(currentUserId);
+        return await ToSummariesAsync(posts, currentUserId);
+    }
+
+    public async Task<List<PostSummaryDto>> GetMyLikedPostsAsync(int currentUserId, int page, int pageSize)
+    {
+        var posts = await _repository.GetPostsLikedByAsync(currentUserId, page, pageSize);
         return await ToSummariesAsync(posts, currentUserId);
     }
 
@@ -147,6 +158,10 @@ public class ManagePostService : IManagePostService
 
         await _repository.CreatePostAsync(post);
 
+        _logger.LogInformation(
+            "[POST-DTO] User {UserId} created community post {PostId} with {ImageCount} image(s): ["
+            + string.Join(" | ", post.Images.Select(i => $"[{i.DisplayOrder}] {i.ImageUrl}")) + "]",
+            currentUserId, post.PostId, post.Images.Count);
         _logger.LogInformation("User {UserId} created community post {PostId}.", currentUserId, post.PostId);
         return new CreatePostResponseDto
         {
@@ -276,7 +291,7 @@ public class ManagePostService : IManagePostService
     /// </summary>
     public async Task<string> UploadPostImageAsync(int currentUserId, Stream fileStream, string fileName, string contentType)
     {
-        const string bucket = "post-images";
+        var bucket = _supabase.PostImageBucket;
         var extension = Path.GetExtension(fileName);
         var path = $"posts/{currentUserId}/{Guid.NewGuid()}{extension}";
         var url = await _storageClient.UploadToBucketAsync(bucket, path, fileStream, contentType);
@@ -345,23 +360,4 @@ public class ManagePostService : IManagePostService
         var savedPostIds = await _repository.GetSavedPostIdsAsync(currentUserId);
         return posts.Select(p => PostDtoMapper.ToSummary(p, currentUserId, savedPostIds)).ToList();
     }
-
-    /// <summary>
-    /// Local PostComment → PostCommentDto mapping for the Post Details
-    /// comment list. Kept private to this read path; the shared PostDtoMapper
-    /// entry point is still used by comment CRUD in SocialEngagementService.
-    /// </summary>
-    private static PostCommentDto MapComment(PostComment comment) => new()
-    {
-        CommentId = comment.CommentId,
-        PostId = comment.PostId,
-        PostTitle = comment.Post?.Title ?? string.Empty,
-        AuthorId = comment.AuthorId.ToString(),
-        AuthorName = comment.Author?.Username ?? string.Empty,
-        AuthorAvatarUrl = comment.Author?.ProfilePictureUrl,
-        Content = comment.Content,
-        LikesCount = comment.LikesCount,
-        CreatedAt = comment.CreatedAt,
-        UpdatedAt = comment.UpdatedAt,
-    };
 }

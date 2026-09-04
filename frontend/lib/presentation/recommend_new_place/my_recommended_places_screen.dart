@@ -3,6 +3,7 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:provider/provider.dart';
 import '../../../theme/app_theme.dart';
 import '../../../widgets/app_header.dart';
+import '../../../widgets/app_feedback.dart';
 import '../../../widgets/app_button.dart';
 import '../../../widgets/content_constraint.dart';
 import '../../../providers/hidden_place/hidden_place_provider.dart';
@@ -187,45 +188,87 @@ class _MyRecommendedPlacesScreenState extends State<MyRecommendedPlacesScreen> {
 
     final photos = place.photosJson ?? const <String>[];
 
-    Navigator.of(context).push(
-      MaterialPageRoute(
-        builder: (_) => Scaffold(
-          backgroundColor: Colors.white,
-          body: PlaceDetailUI(
-            place: PlaceData(
-              placeId: place.id,
-              title: place.name,
-              category: place.primaryType,
-              primaryType: place.primaryType,
-              imageUrl: photos.isNotEmpty ? photos.first : '',
-              icon: Icons.place_outlined,
-              position: LatLng(place.latitude ?? 0, place.longitude ?? 0),
-              rating: 0,
-              ratingCount: 0,
-              priceLevel: place.priceLevel,
-              businessStatus: place.businessStatus ?? 'UNKNOWN',
-              // The list model's id IS the community submission id (UUID).
-              // It is the actual recommend_place_id the Place Details UI keys
-              // the Community / Verification Status UI on (isCommunity is a
-              // derived getter on PlaceData, never force-set).
-              recommendPlaceId: place.id,
-              isVerified: place.isVerified,
-              recommendedBy: place.submitterName,
-              isReportedByCurrentUser: place.isReportedByCurrentUser,
-              isVerifiedByCurrentUser: place.isVerifiedByCurrentUser,
-              isReportedClosed: place.status == 'REPORTED_CLOSED',
-              address: null,
-              phoneNumber: null,
-              websiteUri: null,
-              googleMapsUri: null,
-              photosJson: null,
-              regularOpeningHoursJson: null,
-            ),
-            reviewTargetType: PlaceReviewTargetType.system,
-          ),
+    // Route the recommendation's Place Details screen through GoRouter +
+    // typed AppNavigation (P6.1). The list model's id IS the community
+    // submission id (UUID) — the recommend_place_id the Place Details UI keys
+    // the Community / Verification Status UI on (isCommunity is a derived
+    // getter on PlaceData, never force-set).
+    AppNavigation.toPlaceDetails(
+      context,
+      place: PlaceData(
+        placeId: place.id,
+        title: place.name,
+        category: place.primaryType,
+        primaryType: place.primaryType,
+        imageUrl: photos.isNotEmpty ? photos.first : '',
+        icon: Icons.place_outlined,
+        position: LatLng(place.latitude ?? 0, place.longitude ?? 0),
+        rating: 0,
+        ratingCount: 0,
+        priceLevel: place.priceLevel,
+        businessStatus: place.businessStatus ?? 'UNKNOWN',
+        recommendPlaceId: place.id,
+        isVerified: place.isVerified,
+        recommendedBy: place.submitterName,
+        isReportedByCurrentUser: place.isReportedByCurrentUser,
+        isVerifiedByCurrentUser: place.isVerifiedByCurrentUser,
+        isReportedClosed: place.status == 'REPORTED_CLOSED',
+        address: null,
+        phoneNumber: null,
+        websiteUri: null,
+        googleMapsUri: null,
+        photosJson: null,
+        regularOpeningHoursJson: null,
+      ),
+      reviewTargetType: PlaceReviewTargetType.system,
+    );
+  }
+
+  /// OWNER WITHDRAWAL — confirms the owner wants to withdraw their own
+  /// recommendation, calls the API, and refreshes the list.
+  Future<void> _confirmWithdraw(
+      BuildContext context, String placeId, String placeName) async {
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        title: const Text('Withdraw Recommendation'),
+        content: Text(
+          'Are you sure you want to withdraw "$placeName"? '
+          'It will no longer be visible to others.',
         ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(ctx, false),
+            child: const Text('Cancel'),
+          ),
+          TextButton(
+            onPressed: () => Navigator.pop(ctx, true),
+            child: const Text('Withdraw', style: TextStyle(color: Color(0xFFFF6242))),
+          ),
+        ],
       ),
     );
+
+    if (confirmed != true) return;
+    if (!context.mounted) return;
+
+    final provider = context.read<HiddenPlaceProvider>();
+    final success = await provider.withdrawRecommendation(placeId);
+
+    if (!context.mounted) return;
+
+    if (success) {
+      // Refresh the entire list so the withdrawn status is visible.
+      await provider.loadMyRecommendations();
+      if (!context.mounted) return;
+      AppFeedback.show(context, message: 'Your recommendation has been withdrawn.', isSuccess: true);
+    } else if (context.mounted) {
+      AppFeedback.show(
+        context,
+        message: provider.errorMessage ?? 'Failed to withdraw recommendation.',
+        isSuccess: false,
+      );
+    }
   }
 
   /// Lazy-rendered list of the user's recommendation cards (loading / error /
@@ -270,8 +313,7 @@ class _MyRecommendedPlacesScreenState extends State<MyRecommendedPlacesScreen> {
             : (AppColors.successContainer, AppColors.success, 'Verified');
 
     // The whole card frame is tappable → the shared PlaceDetailUI with the
-    // REAL data of the tapped recommendation (Edit / Withdraw remain as their
-    // own buttons and keep their individual onPressed handlers).
+    // REAL data of the tapped recommendation (Edit keeps its own onPressed).
     return GestureDetector(
       behavior: HitTestBehavior.opaque,
       onTap: () => _openPlaceDetails(context, place.id),
@@ -341,20 +383,15 @@ class _MyRecommendedPlacesScreenState extends State<MyRecommendedPlacesScreen> {
                       : null,
                 ),
               ),
-              const SizedBox(width: AppSpacing.stackSm),
+              const SizedBox(width: 8),
               Expanded(
                 child: AppButton(
                   text: 'Withdraw',
-                  icon: Icons.delete_outline,
-                  variant: AppButtonVariant.destructive,
+                  icon: Icons.remove_circle_outline,
+                  variant: AppButtonVariant.outline,
                   height: 40,
-                  onPressed: isUnderVoting
-                      ? () {
-                          AppNavigation.openWithdrawModal(
-                            context,
-                            placeId: place.id,
-                          );
-                        }
+                  onPressed: (isUnderVoting || place.isVerified) && !place.isWithdrawn
+                      ? () => _confirmWithdraw(context, place.id, place.name)
                       : null,
                 ),
               ),

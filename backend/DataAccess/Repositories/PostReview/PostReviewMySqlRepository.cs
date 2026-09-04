@@ -39,7 +39,8 @@ public class PostReviewMySqlRepository : IPostReviewRepository
                     .Include(p => p.Images)
                     .Include(p => p.Reactions)
                     .Include(p => p.Comments)
-                    .Include(p => p.Reports);
+                    .Include(p => p.Reports)
+                    .AsSplitQuery();
 
                 var savedPosts = await savedQuery.ToListAsync();
                 await HydrateTaggedPlacesAsync(savedPosts);
@@ -54,23 +55,13 @@ public class PostReviewMySqlRepository : IPostReviewRepository
                 .Include(p => p.Comments)
                 .Include(p => p.Reports);
 
-            // D2: popularity = number of likes + number of comments. When a
-            // min/max engagement range is given, only posts whose engagement
-            // falls inside the range are included; within the range posts are
-            // ordered highest → lowest engagement.
+            // D2: popularity = number of likes + number of comments (see PostEngagement —
+            // the formula and the engagement-range rule live in the domain). When a
+            // min/max engagement range is given, only posts whose engagement falls inside
+            // the range are included; within the range posts are ordered highest → lowest.
             if (sort == PostFeedSort.Popularity)
             {
-                query = query
-                    .Where(p =>
-                        (minEngagement == null
-                         || p.Reactions.Count(r => r.Status == PostReactionStatus.Active)
-                            + p.Comments.Count(c => c.Status == PostCommentStatus.Active) >= minEngagement)
-                        && (maxEngagement == null
-                            || p.Reactions.Count(r => r.Status == PostReactionStatus.Active)
-                            + p.Comments.Count(c => c.Status == PostCommentStatus.Active) <= maxEngagement))
-                    .OrderByDescending(p => p.Reactions.Count(r => r.Status == PostReactionStatus.Active)
-                                            + p.Comments.Count(c => c.Status == PostCommentStatus.Active))
-                    .ThenByDescending(p => p.CreatedAt);
+                query = PostEngagement.OrderByPopularityInRange(query, minEngagement, maxEngagement);
             }
             else
             {
@@ -80,6 +71,7 @@ public class PostReviewMySqlRepository : IPostReviewRepository
             var feedPosts = await query
                 .Skip((page - 1) * pageSize)
                 .Take(pageSize)
+                .AsSplitQuery()
                 .ToListAsync();
             await HydrateTaggedPlacesAsync(feedPosts);
             return feedPosts;
@@ -145,6 +137,35 @@ public class PostReviewMySqlRepository : IPostReviewRepository
         catch (Exception ex)
         {
             _logger.LogError(ex, "Database error while loading posts reported by user {UserId}.", userId);
+            throw;
+        }
+    }
+
+    /// <summary>
+    /// Posts the current user has an ACTIVE like on (My Activity → Liked).
+    /// </summary>
+    public async Task<List<Post>> GetPostsLikedByAsync(int userId, int page, int pageSize)
+    {
+        try
+        {
+            var likedPosts = await _context.Posts
+                .Where(p => p.Status == PostStatus.Active
+                            && p.Reactions.Any(r => r.UserId == userId && r.Status == PostReactionStatus.Active))
+                .Include(p => p.Author)
+                .Include(p => p.Images)
+                .Include(p => p.Reactions)
+                .Include(p => p.Comments)
+                .Include(p => p.Reports)
+                .OrderByDescending(p => p.CreatedAt)
+                .Skip((page - 1) * pageSize)
+                .Take(pageSize)
+                .ToListAsync();
+            await HydrateTaggedPlacesAsync(likedPosts);
+            return likedPosts;
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Database error while loading posts liked by user {UserId}.", userId);
             throw;
         }
     }
@@ -281,19 +302,6 @@ public class PostReviewMySqlRepository : IPostReviewRepository
         }
     }
 
-    public async Task<bool> PlaceExistsAsync(string placeId)
-    {
-        try
-        {
-            return await _context.Places.AnyAsync(p => p.PlaceId == placeId);
-        }
-        catch (Exception ex)
-        {
-            _logger.LogError(ex, "Database error while checking place {PlaceId}.", placeId);
-            throw;
-        }
-    }
-
     public async Task<int> IncrementViewsAsync(string postId)
     {
         try
@@ -393,19 +401,6 @@ public class PostReviewMySqlRepository : IPostReviewRepository
         catch (Exception ex)
         {
             _logger.LogError(ex, "Database error while updating comment {CommentId}.", comment.CommentId);
-            throw;
-        }
-    }
-
-    public async Task<bool> CommentExistsAsync(string commentId)
-    {
-        try
-        {
-            return await _context.PostComments.AnyAsync(c => c.CommentId == commentId);
-        }
-        catch (Exception ex)
-        {
-            _logger.LogError(ex, "Database error while checking comment {CommentId}.", commentId);
             throw;
         }
     }
@@ -544,6 +539,20 @@ public class PostReviewMySqlRepository : IPostReviewRepository
         }
     }
 
+    public async Task<PostReport?> GetReportByPostAndReporterAsync(string postId, int reporterId)
+    {
+        try
+        {
+            return await _context.PostReports
+                .FirstOrDefaultAsync(r => r.PostId == postId && r.ReporterId == reporterId);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Database error while loading report for post {PostId} by user {ReporterId}.", postId, reporterId);
+            throw;
+        }
+    }
+
     public async Task UpdateReportAsync(PostReport report)
     {
         try
@@ -582,20 +591,6 @@ public class PostReviewMySqlRepository : IPostReviewRepository
         catch (Exception ex)
         {
             _logger.LogError(ex, "Database error while checking report on post {PostId} by user {ReporterId}.", postId, reporterId);
-            throw;
-        }
-    }
-
-    public async Task<PostReport?> GetActiveReportAsync(string postId, int reporterId)
-    {
-        try
-        {
-            return await _context.PostReports.FirstOrDefaultAsync(r =>
-                r.PostId == postId && r.ReporterId == reporterId && r.Status == PostReportStatus.Active);
-        }
-        catch (Exception ex)
-        {
-            _logger.LogError(ex, "Database error while loading active report on post {PostId} by user {ReporterId}.", postId, reporterId);
             throw;
         }
     }

@@ -55,6 +55,9 @@ dependencies:
 
   dio: ^5.7.0
   flutter_secure_storage: ^9.2.2
+  # Real-time transport for Community Chat's Send/Receive Messages
+  # (CommunityChatHub on the backend). See signalr_client.dart.
+  signalr_netcore: ^1.4.4
   provider: ^6.1.2
   image_picker: ^1.1.2
   go_router: ^17.5.0

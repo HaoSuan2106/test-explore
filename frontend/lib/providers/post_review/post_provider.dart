@@ -186,6 +186,11 @@ class PostProvider with ChangeNotifier implements SessionScopedProvider {
   /// overwriting a newer query (stale-response protection).
   int _searchSeq = 0;
 
+  /// Monotonic My Activity sequence. Guards against stale sub-load results
+  /// from a prior filter switch overwriting a newer load (stale-response
+  /// protection). Mirrors _searchSeq.
+  int _activitySeq = 0;
+
   /// Search-scoped version. Bumped on every search-state change (start,
   /// results, error, clear). Lets the Search screens subscribe with a cheap
   /// `context.select` on an int instead of watching the whole provider.
@@ -297,6 +302,7 @@ class PostProvider with ChangeNotifier implements SessionScopedProvider {
   final List<UserCommentItem> _userComments = [];
   final List<UserReportItem> _userReports = [];
   final List<PostModel> _savedPosts = [];
+  final List<PostModel> _likedPosts = [];
   PostModel? _singlePost;
   final Map<String, List<UserCommentItem>> _postComments = {};
 
@@ -321,6 +327,7 @@ class PostProvider with ChangeNotifier implements SessionScopedProvider {
   List<PostModel> get userPosts => List.unmodifiable(_myPosts);
   List<UserCommentItem> get userComments => List.unmodifiable(_userComments);
   List<UserReportItem> get userReports => List.unmodifiable(_userReports);
+  List<PostModel> get likedPosts => List.unmodifiable(_likedPosts);
 
   /// Version of the feed/activity/search lists. Subscribe to this (instead of
   /// watching the whole provider) to rebuild the feed only when a list change
@@ -486,78 +493,114 @@ class PostProvider with ChangeNotifier implements SessionScopedProvider {
   }
 
   /// Loads My Activity data: my posts, my comments, and reported posts.
-  /// Runs the three sub-loads in parallel but notifies listeners only once
+  /// Runs the four sub-loads in parallel but notifies listeners only once
   /// (was previously 5 notifications per refresh) to avoid rebuild storms.
+  ///
+  /// Race protection: each call captures a fresh [_activitySeq]. Sub-loads
+  /// apply their results only if the captured seq is still current, so a
+  /// slower request from an earlier filter switch can never overwrite the
+  /// results of a newer one.
   Future<void> loadMyActivity() async {
+    final seq = ++_activitySeq;
     _isActivityLoading = true;
     _activityErrorMessage = null;
     _errorMessage = null;
     notifyListeners();
     await Future.wait([
-      loadMyPosts(notify: false),
-      loadMyComments(notify: false),
-      loadMyReports(notify: false),
-      loadMySaved(notify: false),
+      loadMyPosts(notify: false, seq: seq),
+      loadMyComments(notify: false, seq: seq),
+      loadMyReports(notify: false, seq: seq),
+      loadMySaved(notify: false, seq: seq),
+      loadMyLiked(notify: false, seq: seq),
     ]);
+    if (seq != _activitySeq) return; // a newer load superseded this one
     _isActivityLoading = false;
     notifyListeners();
   }
 
-  Future<void> loadMySaved({bool notify = true}) async {
+  Future<void> loadMySaved({bool notify = true, int? seq}) async {
     final client = httpClient;
     if (client == null) return;
     try {
       final posts = await client.getSavedPosts();
+      if (seq != null && seq != _activitySeq) return; // stale
       _savedPosts
         ..clear()
         ..addAll(posts.map(PostModel.fromSummary));
     } catch (_) {
+      if (seq != null && seq != _activitySeq) return; // stale
       _activityErrorMessage = 'Failed to load your activity. Pull to refresh or tap Retry.';
     }
     _bumpDataVersion();
     if (notify) notifyListeners();
   }
 
-  Future<void> loadMyPosts({bool notify = true}) async {
+  /// Posts the current user has an ACTIVE like on (My Activity → Liked).
+  Future<void> loadMyLiked({bool notify = true, int? seq}) async {
+    final client = httpClient;
+    if (client == null) return;
+    try {
+      final posts = await client.getMyLikedPosts();
+      if (seq != null && seq != _activitySeq) return; // stale
+      _likedPosts
+        ..clear()
+        ..addAll(posts.map(PostModel.fromSummary));
+    } catch (_) {
+      if (seq != null && seq != _activitySeq) return; // stale
+      _activityErrorMessage = 'Failed to load your activity. Pull to refresh or tap Retry.';
+    }
+    _bumpDataVersion();
+    if (notify) notifyListeners();
+  }
+
+  Future<void> loadMyPosts({bool notify = true, int? seq}) async {
     final client = httpClient;
     if (client == null) return;
     try {
       final posts = await client.getMyPosts();
+      if (seq != null && seq != _activitySeq) return; // stale
       _myPosts
         ..clear()
         ..addAll(posts.map(PostModel.fromSummary));
     } catch (_) {
+      if (seq != null && seq != _activitySeq) return; // stale
       _activityErrorMessage = 'Failed to load your activity. Pull to refresh or tap Retry.';
     }
     _bumpDataVersion();
     if (notify) notifyListeners();
   }
 
-  Future<void> loadMyComments({bool notify = true}) async {
+  Future<void> loadMyComments({bool notify = true, int? seq}) async {
     final client = httpClient;
     if (client == null) return;
     try {
       final comments = await client.getMyComments();
+      if (seq != null && seq != _activitySeq) return; // stale
       _userComments
         ..clear()
         ..addAll(comments.map(UserCommentItem.fromApi));
       _refreshCommentDerivatives();
     } catch (_) {
+      if (seq != null && seq != _activitySeq) return; // stale
       _activityErrorMessage = 'Failed to load your activity. Pull to refresh or tap Retry.';
     }
     _bumpDataVersion();
     if (notify) notifyListeners();
   }
 
-  Future<void> loadMyReports({bool notify = true}) async {
+  Future<void> loadMyReports({bool notify = true, int? seq}) async {
     final client = httpClient;
     if (client == null) return;
     try {
       final reports = await client.getMyReports();
+      if (seq != null && seq != _activitySeq) return; // stale
       _userReports
         ..clear()
-        ..addAll(reports.map(UserReportItem.fromApi));
+        ..addAll(reports
+            .where((r) => r.status != 'WITHDRAWN')
+            .map(UserReportItem.fromApi));
     } catch (_) {
+      if (seq != null && seq != _activitySeq) return; // stale
       _activityErrorMessage = 'Failed to load your activity. Pull to refresh or tap Retry.';
     }
     _bumpDataVersion();
@@ -720,11 +763,18 @@ class PostProvider with ChangeNotifier implements SessionScopedProvider {
         final item = UserCommentItem.fromApi(response.comment!);
         final post = getPostById(postId);
         if (post != null) post.commentsCount++;
+        // Only a genuinely NEW comment relationship changes the Commented
+        // filter membership, so only then bump _dataVersion (rebuilds the
+        // feed list). Appending/editing on an already-commented post must
+        // only bump the post revision — that rebuilds the single affected
+        // card (PostCard subscribes to its own revision) and the card
+        // re-reads commentedPostIds / commentPreview via context.read.
+        final isNewlyCommented = !_commentedPostIds.contains(postId);
         _userComments.insert(0, item);
         (_postComments[postId] ??= []).add(item);
         _refreshCommentDerivatives();
         _bumpPostRevision(postId);
-        _bumpDataVersion();
+        if (isNewlyCommented) _bumpDataVersion();
       }
       return true;
     } catch (_) {
@@ -907,6 +957,7 @@ class PostProvider with ChangeNotifier implements SessionScopedProvider {
     _userComments.clear();
     _userReports.clear();
     _savedPosts.clear();
+    _likedPosts.clear();
     _postComments.clear();
     _searchResults.clear();
     _likesInFlight.clear();

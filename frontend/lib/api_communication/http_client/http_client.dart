@@ -4,6 +4,8 @@ import 'package:dio/dio.dart';
 import '../secure_storage/secure_storage_service.dart';
 import '../../models/auth_profile/auth_model.dart';
 import '../../models/auth_profile/profile_model.dart';
+import '../../models/community/community_model.dart';
+import '../../models/community/message_model.dart';
 import '../../models/hidden_place/hidden_place_model.dart';
 import '../../models/foot_tracker/exploration_model.dart';
 import '../../models/post_review/post_model.dart';
@@ -93,7 +95,7 @@ class HttpClient {
   static const baseUrl = String.fromEnvironment(
       'API_BASE_URL',
       // defaultValue: 'http://10.0.2.2:5226'
-    defaultValue: 'http://0.0.0.0:5226'
+    defaultValue: 'http://10.0.2.2:5226'
   );
 
   final SecureStorageService _secureStorage;
@@ -586,6 +588,19 @@ class HttpClient {
         .toList();
   }
 
+  /// Posts the authenticated user has an ACTIVE like on (My Activity → Liked).
+  Future<List<PostSummaryModel>> getMyLikedPosts(
+      {int page = 1, int pageSize = 50}) async {
+    final response = await _dio.get(
+      '/api/posts/liked',
+      queryParameters: {'page': page, 'pageSize': pageSize},
+    );
+    final list = response.data as List? ?? const [];
+    return list
+        .map((e) => PostSummaryModel.fromJson(e as Map<String, dynamic>))
+        .toList();
+  }
+
   Future<CreatePostResponse> createPost(CreatePostRequest request) async {
     final response = await _dio.post('/api/posts', data: request.toJson());
     return CreatePostResponse.fromJson(response.data as Map<String, dynamic>);
@@ -775,11 +790,6 @@ class HttpClient {
     return SubmitRecommendedPlaceResponse.fromJson(response.data as Map<String, dynamic>);
   }
 
-  Future<WithdrawRecommendedPlaceResponse> withdrawRecommendedPlace(String submissionId) async {
-    final response = await _dio.post('/api/recommended-places/$submissionId/withdraw');
-    return WithdrawRecommendedPlaceResponse.fromJson(response.data as Map<String, dynamic>);
-  }
-
   /// Supported PLACE report reasons (NOT post-report reasons).
   Future<List<String>> getRecommendedPlaceReportReasons() async {
     final response = await _dio.get('/api/recommended-places/report-reasons');
@@ -808,5 +818,99 @@ class HttpClient {
     return ReportPlaceResponse.fromJson(response.data as Map<String, dynamic>);
   }
 
+  /// Whether the CURRENT user has already reported the given place (backend
+  /// reads `hidden_place_suppression`). [placeId] is a recommended-place
+  /// submission GUID or a Google-sourced place_id — the backend resolves the
+  /// same way the report endpoint does.
+  Future<bool> isPlaceReportedByCurrentUser(String placeId) async {
+    final response = await _dio.get(
+      '/api/recommended-places/$placeId/report-status',
+    );
+    final data = response.data as Map<String, dynamic>? ?? const {};
+    return data['isReportedByCurrentUser'] as bool? ?? false;
+  }
+
+  /// OWNER WITHDRAWAL — the submitter/owner withdraws their own recommendation.
+  /// This is a COMPLETELY SEPARATE function from place reporting. It moves the
+  /// submission to WITHDRAWN (place_submissions.status) — NOT hidden_place_suppression.
+  /// Only the owner may withdraw; a non-owner gets 403 Forbidden.
+  Future<SubmitRecommendedPlaceResponse> withdrawRecommendedPlace(String submissionId) async {
+    final response = await _dio.post(
+      '/api/recommended-places/$submissionId/withdraw',
+    );
+    return SubmitRecommendedPlaceResponse.fromJson(response.data as Map<String, dynamic>);
+  }
+
+  // ---------------- Community module ----------------
+
+  Future<List<CommunitySummary>> getJoinedCommunities() async {
+    final response = await _dio.get('/api/community/joined');
+    return (response.data as List).map((e) => CommunitySummary.fromJson(e as Map<String, dynamic>)).toList();
+  }
+
+  Future<List<CommunitySummary>> browseCommunities({String? keyword, String? state}) async {
+    final response = await _dio.post('/api/community/browse', data: {'keyword': keyword, 'state': state});
+    return (response.data as List).map((e) => CommunitySummary.fromJson(e as Map<String, dynamic>)).toList();
+  }
+
+  Future<CommunityDetail> getCommunityDetail(int communityId) async {
+    final response = await _dio.get('/api/community/$communityId');
+    return CommunityDetail.fromJson(response.data as Map<String, dynamic>);
+  }
+
+  Future<bool> joinCommunity(int communityId) async {
+    final response = await _dio.post('/api/community/join', data: {'communityId': communityId});
+    return (response.data as Map<String, dynamic>)['success'] as bool? ?? false;
+  }
+
+  Future<String> leaveCommunity(int communityId) async {
+    final response = await _dio.post('/api/community/$communityId/leave');
+    return (response.data as Map<String, dynamic>)['message'] as String? ?? 'Left the community.';
+  }
+
+  Future<List<MessageModel>> getMessages(int communityId, {int take = 30, int? beforeMessageId}) async {
+    final response = await _dio.get('/api/community/$communityId/messages', queryParameters: {
+      'take': take,
+      if (beforeMessageId != null) 'beforeMessageId': beforeMessageId,
+    });
+    return (response.data as List).map((e) => MessageModel.fromJson(e as Map<String, dynamic>)).toList();
+  }
+
+  Future<MessageModel> sendMessage(SendMessageRequest request) async {
+    final response = await _dio.post('/api/community/messages', data: request.toJson());
+    return MessageModel.fromJson(response.data as Map<String, dynamic>);
+  }
+
+  Future<void> deleteMessage(int messageId) async {
+    await _dio.delete('/api/community/messages/$messageId');
+  }
+
+  Future<void> reportMessage(int messageId, {String? reason}) async {
+    await _dio.post('/api/community/messages/$messageId/report', data: {'reason': reason});
+  }
+
+  Future<List<MessageModel>> searchMessages(int communityId, String keyword) async {
+    final response = await _dio.post('/api/community/messages/search', data: {
+      'communityId': communityId,
+      'keyword': keyword,
+    });
+    return (response.data as List).map((e) => MessageModel.fromJson(e as Map<String, dynamic>)).toList();
+  }
+
+  /// Uploads a "Share Media" image and returns its public URL, to pass into
+  /// SendMessageRequest.imageUrls.
+  Future<String> uploadMessageImage(int communityId, File file) async {
+    final fileName = file.path.split(Platform.pathSeparator).last;
+    final formData = FormData.fromMap({
+      'file': await MultipartFile.fromFile(file.path, filename: fileName),
+    });
+    final response = await _dio.post('/api/community/$communityId/media', data: formData);
+    return (response.data as Map<String, dynamic>)['url'] as String;
+  }
+
+  Future<List<ParticipantModel>> getParticipants(int communityId) async {
+    final response = await _dio.get('/api/community/$communityId/participants');
+    return (response.data as List).map((e) => ParticipantModel.fromJson(e as Map<String, dynamic>)).toList();
+  }
 }
 

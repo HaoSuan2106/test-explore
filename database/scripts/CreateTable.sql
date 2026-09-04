@@ -177,6 +177,14 @@ CREATE TABLE `hidden_place_suppression` (
   KEY `idx_hidden_place_suppression_suppressed_at` (`suppressed_at`)
 ) ENGINE=InnoDB AUTO_INCREMENT=44 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
+-- Place photo table (no dependencies)
+--
+-- Permanent cache of one photo per place, copied out of Google and into our own
+-- Supabase bucket (Google's photo URIs are short-lived). Populated lazily by
+-- PlacePhotoService whenever a place is first surfaced by a discovery search -
+-- not every place has a row here. FavouritePlaceService looks this table up by
+-- place_id to attach a photo to favourited places without re-fetching from
+-- Google. See backend/Application/HiddenPlace/PlacePhotos/PlacePhotoService.cs.
 CREATE TABLE `place_photo` (
   `place_photo_id` int NOT NULL AUTO_INCREMENT,
   `place_id` varchar(255) NOT NULL,
@@ -306,7 +314,7 @@ CREATE TABLE `user_saved_posts` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 
-  
+
 -- Place Review
 CREATE TABLE hidden_place_review (
     review_id BIGINT NOT NULL AUTO_INCREMENT,
@@ -386,62 +394,75 @@ CREATE TABLE hidden_place_review_report (
 );
 
 -- MODULE 4: Foot Tracker - Favourite Places & Exploration History (UC102, UC201)
+--
+-- Redesigned 2026-09-01: `places` is now the single canonical, permanent detail
+-- store for ANY place (Google-sourced or community-submitted from
+-- recommended_places), keyed by place_id. `favourite_place` is a thin (user,
+-- place) pointer only - it no longer duplicates place detail per favourite.
+-- Pressing the love icon on the Details page upserts the full place detail
+-- into `places` first (see FavouritePlaceService.AddFavouritePlaceAsync),
+-- then creates/points a favourite_place row at it. See migrations
+-- PromoteFavouritePlaceDetailsToPlaces and SyncPlaceCoordinateTypes.
 
 -- Places table (no dependencies)
---
--- Canonical place records referenced by Favourite Places and Exploration
--- History. Distinct from hidden_place_cache (Module 2), which is a disposable,
--- refreshable cache of raw Google Places results - a row here is a place the
--- app has kept a permanent reference to (favourited or actually visited),
--- independent of whether the Google cache bucket it originated from has since
--- expired or been refreshed.
 CREATE TABLE IF NOT EXISTS places (
     place_id VARCHAR(255) PRIMARY KEY,
     name VARCHAR(150) NOT NULL,
-    address VARCHAR(250) NOT NULL,
-    category VARCHAR(50) NOT NULL,
+    address VARCHAR(500) NOT NULL,
     description LONGTEXT DEFAULT NULL,
-    latitude DECIMAL(18,2) DEFAULT NULL,
-    longitude DECIMAL(18,2) DEFAULT NULL,
+    latitude DOUBLE DEFAULT NULL,
+    longitude DOUBLE DEFAULT NULL,
     created_at DATETIME(6) NOT NULL,
-    updated_at DATETIME(6) NOT NULL
+    updated_at DATETIME(6) NOT NULL,
+
+    primary_type VARCHAR(100) NOT NULL DEFAULT '',
+    primary_type_display_name VARCHAR(100) DEFAULT NULL,
+    short_formatted_address VARCHAR(500) DEFAULT NULL,
+    rating DOUBLE DEFAULT NULL,
+    user_rating_count INT NOT NULL DEFAULT 0,
+    price_level INT DEFAULT NULL,
+    business_status VARCHAR(50) DEFAULT NULL,
+    google_maps_uri VARCHAR(500) DEFAULT NULL,
+    national_phone_number VARCHAR(50) DEFAULT NULL,
+    website_uri VARCHAR(500) DEFAULT NULL,
+    photos_json JSON DEFAULT NULL,
+    regular_opening_hours_json JSON DEFAULT NULL,
+    accessibility_options_json JSON DEFAULT NULL,
+    address_components_json JSON DEFAULT NULL,
+    google_maps_links_json JSON DEFAULT NULL,
+    viewport_json JSON DEFAULT NULL,
+    opening_date DATE DEFAULT NULL
 );
 
--- Favourite place table (depends on users)
+-- Favourite place table (depends on users, places)
 --
 -- One row per (user, place) - uq_user_place prevents favouriting the same
--- place twice. Unlike foot_tracker_log below, this table intentionally has
--- NO duplicates: favouriting is a toggle, not a visit log.
+-- place twice. place_id holds either a Google Place ID or a recommended
+-- place's recommend_place_id - both are just strings, so one column covers
+-- both sources. All place detail lives in `places`, referenced here by
+-- fk_favourite_place_places_place_id - this table no longer stores its own
+-- copy of name/address/lat-long/rating/etc.
 CREATE TABLE IF NOT EXISTS favourite_place (
     favourite_place_id INT AUTO_INCREMENT PRIMARY KEY,
     user_id INT NOT NULL,
     place_id VARCHAR(255) NOT NULL,
-    name VARCHAR(255) NOT NULL,
-    primary_type VARCHAR(100) NOT NULL,
-    address VARCHAR(500) DEFAULT NULL,
-    latitude DOUBLE NOT NULL,
-    longitude DOUBLE NOT NULL,
     last_visit_at DATETIME DEFAULT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
 
     CONSTRAINT fk_favourite_place_users_user_id FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE,
+    CONSTRAINT fk_favourite_place_places_place_id FOREIGN KEY (place_id) REFERENCES places(place_id) ON DELETE CASCADE,
 
-    UNIQUE KEY uq_user_place (user_id, place_id)
+    UNIQUE KEY uq_user_place (user_id, place_id),
+    INDEX ix_favourite_place_place_id (place_id)
 );
 
--- Foot tracker log table (depends on users, places)
+-- Foot tracker log table (depends on users)
 --
 -- One row per completed visit, recorded only once GPS arrival has been
 -- verified during navigation (UC201). Unlike favourite_place, duplicates are
--- intentional: visiting the same place three times produces three rows,
--- since this table is the source of Exploration History rather than a
--- favourites toggle. place_id is nullable with ON DELETE SET NULL - a visit
--- record must survive even if the place it points to is later removed.
---
--- title/primary_type/address/latitude/longitude are denormalized copies of
--- the place's details at the time of the visit (mirroring favourite_place's
--- shape) rather than a join through place_id, so History still displays
--- correctly even when place_id is NULL.
+-- intentional. No FK to places - foot_tracker_log doesn't need that
+-- durability; title/primary_type/address/latitude/longitude are denormalized
+-- copies of the place's details at the time of the visit.
 CREATE TABLE IF NOT EXISTS foot_tracker_log (
     log_id VARCHAR(255) PRIMARY KEY,
     user_id INT NOT NULL,
@@ -459,41 +480,101 @@ CREATE TABLE IF NOT EXISTS foot_tracker_log (
     updated_at DATETIME(6) NOT NULL,
 
     CONSTRAINT fk_foot_tracker_log_users_user_id FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE,
-    CONSTRAINT fk_foot_tracker_log_places_place_id FOREIGN KEY (place_id) REFERENCES places(place_id) ON DELETE SET NULL,
 
     INDEX ix_foot_tracker_log_user_id (user_id),
     INDEX ix_foot_tracker_log_place_id (place_id)
 );
 
--- 1. Widen favourite_place with Google-place rich-detail snapshot columns
---    (nullable; only populated for Google-sourced favourites)
-ALTER TABLE favourite_place
-  ADD COLUMN rating DOUBLE NULL,
-  ADD COLUMN user_rating_count INT NOT NULL DEFAULT 0,
-  ADD COLUMN price_level INT NULL,
-  ADD COLUMN business_status VARCHAR(50) NULL,
-  ADD COLUMN google_maps_uri VARCHAR(500) NULL,
-  ADD COLUMN national_phone_number VARCHAR(50) NULL,
-  ADD COLUMN website_uri VARCHAR(500) NULL,
-  ADD COLUMN photos_json JSON NULL,
-  ADD COLUMN regular_opening_hours_json JSON NULL;
+-- MODULE: Communication (Community Chat)
+-- NOTE: kept in sync with backend/Persistence/DbContext/MySqlDbContext.cs's
+-- OnModelCreating for the Community entities. This hand-written script mirrors
+-- the project's existing manual convention (see MODULE 1 above); it is not a
+-- substitute for a real EF Core migration. Applied via migration
+-- AddCommunityChatModule (2026-09-01) - already run against exploremy_dev.
 
--- 2. Dual-source support: place_id (Google) OR recommend_place_id (community)
---    No FK to recommended_places yet — add it later once that table exists.
-ALTER TABLE favourite_place
-  MODIFY COLUMN place_id VARCHAR(255) NULL,
-  ADD COLUMN recommend_place_id VARCHAR(255) NULL,
-  ADD CONSTRAINT chk_favourite_place_source
-    CHECK (
-      (place_id IS NOT NULL AND recommend_place_id IS NULL) OR
-      (place_id IS NULL AND recommend_place_id IS NOT NULL)
-    );
+-- Community table
+CREATE TABLE IF NOT EXISTS community (
+    community_id INT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(150) NOT NULL,
+    description VARCHAR(1000) DEFAULT NULL,
+    area VARCHAR(100) DEFAULT NULL,
+    state VARCHAR(100) DEFAULT NULL,
+    latitude DOUBLE DEFAULT NULL,
+    longitude DOUBLE DEFAULT NULL,
+    image_url VARCHAR(500) DEFAULT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
 
--- 3. Drop the now-pointless FK (places isn't used by foot_tracker_log anymore)
-ALTER TABLE foot_tracker_log DROP FOREIGN KEY fk_foot_tracker_log_places_place_id;
+    INDEX idx_community_state (state)
+);
 
-ALTER TABLE favourite_place
-  MODIFY COLUMN recommend_place_id VARCHAR(255) NULL;
+-- Community member table (depends on community, users)
+CREATE TABLE IF NOT EXISTS community_member (
+    community_member_id INT AUTO_INCREMENT PRIMARY KEY,
+    community_id INT NOT NULL,
+    user_id INT NOT NULL,
+    role VARCHAR(20) NOT NULL DEFAULT 'Member',
+    is_active BOOLEAN NOT NULL DEFAULT TRUE,
+    joined_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    left_at DATETIME DEFAULT NULL,
 
-ALTER TABLE foot_tracker_log
-  ADD COLUMN recommend_place_id VARCHAR(255) NULL;
+    FOREIGN KEY (community_id) REFERENCES community(community_id) ON DELETE CASCADE,
+    FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE,
+
+    UNIQUE INDEX idx_member_community_user (community_id, user_id)
+);
+
+-- Message table (depends on community, users)
+CREATE TABLE IF NOT EXISTS message (
+    message_id INT AUTO_INCREMENT PRIMARY KEY,
+    community_id INT NOT NULL,
+    sender_user_id INT NOT NULL,
+    content VARCHAR(2000) DEFAULT NULL,
+    reply_to_message_id INT DEFAULT NULL,
+    is_deleted BOOLEAN NOT NULL DEFAULT FALSE,
+    sent_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+
+    FOREIGN KEY (community_id) REFERENCES community(community_id) ON DELETE CASCADE,
+    FOREIGN KEY (sender_user_id) REFERENCES users(user_id) ON DELETE RESTRICT,
+
+    INDEX idx_message_community_sent_at (community_id, sent_at)
+);
+
+-- Message attachment table (depends on message)
+-- place_id is VARCHAR, not INT: real place identifiers are a Google Place ID
+-- or a recommended-place submission UUID, both strings. place_latitude/
+-- place_longitude/place_primary_type/is_community_place are a snapshot taken
+-- at share time (Share Location feature) so reopening a shared place never
+-- needs a live re-fetch — see MessageAttachment.cs.
+CREATE TABLE IF NOT EXISTS message_attachment (
+    attachment_id INT AUTO_INCREMENT PRIMARY KEY,
+    message_id INT NOT NULL,
+    type VARCHAR(20) NOT NULL, -- "Image" | "PlaceShare"
+    media_url VARCHAR(500) DEFAULT NULL,
+    place_id VARCHAR(255) DEFAULT NULL,
+    place_name VARCHAR(255) DEFAULT NULL,
+    place_address VARCHAR(500) DEFAULT NULL,
+    place_image_url VARCHAR(500) DEFAULT NULL,
+    place_status VARCHAR(50) DEFAULT NULL,
+    place_latitude DOUBLE DEFAULT NULL,
+    place_longitude DOUBLE DEFAULT NULL,
+    place_primary_type VARCHAR(100) DEFAULT NULL,
+    is_community_place BOOLEAN NOT NULL DEFAULT FALSE,
+
+    FOREIGN KEY (message_id) REFERENCES message(message_id) ON DELETE CASCADE,
+
+    INDEX idx_attachment_message_id (message_id)
+);
+
+-- Message report table (depends on message, users)
+CREATE TABLE IF NOT EXISTS message_report (
+    report_id INT AUTO_INCREMENT PRIMARY KEY,
+    message_id INT NOT NULL,
+    reporter_user_id INT NOT NULL,
+    reason VARCHAR(500) DEFAULT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+
+    FOREIGN KEY (message_id) REFERENCES message(message_id) ON DELETE CASCADE,
+    FOREIGN KEY (reporter_user_id) REFERENCES users(user_id) ON DELETE RESTRICT,
+
+    UNIQUE INDEX idx_report_message_reporter (message_id, reporter_user_id)
+);

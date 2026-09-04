@@ -1,6 +1,7 @@
 using System.Security.Claims;
 using ExploreMy.Api.Application.PostReview.Facade;
 using ExploreMy.Api.Common.Exceptions;
+using ExploreMy.Api.Common.Helpers;
 using ExploreMy.Api.DTOs.PostReview;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -20,13 +21,6 @@ public class PostController : ControllerBase
         _postReviewService = postReviewService;
         _logger = logger;
     }
-
-    private static readonly HashSet<string> AllowedPostImageContentTypes = new(StringComparer.OrdinalIgnoreCase)
-    {
-        "image/jpeg", "image/png",
-    };
-
-    private const long PostImageUploadMaxSizeBytes = 5 * 1024 * 1024;
 
     private int CurrentUserId => int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
 
@@ -137,6 +131,22 @@ public class PostController : ControllerBase
         }
     }
 
+    /// <summary>Retrieve the authenticated user's liked posts (My Activity → Liked).</summary>
+    [HttpGet("liked")]
+    public async Task<IActionResult> GetMyLikedPosts([FromQuery] int page = 1, [FromQuery] int pageSize = 50)
+    {
+        try
+        {
+            var posts = await _postReviewService.GetMyLikedPostsAsync(CurrentUserId, page, pageSize);
+            return Ok(posts);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Unexpected error fetching liked posts for user {UserId}.", CurrentUserId);
+            return StatusCode(StatusCodes.Status500InternalServerError, new { message = "An unexpected error occurred." });
+        }
+    }
+
     /// <summary>Create a new community post.</summary>
     [HttpPost]
     public async Task<IActionResult> CreatePost([FromBody] CreatePostRequestDto request)
@@ -148,7 +158,17 @@ public class PostController : ControllerBase
 
         try
         {
+            _logger.LogInformation(
+                "[POST-DTO] CreatePost request from user {UserId}: Title=\"{Title}\", TaggedPlaceId={PlaceId}, "
+                + "ImageCount={ImageCount}, ImageUrls=[{ImageUrls}]",
+                CurrentUserId,
+                request.Title,
+                request.TaggedPlaceId,
+                request.Images.Count,
+                string.Join(" | ", request.Images.Select(i => $"[{i.DisplayOrder}] {i.ImageUrl}")));
+
             var result = await _postReviewService.CreatePostAsync(CurrentUserId, request);
+            _logger.LogInformation("[POST-DTO] CreatePost succeeded -> PostId={PostId}", result.PostId);
             return CreatedAtAction(nameof(GetPostDetails), new { postId = result.PostId }, result);
         }
         catch (ValidationException ex)
@@ -259,8 +279,8 @@ public class PostController : ControllerBase
     /// later use in create/update post requests (REQ501_4/5).
     /// </summary>
     [HttpPost("images/upload")]
-    [RequestSizeLimit(PostImageUploadMaxSizeBytes)]
-    [RequestFormLimits(MultipartBodyLengthLimit = PostImageUploadMaxSizeBytes)]
+    [RequestSizeLimit(ImageUploadPolicy.MaxSizeBytes)]
+    [RequestFormLimits(MultipartBodyLengthLimit = ImageUploadPolicy.MaxSizeBytes)]
     public async Task<IActionResult> UploadPostImage(IFormFile? file)
     {
         if (file == null || file.Length == 0)
@@ -268,12 +288,12 @@ public class PostController : ControllerBase
             return BadRequest(new { message = "No image was uploaded." });
         }
 
-        if (file.Length > PostImageUploadMaxSizeBytes)
+        if (file.Length > ImageUploadPolicy.MaxSizeBytes)
         {
             return BadRequest(new { message = "Image exceeds the 5 MB size limit." });
         }
 
-        if (!AllowedPostImageContentTypes.Contains(file.ContentType))
+        if (!ImageUploadPolicy.IsAllowedImageType(file.ContentType, ImageUploadPolicy.PostImageContentTypes))
         {
             return BadRequest(new { message = "Unsupported image type. Allowed: JPEG, PNG." });
         }
@@ -522,6 +542,10 @@ public class PostController : ControllerBase
         catch (ValidationException ex)
         {
             return BadRequest(new { message = ex.Message });
+        }
+        catch (ConflictException ex)
+        {
+            return Conflict(new { message = ex.Message });
         }
         catch (Exception ex)
         {

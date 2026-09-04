@@ -52,7 +52,7 @@ class PostImageGalleryView extends StatelessWidget {
           fit: StackFit.expand,
           children: [
             CachedNetworkImage(
-              imageUrl: images.first,
+              imageUrl: PostImageSizes.thumbnailUrl(images.first),
               fit: BoxFit.cover,
               memCacheWidth: PostImageSizes.feedThumbnailWidth,
               memCacheHeight: PostImageSizes.feedThumbnailHeight,

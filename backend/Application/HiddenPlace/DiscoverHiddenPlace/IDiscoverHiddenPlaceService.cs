@@ -20,7 +20,12 @@ public interface IDiscoverHiddenPlaceService
     /// against other nearby places. Used to tag raw cached rows with whether they'd pass, without
     /// running the full Discover pipeline. See DiscoverHiddenPlaceService.PassesQualityGate.
     /// </summary>
-    bool PassesQualityGate(PlaceCandidate place, DiscoverHiddenPlaceOptions? options = null);
-    /// <summary>List recommended places that reached the VERIFIED status and are publicly viewable.</summary>
+    bool PassesQualityGate(
+        PlaceCandidate place,
+        DiscoverHiddenPlaceOptions? options = null);
+
+    /// <summary>
+    /// Gets published hidden places.
+    /// </summary>
     Task<List<RecommendedPlaceSummaryDto>> GetPublishedPlacesAsync();
 }

@@ -1,4 +1,5 @@
 using ExploreMy.Api.Application.HiddenPlace.Facade;
+using ExploreMy.Api.Common.Helpers;
 using ExploreMy.Api.DTOs.HiddenPlace;
 using ExploreMy.Api.Domain.Entities;
 using Microsoft.AspNetCore.Mvc;
@@ -174,16 +175,9 @@ public class RecommendedPlacesController : ControllerBase
     // Photos (upload before submit; returned public URLs go in photo_json)
     // ============================================================
 
-    private const long PlaceImageUploadMaxSizeBytes = 5 * 1024 * 1024;
-    private static readonly HashSet<string> AllowedPlaceImageContentTypes =
-    [
-        "image/jpeg", "image/png", "image/webp",
-    ];
-
-    /// <summary>Upload a recommended-place photo (JPEG/PNG/WebP, max 5 MB). Returns the public URL for later use in submit requests.</summary>
     [HttpPost("images/upload")]
-    [RequestSizeLimit(PlaceImageUploadMaxSizeBytes)]
-    [RequestFormLimits(MultipartBodyLengthLimit = PlaceImageUploadMaxSizeBytes)]
+    [RequestSizeLimit(ImageUploadPolicy.MaxSizeBytes)]
+    [RequestFormLimits(MultipartBodyLengthLimit = ImageUploadPolicy.MaxSizeBytes)]
     public async Task<IActionResult> UploadPlaceImage(IFormFile? file)
     {
         if (file == null || file.Length == 0)
@@ -191,12 +185,12 @@ public class RecommendedPlacesController : ControllerBase
             return BadRequest(new { message = "No image was uploaded." });
         }
 
-        if (file.Length > PlaceImageUploadMaxSizeBytes)
+        if (file.Length > ImageUploadPolicy.MaxSizeBytes)
         {
             return BadRequest(new { message = "Image exceeds the 5 MB size limit." });
         }
 
-        if (!AllowedPlaceImageContentTypes.Contains(file.ContentType))
+        if (!ImageUploadPolicy.IsAllowedImageType(file.ContentType, ImageUploadPolicy.RecommendedPlaceImageContentTypes))
         {
             return BadRequest(new { message = "Unsupported image type. Allowed: JPEG, PNG, WebP." });
         }
@@ -210,34 +204,6 @@ public class RecommendedPlacesController : ControllerBase
         catch (Exception ex)
         {
             _logger.LogError(ex, "Unexpected error uploading recommended-place image for user {UserId}.", CurrentUserId);
-            return StatusCode(StatusCodes.Status500InternalServerError, new { message = "An unexpected error occurred." });
-        }
-    }
-
-    /// <summary>Withdraw one of the authenticated user's own recommended places.</summary>
-    [HttpPost("{submissionId}/withdraw")]
-    public async Task<IActionResult> WithdrawPlace(string submissionId)
-    {
-        try
-        {
-            var result = await _hiddenPlaceService.WithdrawPlaceAsync(CurrentUserId, submissionId);
-            return Ok(result);
-        }
-        catch (NotFoundException ex)
-        {
-            return NotFound(new { message = ex.Message });
-        }
-        catch (ForbiddenException ex)
-        {
-            return StatusCode(StatusCodes.Status403Forbidden, new { message = ex.Message });
-        }
-        catch (ValidationException ex)
-        {
-            return BadRequest(new { message = ex.Message });
-        }
-        catch (Exception ex)
-        {
-            _logger.LogError(ex, "Unexpected error withdrawing recommended place {SubmissionId} for user {UserId}.", submissionId, CurrentUserId);
             return StatusCode(StatusCodes.Status500InternalServerError, new { message = "An unexpected error occurred." });
         }
     }
@@ -278,6 +244,43 @@ public class RecommendedPlacesController : ControllerBase
     }
 
     // ============================================================
+    // Recommendation Withdrawal (OWNER ONLY) — status: place_submissions
+    // ============================================================
+
+    /// <summary>
+    /// OWNER WITHDRAWAL — a COMPLETELY SEPARATE function from place reporting.
+    /// The submitter/owner moves their own recommendation to WITHDRAWN
+    /// (place_submissions.status). Only the owner may withdraw; a non-owner
+    /// is rejected with 403 Forbidden.
+    /// </summary>
+    [HttpPost("{submissionId}/withdraw")]
+    public async Task<IActionResult> WithdrawRecommendation(string submissionId)
+    {
+        try
+        {
+            var result = await _hiddenPlaceService.WithdrawRecommendationAsync(CurrentUserId, submissionId);
+            return Ok(result);
+        }
+        catch (NotFoundException ex)
+        {
+            return NotFound(new { message = ex.Message });
+        }
+        catch (ForbiddenException ex)
+        {
+            return StatusCode(StatusCodes.Status403Forbidden, new { message = ex.Message });
+        }
+        catch (ValidationException ex)
+        {
+            return BadRequest(new { message = ex.Message });
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Unexpected error withdrawing recommendation {SubmissionId} for user {UserId}.", submissionId, CurrentUserId);
+            return StatusCode(StatusCodes.Status500InternalServerError, new { message = "An unexpected error occurred." });
+        }
+    }
+
+    // ============================================================
     // Place Reports (anonymous) — storage: hidden_place_suppression
     // ============================================================
 
@@ -285,6 +288,35 @@ public class RecommendedPlacesController : ControllerBase
     [HttpGet("report-reasons")]
     public IActionResult GetReportReasons()
         => Ok(new { reasons = PlaceReportReasons.All });
+
+    /// <summary>
+    /// Returns whether the CURRENT authenticated user has already reported the given place.
+    /// Accepts BOTH place identities: a recommended-place submission GUID
+    /// (<c>place_submissions.submission_id</c>, resolved to the canonical
+    /// <c>recommend_place_id</c> like the report endpoint) OR a Google-sourced
+    /// <c>place_id</c> (checked directly against <c>hidden_place_suppression.place_id</c>).
+    ///
+    /// The Report Place button reads this to show "Reported" (disabled) instead of
+    /// "Report Place" when the current user already has an active report.
+    /// </summary>
+    [HttpGet("{placeId}/report-status")]
+    public async Task<IActionResult> GetPlaceReportStatus(string placeId)
+    {
+        try
+        {
+            var result = await _hiddenPlaceService.GetPlaceReportStatusAsync(CurrentUserId, placeId);
+            return Ok(result);
+        }
+        catch (ValidationException ex)
+        {
+            return BadRequest(new { message = ex.Message });
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "GetPlaceReportStatus UNEXPECTED ERROR. PlaceId={PlaceId}, UserId={UserId}", placeId, CurrentUserId);
+            return StatusCode(StatusCodes.Status500InternalServerError, new { message = "An unexpected error occurred." });
+        }
+    }
 
     /// <summary>
     /// Records a PLACE report against a recommended place. The report is persisted in
@@ -296,39 +328,111 @@ public class RecommendedPlacesController : ControllerBase
     /// moves to <c>REPORTED_CLOSED</c> and is hidden from community voting.
     /// </summary>
     [HttpPost("{submissionId}/reports")]
-    public async Task<IActionResult> ReportPlace(string submissionId, [FromBody] ReportPlaceRequestDto request)
+    public async Task<IActionResult> ReportPlace(
+    string submissionId,
+    [FromBody] ReportPlaceRequestDto request)
     {
+        _logger.LogInformation(
+            "ReportPlace START. SubmissionId={SubmissionId}, UserId={UserId}, Reason={Reason}",
+            submissionId,
+            CurrentUserId,
+            request?.Reason);
+
         if (!ModelState.IsValid)
         {
-            return BadRequest(new { message = "Invalid report data.", errors = ModelState });
+            _logger.LogWarning(
+                "ReportPlace INVALID MODEL. SubmissionId={SubmissionId}, UserId={UserId}, Errors={Errors}",
+                submissionId,
+                CurrentUserId,
+                ModelState);
+
+            return BadRequest(new
+            {
+                message = "Invalid report data.",
+                errors = ModelState
+            });
         }
 
         try
         {
-            var result = await _hiddenPlaceService.ReportPlaceAsync(CurrentUserId, submissionId, request.Reason);
+            _logger.LogInformation(
+                "ReportPlace calling HiddenPlaceService.ReportPlaceAsync. SubmissionId={SubmissionId}, UserId={UserId}",
+                submissionId,
+                CurrentUserId);
+
+            var result = await _hiddenPlaceService.ReportPlaceAsync(
+                CurrentUserId,
+                submissionId,
+                request.Reason);
+
+            _logger.LogInformation(
+                "ReportPlace SUCCESS. SubmissionId={SubmissionId}, UserId={UserId}, Result={Result}",
+                submissionId,
+                CurrentUserId,
+                result);
+
             return Ok(result);
         }
         catch (NotFoundException ex)
         {
+            _logger.LogWarning(
+                ex,
+                "ReportPlace NOT FOUND. SubmissionId={SubmissionId}, UserId={UserId}, Message={Message}",
+                submissionId,
+                CurrentUserId,
+                ex.Message);
+
             return NotFound(new { message = ex.Message });
         }
         catch (ForbiddenException ex)
         {
-            return StatusCode(StatusCodes.Status403Forbidden, new { message = ex.Message });
+            _logger.LogWarning(
+                ex,
+                "ReportPlace FORBIDDEN. SubmissionId={SubmissionId}, UserId={UserId}, Message={Message}",
+                submissionId,
+                CurrentUserId,
+                ex.Message);
+
+            return StatusCode(
+                StatusCodes.Status403Forbidden,
+                new { message = ex.Message });
         }
         catch (ConflictException ex)
         {
-            // Duplicate report by the same user + same place → 409 Conflict.
-            return StatusCode(StatusCodes.Status409Conflict, new { message = ex.Message });
+            _logger.LogWarning(
+                ex,
+                "ReportPlace CONFLICT / DUPLICATE. SubmissionId={SubmissionId}, UserId={UserId}, Message={Message}",
+                submissionId,
+                CurrentUserId,
+                ex.Message);
+
+            return StatusCode(
+                StatusCodes.Status409Conflict,
+                new { message = ex.Message });
         }
         catch (ValidationException ex)
         {
+            _logger.LogWarning(
+                ex,
+                "ReportPlace VALIDATION ERROR. SubmissionId={SubmissionId}, UserId={UserId}, Message={Message}",
+                submissionId,
+                CurrentUserId,
+                ex.Message);
+
             return BadRequest(new { message = ex.Message });
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "Unexpected error reporting place {SubmissionId} for user {UserId}.", submissionId, CurrentUserId);
-            return StatusCode(StatusCodes.Status500InternalServerError, new { message = "An unexpected error occurred." });
+            _logger.LogError(
+                ex,
+                "ReportPlace UNEXPECTED ERROR. SubmissionId={SubmissionId}, UserId={UserId}, Reason={Reason}",
+                submissionId,
+                CurrentUserId,
+                request?.Reason);
+
+            return StatusCode(
+                StatusCodes.Status500InternalServerError,
+                new { message = "An unexpected error occurred." });
         }
     }
 }

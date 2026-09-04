@@ -1,4 +1,5 @@
 using System.Net.Http.Headers;
+using System.Net.Http.Json;
 using ExploreMy.Api.Configuration;
 using Microsoft.Extensions.Options;
 
@@ -100,13 +101,41 @@ public class SupabaseStorageClient : IStorageClient
         }
     }
 
-    public string? GetPathFromPublicUrl(string publicUrl)
-        => GetPathFromBucketUrl(_settings.Bucket, publicUrl);
+    public string? GetPathFromPublicUrl(string publicUrl, string? bucket = null)
+        => GetPathFromBucketUrl(string.IsNullOrWhiteSpace(bucket) ? _settings.Bucket : bucket, publicUrl);
 
     public string? GetPathFromBucketUrl(string bucket, string publicUrl)
     {
         var marker = $"/storage/v1/object/public/{bucket}/";
         var index = publicUrl.IndexOf(marker, StringComparison.Ordinal);
         return index < 0 ? null : publicUrl[(index + marker.Length)..];
+    }
+
+    public async Task<string> MoveAsync(string fromPath, string toPath, string? bucket = null)
+    {
+        var targetBucket = string.IsNullOrWhiteSpace(bucket) ? _settings.Bucket : bucket;
+
+        using var request = new HttpRequestMessage(HttpMethod.Post, "/storage/v1/object/move")
+        {
+            Content = JsonContent.Create(new
+            {
+                bucketId = targetBucket,
+                sourceKey = fromPath,
+                destinationKey = toPath,
+            }),
+        };
+
+        using var response = await _httpClient.SendAsync(request);
+
+        if (!response.IsSuccessStatusCode)
+        {
+            var body = await response.Content.ReadAsStringAsync();
+            _logger.LogError(
+                "Supabase move {Bucket}/{From} -> {To} failed with {StatusCode}: {Body}",
+                targetBucket, fromPath, toPath, response.StatusCode, body);
+            throw new InvalidOperationException("Failed to move file in storage.");
+        }
+
+        return GetPublicUrl(toPath, targetBucket);
     }
 }

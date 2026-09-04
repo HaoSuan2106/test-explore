@@ -1,3 +1,5 @@
+using ExploreMy.Api.Domain.Entities;
+
 namespace ExploreMy.Api.Application.HiddenPlace.DiscoverHiddenPlace;
 
 /// <summary>
@@ -75,7 +77,7 @@ public class DiscoverHiddenPlaceOptions
 
     /// <summary>Only candidates with one of these statuses are eligible. Closed places should never surface.</summary>
     public HashSet<string> AllowedBusinessStatuses { get; init; } =
-        new(StringComparer.OrdinalIgnoreCase) { "OPERATIONAL" };
+        new(StringComparer.OrdinalIgnoreCase) { BusinessStatus.Operational };
 
     /// <summary>
     /// Case-insensitive substring match against the place name. A hit means "known chain/franchise" and the

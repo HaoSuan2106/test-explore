@@ -20,9 +20,22 @@ public class HiddenPlaceSuppressionMySqlRepository : IHiddenPlaceSuppressionRepo
     {
         try
         {
+            // Grouped and thresholded, NOT "every row in the table".
+            //
+            // Storage here is one row per (user, place) - a row means "this person reported this
+            // place", not "this place is hidden". Selecting the ids raw made a SINGLE report remove a
+            // place from everyone's map, which is both far too easy to abuse and flatly contradicts
+            // HideThreshold, the number the report endpoint reports progress against and uses to
+            // decide when a place is actually hidden.
+            //
+            // Summing ReportCount rather than counting rows: an ordinary user row carries 1, and the
+            // legacy anonymous rows created before user_id existed carry their historical aggregate.
+            // Counting rows would silently devalue those old aggregates to one report each.
             var ids = await _context.HiddenPlaceSuppressions
                 .AsNoTracking()
-                .Select(s => s.PlaceId)
+                .GroupBy(s => s.PlaceId)
+                .Where(g => g.Sum(s => s.ReportCount) >= RecommendedPlaceThresholds.HideThreshold)
+                .Select(g => g.Key)
                 .ToListAsync();
 
             return ids.ToHashSet(StringComparer.Ordinal);
@@ -38,49 +51,6 @@ public class HiddenPlaceSuppressionMySqlRepository : IHiddenPlaceSuppressionRepo
         }
     }
 
-    public async Task SuppressAsync(string placeId, string? name, string? reason, int reportCount)
-    {
-        try
-        {
-            var already = await _context.HiddenPlaceSuppressions
-                .AnyAsync(s => s.PlaceId == placeId && s.UserId == 0);
-
-            if (already)
-            {
-                return;
-            }
-
-            _context.HiddenPlaceSuppressions.Add(new HiddenPlaceSuppression
-            {
-                UserId = 0,
-                PlaceId = placeId,
-                Name = name ?? string.Empty,
-                Reason = reason ?? string.Empty,
-                ReportCount = reportCount,
-                SuppressedAt = DateTime.UtcNow
-            });
-
-            await _context.SaveChangesAsync();
-
-            _logger.LogInformation(
-                "Suppressed place {PlaceId} ({Name}) after {ReportCount} report(s): {Reason}",
-                placeId, name, reportCount, reason);
-        }
-        catch (DbUpdateException ex)
-        {
-            // The unique index doing its job - two reports crossed the threshold at the same moment.
-            // The place is suppressed either way, which is the only outcome anyone cares about.
-            _logger.LogWarning(ex, "Place {PlaceId} was suppressed concurrently; nothing to do.", placeId);
-        }
-    }
-
-    public async Task<HiddenPlaceSuppression?> GetByRecommendedPlaceIdAsync(string recommendedPlaceId)
-    {
-        return await _context.HiddenPlaceSuppressions
-            .AsNoTracking()
-            .FirstOrDefaultAsync(s => s.RecommendedPlaceId == recommendedPlaceId);
-    }
-
     public async Task<bool> HasUserReportedRecommendedPlaceAsync(int userId, string recommendedPlaceId)
     {
         return await _context.HiddenPlaceSuppressions
@@ -88,28 +58,24 @@ public class HiddenPlaceSuppressionMySqlRepository : IHiddenPlaceSuppressionRepo
             .AnyAsync(s => s.UserId == userId && s.RecommendedPlaceId == recommendedPlaceId);
     }
 
+    public async Task<bool> ExistsAsync(int userId, string placeId)
+    {
+        return await _context.HiddenPlaceSuppressions
+            .AsNoTracking()
+            .AnyAsync(s => s.UserId == userId && s.PlaceId == placeId);
+    }
+
     /// <summary>
-    /// ONE USER + ONE PLACE = ONE ACTIVE REPORT.
-    /// Place Report is NOT a toggle and NOT an anonymous aggregate.
-    /// When the same user has already reported the same place, returns <c>null</c>
-    /// (the caller — the service layer — throws a <c>ValidationException</c>).
-    /// Otherwise inserts a new row with <c>ReportCount = 1</c>.
+    /// Applies ONE user's report against a recommended place (V-11). Storage is one row per
+    /// (user, place): a report creates a new row with <c>ReportCount = 1</c>. Place Report is NOT
+    /// a toggle — the "reject a duplicate report" business decision lives in the service layer,
+    /// which calls <see cref="ExistsAsync"/> first. This method persists and surfaces the unique
+    /// constraint only: a concurrent duplicate (UNIQUE(user_id, place_id)) returns <c>null</c> as
+    /// a backstop. Returns the created row on a fresh report.
     /// </summary>
     public async Task<HiddenPlaceSuppression?> RecordReportAsync(
         int userId, string recommendedPlaceId, string placeId, string name, string reason)
     {
-        // Duplicate check: already a row for this (user, place)?
-        var existing = await _context.HiddenPlaceSuppressions
-            .AnyAsync(s => s.UserId == userId && s.PlaceId == placeId);
-
-        if (existing)
-        {
-            _logger.LogInformation(
-                "User {UserId} has already reported place {PlaceId} (recommended {RecommendedPlaceId}); duplicate rejected.",
-                userId, placeId, recommendedPlaceId);
-            return null;
-        }
-
         var created = new HiddenPlaceSuppression
         {
             UserId = userId,
@@ -142,25 +108,15 @@ public class HiddenPlaceSuppressionMySqlRepository : IHiddenPlaceSuppressionRepo
     }
 
     /// <summary>
-    /// ONE USER + ONE GOOGLE PLACE = ONE ACTIVE REPORT.
-    /// Same-user repeats are rejected (returns <c>null</c>).
-    /// Google-sourced rows carry <c>RecommendedPlaceId = null</c>.
+    /// Applies ONE user's report against a Google-sourced place (no recommended-place submission).
+    /// Storage is one row per (user, place): a report creates a new row with
+    /// <c>RecommendedPlaceId = null</c>. The service layer checks <see cref="ExistsAsync"/> for the
+    /// duplicate-report business decision; the null return here is only a concurrency backstop.
+    /// Returns the created row on a fresh report.
     /// </summary>
     public async Task<HiddenPlaceSuppression?> RecordGooglePlaceReportAsync(
         int userId, string placeId, string name, string reason)
     {
-        // Duplicate check: already a row for this (user, place) with recommended_place_id = null?
-        var existing = await _context.HiddenPlaceSuppressions
-            .AnyAsync(s => s.UserId == userId && s.PlaceId == placeId && s.RecommendedPlaceId == null);
-
-        if (existing)
-        {
-            _logger.LogInformation(
-                "User {UserId} has already reported Google place {PlaceId}; duplicate rejected.",
-                userId, placeId);
-            return null;
-        }
-
         var created = new HiddenPlaceSuppression
         {
             UserId = userId,

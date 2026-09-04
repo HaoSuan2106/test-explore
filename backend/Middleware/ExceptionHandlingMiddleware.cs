@@ -37,6 +37,15 @@ public class ExceptionHandlingMiddleware
         {
             await WriteResponse(context, HttpStatusCode.Conflict, ex.Message);
         }
+        catch (ValidationException ex)
+        {
+            // Centralized validation mapping: without this, a ValidationException
+            // that escapes a controller (e.g. one without an explicit catch) falls
+            // through to the generic handler below and becomes a misleading 500.
+            // With it, every validation failure is a consistent HTTP 400 no matter
+            // which controller/service raised it.
+            await WriteResponse(context, HttpStatusCode.BadRequest, ex.Message);
+        }
         catch (Exception ex)
         {
             _logger.LogError(ex, "Unhandled exception on {Method} {Path}.", context.Request.Method, context.Request.Path);

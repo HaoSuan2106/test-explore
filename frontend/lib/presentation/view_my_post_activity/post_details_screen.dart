@@ -11,6 +11,7 @@ import '../navigation/app_navigation.dart';
 import '../post_review/comment/edit_comment_screen.dart';
 import '../post_review/report/report_reason_sheet.dart';
 import '../post_review/post/post_image_sizes.dart';
+import '../post_review/post/edit_post_screen.dart';
 import '../../../utils/time_format.dart';
 import '../../../widgets/app_feedback.dart';
 import '../../../widgets/content_constraint.dart';
@@ -121,7 +122,11 @@ class _PostDetailsScreenState extends State<PostDetailsScreen>
                   isSuccess: true,
                 );
                 final navigator = Navigator.of(context);
-                if (navigator.canPop()) navigator.pop(); // leave Post Details
+                if (navigator.canPop()) {
+                  navigator.pop(); // leave Post Details
+                } else {
+                  AppNavigation.toMain(context); // fallback: no back route
+                }
               } else {
                 Navigator.of(context).pop(); // leave loading screen
                 AppFeedback.show(context,
@@ -156,9 +161,15 @@ class _PostDetailsScreenState extends State<PostDetailsScreen>
               ListTile(
                 leading: const Icon(Icons.edit_outlined, color: AppColors.textPrimary),
                 title: Text('Edit Post', style: AppTypography.bodyMd),
-                onTap: () {
+                onTap: () async {
                   Navigator.of(ctx).pop();
-                  AppNavigation.toEditPost(context, postId: widget.postId);
+                  final provider = context.read<PostProvider>();
+                  final result = await AppNavigation.toEditPost<PostEditResult>(
+                      context, postId: widget.postId);
+                  if (!mounted) return;
+                  if (result == PostEditResult.updated) {
+                    await provider.loadPostDetails(widget.postId);
+                  }
                 },
               ),
               ListTile(
@@ -192,9 +203,14 @@ class _PostDetailsScreenState extends State<PostDetailsScreen>
               ListTile(
                 leading: const Icon(Icons.flag_outlined, color: AppColors.error),
                 title: Text('Report Post', style: AppTypography.bodyMd.copyWith(color: AppColors.error)),
-                onTap: () {
+                onTap: () async {
                   Navigator.of(ctx).pop();
-                  ReportReasonSheet.show(context, postId: widget.postId);
+                  final result =
+                      await ReportReasonSheet.show(context, postId: widget.postId);
+                  if (!mounted) return;
+                  if (result == ReportResult.submitted && context.mounted) {
+                    AppNavigation.toReportSubmittedSuccess(context);
+                  }
                 },
               ),
             ],
@@ -315,7 +331,15 @@ class _PostDetailsScreenState extends State<PostDetailsScreen>
           if (isOwner)
             IconButton(
               icon: const Icon(Icons.edit_outlined, color: AppColors.textPrimary),
-              onPressed: () => AppNavigation.toEditPost(context, postId: widget.postId),
+              onPressed: () async {
+                final provider = context.read<PostProvider>();
+                final result = await AppNavigation.toEditPost<PostEditResult>(
+                    context, postId: widget.postId);
+                if (!mounted) return;
+                if (result == PostEditResult.updated) {
+                  await provider.loadPostDetails(widget.postId);
+                }
+              },
             ),
           IconButton(
             icon: const Icon(Icons.more_vert, color: AppColors.textPrimary),

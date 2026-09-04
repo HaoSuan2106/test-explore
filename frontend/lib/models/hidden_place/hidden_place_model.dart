@@ -25,6 +25,7 @@ class HiddenPlaceModel {
     this.photosJson,
     this.regularOpeningHoursJson,
     this.source = 'GOOGLE',
+    this.communityStatus,
   });
 
   final String placeId;
@@ -76,13 +77,24 @@ class HiddenPlaceModel {
   final String? photosJson;
   final String? regularOpeningHoursJson;
 
-  /// Where this place came from: 'GOOGLE' or 'COMMUNITY' (submitted by a user, verified by five
-  /// others).
+  /// Where this place came from: 'GOOGLE' or 'COMMUNITY' (submitted by a user).
   ///
   /// Worth checking before showing any number on this object. A community place has no Google
   /// rating, no review count and no meaningful [hiddenScore] - those fields are zero because there
   /// is nothing to put in them, not because the place scored badly.
   final String source;
+
+  /// For a community place, how far through verification it is: 'VERIFIED' once enough people have
+  /// verified it, 'UNDER_VOTING' while it is still waiting. Null for Google places.
+  ///
+  /// The map returns both kinds so a recommendation shows up for its author immediately, which
+  /// means an UNDER_VOTING pin is an unconfirmed claim sitting on the map next to confirmed ones.
+  /// Anything that draws these needs to tell them apart - see [isCommunityVerified].
+  final String? communityStatus;
+
+  /// True only for a community place that has passed verification. False for a Google place and
+  /// for one still under voting, so it is safe to use directly as "is this confirmed".
+  bool get isCommunityVerified => communityStatus == 'VERIFIED';
 
   factory HiddenPlaceModel.fromJson(Map<String, dynamic> json) => HiddenPlaceModel(
         placeId: json['placeId'] as String,
@@ -108,5 +120,6 @@ class HiddenPlaceModel {
         photosJson: json['photosJson'] as String?,
         regularOpeningHoursJson: json['regularOpeningHoursJson'] as String?,
         source: json['source'] as String? ?? 'GOOGLE',
+        communityStatus: json['communityStatus'] as String?,
       );
 }
