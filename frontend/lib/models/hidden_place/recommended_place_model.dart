@@ -347,42 +347,30 @@ int _asInt(dynamic value) {
 }
 
 List<String>? _asStringList(dynamic value) {
-  print('[PhotosJson] _asStringList(input type: ${value.runtimeType}, value: $value)');
   if (value == null) {
-    print('[PhotosJson] _asStringList -> null (input was null, no photos)');
     return null;
   }
   if (value is List) {
-    final result = value.map((e) => e?.toString() ?? '').where((s) => s.isNotEmpty).toList();
-    print('[PhotosJson] _asStringList -> List (${result.length} urls): $result');
-    return result;
+    return value.map((e) => e?.toString() ?? '').where((s) => s.isNotEmpty).toList();
   }
   if (value is String && value.trim().isNotEmpty) {
-    print('[PhotosJson] _asStringList: input is String, trying jsonDecode...');
     final decoded = _tryDecodeJsonArray(value);
-    print('[PhotosJson] _asStringList -> decoded result: $decoded');
     if (decoded != null) return decoded;
   }
-  print('[PhotosJson] _asStringList -> null (unrecognized format)');
   return null;
 }
 
 List<String>? _tryDecodeJsonArray(String raw) {
-  print('[PhotosJson] _tryDecodeJsonArray(raw: $raw)');
   try {
     final decoded = jsonDecode(raw);
     if (decoded is List) {
-      final result = decoded
+      return decoded
           .map((e) => e?.toString() ?? '')
           .where((s) => s.isNotEmpty)
           .toList();
-      print('[PhotosJson] _tryDecodeJsonArray -> jsonDecode OK, ${result.length} urls: $result');
-      return result;
     }
-    print('[PhotosJson] _tryDecodeJsonArray -> decoded is ${decoded.runtimeType} (not a List), returning null');
   } catch (_) {
     // Not valid JSON — treat as absent.
-    print('[PhotosJson] _tryDecodeJsonArray -> jsonDecode FAILED (invalid JSON), returning null');
   }
   return null;
 }

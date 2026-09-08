@@ -4,7 +4,6 @@ import 'package:go_router/go_router.dart';
 import '../post_review/status/loading_state_screen.dart';
 import '../recommend_new_place/recommend_place_draft.dart';
 import '../recommend_new_place/recommendation_success_screen.dart';
-import '../place_details/community_verification/community_verification_ui.dart';
 import '../place_details/place_detail_args.dart';
 import '../place_details/create_review/create_review_args.dart';
 import '../place_details/create_review/create_review_ui.dart' show ReviewPlaceType;
@@ -28,6 +27,26 @@ class AppNavigation {
   /// against a stale location.
   static void toLogin(BuildContext context) {
     context.go('/login');
+  }
+
+  /// Pop the top route through GoRouter (used after e.g. the shared loading
+  /// screen was pushed via [context.push]).
+  ///
+  /// A raw `Navigator.pop` here races the router: if the pushed page has not
+  /// been materialized into the navigator yet (fast response / slow frame),
+  /// the raw pop removes the WRONG page — it can even empty the stack
+  /// ("popped the last page" assertion) and leaves GoRouter's match list
+  /// desynced, so later router navigations run against a stale location.
+  /// Popping through the router keeps its match list authoritative.
+  static void popTopRoute(BuildContext context) {
+    if (context.canPop()) {
+      context.pop();
+    }
+  }
+
+  /// GoRouter's canPop (screen files route navigation through this class).
+  static bool canPop(BuildContext context) {
+    return context.canPop();
   }
 
   /// Open Post Details
@@ -255,35 +274,6 @@ class AppNavigation {
       extra: PlaceDetailArgs(
         place: place,
         reviewTargetType: reviewTargetType,
-      ),
-    );
-  }
-
-  /// Open the Community Verification screen for a RECOMMENDED PLACE.
-  ///
-  /// The [placeId] MUST be the recommended-place SUBMISSION id (UUID), never a
-  /// Google place_id. Returns the user's final vote ([CommunityUserVote]) so
-  /// the caller can sync its provider-backed state after the mutation.
-  static Future<CommunityUserVote?> toCommunityVerification(
-      BuildContext context, {
-        required String placeId,
-        required CommunityPlaceStatus placeStatus,
-        required CommunityUserVote userVote,
-        required String placeName,
-        required String recommendedBy,
-        required bool hasReported,
-        required bool isReportedClosed,
-      }) {
-    return context.push<CommunityUserVote?>(
-      '/place/community-verification',
-      extra: CommunityVerificationArgs(
-        placeId: placeId,
-        placeStatus: placeStatus,
-        userVote: userVote,
-        placeName: placeName,
-        recommendedBy: recommendedBy,
-        hasReported: hasReported,
-        isReportedClosed: isReportedClosed,
       ),
     );
   }

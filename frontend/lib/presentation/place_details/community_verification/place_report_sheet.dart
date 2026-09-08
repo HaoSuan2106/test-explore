@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import '../../../providers/hidden_place/hidden_place_provider.dart';
+
 import '../../../models/hidden_place/recommended_place_model.dart';
+import '../../../providers/hidden_place/hidden_place_provider.dart';
+import '../../../utilities/place_report_reasons.dart';
 import '../../../widgets/app_feedback.dart';
 
 /// Bottom sheet for PLACE reporting (ONE-TIME per user + place — NOT a toggle).
@@ -10,6 +12,12 @@ import '../../../widgets/app_feedback.dart';
 /// (ReportReasonSheet). It targets PLACE reports only, which
 /// go to hidden_place_suppression on the backend — never
 /// community_post_reports.
+///
+/// Report reasons are SYSTEM-DEFINED fixed values
+/// (PlaceReportReasons — mirrored from the backend's authoritative
+/// PlaceReportReasons.All). There is NO admin management and NO runtime
+/// fetch: the sheet renders the fixed list instantly, even offline. The
+/// backend validates every submitted reason against its own list.
 ///
 /// Returns [ReportPlaceResponse] on success via Navigator.pop,
 /// so the caller can update isReportedClosed / reported state.
@@ -41,58 +49,8 @@ class PlaceReportSheet extends StatefulWidget {
 class _PlaceReportSheetState extends State<PlaceReportSheet> {
   static const Color _accent = Color(0xffff6547);
 
-  List<String> _reasons = [];
   String? _selectedReason;
   bool _submitting = false;
-  bool _loadingReasons = true;
-  bool _loadFailed = false;
-
-  @override
-  void initState() {
-    super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (!mounted) return;
-      _loadReasons();
-    });
-  }
-
-  Future<void> _loadReasons() async {
-    setState(() {
-      _loadingReasons = true;
-      _loadFailed = false;
-    });
-
-    final provider = context.read<HiddenPlaceProvider>();
-    final reasons = await provider.loadPlaceReportReasons();
-
-    final filteredReasons = reasons
-        .where((reason) => reason != 'OTHER')
-        .toList();
-
-    if (!mounted) return;
-
-    setState(() {
-      _reasons = filteredReasons;
-      _loadingReasons = false;
-      _loadFailed = filteredReasons.isEmpty;
-    });
-  }
-
-  /// Returns a user-friendly label for each reason code.
-  String _friendlyReason(String code) {
-    switch (code) {
-      case 'CLOSED':
-        return 'This place is permanently closed';
-      case 'WRONG_INFORMATION':
-        return 'The information is incorrect';
-      case 'DUPLICATE':
-        return 'Duplicate of another place';
-      case 'DOES_NOT_EXIST':
-        return 'This place does not exist';
-      default:
-        return code;
-    }
-  }
 
   Future<void> _submit() async {
     final reason = _selectedReason;
@@ -162,50 +120,7 @@ class _PlaceReportSheetState extends State<PlaceReportSheet> {
               ),
             ),
             const SizedBox(height: 16),
-            if (_loadingReasons)
-              const Padding(
-                padding: EdgeInsets.all(24),
-                child: Center(child: CircularProgressIndicator()),
-              )
-            else if (_loadFailed)
-              Padding(
-                padding: const EdgeInsets.symmetric(vertical: 16),
-                child: Column(
-                  children: [
-                    const Icon(
-                      Icons.error_outline,
-                      color: Color(0xffd32f2f),
-                      size: 36,
-                    ),
-                    const SizedBox(height: 10),
-                    const Text(
-                      'Could not load report reasons.',
-                      style: TextStyle(fontSize: 15, fontWeight: FontWeight.w600),
-                    ),
-                    const SizedBox(height: 4),
-                    const Text(
-                      'Please check your connection and try again.',
-                      style: TextStyle(fontSize: 13, color: Color(0xff666666)),
-                    ),
-                    const SizedBox(height: 14),
-                    SizedBox(
-                      width: double.infinity,
-                      height: 44,
-                      child: ElevatedButton.icon(
-                        onPressed: _loadReasons,
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: _accent,
-                          foregroundColor: Colors.white,
-                        ),
-                        icon: const Icon(Icons.refresh, size: 18),
-                        label: const Text('Retry'),
-                      ),
-                    ),
-                  ],
-                ),
-              )
-            else
-              ..._reasons.map((reason) => Padding(
+            ...PlaceReportReasons.uiSelectable.map((reason) => Padding(
                     padding: const EdgeInsets.only(bottom: 8),
                     child: InkWell(
                       onTap: () => setState(() => _selectedReason = reason),
@@ -240,15 +155,15 @@ class _PlaceReportSheetState extends State<PlaceReportSheet> {
                             const SizedBox(width: 10),
                             Expanded(
                               child: Text(
-                                _friendlyReason(reason),
+                                PlaceReportReasons.friendlyLabel(reason),
                                 style: const TextStyle(fontSize: 14),
                               ),
                             ),
                           ],
                         ),
                       ),
-                    ),
-                  )),
+                    )),
+                ),
             const SizedBox(height: 20),
             SizedBox(
               width: double.infinity,

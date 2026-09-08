@@ -1,0 +1,397 @@
+abejales	Abejales
+acarigua	Acarigua
+achaguas	Achaguas
+agua blanca	Agua Blanca
+aguasay	Aguasay
+altagracia de orituco	Altagracia de Orituco
+altamira	Altamira
+alto barinas	Alto Barinas
+anaco	Anaco
+aragua	Aragua
+aragua de barcelona	Aragua de Barcelona
+araguita	Aragüita
+arapuey	Arapuey
+arauquita	Arauquita
+araure	Araure
+araya	Araya
+arenas	Arenas
+aricagua	Aricagua
+arismendi	Arismendi
+aroa	Aroa
+bachaquero	Bachaquero
+bailadores	Bailadores
+barbacoas	Barbacoas
+barcelona	Barcelona
+barinas	Barinas
+barinitas	Barinitas
+barquisimeto	Barquisimeto
+barrancas	Barrancas
+baruta	Baruta
+bejuma	Bejuma
+betijoque	Betijoque
+biruaca	Biruaca
+biscucuy	Biscucuy
+bobures	Bobures
+boca de aroa	Boca de Aroa
+boca de rio	Boca de Río
+boca de uchire	Boca de Uchire
+bocono	Boconó
+boconoito	Boconoito
+boraure	Boraure
+bruzual	Bruzual
+bum bum	Bum Bum
+cabimas	Cabimas
+cabudare	Cabudare
+cabure	Cabure
+cagua	Cagua
+caicara	Caicara
+caicara del orinoco	Caicara del Orinoco
+caja seca	Caja Seca
+calabozo	Calabozo
+calderas	Calderas
+camaguan	Camaguán
+camatagua	Camatagua
+campo elias	Campo Elías
+canagua	Canaguá
+canape capatarida	Canape Capatárida
+cantaura	Cantaura
+capacho nuevo	Capacho Nuevo
+capacho viejo	Capacho Viejo
+capitanejo	Capitanejo
+caraballeda	Caraballeda
+caracas	Caracas
+carache	Carache
+caramuca	Caramuca
+cariaco	Cariaco
+caricuao	Caricuao
+caripe	Caripe
+caripito	Caripito
+carora	Carora
+carrizal	Carrizal
+carupano	Carúpano
+carvajal	Carvajal
+casanay	Casanay
+casigua el cubo	Casigua El Cubo
+catia la mar	Catia La Mar
+caucagua	Caucagua
+caucaguito	Caucagüito
+chacao	Chacao
+chaguaramas	Chaguaramas
+chameta	Chameta
+charallave	Charallave
+chejende	Chejendé
+chichiriviche	Chichiriviche
+chiquinquira	Chiquinquirá
+chivacoa	Chivacoa
+churuguara	Churuguara
+ciudad bolivar	Ciudad Bolívar
+ciudad bolivia	Ciudad Bolivia
+ciudad de nutrias	Ciudad De Nutrias
+ciudad guayana	Ciudad Guayana
+ciudad ojeda	Ciudad Ojeda
+ciudad piar	Ciudad Piar
+clarines	Clarines
+cocorote	Cocorote
+cojedes	Cojedes
+colon	Colón
+coloncito	Coloncito
+concepcion	Concepción
+cordero	Cordero
+coro	Coro
+cua	Cúa
+cumana	Cumaná
+cumanacoa	Cumanacoa
+cupira	Cúpira
+curbati	Curbatí
+curiapo	Curiapo
+dabajuro	Dabajuro
+delicias	Delicias
+dolores	Dolores
+duaca	Duaca
+ejido	Ejido
+el baul	El Baúl
+el cafetal	El Cafetal
+el callao	El Callao
+el canton	El Cantón
+el chaparro	El Chaparro
+el cobre	El Cobre
+el consejo	El Consejo
+el corozo	El Corozo
+el dividive	El Dividive
+el dorado	El Dorado
+el hatillo	El Hatillo
+el junko	El Junko
+el limon	El Limón
+el palmar	El Palmar
+el palmer	El Palmer
+el pao	El Pao
+el paradero	El Paradero
+el pilar	El Pilar
+el playon	El Playón
+el real	El Real
+el regalo	El Regalo
+el socorro	El Socorro
+el sombrero	El Sombrero
+el tigre	El Tigre
+el tocuyo	El Tocuyo
+el toro	El Toro
+el valle del espiritu santo	El Valle del Espíritu Santo
+el vigia	El Vigía
+elorza	Elorza
+encontrados	Encontrados
+escuque	Escuque
+farriar	Farriar
+garcia de hevia municipality	Garcia de Hevia Municipality
+guacara	Guacara
+guadarrama	Guadarrama
+guama	Guama
+guanare	Guanare
+guanarito	Guanarito
+guanta	Guanta
+guaraque	Guaraque
+guarenas	Guarenas
+guasdualito	Guasdualito
+guasipati	Guasipati
+guatire	Guatire
+guayabal	Guayabal
+guigue	Güigüe
+guiria	Güiria
+higuerote	Higuerote
+independencia	Independencia
+irapa	Irapa
+isla raton	Isla Ratón
+jacura	Jacura
+juan griego	Juan Griego
+judibana	Judibana
+kanavayen	Kanavayén
+la aguada	La Aguada
+la asuncion	La Asunción
+la azulita	La Azulita
+la concepcion	La Concepción
+la cruz de taratara	La Cruz de Taratara
+la dolorita	La Dolorita
+la esmeralda	La Esmeralda
+la fria	La Fría
+la grita	La Grita
+la guaira	La Guaira
+la guardia	La Guardia
+la luz	La Luz
+la mula	La Mula
+la paragua	La Paragua
+la plata	La Plata
+la plaza paraguachi	La Plaza Paraguachi
+la quebrada	La Quebrada
+la sabana	La Sabana
+la tendida	La Tendida
+la union	La Unión
+la vela de coro	La Vela de Coro
+la victoria	La Victoria
+la villa del rosario	La Villa del Rosario
+la yuca	La Yuca
+lagunillas	Lagunillas
+lander	Lander
+las casitas del vegon de nutrias	Las Casitas del Vegon de Nutrias
+las mercedes	Las Mercedes
+las mesas	Las Mesas
+las tejerias	Las Tejerías
+las vegas	Las Vegas
+lecherias	Lecherías
+libertad	Libertad
+lobatera	Lobatera
+los dos caminos	Los Dos Caminos
+los guasimitos	Los Guasimitos
+los guayos	Los Guayos
+los puertos de altagracia	Los Puertos de Altagracia
+los rastrojos	Los Rastrojos
+los roques	Los Roques
+los teques	Los Teques
+macapo	Macapo
+machiques	Machiques
+macuto	Macuto
+maiquetia	Maiquetía
+mamporal	Mamporal
+mapire	Mapire
+maporal	Maporal
+maracaibo	Maracaibo
+maracay	Maracay
+mariara	Mariara
+mariguitar	Marigüitar
+maripa	Maripa
+maroa	Maroa
+masparrito	Masparrito
+maturin	Maturín
+mene de mauroa	Mene de Mauroa
+mene grande	Mene Grande
+merida	Mérida
+michelena	Michelena
+miranda	Miranda
+mirimire	Mirimire
+montalban	Montalbán
+monte carmelo	Monte Carmelo
+moron	Morón
+motatan	Motatán
+mucuchies	Mucuchíes
+naguanagua	Naguanagua
+naiguata	Naiguatá
+nirgua	Nirgua
+nueva bolivia	Nueva Bolivia
+obispos	Obispos
+ocumare de la costa	Ocumare de la Costa
+ocumare del tuy	Ocumare del Tuy
+onoto	Onoto
+ortiz	Ortiz
+ospino	Ospino
+palmasola	Palmasola
+palmira	Palmira
+palo negro	Palo Negro
+pampan	Pampán
+pampanito	Pampanito
+pampatar	Pampatar
+papelon	Papelón
+paraiso de chabasquen	Paraíso de Chabasquén
+pariaguan	Pariaguán
+pedernales	Pedernales
+pedraza la vieja	Pedraza La Vieja
+pedregal	Pedregal
+petare	Petare
+piritu	Píritu
+porlamar	Porlamar
+pregonero	Pregonero
+pueblo llano	Pueblo Llano
+pueblo nuevo	Pueblo Nuevo
+pueblo nuevo el chivo	Pueblo Nuevo El Chivo
+puerto ayacucho	Puerto Ayacucho
+puerto cabello	Puerto Cabello
+puerto cumarebo	Puerto Cumarebo
+puerto de nutrias	Puerto de Nutrias
+puerto la cruz	Puerto La Cruz
+puerto piritu	Puerto Píritu
+puerto vivas	Puerto Vivas
+punta cardon	Punta Cardón
+punta de mata	Punta de Mata
+punta de piedra	Punta de Piedra
+punta de piedras	Punta de Piedras
+punta gorda	Punta Gorda
+punto fijo	Punto Fijo
+quebrada seca	Quebrada Seca
+queniquea	Queniquea
+quibor	Quíbor
+quiriquire	Quiriquire
+rio caribe	Río Caribe
+rio chico	Río Chico
+rubio	Rubio
+sabana de mendoza	Sabana de Mendoza
+sabana de parra	Sabana de Parra
+sabana grande	Sabana Grande
+sabaneta	Sabaneta
+san antonio	San Antonio
+san antonio de los altos	San Antonio de Los Altos
+san antonio del golfo	San Antonio del Golfo
+san antonio del tachira	San Antonio del Táchira
+san carlos	San Carlos
+san carlos de rio negro	San Carlos de Río Negro
+san carlos del zulia	San Carlos del Zulia
+san casimiro	San Casimiro
+san cristobal	San Cristóbal
+san diego	San Diego
+san felipe	San Felipe
+san fernando de apure	San Fernando de Apure
+san fernando de atabapo	San Fernando de Atabapo
+san francisco	San Francisco
+san francisco de yare	San Francisco de Yare
+san joaquin	San Joaquín
+san jose de aerocuar	San José de Aerocuar
+san jose de barlovento	San José de Barlovento
+san jose de bolivar	San José de Bolívar
+san jose de guanipa	San José de Guanipa
+san jose de guaribe	San José de Guaribe
+san josecito	San Josecito
+san juan bautista	San Juan Bautista
+san juan de los cayos	San Juan de los Cayos
+san juan de los morros	San Juan de los Morros
+san juan de manapiare	San Juan de Manapiare
+san juan de payara	San Juan de Payara
+san lorenzo	San Lorenzo
+san luis	San Luis
+san mateo	San Mateo
+san pablo	San Pablo
+san pedro de coche	San Pedro de Coche
+san rafael	San Rafael
+san rafael de canagua	San Rafael de Canaguá
+san rafael de onoto	San Rafael de Onoto
+san rafael del pinal	San Rafael del Piñal
+san sebastian	San Sebastián
+san silvestre	San Silvestre
+san simon	San Simón
+san timoteo	San Timoteo
+sanare	Sanare
+santa ana	Santa Ana
+santa apolonia	Santa Apolonia
+santa barbara	Santa Bárbara
+santa catalina	Santa Catalina
+santa cruz	Santa Cruz
+santa cruz de bucaral	Santa Cruz de Bucaral
+santa cruz de guacas	Santa Cruz de Guacas
+santa cruz de los taques	Santa Cruz de los Taques
+santa cruz de mara	Santa Cruz de Mara
+santa cruz de mora	Santa Cruz de Mora
+santa elena de arenales	Santa Elena de Arenales
+santa elena de uairen	Santa Elena de Uairén
+santa ines	Santa Inés
+santa isabel	Santa Isabel
+santa lucia	Santa Lucía
+santa maria de caparo	Santa María de Caparo
+santa maria de ipire	Santa María de Ipire
+santa rita	Santa Rita
+santa rosa	Santa Rosa
+santa teresa del tuy	Santa Teresa del Tuy
+santo domingo	Santo Domingo
+sarare	Sarare
+seboruco	Seboruco
+sierra imataca	Sierra Imataca
+sinamaica	Sinamaica
+siquisique	Siquisique
+socopo	Socopó
+soledad	Soledad
+tabay	Tabay
+tacarigua	Tacarigua
+tariba	Táriba
+temblador	Temblador
+tia juana	Tía Juana
+timotes	Timotes
+tinaco	Tinaco
+tinaquillo	Tinaquillo
+tocopero	Tocópero
+tocuyito	Tocuyito
+tocuyo de la costa	Tocuyo de La Costa
+torondoy	Torondoy
+torunos	Torunos
+tovar	Tovar
+trujillo	Trujillo
+tucacas	Tucacas
+tucani	Tucaní
+tucupido	Tucupido
+tucupita	Tucupita
+tumeremo	Tumeremo
+tunapuy	Tunapuy
+turmero	Turmero
+umuquena	Umuquena
+upata	Upata
+urachiche	Urachiche
+uracoa	Uracoa
+urena	Ureña
+urica	Urica
+urumaco	Urumaco
+valencia	Valencia
+valera	Valera
+valle de guanape	Valle de Guanape
+valle de la pascua	Valle de La Pascua
+veguitas	Veguitas
+villa bruzual	Villa Bruzual
+villa de cura	Villa de Cura
+yaguaraparo	Yaguaraparo
+yaracal	Yaracal
+yaritagua	Yaritagua
+yumare	Yumare
+zaraza	Zaraza
+zea	Zea

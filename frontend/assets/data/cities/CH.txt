@@ -1,0 +1,1411 @@
+aadorf	Aadorf
+aarau	Aarau
+aarberg	Aarberg
+aarburg	Aarburg
+aarwangen	Aarwangen
+acquarossa	Acquarossa
+adelboden	Adelboden
+adligenswil	Adligenswil
+adliswil	Adliswil
+adliswil / adliswil (stadtkern)	Adliswil / Adliswil (Stadtkern)
+adliswil / hundli-zopf	Adliswil / Hündli-Zopf
+adliswil / oberleimbach	Adliswil / Oberleimbach
+adliswil / sonnenberg	Adliswil / Sonnenberg
+adliswil / sood	Adliswil / Sood
+adliswil / tal	Adliswil / Tal
+aesch	Aesch
+aeschi b. spiez	Aeschi b. Spiez
+aeugst am albis	Aeugst am Albis
+affeltrangen	Affeltrangen
+affoltern / hasenbuel	Affoltern / Hasenbüel
+affoltern / oberdorf	Affoltern / Oberdorf
+affoltern / sonnenberg	Affoltern / Sonnenberg
+affoltern / unterdorf	Affoltern / Unterdorf
+affoltern am albis	Affoltern am Albis
+agno	Agno
+aigle	Aigle
+aire-la-ville	Aire-la-Ville
+airolo	Airolo
+alle	Alle
+allschwil	Allschwil
+alpnach	Alpnach
+altdorf	Altdorf
+altendorf	Altendorf
+alterswil	Alterswil
+altishofen	Altishofen
+altnau	Altnau
+altstatten	Altstätten
+amden	Amden
+amriswil	Amriswil
+andelfingen	Andelfingen
+andermatt	Andermatt
+andwil	Andwil
+anieres	Anières
+appenzell	Appenzell
+apples	Apples
+arbon	Arbon
+arch	Arch
+ardon	Ardon
+arisdorf	Arisdorf
+aristau	Aristau
+arlesheim	Arlesheim
+arosa	Arosa
+arth	Arth
+arvigo	Arvigo
+arzier	Arzier
+arzo	Arzo
+ascona	Ascona
+attalens	Attalens
+attinghausen	Attinghausen
+attiswil	Attiswil
+au	Au
+au / mittel-dorf	Au / Mittel-Dorf
+au / unter-dorf	Au / Unter-Dorf
+aubonne	Aubonne
+auswil	Auswil
+auvernier	Auvernier
+auw	Auw
+avenches	Avenches
+avry-sur-matran	Avry-sur-Matran
+avully	Avully
+ayent	Ayent
+baar	Baar
+bach	Bäch
+bachenbulach	Bachenbülach
+bad ragaz	Bad Ragaz
+bad zurzach	Bad Zurzach
+baden	Baden
+bagnes	Bagnes
+balerna	Balerna
+balgach	Balgach
+ballens	Ballens
+ballwil	Ballwil
+balsthal	Balsthal
+baltschieder	Baltschieder
+baretswil	Bäretswil
+bariswil	Bäriswil
+bas-vully	Bas-Vully
+basel	Basel
+basse-nendaz	Basse-Nendaz
+bassecourt	Bassecourt
+bassersdorf	Bassersdorf
+batterkinden	Bätterkinden
+bauen	Bauen
+bauma	Bauma
+bavois	Bavois
+beatenberg	Beatenberg
+beckenried	Beckenried
+bedigliora	Bedigliora
+begnins	Begnins
+belfaux	Belfaux
+bellevue	Bellevue
+bellinzona	Bellinzona
+bellmund	Bellmund
+belmont-sur-lausanne	Belmont-sur-Lausanne
+belp	Belp
+benglen	Benglen
+benken	Benken
+berg	Berg
+berikon	Berikon
+beringen	Beringen
+bern	Bern
+bernex	Bernex
+berolle	Berolle
+beromunster	Beromünster
+besenburen	Besenbüren
+bettingen	Bettingen
+bettlach	Bettlach
+bevaix	Bevaix
+bevilard	Bévilard
+bex	Bex
+biasca	Biasca
+biberist	Biberist
+biberstein	Biberstein
+biel/bienne	Biel/Bienne
+biere	Bière
+biglen	Biglen
+bilten	Bilten
+binningen	Binningen
+binz	Binz
+binzikon	Binzikon
+bioggio	Bioggio
+birchwil	Birchwil
+birmensdorf	Birmensdorf
+birmenstorf	Birmenstorf
+birr	Birr
+birsfelden	Birsfelden
+blecherette	Blécherette
+blonay	Blonay
+blumenstein	Blumenstein
+bodio	Bodio
+bolligen	Bolligen
+boltigen	Boltigen
+bonaduz	Bonaduz
+boncourt	Boncourt
+bonigen	Bönigen
+boniswil	Boniswil
+bonstetten	Bonstetten
+bosingen	Bösingen
+bottens	Bottens
+bottighofen	Bottighofen
+bottmingen	Bottmingen
+boudry	Boudry
+bowil	Bowil
+braggio	Braggio
+breil	Breíl
+breitenbach	Breitenbach
+bremgarten	Bremgarten
+brienz	Brienz
+brig	Brig
+brislach	Brislach
+brissago	Brissago
+brittnau	Brittnau
+broc	Broc
+bronschhofen	Bronschhofen
+brugg	Brugg
+brugg	Brügg
+brusio	Brusio
+brutten	Brütten
+bruttisellen	Brüttisellen
+bubendorf	Bubendorf
+bubikon	Bubikon
+buchholterberg	Buchholterberg
+buchrain	Buchrain
+buchs	Buchs
+buhler	Bühler
+bulach	Bülach
+bulach / gstuckt	Bülach / Gstückt
+bulach / seematt	Bülach / Seematt
+bulach / soliganter	Bülach / Soligänter
+bulle	Bulle
+bunzen	Bünzen
+buochs	Buochs
+burgdorf	Burgdorf
+burgistein	Burgistein
+burglen	Bürglen
+buron	Büron
+buseno	Buseno
+busserach	Büsserach
+bussigny	Bussigny
+busswil bei melchnau	Busswil bei Melchnau
+butschwil	Bütschwil
+buttisholz	Buttisholz
+buttwil	Buttwil
+buus	Buus
+cadempino	Cadempino
+cadenazzo	Cadenazzo
+cadro	Cadro
+camorino	Camorino
+canobbio	Canobbio
+carouge	Carouge
+cartigny	Cartigny
+caslano	Caslano
+castel san pietro	Castel San Pietro
+cauco	Cauco
+caux	Caux
+cazis	Cazis
+celerina	Celerina
+cernier	Cernier
+cevio	Cevio
+chalais	Chalais
+cham	Cham
+chamoson	Chamoson
+champery	Champéry
+chancy	Chancy
+chardonne	Chardonne
+charmey	Charmey
+charrat	Charrat
+chateau-d'oex	Château-d'Oex
+chatel-saint-denis	Châtel-Saint-Denis
+chavannes	Chavannes
+chavannes-le-veyron	Chavannes-le-Veyron
+chavornay	Chavornay
+chene-bougeries	Chêne-Bougeries
+chene-bourg	Chêne-Bourg
+chermignon-d'en haut	Chermignon-d'en Haut
+cheseaux	Cheseaux
+cheseaux-noreaz	Cheseaux-Noréaz
+cheserex	Chéserex
+chevilly	Chevilly
+chexbres	Chexbres
+chezard-saint-martin	Chézard-Saint-Martin
+chiasso	Chiasso
+chippis	Chippis
+choulex	Choulex
+chur	Chur
+churwalden	Churwalden
+claro	Claro
+collombey	Collombey
+comano	Comano
+confignon	Confignon
+conthey	Conthey
+coppet	Coppet
+corcelles-le-jorat	Corcelles-le-Jorat
+corgemont	Corgémont
+corminboeuf	Corminboeuf
+cornaux	Cornaux
+corsier	Corsier
+cortaillod	Cortaillod
+cossonay	Cossonay
+courfaivre	Courfaivre
+courgenay	Courgenay
+courgevaux	Courgevaux
+courrendlin	Courrendlin
+courroux	Courroux
+court	Court
+courtelary	Courtelary
+courtetelle	Courtételle
+couvet	Couvet
+crans-montana	Crans-Montana
+cressier	Cressier
+crissier	Crissier
+cuarnens	Cuarnens
+cugnasco	Cugnasco
+cugy	Cugy
+cully	Cully
+dachsen	Dachsen
+dagmersellen	Dagmersellen
+dallenwil	Dallenwil
+dallikon / dallikon (dorf)	Dällikon / Dällikon (Dorf)
+danikon	Dänikon
+dardagny	Dardagny
+darligen	Därligen
+dattwil	Dättwil
+davos	Davos
+degersheim	Degersheim
+deitingen	Deitingen
+delemont	Delémont
+densburen	Densbüren
+derendingen	Derendingen
+diegten	Diegten
+dielsdorf	Dielsdorf
+diemtigen	Diemtigen
+diepoldsau	Diepoldsau
+diessenhofen	Diessenhofen
+dietikon	Dietikon
+dietikon / almend	Dietikon / Almend
+dietikon / guggenbuhl	Dietikon / Guggenbühl
+dietikon / hofacker	Dietikon / Hofacker
+dietikon / kreuzacker	Dietikon / Kreuzacker
+dietikon / oberdorf	Dietikon / Oberdorf
+dietikon / schonenwerd	Dietikon / Schönenwerd
+dietikon / vorstadt	Dietikon / Vorstadt
+dietlikon / dietlikon (dorf)	Dietlikon / Dietlikon (Dorf)
+dietlikon / eichwiesen	Dietlikon / Eichwiesen
+disentis	Disentis
+domat	Domat
+dombresson	Dombresson
+domdidier	Domdidier
+donat	Donat
+dorf	Dorf
+dornach	Dornach
+dottikon	Dottikon
+dubendorf	Dübendorf
+dubendorf / kunklerstrasse	Dübendorf / Kunklerstrasse
+dubendorf / sonnenberg	Dübendorf / Sonnenberg
+dubendorf / vogelquartier	Dübendorf / Vogelquartier
+dubendorf / wasserfurren	Dübendorf / Wasserfurren
+dudingen	Düdingen
+durnten	Dürnten
+durrenasch	Dürrenäsch
+durrenroth	Dürrenroth
+ebikon	Ebikon
+ebmatingen	Ebmatingen
+ebnat-kappel	Ebnat-Kappel
+echallens	Echallens
+ecublens	Ecublens
+effretikon	Effretikon
+effretikon / rappenhalde-bannhalde	Effretikon / Rappenhalde-Bannhalde
+effretikon / rikon	Effretikon / Rikon
+effretikon / watt	Effretikon / Watt
+egerkingen	Egerkingen
+egg	Egg
+eggersriet	Eggersriet
+eggiwil	Eggiwil
+egliswil	Egliswil
+egnach	Egnach
+ehrendingen	Ehrendingen
+eich	Eich
+eichberg	Eichberg
+eiken	Eiken
+einsiedeln	Einsiedeln
+elgg	Elgg
+elgg / stadtchen und umgebung	Elgg / Städtchen und Umgebung
+elsau-raterschen	Elsau-Räterschen
+elsau-raterschen / raterschen	Elsau-Räterschen / Räterschen
+embrach	Embrach
+embrach / embrach (dorfkern)	Embrach / Embrach (Dorfkern)
+embrach / kellersacker	Embrach / Kellersacker
+emmen	Emmen
+emmetten	Emmetten
+endingen	Endingen
+engelberg	Engelberg
+ennenda	Ennenda
+ennetburgen	Ennetbürgen
+entlebuch	Entlebuch
+epalinges	Epalinges
+ependes	Ependes
+eriswil	Eriswil
+erlach	Erlach
+erlen	Erlen
+erlenbach	Erlenbach
+erlenbach / links des dorfbachs oberhalb bahnlinie	Erlenbach / links des Dorfbachs oberhalb Bahnlinie
+erlenbach / rechts des dorfbachs oberhalb bahnlinie	Erlenbach / rechts des Dorfbachs oberhalb Bahnlinie
+erlenbach im simmental	Erlenbach im Simmental
+erlinsbach	Erlinsbach
+ermatingen	Ermatingen
+ersigen	Ersigen
+erstfeld	Erstfeld
+eschenbach	Eschenbach
+eschenz	Eschenz
+eschlikon	Eschlikon
+escholzmatt	Escholzmatt
+esslingen	Esslingen
+estavayer-le-lac	Estavayer-le-Lac
+ettingen	Ettingen
+ettiswil	Ettiswil
+evilard	Evilard
+evionnaz	Evionnaz
+evolene	Evolène
+faido	Faido
+fallanden	Fällanden
+fehraltorf	Fehraltorf
+feldmeilen	Feldmeilen
+felsberg	Felsberg
+ferenbalm	Ferenbalm
+ferreyres	Ferreyres
+feuerthalen	Feuerthalen
+feusisberg	Feusisberg
+fiesch	Fiesch
+fischingen	Fischingen
+flamatt	Flamatt
+flawil	Flawil
+fleurier	Fleurier
+flims	Flims
+fluelen	Flüelen
+fluhli	Flühli
+flums	Flums
+flurlingen	Flurlingen
+fontainemelon	Fontainemelon
+fontenais	Fontenais
+founex	Founex
+fraubrunnen	Fraubrunnen
+frauenfeld	Frauenfeld
+frauenkappelen	Frauenkappelen
+freienbach	Freienbach
+freienstein	Freienstein
+frenkendorf	Frenkendorf
+fribourg	Fribourg
+frick	Frick
+froideville	Froideville
+frutigen	Frutigen
+fulenbach	Fulenbach
+fullinsdorf	Füllinsdorf
+fully	Fully
+gachnang	Gachnang
+gais	Gais
+gampel	Gampel
+gams	Gams
+gansingen	Gansingen
+ganterschwil	Ganterschwil
+gattikon	Gattikon
+gebenstorf	Gebenstorf
+gelterkinden	Gelterkinden
+geneva	Geneva
+genolier	Genolier
+gerlafingen	Gerlafingen
+geroldswil	Geroldswil
+gersau	Gersau
+geuensee	Geuensee
+giffers	Giffers
+gimel	Gimel
+gipf-oberfrick	Gipf-Oberfrick
+giswil	Giswil
+giubiasco	Giubiasco
+givisiez	Givisiez
+gland	Gland
+glarus	Glarus
+glattbrugg	Glattbrugg
+glattbrugg / rohr/platten-balsberg	Glattbrugg / Rohr/Platten-Balsberg
+glattbrugg / wydacker/bettacker/lattenwiesen	Glattbrugg / Wydacker/Bettacker/Lättenwiesen
+glattfelden	Glattfelden
+glovelier	Glovelier
+gockhausen	Gockhausen
+goldach	Goldach
+goldau	Goldau
+goldingen	Goldingen
+gommiswald	Gommiswald
+gonten	Gonten
+gontenschwil	Gontenschwil
+gordola	Gordola
+gorgier	Gorgier
+gossau	Gossau
+gottlieben	Gottlieben
+grabs	Grabs
+grachen	Grächen
+grancy	Grancy
+grand-savagnier	Grand-Savagnier
+grandson	Grandson
+granichen	Gränichen
+gravesano	Gravesano
+greifensee	Greifensee
+greifensee / mullerwis / seilerwis	Greifensee / Müllerwis / Seilerwis
+greifensee / pfisterholzli	Greifensee / Pfisterhölzli
+grellingen	Grellingen
+grenchen	Grenchen
+grimisuat	Grimisuat
+grindelwald	Grindelwald
+grolley	Grolley
+grone	Grône
+grossacker/opfikon	Grossacker/Opfikon
+grossaffoltern	Grossaffoltern
+grosswangen	Grosswangen
+grusch	Grüsch
+grut	Grüt
+gruyeres	Gruyères
+gryon	Gryon
+gstaad	Gstaad
+guggisberg	Guggisberg
+gunzgen	Gunzgen
+gunzwil	Gunzwil
+gutenswil	Gutenswil
+guttingen	Güttingen
+haag (rheintal)	Haag (Rheintal)
+hadlikon	Hadlikon
+hagendorf	Hägendorf
+haggenschwil	Häggenschwil
+hagglingen	Hägglingen
+hallau	Hallau
+hasle	Hasle
+haslen	Haslen
+hausen	Hausen
+hausen am albis / hausen (dorf)	Hausen am Albis / Hausen (Dorf)
+hedingen	Hedingen
+hegnau	Hegnau
+hegnau / dammboden-grindel	Hegnau / Dammboden-Grindel
+hegnau / sunnebuel-eich	Hegnau / Sunnebüel-Eich
+heiden	Heiden
+heimberg	Heimberg
+heimiswil	Heimiswil
+heitenried	Heitenried
+henggart	Henggart
+heremence	Hérémence
+hergiswil	Hergiswil
+herisau	Herisau
+hermiswil	Hermiswil
+herrliberg	Herrliberg
+herzogenbuchsee	Herzogenbuchsee
+hettlingen	Hettlingen
+hildisrieden	Hildisrieden
+hilterfingen	Hilterfingen
+himmelried	Himmelried
+hindelbank	Hindelbank
+hinteregg	Hinteregg
+hinterrhein	Hinterrhein
+hinwil	Hinwil
+hittnau / hittnau (dorf)	Hittnau / Hittnau (Dorf)
+hitzkirch	Hitzkirch
+hochdorf	Hochdorf
+hochfelden	Hochfelden
+hochwald	Hochwald
+hofstetten	Hofstetten
+hohenrain	Hohenrain
+hohentannen	Hohentannen
+holstein	Hölstein
+hombrechtikon	Hombrechtikon
+homburg	Homburg
+horgen	Horgen
+horgen / allmend	Horgen / Allmend
+horgen / horgen (dorfkern)	Horgen / Horgen (Dorfkern)
+horgen / oberdorf	Horgen / Oberdorf
+horgen / scheller-stockerstrasse	Horgen / Scheller-Stockerstrasse
+hori	Höri
+horn	Horn
+horw	Horw
+hunenberg	Hünenberg
+huttwil	Huttwil
+huttwilen	Hüttwilen
+ibach	Ibach
+igis	Igis
+ilanz	Ilanz
+illnau	Illnau
+illnau / unter-illnau	Illnau / Unter-Illnau
+ingenbohl	Ingenbohl
+ins	Ins
+interlaken	Interlaken
+inwil	Inwil
+itingen	Itingen
+ittigen	Ittigen
+jegenstorf	Jegenstorf
+jenaz	Jenaz
+jona	Jona
+jonen	Jonen
+jongny	Jongny
+jonschwil	Jonschwil
+jussy	Jussy
+kaiseraugst	Kaiseraugst
+kaisten	Kaisten
+kallnach	Kallnach
+kaltbrunn	Kaltbrunn
+kandersteg	Kandersteg
+kanerkinden	Känerkinden
+kappelen	Kappelen
+kehrsatz	Kehrsatz
+kerns	Kerns
+kerzers	Kerzers
+kilchberg	Kilchberg
+kilchberg / bachler-stocken	Kilchberg / Bächler-Stocken
+kilchberg / kilchberg (dorfkern)	Kilchberg / Kilchberg (Dorfkern)
+killwangen	Killwangen
+kindhausen / kindhausen (dorf)	Kindhausen / Kindhausen (Dorf)
+kirchberg	Kirchberg
+kirchleerau	Kirchleerau
+kirchlindach	Kirchlindach
+kleinandelfingen	Kleinandelfingen
+kleinbosingen	Kleinbösingen
+kleinlutzel	Kleinlützel
+klingnau	Klingnau
+klosters serneus	Klosters Serneus
+kloten	Kloten
+kloten / balsberg	Kloten / Balsberg
+kloten / freienberg (chanzler-chlini chaseren)	Kloten / Freienberg (Chanzler-Chlini Chaseren)
+kloten / geissberg	Kloten / Geissberg
+kloten / holberg	Kloten / Holberg
+kloten / horainli	Kloten / Horainli
+kloten / hostrass	Kloten / Hostrass
+kloten / kloten (zentrum)	Kloten / Kloten (Zentrum)
+kloten / rutlen	Kloten / Rütlen
+kloten / spitz	Kloten / Spitz
+knonau	Knonau
+knutwil	Knutwil
+koblenz	Koblenz
+kollbrunn	Kollbrunn
+kollbrunn / kollbrunn (dorfkern)	Kollbrunn / Kollbrunn (Dorfkern)
+kolliken	Kölliken
+koniz	Köniz
+konolfingen	Konolfingen
+koppigen	Koppigen
+krauchthal	Krauchthal
+kreuzlingen	Kreuzlingen
+kriegstetten	Kriegstetten
+kriens	Kriens
+krummenau	Krummenau
+kunten	Künten
+kusnacht	Küsnacht
+kusnacht / dorf	Küsnacht / Dorf
+kusnacht / goldbach	Küsnacht / Goldbach
+kusnacht / heslibach	Küsnacht / Heslibach
+kusnacht / itschnach	Küsnacht / Itschnach
+kusnacht / schiedhalden	Küsnacht / Schiedhalden
+kussnacht	Küssnacht
+kuttigen	Küttigen
+l'abbaye	L'Abbaye
+la chaux	La Chaux
+la chaux-de-fonds	La Chaux-de-Fonds
+la neuveville	La Neuveville
+la punt chamues-ch	La Punt Chamues-ch
+la roche	La Roche
+la sarraz	La Sarraz
+la tour-de-peilz	La Tour-de-Peilz
+la tour-de-treme	La Tour-de-Trême
+laax	Laax
+lachen	Lachen
+lancy	Lancy
+landquart	Landquart
+langenbruck	Langenbruck
+langendorf	Langendorf
+langenthal	Langenthal
+langnau	Langnau
+langnau / langnau (dorf)	Langnau / Langnau (Dorf)
+langnau / vitaquartier	Langnau / Vitaquartier
+langnau am albis	Langnau am Albis
+langrickenbach	Langrickenbach
+laufelfingen	Läufelfingen
+laufen	Laufen
+laufenburg	Laufenburg
+lauffohr (brugg)	Lauffohr (Brugg)
+laupen	Laupen
+laupersdorf	Laupersdorf
+lauperswil	Lauperswil
+lausanne	Lausanne
+lausen	Lausen
+lauterbrunnen	Lauterbrunnen
+lavertezzo	Lavertezzo
+le chenit	Le Chenit
+le grand-saconnex	Le Grand-Saconnex
+le landeron	Le Landeron
+le locle	Le Locle
+le mont-sur-lausanne	Le Mont-sur-Lausanne
+le noirmont	Le Noirmont
+le vaud	Le Vaud
+leibstadt	Leibstadt
+lengnau	Lengnau
+lenk	Lenk
+lens	Lens
+lenzburg	Lenzburg
+lenzerheide	Lenzerheide
+les avanchets	Les Avanchets
+les bois	Les Bois
+les brenets	Les Brenets
+les breuleux	Les Breuleux
+les clees	Les Clées
+les geneveys-sur-coffrane	Les Geneveys-sur-Coffrane
+les ponts-de-martel	Les Ponts-de-Martel
+leuk	Leuk
+leukerbad	Leukerbad
+leuzigen	Leuzigen
+leysin	Leysin
+leytron	Leytron
+lichtensteig	Lichtensteig
+liesberg	Liesberg
+liestal	Liestal
+ligornetto	Ligornetto
+linden	Linden
+linthal	Linthal
+littau	Littau
+locarno	Locarno
+lodrino	Lodrino
+lohningen	Löhningen
+losone	Losone
+lostorf	Lostorf
+lotzwil	Lotzwil
+lucens	Lucens
+luchsingen	Luchsingen
+lugano	Lugano
+lumino	Lumino
+lungern	Lungern
+luterbach	Luterbach
+luthern	Luthern
+lutisburg	Lütisburg
+lutry	Lutry
+lutzelfluh	Lützelflüh
+luzein	Luzein
+luzern	Luzern
+lyss	Lyss
+lyssach	Lyssach
+madiswil	Madiswil
+magadino	Magadino
+magden	Magden
+maienfeld	Maienfeld
+malans	Malans
+malleray	Malleray
+malters	Malters
+malvaglia	Malvaglia
+mannedorf	Männedorf
+mannedorf / ausserfeld	Männedorf / Ausserfeld
+mannedorf / dorfkern	Männedorf / Dorfkern
+marin-epagnier	Marin-Epagnier
+marly	Marly
+marsens	Marsens
+marstetten-dorf	Märstetten-Dorf
+marthalen	Marthalen
+martigny-combe	Martigny-Combe
+martigny-ville	Martigny-Ville
+massagno	Massagno
+matran	Matran
+matten	Matten
+mattenbach (kreis 7)	Mattenbach (Kreis 7)
+mattenbach (kreis 7) / deutweg	Mattenbach (Kreis 7) / Deutweg
+mattenbach (kreis 7) / endliker	Mattenbach (Kreis 7) / Endliker
+mattenbach (kreis 7) / gutschick	Mattenbach (Kreis 7) / Gutschick
+matzendorf	Matzendorf
+matzingen	Matzingen
+mauensee	Mauensee
+mauraz	Mauraz
+meggen	Meggen
+meierskappel	Meierskappel
+meilen	Meilen
+meinier	Meinier
+meinisberg	Meinisberg
+meiringen	Meiringen
+meisterschwanden	Meisterschwanden
+melano	Melano
+melchnau	Melchnau
+melide	Melide
+mellingen	Mellingen
+mendrisio	Mendrisio
+menziken	Menziken
+menzingen	Menzingen
+menznau	Menznau
+merenschwand	Merenschwand
+merlischachen	Merlischachen
+mesocco	Mesocco
+messen	Messen
+mettmenstetten	Mettmenstetten
+meyrin	Meyrin
+mezieres	Mézières
+minusio	Minusio
+mogelsberg	Mogelsberg
+mohlin	Möhlin
+moiry	Moiry
+mollens	Mollens
+mollis	Mollis
+monchaltorf	Mönchaltorf
+monchaltorf / dorf	Mönchaltorf / Dorf
+montagnola	Montagnola
+montagny	Montagny
+montana	Montana
+monte carasso	Monte Carasso
+monthey	Monthey
+montreux	Montreux
+morbio inferiore	Morbio Inferiore
+morges	Morges
+morschwil	Mörschwil
+mosnang	Mosnang
+moudon	Moudon
+moutier	Moutier
+muhen	Muhen
+muhleberg	Mühleberg
+muhlehalde	Mühlehalde
+muhlethurnen	Mühlethurnen
+mullheim	Müllheim
+mumpf	Mumpf
+munchenbuchsee	Münchenbuchsee
+munchenstein	Münchenstein
+munchenwiler	Münchenwiler
+munchwilen	Münchwilen
+munsingen	Münsingen
+munsterlingen	Münsterlingen
+muntschemier	Müntschemier
+muolen	Muolen
+muotathal	Muotathal
+muralto	Muralto
+murgenthal	Murgenthal
+muri	Muri
+murten/morat	Murten/Morat
+muttenz	Muttenz
+nafels	Näfels
+nanikon	Nänikon
+nanikon / nanikon (dorfkern)	Nänikon / Nänikon (Dorfkern)
+naters	Naters
+nebikon	Nebikon
+neerach	Neerach
+neftenbach / dorf neftenbach	Neftenbach / Dorf Neftenbach
+netstal	Netstal
+neuchatel	Neuchâtel
+neudorf	Neudorf
+neuenhof	Neuenhof
+neuenkirch	Neuenkirch
+neuhausen	Neuhausen
+neunkirch	Neunkirch
+nidau	Nidau
+niederbipp	Niederbipp
+niederburen	Niederbüren
+niederglatt	Niederglatt
+niederglatt / niederglatt (dorfkern)	Niederglatt / Niederglatt (Dorfkern)
+niedergosgen	Niedergösgen
+niederhasli	Niederhasli
+niederhelfenschwil	Niederhelfenschwil
+niederlenz	Niederlenz
+niedermuhlern	Niedermuhlern
+niederrohrdorf	Niederrohrdorf
+niederurnen	Niederurnen
+nottwil	Nottwil
+novazzano	Novazzano
+nunningen	Nunningen
+nurensdorf	Nürensdorf
+nyon	Nyon
+oberbipp	Oberbipp
+oberbuchsiten	Oberbuchsiten
+oberburg	Oberburg
+oberdiessbach	Oberdiessbach
+oberdorf	Oberdorf
+oberegg	Oberegg
+oberengstringen	Oberengstringen
+oberengstringen / rauchacher	Oberengstringen / Rauchacher
+oberengstringen / sonnenberg	Oberengstringen / Sonnenberg
+oberengstringen / zentrum	Oberengstringen / Zentrum
+oberentfelden	Oberentfelden
+oberglatt	Oberglatt
+oberglatt / bahnhofquartier	Oberglatt / Bahnhofquartier
+oberglatt / oberglatt (dorfkern)	Oberglatt / Oberglatt (Dorfkern)
+obergosgen	Obergösgen
+oberhelfenschwil	Oberhelfenschwil
+oberhof	Oberhof
+oberhunigen	Oberhünigen
+oberkirch	Oberkirch
+oberkulm	Oberkulm
+oberlunkhofen	Oberlunkhofen
+obermeilen	Obermeilen
+oberrieden	Oberrieden
+oberrieden / berg	Oberrieden / Berg
+oberrieden / mitte	Oberrieden / Mitte
+oberriet	Oberriet
+oberrohrdorf	Oberrohrdorf
+oberruti	Oberrüti
+oberschrot	Oberschrot
+obersiggenthal	Obersiggenthal
+oberurnen	Oberurnen
+oberuzwil	Oberuzwil
+oberwil	Oberwil
+oberwinterthur (kreis 2)	Oberwinterthur (Kreis 2)
+oberwinterthur (kreis 2) / guggenbuhl	Oberwinterthur (Kreis 2) / Guggenbühl
+oberwinterthur (kreis 2) / hegi	Oberwinterthur (Kreis 2) / Hegi
+oberwinterthur (kreis 2) / talacker	Oberwinterthur (Kreis 2) / Talacker
+oberwinterthur (kreis 2) / zinzikon	Oberwinterthur (Kreis 2) / Zinzikon
+obfelden	Obfelden
+obfelden / oberlunnern	Obfelden / Oberlunnern
+obfelden / toussen	Obfelden / Toussen
+oensingen	Oensingen
+oetwil	Oetwil
+oftringen	Oftringen
+ollon	Ollon
+olten	Olten
+onex	Onex
+opfikon	Opfikon
+orbe	Orbe
+ormalingen	Ormalingen
+orny	Orny
+oron-la-ville	Oron-la-Ville
+orpund	Orpund
+orsieres	Orsières
+orvin	Orvin
+ostermundigen	Ostermundigen
+otelfingen	Otelfingen
+othmarsingen	Othmarsingen
+ottenbach	Ottenbach
+pailly	Pailly
+palezieux	Palézieux
+pampigny	Pampigny
+paudex	Paudex
+payerne	Payerne
+penthalaz	Penthalaz
+penthereaz	Penthéréaz
+perroy	Perroy
+pery	Péry
+peseux	Peseux
+pfaffhausen	Pfaffhausen
+pfaffikon	Pfäffikon
+pfaffikon / irgenhausen	Pfäffikon / Irgenhausen
+pfaffikon / pfaffikon (dorfkern)	Pfäffikon / Pfäffikon (Dorfkern)
+pfaffnau	Pfaffnau
+pfeffingen	Pfeffingen
+pfungen	Pfungen
+pfyn	Pfyn
+pieterlen	Pieterlen
+plaffeien	Plaffeien
+plan-les-ouates	Plan-les-Ouates
+pompaples	Pompaples
+pont-la-ville	Pont-la-Ville
+pontresina	Pontresina
+porrentruy	Porrentruy
+poschiavo	Poschiavo
+prangins	Prangins
+praroman	Praroman
+pratteln	Pratteln
+pregassona	Pregassona
+preverenges	Préverenges
+prilly	Prilly
+promontogno	Promontogno
+puidoux	Puidoux
+pully	Pully
+puplinge	Puplinge
+pura	Pura
+quarten	Quarten
+radelfingen	Radelfingen
+rafz	Rafz
+ramsen	Ramsen
+randogne	Randogne
+rapperswil	Rapperswil
+raron	Raron
+rebstein	Rebstein
+rechthalten	Rechthalten
+reconvilier	Reconvilier
+regensdorf	Regensdorf
+regensdorf / feldblumen-riedthofstrasse	Regensdorf / Feldblumen-Riedthofstrasse
+regensdorf / hofacher-geeren	Regensdorf / Hofacher-Geeren
+regensdorf / obstgarten	Regensdorf / Obstgarten
+rehetobel	Rehetobel
+reichenburg	Reichenburg
+reiden	Reiden
+reigoldswil	Reigoldswil
+reinach	Reinach
+renens	Renens
+rhazuns	Rhäzüns
+rheineck	Rheineck
+rheinfelden	Rheinfelden
+riaz	Riaz
+richterswil	Richterswil
+richterswil / burghalde	Richterswil / Burghalde
+richterswil / dorfkern	Richterswil / Dorfkern
+richterswil / richterswil (dorfkern)	Richterswil / Richterswil (Dorfkern)
+rickenbach bei wil	Rickenbach bei Wil
+riddes	Riddes
+riedholz	Riedholz
+riehen	Riehen
+riggisberg	Riggisberg
+ringgenberg	Ringgenberg
+riva san vitale	Riva San Vitale
+riviera	Riviera
+rochefort	Rochefort
+rodersdorf	Rodersdorf
+roggwil	Roggwil
+rohr	Rohr
+rohrbach	Rohrbach
+rolle	Rolle
+romanel-sur-lausanne	Romanel-sur-Lausanne
+romanshorn	Romanshorn
+romerswil	Römerswil
+romont	Romont
+root	Root
+rorbas	Rorbas
+rorschach	Rorschach
+roschenz	Röschenz
+rothenthurm	Rothenthurm
+rothrist	Rothrist
+rotkreuz	Rotkreuz
+rottenschwil	Rottenschwil
+rubigen	Rubigen
+ruderswil	Rüderswil
+rudolfstetten	Rudolfstetten
+rue	Rue
+rueggisberg	Rüeggisberg
+ruegsau	Rüegsau
+rueyres	Rueyres
+rumlang	Rümlang
+rumlang / rumlang (dorfkern)	Rümlang / Rümlang (Dorfkern)
+rumligen	Rümligen
+rupperswil	Rupperswil
+ruschegg	Rüschegg
+ruschlikon	Rüschlikon
+russikon	Russikon
+ruswil	Ruswil
+ruthi	Rüthi
+ruti	Rüti
+ruti / dorfzentrum, sudl. teil	Rüti / Dorfzentrum, Südl. Teil
+ruti / oberdorf	Rüti / Oberdorf
+ruti / westlicher dorfteil	Rüti / Westlicher Dorfteil
+ruti bei lyssach	Rüti bei Lyssach
+rutihof	Rütihof
+saanen	Saanen
+saas-fee	Saas-Fee
+saas-grund	Saas-Grund
+sachseln	Sachseln
+safenwil	Safenwil
+saignelegier	Saignelégier
+saillon	Saillon
+saint saphorin	Saint Saphorin
+saint-aubin-sauges	Saint-Aubin-Sauges
+saint-blaise	Saint-Blaise
+saint-cergue	Saint-Cergue
+saint-george	Saint-George
+saint-imier	Saint-Imier
+saint-leonard	Saint-Léonard
+saint-livres	Saint-Livres
+saint-maurice	Saint-Maurice
+saint-prex	Saint-Prex
+sainte-croix	Sainte-Croix
+sales	Sâles
+salgesch	Salgesch
+salmsach	Salmsach
+salvan	Salvan
+samedan	Samedan
+samstagern	Samstagern
+sankt antoni	Sankt Antoni
+sankt gallen	Sankt Gallen
+sankt gallenkappel	Sankt Gallenkappel
+sankt margrethen	Sankt Margrethen
+sankt niklaus	Sankt Niklaus
+sankt peterzell	Sankt Peterzell
+sankt stephan	Sankt Stephan
+santa maria in calanca	Santa Maria in Calanca
+sargans	Sargans
+sarmenstorf	Sarmenstorf
+sarnen	Sarnen
+satigny	Satigny
+sattel	Sattel
+saubraz	Saubraz
+saviese	Savièse
+savigny	Savigny
+savosa	Savosa
+saxon	Saxon
+schachen	Schachen
+schaffhausen	Schaffhausen
+schafisheim	Schafisheim
+schanis	Schänis
+scharans	Scharans
+schattdorf	Schattdorf
+schenkon	Schenkon
+schiers	Schiers
+schindellegi	Schindellegi
+schinznach bad	Schinznach Bad
+schinznach dorf	Schinznach Dorf
+schleitheim	Schleitheim
+schlieren	Schlieren
+schlieren / boden	Schlieren / Boden
+schlieren / engstringerquartier	Schlieren / Engstringerquartier
+schlieren / freiestrasse	Schlieren / Freiestrasse
+schlieren / kamp	Schlieren / Kamp
+schlieren / spital	Schlieren / Spital
+schlieren / zentrum	Schlieren / Zentrum
+schmerikon	Schmerikon
+schmitten	Schmitten
+schoftland	Schöftland
+schonenbuch	Schönenbuch
+schonenwerd	Schönenwerd
+schotz	Schötz
+schubelbach	Schübelbach
+schupfen	Schüpfen
+schupfheim	Schüpfheim
+schwaderloch	Schwaderloch
+schwanden	Schwanden
+schwarzenberg	Schwarzenberg
+schwellbrunn	Schwellbrunn
+schwerzenbach	Schwerzenbach
+schwerzenbach / blatten	Schwerzenbach / Blatten
+schwerzenbach / chimli	Schwerzenbach / Chimli
+schwyz	Schwyz
+scuol	Scuol
+seeberg	Seeberg
+seedorf	Seedorf
+seen (kreis 3)	Seen (Kreis 3)
+seen (kreis 3) / buelwiesen	Seen (Kreis 3) / Büelwiesen
+seen (kreis 3) / ganzenbuhl	Seen (Kreis 3) / Ganzenbühl
+seen (kreis 3) / oberseen	Seen (Kreis 3) / Oberseen
+seen (kreis 3) / waldegg	Seen (Kreis 3) / Waldegg
+seen (kreis 3) / waser	Seen (Kreis 3) / Waser
+seengen	Seengen
+seftigen	Seftigen
+seglingen	Seglingen
+sellenburen	Sellenbüren
+seltisberg	Seltisberg
+selzach	Selzach
+sementina	Sementina
+sempach	Sempach
+sennwald	Sennwald
+seon	Seon
+servion	Servion
+seuzach / seuzach (dorf)	Seuzach / Seuzach (Dorf)
+seuzach dorf	Seuzach Dorf
+seuzach dorf / breite-weid	Seuzach Dorf / Breite-Weid
+sevelen	Sevelen
+siebnen	Siebnen
+sierre	Sierre
+signau	Signau
+sigriswil	Sigriswil
+silenen	Silenen
+silvaplana	Silvaplana
+sins	Sins
+sirnach	Sirnach
+sissach	Sissach
+sitten	Sitten
+solothurn	Solothurn
+sonnhalde	Sonnhalde
+sorengo	Sorengo
+sottens	Sottens
+speicher	Speicher
+spiez	Spiez
+spreitenbach	Spreitenbach
+st-legier-la chiesaz	St-Légier-La Chiésaz
+st. moritz	St. Moritz
+stabio	Stabio
+stadt winterthur (kreis 1)	Stadt Winterthur (Kreis 1)
+stadt winterthur (kreis 1) / altstadt	Stadt Winterthur (Kreis 1) / Altstadt
+stadt winterthur (kreis 1) / bruhlberg	Stadt Winterthur (Kreis 1) / Brühlberg
+stadt winterthur (kreis 1) / heiligberg	Stadt Winterthur (Kreis 1) / Heiligberg
+stadt winterthur (kreis 1) / lind	Stadt Winterthur (Kreis 1) / Lind
+stadt winterthur (kreis 1) / neuwiesen	Stadt Winterthur (Kreis 1) / Neuwiesen
+stadt winterthur (kreis 1) / tossfeld	Stadt Winterthur (Kreis 1) / Tössfeld
+stafa	Stäfa
+staffelbach	Staffelbach
+stalden	Stalden
+stans	Stans
+stansstad	Stansstad
+staufen	Staufen
+steckborn	Steckborn
+steffisburg	Steffisburg
+stein	Stein
+stein am rhein	Stein am Rhein
+steinen	Steinen
+steinhausen	Steinhausen
+steinmaur	Steinmaur
+stetten	Stetten
+stettfurt	Stettfurt
+stettlen	Stettlen
+strengelbach	Strengelbach
+subingen	Subingen
+suhr	Suhr
+sulgen	Sulgen
+sulz	Sulz
+sumiswald	Sumiswald
+surpierre	Surpierre
+sursee	Sursee
+tafers	Tafers
+tagelswangen	Tagelswangen
+tagertschi	Tägertschi
+tagerwilen	Tägerwilen
+tamins	Tamins
+tanay	Tanay
+tann	Tann
+tann / tann (dorfkern)	Tann / Tann (Dorfkern)
+tauffelen	Täuffelen
+tavannes	Tavannes
+tegerfelden	Tegerfelden
+tenniken	Tenniken
+tesserete	Tesserete
+teufen	Teufen
+teufenthal	Teufenthal
+thal	Thal
+thalwil	Thalwil
+thalwil / berg	Thalwil / Berg
+thalwil / dorfkern	Thalwil / Dorfkern
+thalwil / nord	Thalwil / Nord
+thalwil / see	Thalwil / See
+thalwil / sud	Thalwil / Süd
+thayngen	Thayngen
+therwil	Therwil
+thierachern	Thierachern
+thonex	Thônex
+thun	Thun
+thundorf	Thundorf
+thusis	Thusis
+tiefencastel	Tiefencastel
+toffen	Toffen
+toss (kreis 4)	Töss (Kreis 4)
+toss (kreis 4) / eichliacker	Töss (Kreis 4) / Eichliacker
+toss (kreis 4) / schlosstal	Töss (Kreis 4) / Schlosstal
+toss (kreis 4) / vorder-dattnau	Töss (Kreis 4) / Vorder-Dättnau
+trachselwald	Trachselwald
+tramelan	Tramelan
+travers	Travers
+trelex	Trélex
+treyvaux	Treyvaux
+triengen	Triengen
+trimbach	Trimbach
+trimmis	Trimmis
+trogen	Trogen
+troinex	Troinex
+troistorrents	Troistorrents
+trub	Trub
+trubschachen	Trubschachen
+trun	Trun
+tuggen	Tuggen
+turbenthal	Turbenthal
+turgi	Turgi
+turtmann	Turtmann
+udligenswil	Udligenswil
+ueberstorf	Ueberstorf
+uebeschi	Uebeschi
+uerikon	Uerikon
+uerkheim	Uerkheim
+uetendorf	Uetendorf
+uetikon	Uetikon
+uetikon / grossdorf	Uetikon / Grossdorf
+uhwiesen	Uhwiesen
+uitikon	Uitikon
+unterageri	Unterägeri
+unterengstringen	Unterengstringen
+unteriberg	Unteriberg
+unterkulm	Unterkulm
+unterlunkhofen	Unterlunkhofen
+unterseen	Unterseen
+untersiggenthal	Untersiggenthal
+untervaz	Untervaz
+urdorf	Urdorf
+urdorf / bodenfeld	Urdorf / Bodenfeld
+urdorf / moos	Urdorf / Moos
+urdorf / oberurdorf	Urdorf / Oberurdorf
+urnasch	Urnäsch
+urtenen	Urtenen
+uster	Uster
+uster / gschwader	Uster / Gschwader
+uster / kirch-uster	Uster / Kirch-Uster
+uster / nieder-uster	Uster / Nieder-Uster
+uster / nossikon	Uster / Nossikon
+uster / ober-uster	Uster / Ober-Uster
+uttigen	Uttigen
+uttwil	Uttwil
+utzenstorf	Utzenstorf
+uznach	Uznach
+uzwil	Uzwil
+valeyres-sous-montagny	Valeyres-sous-Montagny
+vallorbe	Vallorbe
+vals platz	Vals Platz
+vandoeuvres	Vandœuvres
+varen	Varen
+vechigen	Vechigen
+veltheim	Veltheim
+veltheim (kreis 5)	Veltheim (Kreis 5)
+veltheim (kreis 5) / blumenau	Veltheim (Kreis 5) / Blumenau
+veltheim (kreis 5) / rosenberg	Veltheim (Kreis 5) / Rosenberg
+verbier	Verbier
+vernayaz	Vernayaz
+vernier	Vernier
+verscio	Verscio
+versoix	Versoix
+vetroz	Vétroz
+vevey	Vevey
+vex	Vex
+veyras	Veyras
+veyrier	Veyrier
+vicques	Vicques
+viganello	Viganello
+villars-sur-glane	Villars-sur-Glâne
+villars-sur-ollon	Villars-sur-Ollon
+villaz-saint-pierre	Villaz-Saint-Pierre
+villeneuve	Villeneuve
+villigen	Villigen
+villmergen	Villmergen
+villnachern	Villnachern
+vionnaz	Vionnaz
+visp	Visp
+visperterminen	Visperterminen
+vitznau	Vitznau
+volketswil / volketswil (dorf)	Volketswil / Volketswil (Dorf)
+vordemwald	Vordemwald
+vorderthal	Vorderthal
+vouvry	Vouvry
+vuadens	Vuadens
+vuarrens	Vuarrens
+vuisternens-devant-romont	Vuisternens-devant-Romont
+wadenswil	Wädenswil
+wadenswil / boller-giessen	Wädenswil / Boller-Giessen
+wadenswil / buelen	Wädenswil / Büelen
+wadenswil / dorf (wadenswil)	Wädenswil / Dorf (Wädenswil)
+wadenswil / eichweid	Wädenswil / Eichweid
+wadenswil / hangenmoos	Wädenswil / Hangenmoos
+wadenswil / leihof-muhlebach	Wädenswil / Leihof-Mühlebach
+wadenswil / untermosen-fuhr	Wädenswil / Untermosen-Fuhr
+wagenhausen	Wagenhausen
+wahlen	Wahlen
+walchwil	Walchwil
+wald	Wald
+waldenburg	Waldenburg
+waldkirch	Waldkirch
+waldstatt	Waldstatt
+walenstadt	Walenstadt
+walkringen	Walkringen
+wallisellen	Wallisellen
+wallisellen / rieden	Wallisellen / Rieden
+wallisellen / wallisellen-ost	Wallisellen / Wallisellen-Ost
+wallisellen / wallisellen-west	Wallisellen / Wallisellen-West
+walliswil bei niederbipp	Walliswil bei Niederbipp
+waltenschwil	Waltenschwil
+walzenhausen	Walzenhausen
+wangen	Wangen
+wangen an der aare	Wangen an der Aare
+wangi	Wängi
+wattenwil	Wattenwil
+wattwil	Wattwil
+wauwil	Wauwil
+weesen	Weesen
+wegenstetten	Wegenstetten
+weggis	Weggis
+weinfelden	Weinfelden
+weiningen	Weiningen
+weisslingen	Weisslingen
+welschenrohr	Welschenrohr
+werthenstein	Werthenstein
+wettingen	Wettingen
+wettswil	Wettswil
+wettswil / ausser-dorf	Wettswil / Ausser-Dorf
+wettswil / wettswil (dorf)	Wettswil / Wettswil (Dorf)
+wetzikon	Wetzikon
+wetzikon / kempten	Wetzikon / Kempten
+wetzikon / ober-wetzikon	Wetzikon / Ober-Wetzikon
+wetzikon / robenhausen	Wetzikon / Robenhausen
+wetzikon / unter-wetzikon	Wetzikon / Unter-Wetzikon
+wichtrach	Wichtrach
+wiedlisbach	Wiedlisbach
+wiesendangen / wiesendangen (dorf)	Wiesendangen / Wiesendangen (Dorf)
+wigoltingen	Wigoltingen
+wikon	Wikon
+wil	Wil
+wila	Wila
+wilchingen	Wilchingen
+wilderswil	Wilderswil
+wildhaus	Wildhaus
+willisau	Willisau
+wimmis	Wimmis
+windisch	Windisch
+winterthur	Winterthur
+wittenbach	Wittenbach
+wittnau	Wittnau
+wohlen	Wohlen
+wolfenschiessen	Wolfenschiessen
+wolfhausen	Wolfhausen
+wolflinswil	Wölflinswil
+wolfwil	Wolfwil
+wolhusen	Wolhusen
+wollerau	Wollerau
+worb	Worb
+worben	Worben
+wulflingen (kreis 6)	Wülflingen (Kreis 6)
+wulflingen (kreis 6) / harti	Wülflingen (Kreis 6) / Härti
+wulflingen (kreis 6) / lindenplatz	Wülflingen (Kreis 6) / Lindenplatz
+wulflingen (kreis 6) / niederfeld	Wülflingen (Kreis 6) / Niederfeld
+wulflingen (kreis 6) / oberfeld	Wülflingen (Kreis 6) / Oberfeld
+wurenlingen	Würenlingen
+wurenlos	Würenlos
+wynau	Wynau
+wynigen	Wynigen
+wyssachen	Wyssachen
+yverdon-les-bains	Yverdon-les-Bains
+yvonand	Yvonand
+zaziwil	Zäziwil
+zell	Zell
+zermatt	Zermatt
+zernez	Zernez
+zizers	Zizers
+zofingen	Zofingen
+zollikerberg	Zollikerberg
+zollikofen	Zollikofen
+zollikon	Zollikon
+zuchwil	Zuchwil
+zug	Zug
+zumikon	Zumikon
+zunzgen	Zunzgen
+zuoz	Zuoz
+zurich	Zürich
+zurich (kreis 1)	Zürich (Kreis 1)
+zurich (kreis 1) / city	Zürich (Kreis 1) / City
+zurich (kreis 1) / lindenhof	Zürich (Kreis 1) / Lindenhof
+zurich (kreis 1) / rathaus	Zürich (Kreis 1) / Rathaus
+zurich (kreis 10)	Zürich (Kreis 10)
+zurich (kreis 10) / hongg	Zürich (Kreis 10) / Höngg
+zurich (kreis 10) / rutihof	Zürich (Kreis 10) / Rütihof
+zurich (kreis 10) / wipkingen	Zürich (Kreis 10) / Wipkingen
+zurich (kreis 11)	Zürich (Kreis 11)
+zurich (kreis 11) / affoltern	Zürich (Kreis 11) / Affoltern
+zurich (kreis 11) / oerlikon	Zürich (Kreis 11) / Oerlikon
+zurich (kreis 11) / schwandenholz	Zürich (Kreis 11) / Schwandenholz
+zurich (kreis 11) / seebach	Zürich (Kreis 11) / Seebach
+zurich (kreis 12)	Zürich (Kreis 12)
+zurich (kreis 12) / auzelg	Zürich (Kreis 12) / Auzelg
+zurich (kreis 12) / hirzenbach	Zürich (Kreis 12) / Hirzenbach
+zurich (kreis 12) / saatlen	Zürich (Kreis 12) / Saatlen
+zurich (kreis 12) / schwamendingen-mitte	Zürich (Kreis 12) / Schwamendingen-Mitte
+zurich (kreis 2)	Zürich (Kreis 2)
+zurich (kreis 2) / enge	Zürich (Kreis 2) / Enge
+zurich (kreis 2) / mittel-leimbach	Zürich (Kreis 2) / Mittel-Leimbach
+zurich (kreis 2) / unter-leimbach	Zürich (Kreis 2) / Unter-Leimbach
+zurich (kreis 2) / wollishofen	Zürich (Kreis 2) / Wollishofen
+zurich (kreis 3)	Zürich (Kreis 3)
+zurich (kreis 3) / alt-wiedikon	Zürich (Kreis 3) / Alt-Wiedikon
+zurich (kreis 3) / friesenberg	Zürich (Kreis 3) / Friesenberg
+zurich (kreis 3) / sihlfeld	Zürich (Kreis 3) / Sihlfeld
+zurich (kreis 4) / aussersihl	Zürich (Kreis 4) / Aussersihl
+zurich (kreis 4) / hard	Zürich (Kreis 4) / Hard
+zurich (kreis 4) / langstrasse	Zürich (Kreis 4) / Langstrasse
+zurich (kreis 4) / werd	Zürich (Kreis 4) / Werd
+zurich (kreis 5)	Zürich (Kreis 5)
+zurich (kreis 5) / escher-wyss	Zürich (Kreis 5) / Escher-Wyss
+zurich (kreis 5) / gewerbeschule	Zürich (Kreis 5) / Gewerbeschule
+zurich (kreis 6)	Zürich (Kreis 6)
+zurich (kreis 6) / oberstrass	Zürich (Kreis 6) / Oberstrass
+zurich (kreis 6) / unterstrass	Zürich (Kreis 6) / Unterstrass
+zurich (kreis 7)	Zürich (Kreis 7)
+zurich (kreis 7) / fluntern	Zürich (Kreis 7) / Fluntern
+zurich (kreis 7) / hirslanden	Zürich (Kreis 7) / Hirslanden
+zurich (kreis 7) / hottingen	Zürich (Kreis 7) / Hottingen
+zurich (kreis 7) / witikon	Zürich (Kreis 7) / Witikon
+zurich (kreis 8)	Zürich (Kreis 8)
+zurich (kreis 8) / muhlebach	Zürich (Kreis 8) / Mühlebach
+zurich (kreis 8) / seefeld	Zürich (Kreis 8) / Seefeld
+zurich (kreis 8) / weinegg	Zürich (Kreis 8) / Weinegg
+zurich (kreis 9)	Zürich (Kreis 9)
+zurich (kreis 9) / albisrieden	Zürich (Kreis 9) / Albisrieden
+zurich (kreis 9) / altstetten	Zürich (Kreis 9) / Altstetten
+zuzwil	Zuzwil
+zweisimmen	Zweisimmen
+zwingen	Zwingen

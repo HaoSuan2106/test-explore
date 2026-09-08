@@ -1,0 +1,301 @@
+ajdovscina	Ajdovščina
+ankaran	Ankaran
+apace	Apače
+bakovci	Bakovci
+beltinci	Beltinci
+benedikt	Benedikt
+bilje	Bilje
+bistrica ob dravi	Bistrica ob Dravi
+bistrica ob sotli	Bistrica ob Sotli
+bistrica pri trzicu	Bistrica pri Tržiču
+bled	Bled
+bohinjska bistrica	Bohinjska Bistrica
+borovnica	Borovnica
+bovec	Bovec
+braslovce	Braslovče
+bresternica	Bresternica
+brezice	Brežice
+breznica	Breznica
+brezovica pri ljubljani	Brezovica pri Ljubljani
+britof	Britof
+buc	Buč
+bukovica	Bukovica
+cankova	Cankova
+celje	Celje
+cerklje na gorenjskem	Cerklje na Gorenjskem
+cerknica	Cerknica
+cerkno	Cerkno
+cerkvenjak	Cerkvenjak
+cernelavci	Černelavci
+cirkulane	Cirkulane
+crensovci	Črenšovci
+crna na koroskem	Črna na Koroškem
+crnomelj	Črnomelj
+dekani	Dekani
+deskle	Deskle
+destrnik	Destrnik
+divaca	Divača
+dob	Dob
+dobje pri planini	Dobje pri Planini
+dobrna	Dobrna
+dobrova	Dobrova
+dobrovnik	Dobrovnik
+dobrovo	Dobrovo
+dol pri hrastniku	Dol pri Hrastniku
+dol pri ljubljani	Dol pri Ljubljani
+dolenjske toplice	Dolenjske Toplice
+domzale	Domžale
+dornava	Dornava
+dragomer	Dragomer
+dravograd	Dravograd
+fram	Fram
+gancani	Gančani
+golnik	Golnik
+gorenja vas	Gorenja Vas
+gorisnica	Gorišnica
+gornja radgona	Gornja Radgona
+gornji grad	Gornji Grad
+gornji petrovci	Gornji Petrovci
+gotovlje	Gotovlje
+grad	Grad
+grosuplje	Grosuplje
+hodos	Hodoš
+horjul	Horjul
+hotinja vas	Hotinja Vas
+hrastje	Hrastje
+hrastnik	Hrastnik
+hrib-loski potok	Hrib-Loški Potok
+hrpelje	Hrpelje
+hrusica	Hrušica
+hrvatini	Hrvatini
+idrija	Idrija
+ig	Ig
+ilirska bistrica	Ilirska Bistrica
+ivancna gorica	Ivančna Gorica
+izlake	Izlake
+izola	Izola
+jagodje	Jagodje
+jesenice	Jesenice
+jurovski dol	Jurovski Dol
+jursinci	Juršinci
+kamnica	Kamnica
+kamnik	Kamnik
+kanal	Kanal
+kidricevo	Kidričevo
+kisovec	Kisovec
+kobarid	Kobarid
+kobilje	Kobilje
+kocevje	Kočevje
+kokrica	Kokrica
+komen	Komen
+komenda	Komenda
+koper	Koper
+koroska bela	Koroška Bela
+kostanjevica na krki	Kostanjevica na Krki
+kostel	Kostel
+kotlje	Kotlje
+kozje	Kozje
+kranj	Kranj
+kranjska gora	Kranjska Gora
+krizevci pri ljutomeru	Križevci pri Ljutomeru
+krog	Krog
+kromberk	Kromberk
+krsko	Krško
+kuzma	Kuzma
+lasko	Laško
+lavrica	Lavrica
+legen	Legen
+lenart v slovenskih goricah	Lenart v Slovenskih Goricah
+lendava	Lendava
+lesce	Lesce
+leskova dolina	Leskova Dolina
+leskovec pri krskem	Leskovec pri Krškem
+limbus	Limbuš
+lipovci	Lipovci
+litija	Litija
+ljubecna	Ljubečna
+ljubljana	Ljubljana
+ljubno ob savinji	Ljubno ob Savinji
+ljutomer	Ljutomer
+log pri brezovici	Log pri Brezovici
+logatec	Logatec
+lokavec	Lokavec
+lovrenc na pohorju	Lovrenc na Pohorju
+luce	Luče
+lucija	Lucija
+lukovica pri domzalah	Lukovica pri Domžalah
+majsperk	Majšperk
+makole	Makole
+maribor	Maribor
+markovci	Markovci
+medvode	Medvode
+mekinje	Mekinje
+menges	Mengeš
+metlika	Metlika
+mezica	Mežica
+miklavz na dravskem polju	Miklavž na Dravskem Polju
+miren	Miren
+mirna	Mirna
+mirna pec	Mirna Peč
+mislinja	Mislinja
+mlaka pri kranju	Mlaka pri Kranju
+mojstrana	Mojstrana
+mokronog	Mokronog
+moravce	Moravče
+moravske toplice	Moravske Toplice
+morje	Morje
+moste	Moste
+mozirje	Mozirje
+murska sobota	Murska Sobota
+muta	Muta
+naklo	Naklo
+nazarje	Nazarje
+notranje gorice	Notranje Gorice
+nova gorica	Nova Gorica
+nova vas	Nova Vas
+novo mesto	Novo Mesto
+odranci	Odranci
+oplotnica	Oplotnica
+ormoz	Ormož
+osilnica	Osilnica
+pamece	Pameče
+pekre	Pekre
+pesnica	Pesnica
+piran	Piran
+pivka	Pivka
+pobegi	Pobegi
+podcetrtek	Podčetrtek
+podlehnik	Podlehnik
+podvelka	Podvelka
+poljcane	Poljčane
+polzela	Polzela
+portoroz	Portorož
+postojna	Postojna
+prade	Prade
+pragersko	Pragersko
+prebold	Prebold
+preddvor	Preddvor
+preserje pri radomljah	Preserje pri Radomljah
+prevalje	Prevalje
+prvacina	Prvačina
+ptuj	Ptuj
+puconci	Puconci
+race	Rače
+radece	Radeče
+radenci	Radenci
+radizel	Radizel
+radlje ob dravi	Radlje ob Dravi
+radomlje	Radomlje
+radovljica	Radovljica
+rakek	Rakek
+rakican	Rakičan
+ravne	Ravne
+ravne na koroskem	Ravne na Koroškem
+razkrizje	Razkrižje
+razvanje	Razvanje
+recica ob savinji	Rečica ob Savinji
+rence	Renče
+ribnica	Ribnica
+ribnica na pohorju	Ribnica na Pohorju
+rogaska slatina	Rogaška Slatina
+rogasovci	Rogašovci
+rogatec	Rogatec
+rogoza	Rogoza
+rozna dolina	Rožna Dolina
+ruse	Ruše
+salovci	Šalovci
+seca	Seča
+selnica ob dravi	Selnica ob Dravi
+selnica ob muri	Selnica ob Muri
+semic	Semič
+sempas	Šempas
+sempeter pri gorici	Šempeter pri Gorici
+sempeter v savinjski dolini	Šempeter v Savinjski Dolini
+sencur	Šenčur
+senovo	Senovo
+sentilj v slov. goricah	Šentilj v Slov. Goricah
+sentjernej	Šentjernej
+sentjur	Šentjur
+sentrupert na dolenjskem	Šentrupert na Dolenjskem
+sentvid pri sticni	Šentvid pri Stični
+sevnica	Sevnica
+sezana	Sežana
+skocjan	Škocjan
+skofja loka	Škofja Loka
+skofljica	Škofljica
+slovenj gradec	Slovenj Gradec
+slovenska bistrica	Slovenska Bistrica
+slovenske konjice	Slovenske Konjice
+slovenski javornik	Slovenski Javornik
+smarca	Šmarca
+smarje pri jelsah	Šmarje pri Jelšah
+smarjeta	Šmarjeta
+smarje–sap	Šmarje–Sap
+smartno ob paki	Šmartno ob Paki
+smartno pri litiji	Šmartno pri Litiji
+smartno pri slovenj gradcu	Šmartno pri Slovenj Gradcu
+sodrazica	Sodražica
+solcava	Solčava
+solkan	Solkan
+sostanj	Šoštanj
+spodnja idrija	Spodnja Idrija
+spodnje hoce	Spodnje Hoče
+spodnje skofije	Spodnje Škofije
+spodnji duplek	Spodnji Duplek
+sredisce ob dravi	Središče ob Dravi
+starse	Starše
+store	Štore
+straza	Straža
+sv. ana v slov. goricah	Sv. Ana v Slov. Goricah
+sv. trojica v slov. goricah	Sv. Trojica v Slov. Goricah
+sveti anton	Sveti Anton
+sveti duh	Sveti Duh
+sveti jurij	Sveti Jurij
+sveti tomaz	Sveti Tomaž
+tabor	Tabor
+tisina	Tišina
+tolmin	Tolmin
+topolsica	Topolšica
+trbovlje	Trbovlje
+trebnje	Trebnje
+trnovlje pri celju	Trnovlje pri Celju
+trnovska vas	Trnovska Vas
+trzic	Tržič
+trzin	Trzin
+turnisce	Turnišče
+velenje	Velenje
+velika polana	Velika Polana
+velike lasce	Velike Lašče
+verd	Verd
+verzej	Veržej
+videm	Videm
+videm pri ptuju	Videm pri Ptuju
+vipava	Vipava
+vir	Vir
+vitanje	Vitanje
+vitomarci	Vitomarci
+vnanje gorice	Vnanje Gorice
+vodice	Vodice
+vojnik	Vojnik
+vransko	Vransko
+vrhnika	Vrhnika
+vrtojba	Vrtojba
+vuzenica	Vuzenica
+zabukovica	Zabukovica
+zagorje ob savi	Zagorje ob Savi
+zalec	Žalec
+zasip	Zasip
+zavrc	Zavrč
+zelezniki	Železniki
+zetale	Žetale
+zgornja hajdina	Zgornja Hajdina
+zgornja kungota	Zgornja Kungota
+zgornja polskava	Zgornja Polskava
+zgornje bitnje	Zgornje Bitnje
+zgornje gorje	Zgornje Gorje
+zgornje jezersko	Zgornje Jezersko
+zgornje pirnice	Zgornje Pirniče
+zgornji duplek	Zgornji Duplek
+ziri	Žiri
+zrece	Zreče
+zuzemberk	Žužemberk

@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
 
-const Color kNavSelectedColor = Color(0xFFAB3510);
+import '../../theme/app_theme.dart';
+
+// Selected uses the shared brand token; unselected is a nav-specific brown
+// shade with no AppColors equivalent, so it stays a named local constant.
+const Color kNavSelectedColor = AppColors.primaryDark;
 const Color kNavUnselectedColor = Color(0xFF5C382E);
 
 class NavItemData {

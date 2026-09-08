@@ -34,3 +34,16 @@ public class ValidationException : Exception
     {
     }
 }
+
+/// <summary>
+/// Marker thrown by repositories when a DB unique constraint caught a concurrent
+/// duplicate insert (e.g. UNIQUE(post_id, reporter_id) on reports). Service layers
+/// catch it and return the same graceful outcome as the sequential-duplicate path
+/// (409/400/idempotent success) instead of a raw 500.
+/// </summary>
+public class ConcurrentDuplicateException : Exception
+{
+    public ConcurrentDuplicateException() : base("A concurrent duplicate submission was rejected by a unique constraint.")
+    {
+    }
+}

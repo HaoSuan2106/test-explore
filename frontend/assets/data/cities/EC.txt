@@ -1,0 +1,500 @@
+abdon calderon	Abdón Calderón
+achupallas	Achupallas
+aguas negras	Aguas Negras
+ahuano	Ahuano
+alangasi	Alangasí
+alausi	Alausí
+alfredo baquerizo moreno	Alfredo Baquerizo Moreno
+amarillos	Amarillos
+ambatillo	Ambatillo
+ambato	Ambato
+anchayacu	Anchayacu
+antonio jose de holguin	Antonio José de Holguín
+antonio sotomayor	Antonio Sotomayor
+arajuno	Arajuno
+arcapamba	Arcapamba
+archidona	Archidona
+arenillas	Arenillas
+ascazubi	Ascázubi
+asuncion	Asunción
+atacames	Atacames
+atahualpa	Atahualpa
+atuntaqui	Atuntaqui
+ayapamba	Ayapamba
+azogues	Azogues
+baba	Baba
+babahoyo	Babahoyo
+bahia de caraquez	Bahía de Caráquez
+balao	Balao
+balsas	Balsas
+balzar	Balzar
+banos	Baños
+barraganete	Barraganete
+bella maria	Bella María
+bellavista	Bellavista
+biblian	Biblián
+boca suno	Boca Suno
+bolivar	Bolívar
+borbon	Borbón
+boyaca	Boyacá
+buena vista	Buena Vista
+buenavista	Buenavista
+cahuasqui	Cahuasquí
+calceta	Calceta
+calderon	Calderón
+calpi	Calpi
+caluma	Caluma
+camarones	Camarones
+canar	Cañar
+cangahua	Cangahua
+cangonama	Cangonamá
+canoa	Canoa
+canuto	Canuto
+cariamanga	Cariamanga
+carondelet	Carondelet
+casacay	Casacay
+cascol	Cascol
+catacocha	Catacocha
+catamayo	Catamayo
+catarama	Catarama
+cayambe	Cayambe
+cebadas	Cebadas
+celica	Celica
+cevallos	Cevallos
+chaguarpamba	Chaguarpamba
+chamanga	Chamanga
+chambo	Chambo
+changaimina	Changaimina
+chantaco	Chantaco
+charapoto	Charapotó
+chicana	Chicaña
+chiguilpe	Chigüilpe
+chiguinda	Chiguinda
+chile	Chile
+chilla	Chilla
+chillanes	Chillanes
+chinca	Chinca
+chiquintad	Chiquintad
+chone	Chone
+chongon	Chongón
+chontaduro	Chontaduro
+chordeleg	Chordeleg
+chucchilan	Chucchilán
+chuga	Chuga
+chumunde	Chumundé
+chunchi	Chunchi
+chuquiribamba	Chuquiribamba
+cojimies	Cojimíes
+colaisaca	Colaisaca
+colimes	Colimes
+colon	Colón
+colon eloy del maria	Colón Eloy del María
+comite del pueblo	Comité del Pueblo
+concepcion	Concepción
+conocoto	Conocoto
+convento	Convento
+cordoncillo	Cordoncillo
+coronel marcelino mariduena	Coronel Marcelino Maridueña
+cotacachi	Cotacachi
+cotalo	Cotaló
+cristobal colon	Cristóbal Colón
+cuatro de diciembre	Cuatro de Diciembre
+cube	Cube
+cubijies	Cubijíes
+cuellaje	Cuellaje
+cuenca	Cuenca
+cumanda	Cumandá
+cumbaratza	Cumbaratza
+cumbaya	Cumbayá
+curtincapa	Curtincapa
+cuyabeno	Cuyabeno
+cuyuja	Cuyuja
+daule	Daule
+deleg	Déleg
+diez de agosto	Diez de Agosto
+doctor miguel egas cabezas	Doctor Miguel Egas Cabezas
+echeandia	Echeandía
+el angel	El Ángel
+el carmen	El Carmen
+el chaco	El Chaco
+el chaupi	El Chaupi
+el cisne	El Cisne
+el corazon	El Corazón
+el empalme	El Empalme
+el eno	El Eno
+el esfuerzo	El Esfuerzo
+el guismi	El Güismi
+el pangui	El Pangui
+el paraiso	El Paraíso
+el paraiso de celen	El Paraíso de Celén
+el porvenir del carmen	El Porvenir del Carmen
+el quinche	El Quinche
+el reventador	El Reventador
+el rosario	El Rosario
+el salitre	El Salitre
+el triunfo	El Triunfo
+eloy alfaro	Eloy Alfaro
+emilio maria teran	Emilio María Terán
+esmeraldas	Esmeraldas
+facundo vela	Facundo Vela
+fatima	Fátima
+febres cordero	Febres Cordero
+fernandez salvador	Fernández Salvador
+flavio alfaro	Flavio Alfaro
+galera	Galera
+garcia moreno	García Moreno
+general leonidas plaza gutierrez	General Leonidas Plaza Gutiérrez
+general morales	General Morales
+general proano	General Proaño
+general vernaza	General Vernaza
+gima	Gima
+giron	Girón
+gonzalo pizarro	Gonzalo Pizarro
+gonzanama	Gonzanamá
+gonzol	Gonzol
+guabo	Guabo
+guadalupe	Guadalupe
+gualaceo	Gualaceo
+gualaquiza	Gualaquiza
+guale	Guale
+gualel	Gualel
+guambalo	Guambaló
+guamote	Guamote
+guanando	Guanando
+guanazan	Guanazán
+guano	Guano
+guanujo	Guanujo
+guaranda	Guaranda
+guasaganda centro	Guasaganda Centro
+guasuntos	Guasuntos
+guayaquil	Guayaquil
+guayquichuma	Guayquichuma
+guaytacama	Guaytacama
+guizhaguina	Guizhaguiña
+huambi	Huambi
+huamboya	Huamboya
+huaquillas	Huaquillas
+huertas	Huertas
+ibarra	Ibarra
+ilapo	Ilapo
+imantag	Imantag
+isidro ayora	Isidro Ayora
+isinlivi	Isinliví
+isla de bejucal	Isla de Bejucal
+izamba	Izamba
+jama	Jama
+jambeli	Jambelí
+jesus maria	Jesús María
+jipijapa	Jipijapa
+joseguango bajo	Joséguango Bajo
+juan benigno vela	Juan Benigno Vela
+julcuy	Julcuy
+junin	Junín
+la avanzada	La Avanzada
+la bocana	La Bocana
+la concordia	La Concordia
+la dolorasa del priorato	La Dolorasa del Priorato
+la esperanza	La Esperanza
+la joya de los sachas	La Joya de Los Sachas
+la libertad	La Libertad
+la mana	La Maná
+la merced	La Merced
+la merced de buenos aires	La Merced de Buenos Aires
+la paz	La Paz
+la providencia	La Providencia
+la puntilla	La Puntilla
+la susaya	La Susaya
+la tingue	La Tingue
+la troncal	La Troncal
+la union	La Unión
+la victoria de imbana	La Victoria de Imbana
+lagarto	Lagarto
+las mercedes	Las Mercedes
+las naves	Las Naves
+las nieves	Las Nieves
+lascano	Lascano
+latacunga	Latacunga
+laurel	Laurel
+leonidas plaza gutierrez	Leonidas Plaza Gutiérrez
+licto	Licto
+limoncocha	Limoncocha
+lincan	Lincán
+llacao	Llacao
+llano chico	Llano Chico
+loja	Loja
+loma de franco	Loma de Franco
+lomas de sargentillo	Lomas de Sargentillo
+los andes	Los Andes
+los encuentros	Los Encuentros
+luz de america	Luz de América
+macara	Macará
+macas	Macas
+machachi	Machachi
+machala	Machala
+machalilla	Machalilla
+madre tierra	Madre Tierra
+magdalena	Magdalena
+majua	Majua
+malacatos	Malacatos
+maldonado	Maldonado
+malimpia	Malimpia
+malvas	Malvas
+manta	Manta
+manuel j. calle	Manuel J. Calle
+marcabeli	Marcabelí
+marcos espinel	Marcos Espinel
+mariano acosta	Mariano Acosta
+mariano moreno	Mariano Moreno
+matus	Matus
+membrillal	Membrillal
+mera	Mera
+milagro	Milagro
+mindo	Mindo
+mira	Mira
+mocache	Mocache
+mocha	Mocha
+montalvo	Montalvo
+montecristi	Montecristi
+morales	Morales
+moraspungo	Moraspungo
+muisne	Muisne
+mulalo	Mulaló
+muluncay	Muluncay
+nabon	Nabón
+nambacola	Nambacola
+naranjal	Naranjal
+naranjito	Naranjito
+nayon	Nayón
+nazon	Nazón
+noboa	Noboa
+nono	Nono
+nueva loja	Nueva Loja
+nueva tarqui	Nueva Tarqui
+nulti	Nulti
+olmedo	Olmedo
+otavalo	Otavalo
+oyacachi	Oyacachi
+oyambarillo	Oyambarillo
+pablo arenas	Pablo Arenas
+pacayacu	Pacayacu
+paccha	Paccha
+pacto	Pacto
+padre juan bautista aguirre	Padre Juan Bautista Aguirre
+pajan	Paján
+palanda	Palanda
+palenque	Palenque
+palestina	Palestina
+pallatanga	Pallatanga
+palmira	Palmira
+palora	Palora
+pampanal de bolivar	Pampanal de Bolívar
+panacocha	Pañacocha
+papallacta	Papallacta
+pasaje	Pasaje
+paute	Paute
+pedernales	Pedernales
+pedro carbo	Pedro Carbo
+pedro pablo gomez	Pedro Pablo Gómez
+pedro vicente maldonado	Pedro Vicente Maldonado
+pelileo	Pelileo
+pelileo grande	Pelileo Grande
+penipe	Penipe
+perucho	Perucho
+piartal	Piartal
+picoaza	Picoazá
+piedras	Piedras
+pillaro	Píllaro
+pimampiro	Pimampiro
+pimocha	Pimocha
+pinas	Piñas
+pinas grande	Piñas Grande
+playa de oro	Playa de Oro
+playas	Playas
+pomasqui	Pomasqui
+portovelo	Portovelo
+portoviejo	Portoviejo
+posorja	Posorja
+pueblo nuevo	Pueblo Nuevo
+pueblo viejo	Pueblo Viejo
+puela	Puela
+puembo	Puembo
+puerto ayora	Puerto Ayora
+puerto baquerizo moreno	Puerto Baquerizo Moreno
+puerto bolivar	Puerto Bolívar
+puerto de cayo	Puerto de Cayo
+puerto francisco de orellana	Puerto Francisco de Orellana
+puerto jeli	Puerto Jelí
+puerto libre	Puerto Libre
+puerto limon	Puerto Limón
+puerto lopez	Puerto López
+puerto napo	Puerto Napo
+puerto pechiche	Puerto Pechiche
+puerto quito	Puerto Quito
+puerto villamil	Puerto Villamil
+pujili	Pujilí
+pungala	Pungalá
+punin	Punín
+puyo	Puyo
+quero	Quero
+quevedo	Quevedo
+quimiag	Quimiag
+quingue	Quingue
+quinsaloma	Quinsaloma
+quiroga	Quiroga
+quisapincha	Quisapincha
+quito	Quito
+ricaurte	Ricaurte
+rio verde	Río Verde
+riobamba	Riobamba
+riochico	Ríochico
+rocafuerte	Rocafuerte
+rosa zarate	Rosa Zarate
+rumipamba	Rumipamba
+sabanilla	Sabanilla
+salango	Salango
+salima	Salima
+salinas	Salinas
+salvias	Salvias
+samborondon	Samborondón
+san andres	San Andrés
+san antonio	San Antonio
+san antonio de bayushig	San Antonio de Bayushig
+san antonio de manu	San Antonio de Manú
+san bartolome de pinllo	San Bartolomé de Pinllo
+san blas	San Blas
+san carlos	San Carlos
+san felipe de ona	San Felipe de Oña
+san francisco de chinimbimi	San Francisco de Chinimbimi
+san francisco de natabuela	San Francisco de Natabuela
+san francisco de onzole	San Francisco de Onzole
+san francisco del vergel	San Francisco del Vergel
+san gabriel	San Gabriel
+san gerardo de pacaicaguan	San Gerardo de Pacaicaguán
+san gregorio	San Gregorio
+san isidro	San Isidro
+san isidro de patulu	San Isidro de Patulú
+san jacinto de bua	San Jacinto de Bua
+san jacinto de buena fe	San Jacinto de Buena Fé
+san jose	San José
+san jose de ancon	San José de Ancón
+san jose de chaltura	San José de Chaltura
+san jose de chazo	San José de Chazo
+san jose de quichinche	San José de Quichinche
+san jose del tambo	San José del Tambo
+san juan	San Juan
+san juan bosco	San Juan Bosco
+san juan de iluman	San Juan de Ilumán
+san juan de pastocalle	San Juan de Pastocalle
+san lorenzo	San Lorenzo
+san lorenzo de esmeraldas	San Lorenzo de Esmeraldas
+san lucas	San Lucas
+san luis	San Luis
+san luis de pambil	San Luis de Pambil
+san mateo	San Mateo
+san miguel	San Miguel
+san miguel de bolivar	San Miguel de Bolívar
+san miguelito	San Miguelito
+san pablo de tenta	San Pablo de Tenta
+san pedro de la bendita	San Pedro de La Bendita
+san pedro de los cofanes	San Pedro de Los Cofanes
+san pedro de suma	San Pedro de Suma
+san pedro de vilcabamba	San Pedro de Vilcabamba
+san rafael	San Rafael
+san roque	San Roque
+san sebastian de yuluc	San Sebastián de Yuluc
+san sebastian del coca	San Sebastián del Coca
+san simon	San Simón
+san vicente	San Vicente
+san vicente de pusir	San Vicente de Pusir
+sangolqui	Sangolquí
+santa ana de vuelta larga	Santa Ana de Vuelta Larga
+santa clara	Santa Clara
+santa elena	Santa Elena
+santa fe	Santa Fé
+santa lucia	Santa Lucía
+santa maria del toachi	Santa María del Toachi
+santa rosa	Santa Rosa
+santa rosa de flandes	Santa Rosa de Flandes
+santiago	Santiago
+santiago de mendez	Santiago de Méndez
+santo domingo de los colorados	Santo Domingo de los Colorados
+santo domingo de onzole	Santo Domingo de Onzole
+saquisili	Saquisilí
+saraguro	Saraguro
+sardinas	Sardinas
+selva alegre	Selva Alegre
+sevilla	Sevilla
+sevilla don bosco	Sevilla Don Bosco
+shell	Shell
+shushufindi	Shushufindi
+sibambe	Sibambe
+siete de julio	Siete de Julio
+sigchos	Sigchos
+sigsig	Sigsig
+simiatug	Simiatug
+simon bolivar	Simón Bolívar
+sinai	Sinaí
+sinincay	Sinincay
+sinsao	Sinsao
+sucre	Sucre
+sucua	Sucúa
+suscal	Suscal
+tababela	Tababela
+tabacundo	Tabacundo
+taisha	Taisha
+tambo	Tambo
+tanicuchi	Tanicuchí
+taquil	Taquil
+tarapoa	Tarapoa
+tarifa	Tarifa
+tayuza	Tayuza
+telembi	Telembí
+tena	Tena
+tendales	Tendales
+tenguel	Tenguel
+timbire	Timbiré
+tiputini	Tiputini
+tisaleo	Tisaleo
+tixan	Tixán
+toacaso	Toacaso
+tocachi	Tocachi
+tonchigue	Tonchigüe
+tonsupa	Tonsupa
+torata	Torata
+tosagua	Tosagua
+tres postes	Tres Postes
+tulcan	Tulcán
+tumbabiro	Tumbabiro
+tumbaco	Tumbaco
+tupigachi	Tupigachi
+tutupali	Tutupali
+uimbi	Uimbí
+urcuqui	Urcuquí
+urdaneta	Urdaneta
+uzhcurrumi	Uzhcurrumi
+vacas galindo	Vacas Galindo
+valdez	Valdez
+valencia	Valencia
+valladolid	Valladolid
+valle de la virgen	Valle de La Virgen
+valle hermoso	Valle Hermoso
+veintiocho de mayo	Veintiocho de Mayo
+ventanas	Ventanas
+ventura	Ventura
+viche	Viche
+vilcabamba	Vilcabamba
+villa la union	Villa La Unión
+vinces	Vinces
+wilfrido loor moreira	Wilfrido Loor Moreira
+yaguachi nuevo	Yaguachi Nuevo
+yamana	Yamana
+yanayacu	Yanayacu
+yantzaza	Yantzaza
+yaruqui	Yaruquí
+yaruquies	Yaruquíes
+yerbero	Yerbero
+zambi	Zambi
+zamora	Zamora
+zaruma	Zaruma
+zumbahua	Zumbahua
+zuna	Zuña

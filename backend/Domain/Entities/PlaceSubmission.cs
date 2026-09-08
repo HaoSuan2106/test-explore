@@ -72,9 +72,12 @@ public static class RecommendedPlaceThresholds
 }
 
 /// <summary>
-/// Supported place-report reasons for recommended places. These are served
-/// via the GET /api/recommended-places/report-reasons endpoint.
-/// (Derived from the task specification; confirm with product.)
+/// Supported place-report reasons for recommended places. This is the ONE
+/// authoritative system-defined definition — reasons are NOT admin-managed
+/// and are never fetched from the database. The submit endpoint
+/// (POST /api/recommended-places/{id}/reports) validates incoming reasons
+/// against this list. The Flutter UI mirrors the codes in
+/// lib/utilities/place_report_reasons.dart (single frontend definition).
 /// </summary>
 public static class PlaceReportReasons
 {

@@ -1,0 +1,258 @@
+6th of october city	6th of October City
+abnub	Abnūb
+abu al matamir	Abū al Maţāmīr
+abu an numrus	Abū an Numrus
+abu hammad	Abū Ḩammād
+abu hummus	Abū Ḩummuş
+abu kabir	Abū Kabīr
+abu qir	Abū Qīr
+abu qurqas	Abū Qurqāş
+abu simbel	Abu Simbel
+abu suweir-el-mahatta	Abu Suweir-el-Mahatta
+abu tij	Abū Tīj
+abu tisht	Abū Ţisht
+ad dilinjat	Ad Dilinjāt
+ad-dawahy	Aḍ-Ḍawāḥy
+aga	Aga
+ain sukhna	Ain Sukhna
+akhmim	Akhmīm
+al badari	Al Badārī
+al badrashayn	Al Badrashayn
+al bajur	Al Bājūr
+al balyana	Al Balyanā
+al basaliyah bahri	Al Başalīyah Baḩrī
+al bawiti	Al Bawīţī
+al bayadiyah	Al Bayāḑīyah
+al burj	Al Burj
+al fashn	Al Fashn
+al fayyum	Al Fayyum
+al ghanayim	Al Ghanāyim
+al hammam	Al Ḩammām
+al hamul	Al Ḩāmūl
+al hawamidiyah	Al Ḩawāmidīyah
+al husayniyah	Al Ḩusaynīyah
+al ibrahimiyah	Al Ibrāhīmīyah
+al jammaliyah	Al Jammālīyah
+al khankah	Al Khānkah
+al kharjah	Al Khārjah
+al khusus	Al Khuşūş
+al mahallah al kubra	Al Maḩallah al Kubrá
+al mahmudiyah	Al Maḩmūdīyah
+al mansurah	Al Mansurah
+al manzalah	Al Manzalah
+al maraghah	Al Marāghah
+al matariyah	Al Maţarīyah
+al minshah	Al Minshāh
+al qahirah al jadidah	Al Qāhirah al Jadīdah
+al qanatir al khayriyah	Al Qanāţir al Khayrīyah
+al qanayat	Al Qanāyāt
+al qantarah	Al Qanţarah
+al qassasin	Al Qaşşāşīn
+al qurayn	Al Qurayn
+al qusayr	Al Quşayr
+al qusiyah	Al Qūşīyah
+al waqf	Al Waqf
+al wasitah	Al Wāsiţah
+al yasiniyah	Al Yāsīnīyah
+al ‘alamayn	Al ‘Alamayn
+al ‘ashir min ramadan	Al ‘Āshir min Ramaḑān
+al ‘ayn as sukhnah	Al ‘Ayn as Sukhnah
+al ‘ayyat	Al ‘Ayyāţ
+al ‘idwah	Al ‘Idwah
+al-'ubur	Al-'Ubūr
+al-kharijah	Al-Khārijah
+al-manakh	Al-Manākh
+al-minya al-jadidah	Al-Minyā al-Jadīdah
+alexandria	Alexandria
+an nasiriyah	An Nāşirīyah
+an nubariyah	An Nūbārīyah
+an-najaylah	An-Najaylah
+ar radisiyah qibli	Ar Radīsīyah Qiblī
+ar rahmaniyah	Ar Raḩmānīyah
+ar riyad	Ar Riyāḑ
+ar-rawdah	Ar-Rawḍah
+arish	Arīsh
+armant	Armant
+as saff	Aş Şaff
+as sahil	As Sāḩil
+as salahat	Aş Şalāḩāt
+as salihiyah al jadidah	Aş Şāliḩīyah al Jadīdah
+as sallum	As Sallūm
+as santah	As Sanţah
+as sarw	As Sarw
+as siba‘iyah	As Sibā‘īyah
+as sinbillawayn	As Sinbillāwayn
+ash shaykh zuwayd	Ash Shaykh Zuwayd
+ash shuhada’	Ash Shuhadā’
+ash-shaykh zayid	Ash-Shaykh Zāyid
+ashmun	Ashmūn
+assiut	Assiut
+aswan	Aswān
+at tall al kabir	At Tall al Kabīr
+at tarif	Aţ Ţārif
+atfih	Aţfīḩ
+awlad saqr	Awlād Şaqr
+awsim	Awsīm
+az zarqa	Az Zarqā
+az zayniyah qibli	Az Zaynīyah Qiblī
+az-zuhur	Az-Zuhūr
+badr	Badr
+baltim	Balţīm
+banha	Banhā
+bani mazar	Banī Mazār
+bani suwayf	Banī Suwayf
+bani suwayf al jadidah	Banī Suwayf al Jadīdah
+bani ‘ubayd	Banī ‘Ubayd
+basyun	Basyūn
+biba	Bibā
+bilbeis	Bilbeis
+bilqas	Bilqās
+birkat as sab‘	Birkat as Sab‘
+biyala	Biyalā
+bi’r al ‘abd	Bi’r al ‘Abd
+bulaq abu al ‘ila	Būlāq Abū al ‘Ilā
+bur fu’ad	Būr Fu’ād
+burj al ‘arab	Burj al ‘Arab
+burj al ‘arab al jadidah	Burj al ‘Arab al Jadīdah
+bush	Būsh
+cairo	Cairo
+dahab	Dahab
+damanhur	Damanhur
+damietta	Damietta
+dar as salam	Dār as Salām
+daraw	Darāw
+dayr mawas	Dayr Mawās
+dayrut	Dayrūţ
+dikirnis	Dikirnis
+dishna	Dishnā
+disuq	Disūq
+diyarb najm	Diyarb Najm
+dumyat al jadidah	Dumyāţ al Jadīdah
+edfu	Edfu
+el dabaa	El Dabaa
+el gouna	El Gouna
+el shorouk	El Shorouk
+el-tor	El-Tor
+esna	Esna
+faqus	Fāqūs
+faraskur	Fāraskūr
+farshut	Farshūţ
+fayid	Fāyīd
+fuwwah	Fuwwah
+girga	Girga
+giza	Giza
+hada’iq al qubbah	Ḩadā’iq al Qubbah
+hala'ib	Hala'ib
+halwan	Ḩalwān
+hawsh ‘isa	Ḩawsh ‘Īsá
+hihya	Hihyā
+hurghada	Hurghada
+ibshaway	Ibshawāy
+idku	Idkū
+ihnasiyah	Ihnāsīyah
+ihnasya al madinah	Ihnāsyā al Madīnah
+ismailia	Ismailia
+itay al barud	Ītāy al Bārūd
+itsa	Iţsā
+jam‘iyat iskan ad dubbat bi akadimiyat ash shurtah	Jam‘īyat Iskān aḑ Ḑubbāţ bi Akādīmīyat ash Shurţah
+jarajus	Jarājūs
+juhaynah	Juhaynah
+kafr ad dawwar	Kafr ad Dawwār
+kafr al battikh	Kafr al Baţţīkh
+kafr al kurdi	Kafr al Kurdī
+kafr ash shaykh	Kafr ash Shaykh
+kafr az zayyat	Kafr az Zayyāt
+kafr saqr	Kafr Şaqr
+kafr sa‘d	Kafr Sa‘d
+kafr shukr	Kafr Shukr
+kawm hamadah	Kawm Ḩamādah
+kirdasah	Kirdāsah
+kom ombo	Kom Ombo
+luxor	Luxor
+madinat an nasr	Madīnat an Naşr
+madinat as sadat	Madīnat as Sādāt
+madinat wadi an natrun	Madīnat Wādī an Naţrūn
+maghaghah	Maghāghah
+mahallat damanah	Maḩallat Damanah
+makadi bay	Makadi Bay
+mallawi	Mallawī
+manfalut	Manfalūţ
+manshiyat al qanatir	Manshīyat al Qanāţir
+marsa alam	Marsa Alam
+marsa matruh	Marsá Maţrūḩ
+masakin shirkat abu al wafa lil muqawalat wa al istithmar al ‘aqari	Masākin Shirkat Abū al Wafā lil Muqāwalāt wa al Istithmār al ‘Aqārī
+mashtul as suq	Mashtūl as Sūq
+matay	Maţāy
+minya	Minya
+minya al qamh	Minyā al Qamḩ
+minyat an nasr	Minyat an Naşr
+mit abu ghalib	Mīt Abū Ghālib
+mit ghamr	Mīt Ghamr
+mit salsil	Mīt Salsīl
+munshat ‘ali agha	Munshāt ‘Alī Āghā
+munsha‘at abu ‘umar	Munsha‘at Abū ‘Umar
+munuf	Munūf
+mut	Mūţ
+mutubas	Muţūbas
+nabaruh	Nabarūh
+nag hammadi	Nag Hammâdi
+naqadah	Naqādah
+new bani sewif city	New Bani Sewif City
+new cairo	New Cairo
+nuwaybi‘a	Nuwaybi‘a
+port said	Port Said
+qaha	Qahā
+qalyub	Qalyub
+qasr al farafirah	Qaşr al Farāfirah
+qift	Qifţ
+qillin	Qillīn
+qina	Qina
+qus	Qūş
+qutur	Quţūr
+quwaysina	Quwaysinā
+rafah	Rafaḩ
+ras el-barr	Râs el-Barr
+ras gharib	Ras Gharib
+rosetta	Rosetta
+safaga	Safaga
+saint catherine	Saint Catherine
+samalut	Samālūţ
+samannud	Samannūd
+san al hajar al qibliyah	Şān al Ḩajar al Qiblīyah
+sant katrina	Sānt Kātrīnā
+saqultah	Sāqultah
+shalateen	Shalateen
+shalatin	Shalātīn
+sharm el-sheikh	Sharm el-Sheikh
+shibin al kawm	Shibīn al Kawm
+shibin al qanatir	Shibīn al Qanāţir
+shirbin	Shirbīn
+shubra al khaymah	Shubrā al Khaymah
+shubrakhit	Shubrākhīt
+sidfa	Şidfā
+sidi barani	Sīdī Barānī
+sidi ghazi	Sīdī Ghāzī
+sidi salim	Sīdī Sālim
+sinnuris	Sinnūris
+sirs al layyanah	Sirs al Layyānah
+siwah	Sīwah
+sohag	Sohag
+suez	Suez
+sumusta al waqf	Sumusţā al Waqf
+sumusta as sultani	Sumusţā as Sulţānī
+tahta	Ţahţā
+tala	Talā
+talkha	Ţalkhā
+tamiyah	Ţāmiyah
+tanta	Tanta
+tima	Ţimā
+timayy al imdid	Timayy al Imdīd
+tud	Ţūd
+tukh	Ţūkh
+yusuf as-siddiq	Yūsuf aṣ-Ṣiddīq
+zaafarana	Zaafarana
+zagazig	Zagazig
+zawyat umm ar rakham	Zāwyat Umm ar Rakham
+zefta	Zefta
+‘izbat al burj	‘Izbat al Burj
+‘izbat ‘ali as sayyid	‘Izbat ‘Alī as Sayyid

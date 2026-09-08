@@ -1,0 +1,73 @@
+abala	Abala
+abalak	Abalak
+aderbissinat	Adérbissinat
+agadez	Agadez
+aguie	Aguié
+alaghsas	Alaghsas
+arlit	Arlit
+ayorou	Ayorou
+bagaroua	Bagaroua
+baleyara	Baléyara
+bani bangou	Bani Bangou
+bankilare	Bankilaré
+belbeji	Bélbéji
+bermo	Bermo
+bilma	Bilma
+birni n konni	Birni N Konni
+birnin gaoure	Birnin Gaouré
+bosso	Bosso
+bouza	Bouza
+dakoro	Dakoro
+damagaram taker	Damagaram Takèr
+diffa	Diffa
+dioundiou	Dioundiou
+dogondoutchi	Dogondoutchi
+dosso	Dosso
+dungas	Dungas
+fachi	Fachi
+falmey	Falmey
+filingue	Filingué
+gaya	Gaya
+gazaoua	Gazaoua
+gotheye	Gothèye
+goudoumaria	Goudoumaria
+goure	Gouré
+guidan roumdji	Guidan Roumdji
+i-n-gall	I-n-Gall
+i-n-ouagar	I-n-Ouagar
+iferouane	Iferouâne
+illela	Illéla
+kantche	Kantché
+keita	Keïta
+kollo	Kollo
+loga	Loga
+madaoua	Madaoua
+madarounfa	Madarounfa
+magaria	Magaria
+maine soroa	Maïné Soroa
+malbaza	Malbaza
+maradi	Maradi
+matamey	Matamey
+mayahi	Mayahi
+mehana	Méhana
+mirriah	Mirriah
+ngourti	Ngourti
+nguigmi	Nguigmi
+niamey	Niamey
+ouallam	Ouallam
+say	Say
+tahoua	Tahoua
+takieta	Takiéta
+tanout	Tanout
+tasker	Tasker
+tassara	Tassara
+tchin tabaraden	Tchin Tabaradèn
+tchirozerine	Tchirozérine
+tera	Téra
+tessaoua	Tessaoua
+tibiri	Tibiri
+tillaberi	Tillabéri
+tillia	Tillia
+torodi	Torodi
+youri kourtere	Youri Kourtéré
+zinder	Zinder

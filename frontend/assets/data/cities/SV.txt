@@ -1,0 +1,101 @@
+acajutla	Acajutla
+aguilares	Aguilares
+ahuachapan	Ahuachapán
+anamoros	Anamorós
+antiguo cuscatlan	Antiguo Cuscatlán
+apastepeque	Apastepeque
+apopa	Apopa
+armenia	Armenia
+atiquizaya	Atiquizaya
+ayutuxtepeque	Ayutuxtepeque
+berlin	Berlín
+cacaopera	Cacaopera
+candelaria de la frontera	Candelaria de La Frontera
+chalatenango	Chalatenango
+chalchuapa	Chalchuapa
+chapeltique	Chapeltique
+chinameca	Chinameca
+chirilagua	Chirilagua
+ciudad arce	Ciudad Arce
+ciudad barrios	Ciudad Barrios
+coatepeque	Coatepeque
+cojutepeque	Cojutepeque
+concepcion batres	Concepción Batres
+concepcion de ataco	Concepción de Ataco
+conchagua	Conchagua
+corinto	Corinto
+cuscatancingo	Cuscatancingo
+delgado	Delgado
+el congo	El Congo
+el paisnal	El Paisnal
+el rosario	El Rosario
+el transito	El Tránsito
+guatajiagua	Guatajiagua
+guaymango	Guaymango
+guazapa	Guazapa
+ilopango	Ilopango
+intipuca	Intipucá
+izalco	Izalco
+jiquilisco	Jiquilisco
+jocoro	Jocoro
+juayua	Juayúa
+jucuapa	Jucuapa
+jucuaran	Jucuarán
+jujutla	Jujutla
+la libertad	La Libertad
+la union	La Unión
+lolotique	Lolotique
+mejicanos	Mejicanos
+metapan	Metapán
+moncagua	Moncagua
+nahuizalco	Nahuizalco
+nueva concepcion	Nueva Concepción
+nueva esparta	Nueva Esparta
+nueva guadalupe	Nueva Guadalupe
+nuevo cuscatlan	Nuevo Cuscatlán
+olocuilta	Olocuilta
+ozatlan	Ozatlán
+panchimalco	Panchimalco
+pasaquina	Pasaquina
+puerto el triunfo	Puerto El Triunfo
+quezaltepeque	Quezaltepeque
+rosario de mora	Rosario de Mora
+san agustin	San Agustín
+san alejo	San Alejo
+san antonio del monte	San Antonio del Monte
+san francisco	San Francisco
+san francisco menendez	San Francisco Menéndez
+san juan opico	San Juan Opico
+san marcos	San Marcos
+san martin	San Martín
+san miguel	San Miguel
+san pablo tacachico	San Pablo Tacachico
+san pedro masahuat	San Pedro Masahuat
+san rafael oriente	San Rafael Oriente
+san salvador	San Salvador
+san sebastian	San Sebastián
+san vicente	San Vicente
+santa ana	Santa Ana
+santa elena	Santa Elena
+santa rosa de lima	Santa Rosa de Lima
+santa tecla	Santa Tecla
+santiago de maria	Santiago de María
+santiago nonualco	Santiago Nonualco
+santo tomas	Santo Tomás
+sensuntepeque	Sensuntepeque
+sesori	Sesori
+sociedad	Sociedad
+sonsonate	Sonsonate
+sonzacate	Sonzacate
+soyapango	Soyapango
+suchitoto	Suchitoto
+tacuba	Tacuba
+tecoluca	Tecoluca
+tenancingo	Tenancingo
+texistepeque	Texistepeque
+tonacatepeque	Tonacatepeque
+turin	Turín
+usulutan	Usulután
+victoria	Victoria
+zacatecoluca	Zacatecoluca
+zaragoza	Zaragoza

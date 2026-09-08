@@ -65,10 +65,14 @@ public interface IHiddenPlaceRepository
     Task<bool> ExistsNearbyAsync(decimal latitude, decimal longitude, double radiusMeters, IEnumerable<string>? excludedStatuses = null);
 
     /// <summary>
-    /// Creates the canonical place row and the submission row in ONE transaction
-    /// (place first, then submission referencing it).
+    /// Creates the canonical place row, the shared-module <c>places</c> row and the
+    /// submission row in ONE transaction (place first, then submission referencing it).
+    /// The <c>places</c> row carries the SAME identifier:
+    /// <c>places.place_id == recommended_places.recommend_place_id</c> — no second ID
+    /// is generated (new Add architecture rule). All three inserts commit together via
+    /// a single <c>SaveChangesAsync</c>; a failure on any of them rolls back everything.
     /// </summary>
-    Task CreateSubmissionAsync(RecommendPlace place, PlaceSubmission submission);
+    Task CreateSubmissionAsync(RecommendPlace place, PlaceSubmission submission, Place placeRecord);
     Task UpdateSubmissionAsync(PlaceSubmission submission);
 
     /// <summary>
@@ -80,9 +84,7 @@ public interface IHiddenPlaceRepository
 
     // ——— Verifications (voting) ———
     Task<PlaceSubmissionVerification?> GetActiveVerificationAsync(string submissionId, int userId);
-    Task<PlaceSubmissionVerification?> GetAnyVerificationAsync(string submissionId, int userId);
     Task CreateVerificationAsync(PlaceSubmissionVerification verification);
-    Task UpdateVerificationAsync(PlaceSubmissionVerification verification);
     Task DeleteVerificationAsync(PlaceSubmissionVerification verification);
     Task<int> GetActiveVerificationCountAsync(string submissionId);
 }

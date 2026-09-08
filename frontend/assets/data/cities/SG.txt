@@ -1,0 +1,116 @@
+admiralty	Admiralty
+alexandra estate	Alexandra Estate
+anak bukit	Anak Bukit
+ang mo kio new town	Ang Mo Kio New Town
+bangkit	Bangkit
+bedok new town	Bedok New Town
+bencoolen	Bencoolen
+bishan new town	Bishan New Town
+boon lay	Boon Lay
+braddell heights estate	Braddell Heights Estate
+brickworks estate	Brickworks Estate
+bugis	Bugis
+bukit batok new town	Bukit Batok New Town
+bukit ho swee estate	Bukit Ho Swee Estate
+bukit mandai village	Bukit Mandai Village
+bukit merah estate	Bukit Merah Estate
+bukit panjang new town	Bukit Panjang New Town
+bukit timah	Bukit Timah
+bulim	Bulim
+changi village	Changi Village
+choa chu kang new town	Choa Chu Kang New Town
+clementi housing estate	Clementi Housing Estate
+dairy farm	Dairy Farm
+dover	Dover
+eunos	Eunos
+faber hills	Faber Hills
+fajar	Fajar
+farrer park	Farrer Park
+geylang	Geylang
+ghim moh	Ghim Moh
+harbourfront	HarbourFront
+henderson estate	Henderson Estate
+hillcrest park	Hillcrest Park
+holland drive	Holland Drive
+holland village	Holland Village
+hong kah	Hong Kah
+hougang new town	Hougang New Town
+institution hill	Institution Hill
+jelebu	Jelebu
+jurong east	Jurong East
+jurong town	Jurong Town
+jurong west	Jurong West
+kaki bukit estate	Kaki Bukit Estate
+kallang	Kallang
+kampong java teban	Kampong Java Teban
+kampong loyang	Kampong Loyang
+kampong pasir ris	Kampong Pasir Ris
+kampong potong pasir	Kampong Potong Pasir
+kampong ubi	Kampong Ubi
+kampong ulu pandan	Kampong Ulu Pandan
+kangkar	Kangkar
+keat hong village	Keat Hong Village
+kembangan	Kembangan
+kent ridge	Kent Ridge
+lam san village	Lam San Village
+lavender	Lavender
+leedon park	Leedon Park
+leonie hill	Leonie Hill
+loyang	Loyang
+lucky hills	Lucky Hills
+macpherson	MacPherson
+margaret drive	Margaret Drive
+marina bay	Marina Bay
+marine parade	Marine Parade
+marsiling	Marsiling
+matilda estate	Matilda Estate
+mount emily park	Mount Emily Park
+mount vernon	Mount Vernon
+nature reserve	Nature Reserve
+newton	Newton
+novena	Novena
+one north	One North
+one tree hill	One Tree Hill
+outram park	Outram Park
+oxley	Oxley
+pandan valley	Pandan Valley
+pasir panjang	Pasir Panjang
+pasir ris new town	Pasir Ris New Town
+paya lebar	Paya Lebar
+peng siang	Peng Siang
+punggol	Punggol
+queenstown estate	Queenstown Estate
+radin mas	Radin Mas
+river valley	River Valley
+rochor	Rochor
+saujana	Saujana
+sembawang estate	Sembawang Estate
+sembawang hills estate	Sembawang Hills Estate
+sengkang new town	Sengkang New Town
+senja	Senja
+sennett estate	Sennett Estate
+sentosa	Sentosa
+serangoon	Serangoon
+serangoon garden	Serangoon Garden
+serangoon new town	Serangoon New Town
+simei new town	Simei New Town
+singapore	Singapore
+somapah	Somapah
+sungai simpang	Sungai Simpang
+tai seng	Tai Seng
+tampines estate	Tampines Estate
+tampines new town	Tampines New Town
+tanglin	Tanglin
+tanglin halt	Tanglin Halt
+teck whye	Teck Whye
+telok blangah	Telok Blangah
+thomson	Thomson
+tiong bahru estate	Tiong Bahru Estate
+toa payoh new town	Toa Payoh New Town
+ulu bedok	Ulu Bedok
+west coast village	West Coast Village
+woodlands	Woodlands
+woodlands north coast	Woodlands North Coast
+yew tee	Yew Tee
+yio chu kang	Yio Chu Kang
+yishun new town	Yishun New Town

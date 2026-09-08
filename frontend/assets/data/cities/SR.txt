@@ -1,0 +1,31 @@
+albina	Albina
+alkmaar	Alkmaar
+beekhuizen	Beekhuizen
+blauwgrond	Blauwgrond
+brokopondo	Brokopondo
+brownsweg	Brownsweg
+calcutta	Calcutta
+flora	Flora
+groningen	Groningen
+jarikaba	Jarikaba
+kampong baroe	Kampong Baroe
+latour	Latour
+lelydorp	Lelydorp
+livorno	Livorno
+marienburg	Mariënburg
+meerzorg	Meerzorg
+moengo	Moengo
+munder buiten	Munder Buiten
+nieuw amsterdam	Nieuw Amsterdam
+nieuw nickerie	Nieuw Nickerie
+onverwacht	Onverwacht
+paramaribo	Paramaribo
+pontbuiten	Pontbuiten
+powakka	Powakka
+rainville	Rainville
+tamanredjo	Tamanredjo
+tammenga	Tammenga
+totness	Totness
+wageningen	Wageningen
+weg naar zee	Weg naar Zee
+welgelegen	Welgelegen

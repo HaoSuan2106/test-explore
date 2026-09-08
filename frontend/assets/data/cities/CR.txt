@@ -1,0 +1,122 @@
+alajuela	Alajuela
+alajuelita	Alajuelita
+angeles	Ángeles
+aserri	Aserrí
+atenas	Atenas
+bagaces	Bagaces
+barrio jesus	Barrio Jesús
+batan	Batán
+bejuco	Bejuco
+belen	Belén
+bijagua	Bijagua
+buenos aires	Buenos Aires
+calle blancos	Calle Blancos
+canas	Cañas
+canoas	Canoas
+cariari	Cariari
+carrillos	Carrillos
+cartago	Cartago
+chacarita	Chacarita
+colima	Colima
+colon	Colón
+concepcion	Concepción
+corredor	Corredor
+cot	Cot
+curridabat	Curridabat
+daniel flores	Daniel Flores
+desamparados	Desamparados
+dulce nombre de jesus	Dulce Nombre de Jesus
+escazu	Escazú
+esparza	Esparza
+esquipulas	Esquipulas
+golfito	Golfito
+granadilla	Granadilla
+guacimo	Guácimo
+guadalupe	Guadalupe
+guapiles	Guápiles
+heredia	Heredia
+hojancha	Hojancha
+ipis	Ipís
+jaco	Jacó
+juntas	Juntas
+la asuncion	La Asunción
+la cruz	La Cruz
+la fortuna	La Fortuna
+la suiza	La Suiza
+la virgen	La Virgen
+liberia	Liberia
+limon	Limón
+llorente	Llorente
+los chiles	Los Chiles
+matina	Matina
+mercedes	Mercedes
+mercedes norte	Mercedes Norte
+miramar	Miramar
+monterrey	Monterrey
+nandayure	Nandayure
+naranjo	Naranjo
+nicoya	Nicoya
+orosi	Orosi
+orotina	Orotina
+pacayas	Pacayas
+palmichal	Palmichal
+paquera	Paquera
+paraiso	Paraíso
+parrita	Parrita
+patarra	Patarrá
+pejibaye	Pejibaye
+pital	Pital
+poco sol	Poco Sol
+pocora	Pocora
+puerto cortes	Puerto Cortés
+puntarenas	Puntarenas
+purral	Purral
+quepos	Quepos
+quesada	Quesada
+rio segundo	Río Segundo
+roxana	Roxana
+sabalito	Sabalito
+sabanilla	Sabanilla
+salitral	Salitral
+salitrillos	Salitrillos
+samara	Sámara
+san antonio	San Antonio
+san diego	San Diego
+san felipe	San Felipe
+san francisco	San Francisco
+san ignacio	San Ignacio
+san isidro	San Isidro
+san jose	San José
+san josecito	San Josecito
+san juan	San Juan
+san juan de dios	San Juan de Dios
+san marcos	San Marcos
+san miguel	San Miguel
+san pablo	San Pablo
+san pedro	San Pedro
+san rafael	San Rafael
+san rafael abajo	San Rafael Abajo
+san rafael arriba	San Rafael Arriba
+san ramon	San Ramón
+san vicente	San Vicente
+san vicente de moravia	San Vicente de Moravia
+san vito	San Vito
+santa ana	Santa Ana
+santa cruz	Santa Cruz
+santiago	Santiago
+santo domingo	Santo Domingo
+sarchi	Sarchí
+sardinal	Sardinal
+siquirres	Siquirres
+sixaola	Sixaola
+tamarindo	Tamarindo
+tejar	Tejar
+tilaran	Tilarán
+tobosi	Tobosi
+tres rios	Tres Ríos
+tucurrique	Tucurrique
+turrialba	Turrialba
+upala	Upala
+uvita	Uvita
+zapotal	Zapotal
+zarcero	Zarcero

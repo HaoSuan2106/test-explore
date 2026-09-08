@@ -1,0 +1,113 @@
+albion	Albion
+amaury	Amaury
+anse la raye	Anse La Raye
+arsenal	Arsenal
+baie aux huitres	Baie aux Huîtres
+baie du tombeau	Baie du Tombeau
+bambous	Bambous
+bambous virieux	Bambous Virieux
+beau bassin-rose hill	Beau Bassin-Rose Hill
+beau vallon	Beau Vallon
+bel air riviere seche	Bel Air Rivière Sèche
+bel ombre	Bel Ombre
+belle vue harel	Belle Vue Harel
+belle vue maurel	Belle Vue Maurel
+belle vue pilot	Belle Vue Pilot
+bois des amourettes	Bois des Amourettes
+bon accueil	Bon Accueil
+brisee verdiere	Brisée Verdière
+calebasses	Calebasses
+calodyne	Calodyne
+camp de masque	Camp de Masque
+camp diable	Camp Diable
+camp ithier	Camp Ithier
+camp thorel	Camp Thorel
+cap malheureux	Cap Malheureux
+cargados carajos	Cargados Carajos
+cascavelle	Cascavelle
+centre de flacq	Centre de Flacq
+chamouny	Chamouny
+chemin grenier	Chemin Grenier
+clemencia	Clémencia
+cluny	Cluny
+congomah	Congomah
+cottage	Cottage
+creve coeur	Crève Coeur
+curepipe	Curepipe
+dagotiere	Dagotière
+dubreuil	Dubreuil
+ebene	Ebene
+ecroignard	Ecroignard
+esperance trebuchet	Espérance Trébuchet
+flic en flac	Flic en Flac
+fond du sac	Fond du Sac
+goodlands	Goodlands
+grand baie	Grand Baie
+grand bois	Grand Bois
+grand gaube	Grand Gaube
+grand sable	Grand Sable
+grande riviere noire	Grande Rivière Noire
+grande riviere sud est	Grande Rivière Sud Est
+gros cailloux	Gros Cailloux
+lallmatie	Lallmatie
+lalmatie	Lalmatie
+laventure	Laventure
+le hochet	Le Hochet
+long mountain	Long Mountain
+l’escalier	L’Escalier
+mahebourg	Mahébourg
+mapou	Mapou
+mare la chaux	Mare La Chaux
+melrose	Melrose
+midlands	Midlands
+moka	Moka
+montagne blanche	Montagne Blanche
+morcellement saint andre	Morcellement Saint André
+new grove	New Grove
+notre dame	Notre Dame
+nouvelle france	Nouvelle France
+olivia	Olivia
+pailles	Pailles
+pamplemousses	Pamplemousses
+pereybere	Péreybère
+petit raffray	Petit Raffray
+petite case noyale	Petite Case Noyale
+petite riviere	Petite Rivière
+piton	Piton
+plaine des papayes	Plaine des Papayes
+plaine magnien	Plaine Magnien
+plaines des roches	Plaines des Roches
+pointe aux piments	Pointe aux Piments
+port louis	Port Louis
+port mathurin	Port Mathurin
+poste de flacq	Poste de Flacq
+poudre d’or	Poudre d’Or
+providence	Providence
+quartier militaire	Quartier Militaire
+quatre bornes	Quatre Bornes
+quatre cocos	Quatre Cocos
+quatre soeurs	Quatre Soeurs
+queen victoria	Queen Victoria
+richelieu	Richelieu
+riviere des anguilles	Rivière des Anguilles
+riviere du poste	Rivière du Poste
+riviere du rempart	Rivière du Rempart
+roche terre	Roche Terre
+roches noire	Roches Noire
+rose belle	Rose Belle
+rouge terre	Rouge Terre
+saint aubin	Saint Aubin
+saint hubert	Saint Hubert
+saint julien	Saint Julien
+saint pierre	Saint Pierre
+sebastopol	Sebastopol
+souillac	Souillac
+surinam	Surinam
+tamarin	Tamarin
+terre rouge	Terre Rouge
+the vale	The Vale
+triolet	Triolet
+trou aux biches	Trou aux Biches
+vacoas	Vacoas
+verdun	Verdun
+vingt cinq	Vingt Cinq

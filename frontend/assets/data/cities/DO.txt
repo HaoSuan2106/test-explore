@@ -1,0 +1,210 @@
+agua santa del yuna	Agua Santa del Yuna
+altamira	Altamira
+amina	Amina
+arenoso	Arenoso
+arroyo salado	Arroyo Salado
+azua	Azua
+baitoa	Baitoa
+bajos de haina	Bajos de Haina
+bani	Baní
+banica	Bánica
+bayaguana	Bayaguana
+bella vista	Bella Vista
+boca chica	Boca Chica
+boca de yuma	Boca de Yuma
+bohechio	Bohechío
+bonao	Bonao
+cabarete	Cabarete
+cabral	Cabral
+cabrera	Cabrera
+cachon	Cachón
+cambita garabitos	Cambita Garabitos
+cana chapeton	Cana Chapetón
+canoa	Canoa
+castanuelas	Castañuelas
+castillo	Castillo
+cayetano germosen	Cayetano Germosén
+cercado abajo	Cercado Abajo
+cevicos	Cevicos
+ciudad nueva	Ciudad Nueva
+comendador	Comendador
+constanza	Constanza
+cotui	Cotuí
+cristo rey	Cristo Rey
+cristobal	Cristóbal
+dajabon	Dajabón
+don juan	Don Juan
+duverge	Duvergé
+el cacao	El Cacao
+el carril	El Carril
+el factor	El Factor
+el guayabal	El Guayabal
+el llano	El Llano
+el palmar	El Palmar
+el penon	El Peñón
+el pino	El Pino
+el puerto	El Puerto
+el valle	El Valle
+enriquillo	Enriquillo
+ensanche luperon	Ensanche Luperón
+esperalvillo	Esperalvillo
+esperanza	Esperanza
+estebania	Estebanía
+estero hondo	Estero Hondo
+fantino	Fantino
+fundacion	Fundación
+galvan	Galván
+gaspar hernandez	Gaspar Hernández
+gonzalo	Gonzalo
+guananico	Guananico
+guatapanal	Guatapanal
+guayabal	Guayabal
+guayabo dulce	Guayabo Dulce
+guayacanes	Guayacanes
+guaymate	Guaymate
+guerra	Guerra
+hatillo palma	Hatillo Palma
+hato mayor del rey	Hato Mayor del Rey
+hondo valle	Hondo Valle
+hostos	Hostos
+imbert	Imbert
+jaibon	Jaibón
+jamao al norte	Jamao al Norte
+jaquimeyes	Jaquimeyes
+jarabacoa	Jarabacoa
+jicome	Jicomé
+jima abajo	Jima Abajo
+jimani	Jimaní
+joba arriba	Joba Arriba
+juan adrian	Juan Adrián
+juan de herrera	Juan de Herrera
+juan lopez abajo	Juan López Abajo
+juan santiago	Juan Santiago
+juancho	Juancho
+juncalito abajo	Juncalito Abajo
+la agustina	La Agustina
+la canela	La Canela
+la caya	La Caya
+la cienaga	La Ciénaga
+la descubierta	La Descubierta
+la entrada	La Entrada
+la julia	La Julia
+la romana	La Romana
+la uvilla	La Uvilla
+la vega	La Vega
+laguna salada	Laguna Salada
+las charcas	Las Charcas
+las guaranas	Las Guáranas
+las matas de farfan	Las Matas de Farfán
+las matas de santa cruz	Las Matas de Santa Cruz
+las salinas	Las Salinas
+las terrenas	Las Terrenas
+licey al medio	Licey al Medio
+loma de cabrera	Loma de Cabrera
+los botados	Los Botados
+los hidalgos	Los Hidalgos
+los llanos	Los Llanos
+los rios	Los Ríos
+luperon	Luperón
+maizal	Maizal
+majagual	Majagual
+mao	Mao
+matanzas	Matanzas
+matayaya	Matayaya
+mella	Mella
+miches	Miches
+moca	Moca
+moncion	Monción
+monte llano	Monte Llano
+monte plata	Monte Plata
+nagua	Nagua
+neiba	Neiba
+nizao	Nizao
+otra banda	Otra Banda
+oviedo	Oviedo
+padre las casas	Padre Las Casas
+palmar arriba	Palmar Arriba
+palmar de ocoa	Palmar de Ocoa
+paraiso	Paraíso
+partido	Partido
+paya	Paya
+pedernales	Pedernales
+pedro corto	Pedro Corto
+pedro garcia	Pedro García
+pedro sanchez	Pedro Sánchez
+pedro santana	Pedro Santana
+pepillo salcedo	Pepillo Salcedo
+peralta	Peralta
+pescaderia	Pescadería
+piedra blanca	Piedra Blanca
+pimentel	Pimentel
+pizarrete	Pizarrete
+polo	Polo
+postrer rio	Postrer Río
+pueblo viejo	Pueblo Viejo
+puerto plata	Puerto Plata
+punta cana	Punta Cana
+quisqueya	Quisqueya
+ramon santana	Ramón Santana
+restauracion	Restauración
+rincon	Rincón
+rio grande	Río Grande
+rio limpio	Río Limpio
+rio san juan	Río San Juan
+rio verde arriba	Río Verde Arriba
+sabana buey	Sabana Buey
+sabana de la mar	Sabana de la Mar
+sabana del puerto	Sabana del Puerto
+sabana grande de boya	Sabana Grande de Boyá
+sabana grande de palenque	Sabana Grande de Palenque
+sabana iglesia	Sabana Iglesia
+sabana yegua	Sabana Yegua
+salcedo	Salcedo
+salsipuedes	Salsipuedes
+salvaleon de higuey	Salvaleón de Higüey
+samana	Samaná
+san carlos	San Carlos
+san cristobal	San Cristóbal
+san fernando de monte cristi	San Fernando de Monte Cristi
+san francisco de macoris	San Francisco de Macorís
+san gregorio de nigua	San Gregorio de Nigua
+san ignacio de sabaneta	San Ignacio de Sabaneta
+san jose de las matas	San José de Las Matas
+san jose de ocoa	San José de Ocoa
+san juan de la maguana	San Juan de la Maguana
+san pedro de macoris	San Pedro de Macorís
+san rafael del yuma	San Rafael del Yuma
+san victor arriba	San Víctor Arriba
+sanchez	Sánchez
+santa cruz de barahona	Santa Cruz de Barahona
+santa cruz de el seibo	Santa Cruz de El Seibo
+santiago de los caballeros	Santiago de los Caballeros
+santo domingo	Santo Domingo
+santo domingo este	Santo Domingo Este
+santo domingo oeste	Santo Domingo Oeste
+sosua	Sosúa
+tabara arriba	Tábara Arriba
+tamayo	Tamayo
+tamboril	Tamboril
+tenares	Tenares
+tireo arriba	Tireo Arriba
+vallejuelo	Vallejuelo
+veragua arriba	Veragua Arriba
+vicente noble	Vicente Noble
+villa altagracia	Villa Altagracia
+villa bisono	Villa Bisonó
+villa consuelo	Villa Consuelo
+villa elisa	Villa Elisa
+villa francisca	Villa Francisca
+villa gonzalez	Villa González
+villa isabela	Villa Isabela
+villa jaragua	Villa Jaragua
+villa la mata	Villa La Mata
+villa riva	Villa Riva
+villa tapia	Villa Tapia
+villa vasquez	Villa Vásquez
+villarpando	Villarpando
+yaguate	Yaguate
+yamasa	Yamasá
+yayas de viajama	Yayas de Viajama
+zona colonial	Zona Colonial

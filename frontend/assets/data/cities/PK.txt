@@ -1,0 +1,560 @@
+abbottabad	Abbottabad
+abdul khel	Abdul Khel
+adilpur	Adilpur
+ahmadpur east	Ahmadpur East
+ahmadpur sial	Ahmadpur Sial
+akora khattak	Akora Khattak
+alahabad	Alahabad
+aliabad	Aliabad
+alik ghund	Alik Ghund
+alipur	Alipur
+alizai	Alizai
+alpurai	Alpurai
+amangarh	Amangarh
+amirabad	Amirabad
+arbora	Arbora
+arif wala	Arif Wala
+arifwala	Arifwala
+ashanagro koto	Ashanagro Koto
+athhmuqam	Athhmuqam
+athmuqam	Athmuqam
+attock city	Attock City
+awaran	Awaran
+baddomalhi	Baddomalhi
+badin	Badin
+baffa	Baffa
+bagarji	Bagarji
+bagh	Bāgh
+bahawalnagar	Bahawalnagar
+bahawalpur	Bahawalpur
+bakhri ahmad khan	Bakhri Ahmad Khan
+bandhi	Bandhi
+banian	Banian
+bannu	Bannu
+barishal	Barishal
+barkhan	Barkhan
+basirpur	Basirpur
+basra	Basra
+basti dosa	Basti Dosa
+bat khela	Bat Khela
+battagram	Battagram
+batwar salarzai	Batwar Salarzai
+begowala	Begowala
+bela	Bela
+berani	Berani
+bhag	Bhag
+bhagowal	Bhagowal
+bhagwal	Bhagwal
+bhakkar	Bhakkar
+bhalwal	Bhalwal
+bhan	Bhan
+bhata	Bhata
+bhaun	Bhaun
+bhawana	Bhawana
+bhera	Bhera
+bhimber	Bhimber
+bhiria	Bhiria
+bhit shah	Bhit Shah
+bhopalwala	Bhopalwala
+bozdar wada	Bozdar Wada
+bulri	Bulri
+buni	Buni
+burewala	Burewala
+chak	Chak
+chak azam sahu	Chak Azam Sahu
+chak eighty three twelve l	Chak Eighty Three Twelve L
+chak eighty-eight -six right	Chak Eighty-eight -Six Right
+chak fifty-six -four right	Chak Fifty-six -Four Right
+chak five hundred seventy-five	Chak Five Hundred Seventy-five
+chak hundred one	Chak Hundred One
+chak jhumra	Chak Jhumra
+chak ninety-eight -nine left	Chak Ninety-eight -Nine Left
+chak ninety-nine -nine left	Chak Ninety-nine -Nine Left
+chak ninety-nine -six right	Chak Ninety-nine -Six Right
+chak one hundred -nine left	Chak One Hundred -Nine Left
+chak one hundred eight -nine left	Chak One Hundred Eight -Nine Left
+chak one hundred eighteen nine left	Chak One Hundred Eighteen Nine Left
+chak one hundred eighty-eight nine a left	Chak One Hundred Eighty-eight Nine A Left
+chak one hundred eighty-five a nine left	Chak One Hundred Eighty-five A Nine Left
+chak one hundred eighty-seven nine left	Chak One Hundred Eighty-seven Nine Left
+chak one hundred eighty-six nine left	Chak One Hundred Eighty-six Nine Left
+chak one hundred fifty-three -nine left	Chak One Hundred Fifty-three -Nine Left
+chak one hundred forty nine left	Chak One Hundred Forty Nine Left
+chak one hundred forty-one nine left	Chak One Hundred Forty-one Nine Left
+chak one hundred forty-three nine left	Chak One Hundred Forty-three Nine Left
+chak one hundred forty-two nine left	Chak One Hundred Forty-two Nine Left
+chak one hundred four -nine left	Chak One Hundred Four -Nine Left
+chak one hundred four seven right	Chak One Hundred Four Seven Right
+chak one hundred ninety nine a left	Chak One Hundred Ninety Nine A Left
+chak one hundred seventeen nine left	Chak One Hundred Seventeen Nine Left
+chak one hundred six -nine left	Chak One Hundred Six -Nine Left
+chak one hundred ten -nine left	Chak One Hundred Ten -Nine Left
+chak one hundred thirty-eight nine left	Chak One Hundred Thirty-eight Nine Left
+chak one hundred thirty-nine nine left	Chak One Hundred Thirty-nine Nine Left
+chak one hundred thirty-two -nine left	Chak One Hundred Thirty-two -Nine Left
+chak one hundred three seven right	Chak One Hundred Three Seven Right
+chak one hundred twelve -nine left	Chak One Hundred Twelve -Nine Left
+chak one hundred twenty nine left	Chak One Hundred Twenty Nine Left
+chak one hundred twenty-nine -nine left	Chak One Hundred Twenty-nine -Nine Left
+chak one hundred twenty-one nine left	Chak One Hundred Twenty-one Nine Left
+chak pindi	Chak Pindi
+chak seventy-five - five right	Chak Seventy-five - Five Right
+chak sixty-eight-four right	Chak Sixty-eight-Four Right
+chak sixty-five a gugera distributary	Chak Sixty-five A Gugera Distributary
+chak thirty-one -eleven left	Chak Thirty-one -Eleven Left
+chak three ten left	Chak Three Ten Left
+chaksawari	Chaksawari
+chakwal	Chakwal
+chaman	Chaman
+chamber	Chamber
+charhoi	Charhoi
+charsadda	Charsadda
+chawinda	Chawinda
+cherat cantonement	Cherat Cantonement
+chhor	Chhor
+chichawatni	Chichawatni
+chilas	Chilas
+chiniot	Chiniot
+chishtian	Chishtian
+chitral	Chitral
+choa saidan shah	Choa Saidan Shah
+chowki jamali	Chowki Jamali
+chuhar jamali	Chuhar Jamali
+chuhar kana	Chuhar Kana
+chunian	Chunian
+dadhar	Dadhar
+dadu	Dadu
+daggar	Daggar
+daharki	Daharki
+daira din panah	Daira Din Panah
+dajal	Dajal
+dalbandin	Dalbandin
+dambudas	Dambudas
+dandot rs	Dandot RS
+daromehar	Daromehar
+darya khan	Darya Khan
+darya khan marri	Darya Khan Marri
+daska kalan	Daska Kalan
+dasu	Dasu
+datta khel	Datta Khel
+daud khel	Daud Khel
+daulatpur	Daulatpur
+daultala	Daultala
+daur	Daur
+dayal	Dayal
+dera allahyar	Dera Allahyar
+dera bugti	Dera Bugti
+dera ghazi khan	Dera Ghazi Khan
+dera ismail khan	Dera Ismail Khan
+dera murad jamali	Dera Murad Jamali
+dhanot	Dhanot
+dhaunkal	Dhaunkal
+dhirkot	Dhirkot
+dhoro naro	Dhoro Naro
+digri	Digri
+dijkot	Dijkot
+dil sher brohi	Dil Sher Brohi
+dinan bashnoian wala	Dinan Bashnoian Wala
+dinga	Dinga
+dipalpur	Dipalpur
+diplo	Diplo
+dittewal	Dittewal
+doaba	Doaba
+dokri	Dokri
+dregun	Dregun
+duki	Duki
+dullewala	Dullewala
+dunga bunga	Dunga Bunga
+dunyapur	Dunyapur
+dursh khela	Dursh Khela
+eidghah	Eidghah
+eminabad	Eminabad
+faisalabad	Faisalabad
+faqirwali	Faqirwali
+faruka	Faruka
+fatehjang	Fatehjang
+fatehpur	Fatehpur
+fazilpur	Fazilpur
+fort abbas	Fort Abbas
+gadani	Gadani
+gahkuch	Gahkuch
+gambat	Gambat
+gandava	Gandava
+garh maharaja	Garh Maharaja
+garhi dupatta	Garhi Dupatta
+garhi khairo	Garhi Khairo
+garhiyasin	Garhiyasin
+gharo	Gharo
+ghauspur	Ghauspur
+ghotki	Ghotki
+gilgit	Gilgit
+gojra	Gojra
+goth faridabad	Goth Faridabad
+goth garelo	Goth Garelo
+goth phulji	Goth Phulji
+goth radhan	Goth Radhan
+goth shams pir	Goth Shams Pir
+gujar khan	Gujar Khan
+gujranwala	Gujranwala
+gujrat	Gujrat
+gulishah kach	Gulishah Kach
+gwadar	Gwadar
+hadali	Hadali
+hafizabad	Hafizabad
+hajira	Hajira
+hala	Hala
+hangu	Hangu
+harappa	Harappa
+haripur	Haripur
+harnai	Harnai
+harnoli	Harnoli
+harunabad	Harunabad
+hasilpur	Hasilpur
+hattian bala	Hattiān Bāla
+hattian bala	Hattian Bala
+haveli lakha	Haveli Lakha
+havelian	Havelian
+hazro city	Hazro City
+hingorja	Hingorja
+hub	Hub
+hujra shah muqim	Hujra Shah Muqim
+hyderabad	Hyderabad
+inzari	Inzari
+islamabad	Islamabad
+islamgarh	Islamgarh
+islamkot	Islamkot
+jacobabad	Jacobabad
+jaglot	Jaglot
+jahangira	Jahangira
+jahanian	Jahanian
+jahanian shah	Jahanian Shah
+jalalpur jattan	Jalalpur Jattan
+jalalpur pirwala	Jalalpur Pirwala
+jam sahib	Jām Sāhib
+jampur	Jampur
+jamrud	Jamrud
+jamshoro	Jamshoro
+jand	Jand
+jandiala sher khan	Jandiala Sher Khan
+jaranwala	Jaranwala
+jati	Jati
+jatoi shimali	Jatoi Shimali
+jauharabad	Jauharabad
+jhang city	Jhang City
+jhang sadr	Jhang Sadr
+jhawarian	Jhawarian
+jhelum	Jhelum
+jhol	Jhol
+jiwani	Jiwani
+johi	Johi
+kabirwala	Kabirwala
+kadhan	Kadhan
+kahna nau	Kahna Nau
+kahror pakka	Kahror Pakka
+kahuta	Kahuta
+kakad wari dir upper	Kakad Wari Dir Upper
+kalabagh	Kalabagh
+kalaswala	Kalaswala
+kalat	Kalat
+kaleke mandi	Kaleke Mandi
+kallar kahar	Kallar Kahar
+kalur kot	Kalur Kot
+kamalia	Kamalia
+kamar mushani	Kamar Mushani
+kambar	Kambar
+kamoke	Kamoke
+kamra	Kamra
+kandhkot	Kandhkot
+kandiari	Kandiari
+kandiaro	Kandiaro
+kanganpur	Kanganpur
+karachi	Karachi
+karachi university employees co-operative housing society	Karachi University Employees Co-operative Housing Society
+karak	Karak
+karaundi	Karaundi
+karimabad	Karimabad
+kario ghanwar	Kario Ghanwar
+karor	Karor
+kashmor	Kashmor
+kasur	Kasur
+kaure shah zerin	Kaure Shah Zerin
+keshupur	Keshupur
+keti bandar	Keti Bandar
+khadan khak	Khadan Khak
+khadro	Khadro
+khai gala	Khai Gala
+khairpur	Khairpur
+khairpur mir’s	Khairpur Mir’s
+khairpur nathan shah	Khairpur Nathan Shah
+khairpur tamewah	Khairpur Tamewah
+khalabat	Khalabat
+khandowa	Khandowa
+khanewal	Khanewal
+khangah dogran	Khangah Dogran
+khangarh	Khangarh
+khanpur	Khanpur
+khanpur mahar	Khanpur Mahar
+khaplu	Khaplu
+khar	Khar
+kharan	Kharan
+kharian	Kharian
+khewra	Khewra
+khuiratta	Khuiratta
+khurarianwala	Khurarianwala
+khushab	Khushāb
+khuzdar	Khuzdar
+kohat	Kohat
+kohlu	Kohlu
+kot addu	Kot Addu
+kot diji	Kot Diji
+kot ghulam muhammad	Kot Ghulam Muhammad
+kot malik barkhurdar	Kot Malik Barkhurdar
+kot mumin	Kot Mumin
+kot radha kishan	Kot Radha Kishan
+kot rajkour	Kot Rajkour
+kot samaba	Kot Samaba
+kot sultan	Kot Sultan
+kotli	Kotli
+kotli loharan	Kotli Loharan
+kotri	Kotri
+kulachi	Kulachi
+kundian	Kundian
+kunjah	Kunjah
+kunri	Kunri
+kuri dulal	Kuri Dulal
+lachi	Lachi
+ladhewala waraich	Ladhewala Waraich
+lahore	Lahore
+lakhi	Lakhi
+lakki	Lakki
+lala musa	Lala Musa
+lalian	Lalian
+landi kotal	Landi Kotal
+larkana	Larkana
+lawa	Lawa
+layyah	Layyah
+liliani	Liliani
+lodhran	Lodhran
+lollianwala	Lollianwala
+loralai	Loralai
+mach	Mach
+madeji	Madeji
+mailsi	Mailsi
+malakand	Malakand
+malakwal	Malakwal
+malakwal city	Malakwal City
+malir cantonment	Malir Cantonment
+mamu kanjan	Mamu Kanjan
+mananwala	Mananwala
+mandi bahauddin	Mandi Bahauddin
+mangla	Mangla
+manhala	Manhala
+manjhand	Manjhand
+mankera	Mankera
+mansehra	Mansehra
+mardan	Mardan
+mastung	Mastung
+matiari	Matiari
+matli	Matli
+mehar	Mehar
+mehar ali brohi	Mehar Ali Brohi
+mehmand chak	Mehmand Chak
+mehrabpur	Mehrabpur
+mian channun	Mian Channun
+mian sahib	Mian Sahib
+mianwali	Mianwali
+minchinabad	Minchinabad
+mingora	Mingora
+miran shah	Miran Shah
+mirdad muafi	Mirdad Muafi
+miro khan	Miro Khan
+mirpur bhtoro	Mirpur Bhtoro
+mirpur khas	Mirpur Khas
+mirpur mathelo	Mirpur Mathelo
+mirpur sakro	Mirpur Sakro
+mirwah gorchani	Mirwah Gorchani
+mitha tiwana	Mitha Tiwana
+mithi	Mithi
+model town	Model Town
+moro	Moro
+moza shahwala	Moza Shahwala
+mughalabad	Mughalabad
+muhammad moryal sahito jo goth	Muhammad Moryal Sahito Jo Goth
+muhammad pur	Muhammad Pur
+multan	Multan
+muridke	Muridke
+murree	Murree
+musa banda/musa khan kallay	Musa Banda/Musa khan kallay
+musa khel bazar	Musa Khel Bazar
+mustafabad	Mustafabad
+muzaffarabad	Muzaffarābād
+muzaffargarh	Muzaffargarh
+nabisar	Nabisar
+nagir	Nagir
+nankana sahib	Nankana Sahib
+nao mian sahib	Nao Mian Sahib
+narang mandi	Narang Mandi
+narowal	Narowal
+narwanwala	Narwanwala
+nasirabad	Nasirabad
+naudero	Naudero
+naukot	Naukot
+naushahra virkan	Naushahra Virkan
+naushahro firoz	Naushahro Firoz
+nawabshah	Nawabshah
+nazir town	Nazir Town
+new badah	New Badah
+new mirpur city	New Mirpur City
+nok kundi	Nok Kundi
+noorabad	Noorabad
+nowshera	Nowshera
+nowshera cantonment	Nowshera Cantonment
+nowshera kalan	Nowshera Kalan
+nushki	Nushki
+oghi	Oghi
+okara	Okara
+ormara	Ormara
+pabbi	Pabbi
+pad idan	Pad Idan
+paharpur	Paharpur
+pakistan employees cooperative housing society	Pakistan Employees Cooperative Housing Society
+pakpattan	Pakpattan
+pallandri	Pallandri
+panjgur	Panjgur
+pano aqil	Pano Aqil
+parachinar	Parachinar
+pasni	Pasni
+pasrur	Pasrur
+patan	Patan
+pattoki	Pattoki
+peshawar	Peshawar
+phalia	Phalia
+phool nagar	Phool Nagar
+phulra	Phulra
+pind dadan khan	Pind Dadan Khan
+pindi bhattian	Pindi Bhattian
+pindi gheb	Pindi Gheb
+pir jo goth	Pir Jo Goth
+pir mahal	Pir Mahal
+pishin	Pishin
+pithoro	Pithoro
+qabula	Qabula
+qadirpur ran	Qadirpur Ran
+qila abdullah	Qila Abdullah
+qila saifullah	Qila Saifullah
+qubo saeed khan	Qubo Saeed Khan
+quetta	Quetta
+rabwah	Rabwah
+rahim yar khan	Rahim Yar Khan
+raiwind	Raiwind
+raja jang	Raja Jang
+rajanpur	Rajanpur
+rajo khanani	Rajo Khanani
+ranipur	Ranipur
+rasulnagar	Rasulnagar
+ratodero	Ratodero
+rawalakot	Rawalakot
+rawalpindi	Rawalpindi
+renala khurd	Renala Khurd
+risalpur cantonment	Risalpur Cantonment
+rohri	Rohri
+rojhan	Rojhan
+rustam	Rustam
+saddiqabad	Saddiqabad
+sahiwal	Sahiwal
+saidpur	Saidpur
+saidu sharif	Saidu Sharif
+sakrand	Sakrand
+samaro	Samaro
+sambrial	Sambrial
+sanghar	Sanghar
+sangla hill	Sangla Hill
+sanjwal	Sanjwal
+sann	Sann
+sarai alamgir	Sarai Alamgir
+sarai naurang	Sarai Naurang
+sarai sidhu	Sarai Sidhu
+sargodha	Sargodha
+sarni	Sarni
+sehnsa	Sehnsa
+sehwan	Sehwan
+setharja old	Setharja Old
+shabqadar	Shabqadar
+shahdad kot	Shahdad Kot
+shahdadpur	Shahdadpur
+shahkot	Shahkot
+shahpur	Shahpur
+shahpur chakar	Shahpur Chakar
+shahr sultan	Shahr Sultan
+shakargarh	Shakargarh
+sharifabad	Sharifabad
+sharqpur sharif	Sharqpur Sharif
+shekhupura	Shekhupura
+shigar	Shigar
+shikarpur	Shikarpur
+shingli bala	Shingli Bala
+shinpokh	Shinpokh
+shooli bazar	Shooli Bazar
+shorkot	Shorkot
+shujaabad	Shujaabad
+sialkot	Sialkot
+sibi	Sibi
+sillanwali	Sillanwali
+sinjhoro	Sinjhoro
+sita road	Sita Road
+skardu	Skardu
+sobhodero	Sobhodero
+sodhri	Sodhri
+sohbatpur	Sohbatpur
+sook kalan	Sook Kalan
+sukheke mandi	Sukheke Mandi
+sukkur	Sukkur
+surab	Surab
+surkhpur	Surkhpur
+swabi	Swabi
+taftan	Taftan
+talagang	Talagang
+talamba	Talamba
+talhar	Talhar
+tandlianwala	Tandlianwala
+tando adam	Tando Adam
+tando allahyar	Tando Allahyar
+tando bago	Tando Bago
+tando jam	Tando Jam
+tando mitha khan	Tando Mitha Khan
+tando muhammad khan	Tando Muhammad Khan
+tangi	Tangi
+tangwani	Tangwani
+tank	Tank
+taunsa	Taunsa
+thal	Thal
+thamewali	Thamewali
+tharu shah	Tharu Shah
+thatta	Thatta
+thul	Thul
+tibbi jay singh	Tibbi Jay Singh
+timargara	Timargara
+toba tek singh	Toba Tek Singh
+tolti	Tolti
+topi	Topi
+tordher	Tordher
+turbat	Turbat
+ubauro	Ubauro
+umarkot	Umarkot
+upper dir	Upper Dir
+usta muhammad	Usta Muhammad
+uthal	Uthal
+utmanzai	Utmanzai
+vihari	Vihari
+wah cantt	Wah Cantt
+wana	Wana
+warah	Warah
+washuk	Washuk
+wazirabad	Wazirabad
+yazman	Yazman
+yougu	Yougu
+zafarwal	Zafarwal
+zahir pir	Zahir Pir
+zaida	Zaida
+zhob	Zhob
+ziarat	Ziarat

@@ -1,0 +1,157 @@
+ashuganj city	Ashuganj City
+ayla patakata	Ayla Patakata
+azimpur	Azimpur
+badarganj	Badarganj
+bagerhat	Bagerhat
+bajitpur	Bājitpur
+bandarban	Bāndarban
+baniachang	Baniachang
+barishal	Barishal
+bera	Bera
+bhairab bazar	Bhairab Bāzār
+bhandaria	Bhāndāria
+bhanga	Bhanga
+bhatara	Bhatara
+bhatpara abhaynagar	Bhātpāra Abhaynagar
+bheramara	Bherāmāra
+bhola	Bhola
+bibir hat	Bibir Hat
+bogra	Bogra
+brahmanbaria	Brāhmanbāria
+burhanuddin	Burhānuddin
+burirchar	Burirchar
+chandpur	Chāndpur
+char bhadrasan	Char Bhadrāsan
+charamaddi	Charāmaddi
+chattogram	Chattogram
+chhagalnaiya	Chhāgalnāiya
+chhatak	Chhātak
+chilmari	Chilmāri
+comilla	Comilla
+cox’s bazar	Cox’s Bāzār
+dhaka	Dhaka
+dhanmondi	Dhanmondi
+dinajpur	Dinajpur
+dohar	Dohār
+dohazari	Dohazāri
+dukuria	Dukuria
+faridpur	Farīdpur
+feni	Feni
+gafargaon	Gafargaon
+gaibandha	Gaibandha
+gaurnadi	Gaurnadi
+gazipur	Gazipur
+gopalganj	Gopālganj
+green model town	Green Model Town
+habiganj	Habiganj
+hajiganj	Hājīganj
+hatalia	Hatalia
+hathazari	Hāthazāri
+ishwardi	Ishwardi
+jahedpur	Jahedpur
+jamalpur	Jamālpur
+jessore	Jessore
+jhingergacha	Jhingergācha
+joypur hat	Joypur Hāt
+kafrul	Kafrul
+kalia	Kālia
+kaliganj	Kālīganj
+karnaphuli	Karnaphuli
+kesabpur	Kesabpur
+khagrachhari	Khagrachhari
+khanbaniara	Khanbaniara
+khulna	Khulna
+kishorganj	Kishorganj
+kushtia	Kushtia
+laksham	Lākshām
+lakshmipur	Lakshmīpur
+lalmohan	Lālmohan
+lalmonirhat	Lalmonirhat
+madaripur	Madaripur
+magura	Magura
+mahasthangarh	Mahasthangarh
+maijdi	Maijdi
+manikchari	Manikchari
+manikganj	Mānikganj
+mathba	Mathba
+matuail	Mātuail
+maulavi bazar	Maulavi Bāzār
+mehendiganj	Mehendiganj
+mirpur model thana	Mirpur Model Thana
+mirzapur	Mirzāpur
+mohammadpur	Mohammadpur
+morrelgonj	Morrelgonj
+motijheel	Motijheel
+muktagacha	Muktāgācha
+mymensingh	Mymensingh
+nabinagar	Nabīnagar
+nachnapara	Nachnapāra
+nagar naluakot	Nagar Naluākot
+nagarpur	Nāgarpur
+nageswari	Nageswari
+nalchiti	Nālchiti
+nalua	Nalua
+narail	Narail
+narayanganj	Narayanganj
+narayanpur	Narayanpur
+narsingdi	Narsingdi
+natona	Natona
+natore	Natore
+nawab char	Nawāb Char
+nawabganj	Nawābganj
+netrakona	Netrakona
+nilphamari	Nilphamari
+nowlamary	Nowlamary
+pabna	Pābna
+palang	Pālang
+pallabi	Pallabi
+paltan	Paltan
+panchagarh	Panchagarh
+paotana hat	Paotana Hat
+par naogaon	Pār Naogaon
+parbatipur	Parbatipur
+patiya	Patiya
+patuakhali	Patuakhali
+phuljhuri	Phuljhuri
+phultala	Phultala
+pirgaaj	Pīrgaaj
+pirojpur	Pirojpur
+purbadhala	Purbadhala
+puthia	Puthia
+raipur	Rāipur
+rajshahi	Rajshahi
+ramganj	Rāmganj
+ramna maidan	Ramna Maidan
+ramnagar	Ramnagar
+rangamati	Rangamati
+rangpur	Rangpur
+raojan	Raojān
+saidpur	Saidpur
+sakhipur	Sakhipur
+samonta bazar	Samonta Bazar
+sandwip	Sandwīp
+sarankhola	Sarankhola
+sarishabari	Sarishābāri
+satkania	Sātkania
+satkhira	Sātkhira
+savar	Savar
+sayani	Sayani
+shahbazpur town	Shāhbāzpur Town
+shahzadpur	Shāhzādpur
+sherpur	Sherpur
+shibganj	Shibganj
+singair	Singair
+singarbil	Singārbīl
+sirajganj	Sirajganj
+sonargaon	Sonārgaon
+srimangal	Srimangal
+sunamganj	Sunāmganj
+sylhet	Sylhet
+taluker char doani	Taluker Char Doani
+tangail	Tangail
+teknaf	Teknāf
+thakurgaon	Thākurgaon
+tungi	Tungi
+tungipara	Tungipara
+ujalpur	Ujalpur
+uttar char fasson	Uttar Char Fasson

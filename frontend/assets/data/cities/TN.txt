@@ -1,0 +1,285 @@
+agareb	Agareb
+ailet jridani	Ailet Jridani
+ain jaloulah	Ain Jaloulah
+aine draham	Aïne Draham
+ajim	Ajim
+akouda	Akouda
+al matlin	Al Matlīn
+amiret el fhoul	Amiret El Fhoul
+amiret hajjaj	Amiret Hajjaj
+amiret touazra	Amiret Touazra
+aousja	Aousja
+ar rudayyif	Ar Rudayyif
+aryanah	Aryanah
+as sanad	As Sanad
+as sars	As Sars
+banbalah	Banbalah
+beja	Béja
+bekalta	Bekalta
+bembla et mnara	Bembla et Mnara
+ben aoun	Ben Aoun
+ben arous	Ben Arous
+ben gardane	Ben Gardane
+ben metir	Ben Metir
+beni hassane	Beni Hassane
+beni khalled	Beni Khalled
+beni kheddache	Beni Kheddache
+beni khiar	Beni Khiar
+bennane bodheur	Bennane Bodheur
+bir ali ben khalifa	Bir Ali Ben Khalifa
+bir el hafey	Bir el Hafey
+bir lahmar	Bir Lahmar
+bir m’cherga	Bir M’cherga
+bizerte	Bizerte
+borj cedria	Borj Cedria
+borj el amri	Borj el Amri
+borj mejen bel abbes	Borj Mejen Bel Abbès
+bou arada	Bou Arada
+bou arkoub	Bou Arkoub
+bou attouche	Bou Attouche
+bou chemma	Bou Chemma
+bou ficha	Bou Ficha
+bou hadjar	Bou Hadjar
+bou merdes	Bou Merdès
+bou salem	Bou Salem
+boumhel el bassatine	Boumhel El Bassatine
+carthage	Carthage
+chebba	Chebba
+chebika	Chebika
+chehimet nord	Chehimet Nord
+chenini nahal	Chenini Nahal
+cheylus	Cheylus
+chorbane	Chorbane
+dahmani	Dahmani
+dar ali ben hassene	Dar Ali Ben Hassene
+dar chabanne	Dar Chabanne
+dar el haj taieb	Dar el Haj Taïeb
+dar haj ahmed ben ameur	Dar Haj Ahmed Ben Ameur
+dar ouled khalifa	Dar Ouled Khalifa
+degache	Degache
+dehiba	Dehiba
+den den	Den Den
+djebel abiod	Djebel Abiod
+djebeniana	Djebeniana
+djebibina	Djebibina
+djemmal	Djemmal
+douane	Douane
+douar hicher	Douar Hicher
+douar tindja	Douar Tindja
+douz	Douz
+el abadlia	El Abadlia
+el ain	El Ain
+el ala	El Ala
+el alia	El Alia
+el amra	El Amra
+el aroussa	El Aroussa
+el bahira	El Bahira
+el battan	El Battan
+el borma	El Borma
+el fahs	El Fahs
+el golaa	El Golaa
+el guetar	El Guetar
+el hamma	El Hamma
+el haouaria	El Haouaria
+el jem	El Jem
+el kef	El Kef
+el ksar	El Ksar
+el ksour	El Ksour
+el maamoura	El Maamoura
+el maknassi	El Maknassi
+el masdour	El Masdour
+el mgarsa	El Mgarsa
+el mida	El Mida
+el mourouj	El Mourouj
+el-hamma-djerid	El-Hamma-Djerid
+enfidha	Enfidha
+er regueb	Er Regueb
+erriadh	Erriadh
+es somaa	Es Somaa
+ettadhamen	Ettadhamen
+ez zahra	Ez Zahra
+ezzouhour	Ezzouhour
+feriana	Feriana
+fernana	Fernana
+fouchana	Fouchana
+gabes	Gabès
+gafour	Gafour
+gafsa	Gafsa
+galaat el andeless	Galaat el Andeless
+ghardimaou	Ghardimaou
+ghomrassen	Ghomrassen
+ghraiba	Ghraiba
+goubellat	Goubellat
+gremda	Gremda
+grombalia	Grombalia
+haffouz	Haffouz
+haidra	Haïdra
+hajeb el aioun	Hajeb el Aïoun
+hamadet el kebalou	Hamadet el Kebalou
+hammam el rhezez	Hammam el Rhezez
+hammam sousse	Hammam Sousse
+hammam-lif	Hammam-Lif
+hammamet	Hammamet
+harqalah	Harqalah
+hebira	Hebira
+hencha	Hencha
+hennchir ksar rhaleb	Hennchir Ksar Rhaleb
+houmt souk	Houmt Souk
+jedeida	Jedeïda
+jedelienne	Jedelienne
+jemna	Jemna
+jendouba	Jendouba
+jerissa	Jerissa
+jilma	Jilma
+kairouan	Kairouan
+kalaa srira	Kalaa Srira
+kalaat es senam	Kalaat es Senam
+kalaat khasba	Kalaat Khasba
+kasserine	Kasserine
+kebili	Kebili
+kelaa kebira	Kelaa Kebira
+kelibia	Kélibia
+kellabine	Kellabine
+kerker	Kerker
+kesra	Kesra
+khledia	Khledia
+khunays	Khunays
+kondhar	Kondhar
+korba	Korba
+korbous	Korbous
+ksar hellal	Ksar Hellal
+ksiba	Ksiba
+ksibet el mediouni	Ksibet el Mediouni
+ksour essaf	Ksour Essaf
+la goulette	La Goulette
+la marsa	La Marsa
+la mohammedia	La Mohammedia
+la mornaghia	La Mornaghia
+la sebala du mornag	La Sebala du Mornag
+le bardo	Le Bardo
+le kram	Le Kram
+le krib	Le Krib
+lemta	Lemta
+maagoula	Maagoula
+maatmeur	Maatmeur
+mahdia	Mahdia
+mahires	Mahires
+maktar	Maktar
+manouba	Manouba
+mareth	Mareth
+mateur	Mateur
+matmata	Matmata
+medenine	Medenine
+medjez el bab	Medjez el Bab
+megrine	Mégrine
+mellouleche	Melloulèche
+mennzel bou zelfa	Mennzel Bou Zelfa
+menzel abderhaman	Menzel Abderhaman
+menzel bourguiba	Menzel Bourguiba
+menzel bouzaiane	Menzel Bouzaiane
+menzel chaker	Menzel Chaker
+menzel ennour	Menzel Ennour
+menzel fersi	Menzel Fersi
+menzel hayet	Menzel Hayet
+menzel heurr	Menzel Heurr
+menzel jemil	Menzel Jemil
+menzel kamel	Menzel Kamel
+menzel m’heri	Menzel M’heri
+menzel salem	Menzel Salem
+menzel temime	Menzel Temime
+messadine	Messadine
+metlaoui	Metlaoui
+metouia	Métouia
+mezzouna	Mezzouna
+midoun	Midoun
+mnihla	Mnihla
+moknine	Moknine
+monastir	Monastir
+moulares	Moularès
+msaken	Msaken
+m’dhilla	M’dhilla
+nabeul	Nabeul
+nasrallah	Nasrallah
+nefta	Nefta
+nibbar	Nibbar
+nouvelle matmata	Nouvelle Matmata
+ouardenine	Ouardenine
+oued lill	Oued Lill
+ouerdanine	Ouerdanine
+ousseltia	Ousseltia
+port el kantaoui	Port el Kantaoui
+rades	Radès
+rafraf	Rafrāf
+rass el djebel	Rass el Djebel
+rawad	Rawad
+rejiche	Rejiche
+remada	Remada
+rhar el melah	Rhar el Melah
+rhennouch	Rhennouch
+robaa ouled yahia	Robâa Ouled Yahia
+rohia	Rohia
+rouhia	Rouhia
+sahline	Sahline
+sakiet ed daier	Sakiet ed Daier
+sakiet ez zit	Sakiet ez Zit
+sakiet sidi youssef	Sakiet Sidi Youssef
+salakta	Salakta
+sbeitla	Sbeitla
+sbiba	Sbiba
+sbikha	Sbikha
+seiada	Seïada
+sejenane	Sejenane
+sfax	Sfax
+sidi abid	Sidi Abid
+sidi alouane	Sidi Alouane
+sidi ameur	Sidi Ameur
+sidi amor bou hajela	Sidi Amor Bou Hajela
+sidi ben nour	Sidi Ben Nour
+sidi bou ali	Sidi Bou Ali
+sidi bou rouis	Sidi Bou Rouis
+sidi bou said	Sidi Bou Said
+sidi bouzid	Sidi Bouzid
+sidi el hani	Sidi el Hani
+sidi husayn	Sīdī Ḥusayn
+sidi tabet	Sidi Tabet
+siliana	Siliana
+skanes	Skanes
+skhira	Skhira
+soliman	Soliman
+souassi	Souassi
+souk lahad	Souk Lahad
+sousse	Sousse
+sukrah	Sukrah
+tabarka	Tabarka
+tabursuq	Tabursuq
+tajerouine	Tajerouine
+takelsa	Takelsa
+tamaghzah	Tamaghzah
+tataouine	Tataouine
+tazarka	Tazarka
+teboulba	Teboulba
+teboulbou	Teboulbou
+tebourba	Tebourba
+testour	Testour
+thala	Thala
+thelepte	Thelepte
+tinja	Tinja
+touiref	Touiref
+touza	Touza
+tozeur	Tozeur
+tunis	Tunis
+wadhraf	Wadhraf
+wadi maliz	Wadi Maliz
+zaafrane	Zaafrane
+zaghouan	Zaghouan
+zahanah	Zahānah
+zaouiat djedidi	Zaouiat Djedidi
+zaouiet azmour	Zaouiet Azmour
+zaouiet kountech	Zaouiet Kountech
+zaouiet medien	Zaouiet Medien
+zaouiet sousse	Zaouiet Sousse
+zarat	Zarat
+zarzis	Zarzis
+zeramedine	Zeramedine
+zouila	Zouila
+zriba-village	Zriba-Village

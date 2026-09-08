@@ -1,0 +1,139 @@
+achada da agua funda	Achada da Água Funda
+achada eugenio lima	Achada Eugénio Lima
+achada fatima	Achada Fatima
+achada fazenda	Achada Fazenda
+achada grande frente	Achada Grande Frente
+achada grande tras	Achada Grande Trás
+achada leitao	Achada Leitão
+achada lem	Achada Lem
+achada limpo	Achada Limpo
+achada mato/covao mendes	Achada Mato/Covão Mendes
+achada monte	Achada Monte
+achada riba	Achada Riba
+achada santo antonio	Achada Santo Antonio
+achada tenda	Achada Tenda
+achadinha	Achadinha
+africa 70	África 70
+alto mira	Alto Mira
+alto santo cruz	Alto Santo Cruz
+assomada	Assomada
+atras do cemiterio	Atrás do Cemitério
+bairro craveiro lopes	Bairro Craveiro Lopes
+bairro novo i	Bairro Novo I
+bairro novo ii	Bairro Novo II
+bela vista	Bela Vista
+berlim	Berlim
+boa entrada	Boa Entrada
+bom sossego	Bom Sossego
+calabaceira	Calabaceira
+calhau	Calhau
+calheta	Calheta
+calheta de sao miguel	Calheta de São Miguel
+campinho	Campinho
+cancelo	Cancelo
+centro historico	Centro Histórico
+cha da silva	Chã da Silva
+cha de alecrim	Chã de Alecrim
+cha de monte sossego	Chã de Monte Sossego
+cha de pedras	Chã de Pedras
+cha de tanque	Cha de Tanque
+chao bom	Chão Bom
+chao de matias	Chão de Matias
+cidade velha	Cidade Velha
+city center of mindelo	City Center of Mindelo
+coqueiro castelao	Coqueiro Castelão
+cova do minhoto	Cova do Minhoto
+cova figueira	Cova Figueira
+cruz joao evora	Cruz João Évora
+cumbem	Cumbem
+cutelinho	Cutelinho
+espargos	Espargos
+fazenda	Fazenda
+fernando pau	Fernando Pau
+figueira das naus	Figueira das Naus
+fonte filipe	Fonte Filipe
+fonte frances	Fonte Francês
+fonte ines	Fonte Inês
+fonteana	Fonteana
+fundura	Fundura
+garca de cima	Garça de Cima
+gil bispo	Gil Bispo
+horta seca	Horta Seca
+hortela de baixo	Hortelã de Baixo
+hortela de cima	Hortelã de Cima
+igreja	Igreja
+imobiliaria fundiaria e habitat	Imobiliária Fundiária e Habitat
+janela	Janela
+joao teves	João Teves
+lem cachorro	Lem Cachorro
+lem ferreira	Lem Ferreira
+madeiralzinho	Madeiralzinho
+mindelo	Mindelo
+montagarro	Montagarro
+monte sossego	Monte Sossego
+nhagar	Nhagar
+nova sintra	Nova Sintra
+paiol	Paiol
+palmarejo	Palmarejo
+palmarejo grande	Palmarejo Grande
+palmeira	Palmeira
+pedra badejo	Pedra Badejo
+pedra rolada	Pedra Rolada
+pensamento	Pensamento
+picos	Picos
+picos acima	Picos Acima
+plato	Platô
+pombas	Pombas
+ponta de agua	Ponta de Água
+ponta do sol	Ponta do Sol
+ponta verde	Ponta Verde
+porto novo	Porto Novo
+praia	Praia
+principal	Principal
+queimada guincho	Queimada Guincho
+rabil	Rabil
+relva	Relva
+ribeira bote	Ribeira Bote
+ribeira brava	Ribeira Brava
+ribeira da barca	Ribeira da Barca
+ribeira da prata	Ribeira da Prata
+ribeira de craquinha	Ribeira de Craquinha
+ribeira de juliao	Ribeira de Julião
+ribeira funda	Ribeira Funda
+ribeira grande	Ribeira Grande
+ribeirao chiqueiro	Ribeirão Chiqueiro
+ribeirao manuel	Ribeirao Manuel
+ribeirinha	Ribeirinha
+rincao	Rincão
+rui vaz	Rui Vaz
+safende	Safende
+sal rei	Sal Rei
+salamansa	Salamansa
+salinas	Salinas
+salineiro	Salineiro
+santa cruz	Santa Cruz
+santa filomena	Santa Filomena
+santa maria	Santa Maria
+santa maria centro	Santa Maria Centro
+sao domingos	São Domingos
+sao filipe	São Filipe
+sao filipe praia	São Filipe Praia
+sao francisco	São Francisco
+sao martinho pequeno	São Martinho Pequeno
+sao paulo	São Paulo
+sao pedro	São Pedro
+sao pedro latada	São Pedro Latada
+simao ribeiro	Simão Ribeiro
+tarrafal	Tarrafal
+tarrafal de sao nicolau	Tarrafal de São Nicolau
+terra branca	Terra Branca
+tira chapeu	Tira Chapeu
+tira chapeu industrial	Tira Chapeu Industrial
+vale palmarejo	Vale Palmarejo
+varzea	Várzea
+veneza	Veneza
+vila do maio	Vila do Maio
+vila nova	Vila Nova
+vila nova/lombo tanque	Vila Nova/Lombo Tanque
+zona militar	Zona Militar
+zona tenda	Zona Tenda

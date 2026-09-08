@@ -1,0 +1,324 @@
+aberdeen	Aberdeen
+aberdeen centre	Aberdeen Centre
+admiralty	Admiralty
+aldrich bay	Aldrich Bay
+aldrich garden	Aldrich Garden
+ap lei chau estate	Ap Lei Chau Estate
+aqua marine	Aqua Marine
+baguio villa	Baguio Villa
+banyan garden	Banyan Garden
+bedford garden	Bedford Garden
+braemar hill	Braemar Hill
+braemar hill mansions	Braemar Hill Mansions
+broadview court	Broadview Court
+butterfly	Butterfly
+causeway bay	Causeway Bay
+celestial heights	Celestial Heights
+central	Central
+chai wan estate	Chai Wan Estate
+chak on estate	Chak On Estate
+charming garden	Charming Garden
+che ha	Che Ha
+cheerful garden	Cheerful Garden
+chek chue	Chek Chue
+cheung chau	Cheung Chau
+cheung sha wan	Cheung Sha Wan
+cheung sha wan estate	Cheung Sha Wan Estate
+chi fu fa yuen	Chi Fu Fa Yuen
+choi fai estate	Choi Fai Estate
+choi hung	Choi Hung
+choi hung estate	Choi Hung Estate
+choi wan	Choi Wan
+choi wan estate (i & ii)	Choi Wan Estate (I & II)
+chong chien court - wyler gardens	Chong Chien Court - Wyler Gardens
+chuk yuen	Chuk Yuen
+chuk yuen north estate	Chuk Yuen North Estate
+chuk yuen south estate	Chuk Yuen South Estate
+chun man court	Chun Man Court
+city garden	City Garden
+city one	City One
+cosmopolitan estate	Cosmopolitan Estate
+cullinan west	Cullinan West
+discovery bay	Discovery Bay
+discovery park	Discovery Park
+fairview park	Fairview Park
+fanling	Fanling
+fo tan	Fo Tan
+fortress garden	Fortress Garden
+fortress hill	Fortress Hill
+fortune estate	Fortune Estate
+fu cheong estate	Fu Cheong Estate
+fu keung court	Fu Keung Court
+fu shan estate	Fu Shan Estate
+fuk loi	Fuk Loi
+fullview garden	Fullview Garden
+fung tak estate	Fung Tak Estate
+fung wah estate	Fung Wah Estate
+galaxia	Galaxia
+grand promenade	Grand Promenade
+grand view garden	Grand View Garden
+grand waterfront	Grand Waterfront
+greenwood terrace	Greenwood Terrace
+ha tsuen	Ha Tsuen
+hang hau	Hang Hau
+happy valley	Happy Valley
+harbour green	Harbour Green
+harbour place	Harbour Place
+harmony garden	Harmony Garden
+healthy gardens	Healthy Gardens
+healthy village	Healthy Village
+heng fa chuen	Heng Fa Chuen
+hing man estate	Hing Man Estate
+hing tung estate	Hing Tung Estate
+hing wah estate (i & ii)	Hing Wah Estate (I & II)
+ho man tin	Ho Man Tin
+ho man tin estate	Ho Man Tin Estate
+hoi fu court	Hoi Fu Court
+hoi lai estate	Hoi Lai Estate
+hoi lok court	Hoi Lok Court
+hoi tat estate	Hoi Tat Estate
+hoi ying estate	Hoi Ying Estate
+hok yuen	Hok Yuen
+hong kong	Hong Kong
+hong kong island	Hong Kong Island
+hong lok yuen	Hong Lok Yuen
+hung hom	Hung Hom
+hung hom estate	Hung Hom Estate
+hung shui kiu	Hung Shui Kiu
+island harbourview	Island Harbourview
+island resort	Island Resort
+jardine's lookout	Jardine's Lookout
+jat min chuen	Jat Min Chuen
+jordan	Jordan
+ka lung court	Ka Lung Court
+ka wai chuen	Ka Wai Chuen
+kadoorie	Kadoorie
+kai ching estate	Kai Ching Estate
+kai tak	Kai Tak
+kai tak garden	Kai Tak Garden
+kai tsui court	Kai Tsui Court
+kam tin	Kam Tin
+kam ying	Kam Ying
+kau wa keng	Kau Wa Keng
+keng hau	Keng Hau
+kennedy town	Kennedy Town
+king shan court	King Shan Court
+kingsford terrace	Kingsford Terrace
+kornhill	Kornhill
+kornhill garden	Kornhill Garden
+kowloon	Kowloon
+kowloon bay	Kowloon Bay
+kowloon city	Kowloon City
+kowloon city centre	Kowloon City Centre
+kowloon tong	Kowloon Tong
+kowloon west end	Kowloon West End
+kwai chung	Kwai Chung
+kwong yuen	Kwong Yuen
+kwun lung lau	Kwun Lung Lau
+kwun tong	Kwun Tong
+laguna city	Laguna City
+laguna verde	Laguna Verde
+laguna verde (estate)	Laguna Verde (Estate)
+lai kok estate	Lai Kok Estate
+lai on estate	Lai On Estate
+lai tak tsuen	Lai Tak Tsuen
+lai tsui court	Lai Tsui Court
+lam tin	Lam Tin
+lau fau shan	Lau Fau Shan
+lee on	Lee On
+lei cheng uk estate	Lei Cheng Uk Estate
+lei king wan	Lei King Wan
+lei tung	Lei Tung
+lei tung estate	Lei Tung Estate
+leighton hill	Leighton Hill
+liberte	Liberte
+lohas park	LOHAS Park
+lok fu	Lok Fu
+lok fu estate	Lok Fu Estate
+lok hin terrace	Lok Hin Terrace
+lok man sun chuen	Lok Man Sun Chuen
+lower wong tai sin estate (i & ii)	Lower Wong Tai Sin Estate (I & II)
+luk yeung	Luk Yeung
+lung poon court	Lung Poon Court
+ma on shan	Ma On Shan
+ma tau kok	Ma Tau Kok
+ma tau wai	Ma Tau Wai
+ma tau wai estate	Ma Tau Wai Estate
+ma wan	Ma Wan
+manhattan hill	Manhattan Hill
+mantin heights	Mantin Heights
+mei foo	Mei Foo
+mei foo sun chuen	Mei Foo Sun Chuen
+mei king mansion	Mei King Mansion
+mei tung estate	Mei Tung Estate
+metro harbour	Metro Harbour
+metropole building	Metropole Building
+mid levels	Mid Levels
+ming wah dai ha	Ming Wah Dai Ha
+mong kok	Mong Kok
+mount davis	Mount Davis
+mount parker	Mount Parker
+mui wo kau tsuen	Mui Wo Kau Tsuen
+nai chung	Nai Chung
+nam cheong	Nam Cheong
+nam cheong estate	Nam Cheong Estate
+nam fung sun chuen	Nam Fung Sun Chuen
+nam shan estate	Nam Shan Estate
+new jade garden	New Jade Garden
+new territories	New Territories
+ngong ping	Ngong Ping
+oi man estate	Oi Man Estate
+oi tung estate	Oi Tung Estate
+olympic	Olympic
+on wo yuen	On Wo Yuen
+one kai tak	One Kai Tak
+pak shek kok	Pak Shek Kok
+pak tin estate	Pak Tin Estate
+parc oasis	Parc Oasis
+park avenue	Park Avenue
+pat heung	Pat Heung
+peng chau	Peng Chau
+ping shan	Ping Shan
+pok fu lam	Pok Fu Lam
+pok hong	Pok Hong
+pokfulam gardens	Pokfulam Gardens
+prince edward	Prince Edward
+prosperous garden	Prosperous Garden
+provident centre	Provident Centre
+pui o	Pui O
+quarry bay	Quarry Bay
+queen's terrace	Queen's Terrace
+residence bel-air	Residence Bel-air
+rhythm garden	Rhythm Garden
+royal peninsula	Royal Peninsula
+sai kung	Sai Kung
+sai wan	Sai Wan
+sai wan ho	Sai Wan Ho
+sai ying pun	Sai Ying Pun
+sam shing	Sam Shing
+san po kong	San Po Kong
+san tin	San Tin
+san tung chung hang	San Tung Chung Hang
+sau mau ping	Sau Mau Ping
+sha tau kok	Sha Tau Kok
+sha tin	Sha Tin
+sha tin pass estate	Sha Tin Pass Estate
+sha tin wai	Sha Tin Wai
+sham shui po	Sham Shui Po
+sham tseng	Sham Tseng
+shap pat heung	Shap Pat Heung
+shau kei wan	Shau Kei Wan
+shek kip mei	Shek Kip Mei
+shek kip mei estate	Shek Kip Mei Estate
+shek lei	Shek Lei
+shek o	Shek O
+shek pai wan estate	Shek Pai Wan Estate
+shek wai kok	Shek Wai Kok
+sheung shui	Sheung Shui
+shouson hill	Shouson Hill
+shuen wan	Shuen Wan
+shui chuen o	Shui Chuen O
+siu chik sha	Siu Chik Sha
+siu hei	Siu Hei
+siu lek yuen	Siu Lek Yuen
+siu sai wan estate	Siu Sai Wan Estate
+sky tower	Sky Tower
+so kwun wat	So Kwun Wat
+so kwun wat tsuen	So Kwun Wat Tsuen
+so uk	So Uk
+so uk estate	So Uk Estate
+sok kwu wan	Sok Kwu Wan
+sorrento	Sorrento
+south horizons	South Horizons
+south horizons (estate)	South Horizons (Estate)
+south wave court	South Wave Court
+sun tin wai	Sun Tin Wai
+sung wong toi	Sung Wong Toi
+tai hang	Tai Hang
+tai hang estate (east & west)	Tai Hang Estate (East & West)
+tai kok tsui	Tai Kok Tsui
+tai koo	Tai Koo
+tai mei tuk	Tai Mei Tuk
+tai mong tsai	Tai Mong Tsai
+tai o	Tai O
+tai on lau	Tai On Lau
+tai po	Tai Po
+tai shui hang	Tai Shui Hang
+tai wai	Tai Wai
+tai wo	Tai Wo
+tai wo hau	Tai Wo Hau
+tai yuen estate	Tai Yuen Estate
+taikoo shing	Taikoo Shing
+tak long estate	Tak Long Estate
+the belcher's	The Belcher's
+the central park	The Central Park
+the latitude	The Latitude
+the long beach	The Long Beach
+the merton	The Merton
+the pacifica	The Pacifica
+the peak	The Peak
+the waterfront	The Waterfront
+tin hau	Tin Hau
+tin ma court	Tin Ma Court
+tin shui wai	Tin Shui Wai
+tin wan	Tin Wan
+tin wan estate	Tin Wan Estate
+ting kau	Ting Kau
+ting kok	Ting Kok
+tiu keng leng	Tiu Keng Leng
+to kwa wan	To Kwa Wan
+tseung kwan o	Tseung Kwan O
+tsim sha tsui	Tsim Sha Tsui
+tsing yi town	Tsing Yi Town
+tsuen wan	Tsuen Wan
+tsui chuk garden	Tsui Chuk Garden
+tsui wan estate	Tsui Wan Estate
+tsz ching estate	Tsz Ching Estate
+tsz hong estate	Tsz Hong Estate
+tsz man estate	Tsz Man Estate
+tsz wan shan	Tsz Wan Shan
+tuen mun	Tuen Mun
+tuen mun san hui	Tuen Mun San Hui
+tung chun court	Tung Chun Court
+tung chung	Tung Chung
+tung hei court	Tung Hei Court
+tung tao court	Tung Tao Court
+tung tau estate	Tung Tau Estate
+tung tau tsuen	Tung Tau Tsuen
+tung wui estate	Tung Wui Estate
+tung yuk court	Tung Yuk Court
+un chau estate	Un Chau Estate
+upper wong tai sin estate	Upper Wong Tai Sin Estate
+victoria	Victoria
+victoria park	Victoria Park
+wah fu	Wah Fu
+wah kwai	Wah Kwai
+wah kwai estate	Wah Kwai Estate
+wan chai	Wan Chai
+wan tsui estate	Wan Tsui Estate
+wang tau hom	Wang Tau Hom
+wang tau hom estate	Wang Tau Hom Estate
+whampoa	Whampoa
+whampoa estate	Whampoa Estate
+whampoa garden	Whampoa Garden
+wing cheong estate	Wing Cheong Estate
+wo che	Wo Che
+wong chuk hang	Wong Chuk Hang
+wong tai sin	Wong Tai Sin
+wu kai sha	Wu Kai Sha
+wu king	Wu King
+yau ma tei	Yau Ma Tei
+yau tong	Yau Tong
+yau yat chuen	Yau Yat Chuen
+yeung uk tsuen	Yeung Uk Tsuen
+yiu tung estate	Yiu Tung Estate
+yu chui	Yu Chui
+yue fai court	Yue Fai Court
+yue kwong chuen	Yue Kwong Chuen
+yue on court	Yue On Court
+yue wan estate	Yue Wan Estate
+yuen long	Yuen Long
+yuen long kau hui	Yuen Long Kau Hui
+yuen long san hui	Yuen Long San Hui
+yuet wu	Yuet Wu
+yung shue wan	Yung Shue Wan

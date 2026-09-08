@@ -14,6 +14,18 @@ import 'post_image_sizes.dart';
 /// Providers remain the single source of truth. The card subscribes only to
 /// *its own* post revision (via `context.select`), so a like/save/comment on
 /// this post rebuilds this card without rebuilding the rest of the feed.
+///
+/// Action surface (required design):
+/// - Engagement footer row: ❤️ like | 💬 comment count | (...) More menu.
+/// - The (...) menu is the SINGLE action entry point:
+///     owner       -> Edit / Delete
+///     normal user -> Bookmark / Report
+/// - The duplicate bottom Edit/Delete buttons are removed; the menu reuses
+///   the same onEdit/onDelete callbacks.
+/// - Comment is NOT part of the More menu: both owner and normal user comment
+///   through the existing comment UI (Post Details composer).
+/// - Relationship labels are shown as compact chips. The info icon opens the
+///   full Post Label Guide explaining every label.
 class PostCard extends StatelessWidget {
   const PostCard({
     super.key,
@@ -58,7 +70,6 @@ class PostCard extends StatelessWidget {
     final postProvider = context.read<PostProvider>();
     final isCommented = postProvider.commentedPostIds.contains(post.id);
     final isLikeInFlight = postProvider.isLikeInFlight(post.id);
-    final isSaveInFlight = postProvider.isSaveInFlight(post.id);
     final myCommentPreview = postProvider.commentPreviewFor(post.id);
 
     final gallery = post.galleryImages.isNotEmpty
@@ -136,30 +147,35 @@ class PostCard extends StatelessWidget {
                         ],
                       ),
                       const SizedBox(height: 2),
-                      Text(
-                        post.location,
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                        style: AppTypography.labelSm.copyWith(
-                          color: AppColors.textSecondary,
+                      if (post.location.isNotEmpty)
+                        Row(
+                          children: [
+                            const Icon(
+                              Icons.location_on_outlined,
+                              size: 15,
+                              color: AppColors.textMuted,
+                            ),
+                            const SizedBox(width: 4),
+                            Expanded(
+                              child: Text(
+                                post.location,
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
+                                style: AppTypography.labelSm.copyWith(
+                                  color: AppColors.textSecondary,
+                                ),
+                              ),
+                            ),
+                          ],
                         ),
-                      ),
                       const SizedBox(height: 6),
-                      _buildPrimaryBadge(isCommented),
+                      _buildRelationshipBadges(context, isCommented),
                     ],
                   ),
                 ),
                 const SizedBox(width: 4),
                 _buildCardPopupMenu(),
               ],
-            ),
-
-            const SizedBox(height: AppSpacing.stackMd),
-
-            // Horizontal swipeable image gallery.
-            // 1/N indicator appears when post has multiple images.
-            PostImageGalleryView(
-              images: gallery,
             ),
 
             const SizedBox(height: AppSpacing.stackMd),
@@ -184,67 +200,165 @@ class PostCard extends StatelessWidget {
               overflow: TextOverflow.ellipsis,
             ),
 
-            ..._buildContextualStatusBox(isCommented, myCommentPreview),
+            if (gallery.isNotEmpty) ...[
+              const SizedBox(height: AppSpacing.stackMd),
+              PostImageGalleryView(
+                images: gallery,
+              ),
+            ],
+
+            // Reported by the current user → comment UI (the "You commented"
+            // preview) is hidden along with the footer actions.
+            if (!post.isReportedByCurrentUser)
+              ..._buildContextualStatusBox(isCommented, myCommentPreview),
 
             const SizedBox(height: AppSpacing.stackMd),
 
-            _buildEngagementFooter(isLikeInFlight),
-
-            const SizedBox(height: AppSpacing.stackSm),
-
-            _buildActionFooter(isCommented, isSaveInFlight),
+            // Reported by the current user → ALL interaction affordances are
+            // hidden (Like/likes, Comment count, Bookmark/Save). Only the
+            // content and Reported markers remain; nothing here is tappable.
+            if (!post.isReportedByCurrentUser)
+              _buildEngagementFooter(isLikeInFlight),
           ],
         ),
       ),
     );
   }
 
-  /// Single primary relationship badge at the top right of the card,
-  /// prioritizing Owner > Reported > Commented > Liked > Saved.
-  Widget _buildPrimaryBadge(bool isCommented) {
-    final String? label;
-    Color color;
-    IconData icon;
+  /// Builds compact relationship labels in canonical priority order.
+  /// Priority controls ordering now; it no longer hides valid relationships.
+  Widget _buildRelationshipBadges(
+    BuildContext context,
+    bool isCommented,
+  ) {
+    // After a report, interaction-state labels are interaction affordances:
+    // hide Liked / Commented / Saved. My Post and Reported remain.
+    final hideInteractionLabels = post.isReportedByCurrentUser;
+    final labels = <_RelationshipLabel>[];
+
     if (isOwner) {
-      label = 'My Post';
-      color = AppColors.success;
-      icon = Icons.person_outline;
-    } else if (post.isReportedByCurrentUser) {
-      label = 'Reported Post';
-      color = AppColors.error;
-      icon = Icons.flag_outlined;
-    } else if (isCommented) {
-      label = 'You Commented';
-      color = const Color(0xFF5C6BC0);
-      icon = Icons.chat_bubble_outline;
-    } else if (post.isLiked) {
-      label = 'Liked';
-      color = AppColors.primary;
-      icon = Icons.favorite;
-    } else if (post.isSaved) {
-      label = 'Saved';
-      color = const Color(0xFF7B61FF);
-      icon = Icons.bookmark;
-    } else {
+      labels.add(
+        const _RelationshipLabel(
+          label: 'My Post',
+          description: 'You created this post.',
+          color: AppColors.success,
+          icon: Icons.person_outline,
+        ),
+      );
+    }
+
+    if (post.isReportedByCurrentUser) {
+      labels.add(
+        const _RelationshipLabel(
+          label: 'Reported Post',
+          description: 'You reported this post.',
+          color: AppColors.error,
+          icon: Icons.flag_outlined,
+        ),
+      );
+    }
+
+    if (isCommented && !hideInteractionLabels) {
+      labels.add(
+        const _RelationshipLabel(
+          label: 'You Commented',
+          description: 'You commented on this post.',
+          color: Color(0xFF5C6BC0),
+          icon: Icons.chat_bubble_outline,
+        ),
+      );
+    }
+
+    if (post.isLiked && !hideInteractionLabels) {
+      labels.add(
+        const _RelationshipLabel(
+          label: 'Liked',
+          description: 'You liked this post.',
+          color: AppColors.primary,
+          icon: Icons.favorite,
+        ),
+      );
+    }
+
+    if (post.isSaved && !hideInteractionLabels) {
+      labels.add(
+        const _RelationshipLabel(
+          label: 'Saved',
+          description: 'You saved this post.',
+          color: Color(0xFF7B61FF),
+          icon: Icons.bookmark,
+        ),
+      );
+    }
+
+    if (labels.isEmpty) {
       return const SizedBox.shrink();
     }
+
+    final visible = labels.take(2).toList();
+    final hiddenCount = labels.length - visible.length;
+
+    return Padding(
+      padding: const EdgeInsets.only(top: 6),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          Expanded(
+            child: Wrap(
+              spacing: 6,
+              runSpacing: 6,
+              children: [
+                for (final item in visible) _buildRelationshipChip(item),
+                if (hiddenCount > 0)
+                  InkWell(
+                    onTap: () => _showAllRelationships(context, labels),
+                    borderRadius: AppRadii.roundedFull,
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 9,
+                        vertical: 4,
+                      ),
+                      decoration: BoxDecoration(
+                        color: AppColors.surfaceCard,
+                        borderRadius: AppRadii.roundedFull,
+                        border: Border.all(
+                          color: AppColors.outlineVariant,
+                        ),
+                      ),
+                      child: Text(
+                        '+$hiddenCount',
+                        style: AppTypography.labelSm.copyWith(
+                          color: AppColors.textPrimary,
+                          fontWeight: FontWeight.w700,
+                        ),
+                      ),
+                    ),
+                  ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildRelationshipChip(_RelationshipLabel item) {
     return Container(
-      margin: const EdgeInsets.only(right: 4),
       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
       decoration: BoxDecoration(
-        color: color.withValues(alpha: 0.10),
+        color: item.color.withValues(alpha: 0.10),
         borderRadius: AppRadii.roundedFull,
-        border: Border.all(color: color.withValues(alpha: 0.35), width: 1),
+        border: Border.all(color: item.color.withValues(alpha: 0.35), width: 1),
       ),
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Icon(icon, size: 12, color: color),
+          Icon(item.icon, size: 12, color: item.color),
           const SizedBox(width: 4),
           Text(
-            label,
+            item.label,
             style: AppTypography.labelSm.copyWith(
-              color: color,
+              color: item.color,
               fontWeight: FontWeight.w700,
             ),
           ),
@@ -253,11 +367,125 @@ class PostCard extends StatelessWidget {
     );
   }
 
+  void _showAllRelationships(
+    BuildContext context,
+    List<_RelationshipLabel> labels,
+  ) {
+    _showPostLabelGuide(context, labels);
+  }
+
+  void _showPostLabelGuide(
+    BuildContext context,
+    List<_RelationshipLabel> labels,
+  ) {
+    showModalBottomSheet<void>(
+      context: context,
+      showDragHandle: true,
+      backgroundColor: AppColors.background,
+      isScrollControlled: true,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(
+          top: Radius.circular(24),
+        ),
+      ),
+      builder: (sheetContext) {
+        return SafeArea(
+          child: Padding(
+            padding: const EdgeInsets.fromLTRB(
+              20,
+              4,
+              20,
+              24,
+            ),
+            child: SingleChildScrollView(
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    children: [
+                      Expanded(
+                        child: Text(
+                          'Post Label Guide',
+                          style: AppTypography.headlineMd.copyWith(
+                            color: AppColors.textPrimary,
+                            fontWeight: FontWeight.w700,
+                          ),
+                        ),
+                      ),
+                      IconButton(
+                        onPressed: () =>
+                            Navigator.of(sheetContext).pop(),
+                        icon: const Icon(Icons.close),
+                        tooltip: 'Close',
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: AppSpacing.stackSm),
+                  for (final item in labels)
+                    Padding(
+                      padding: const EdgeInsets.symmetric(
+                        vertical: 8,
+                      ),
+                      child: Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          SizedBox(
+                            width: 36,
+                            child: Icon(
+                              item.icon,
+                              size: 24,
+                              color: item.color,
+                            ),
+                          ),
+                          const SizedBox(width: 12),
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment:
+                                  CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  item.label,
+                                  style: AppTypography.labelLg.copyWith(
+                                    color: AppColors.textPrimary,
+                                    fontWeight: FontWeight.w700,
+                                  ),
+                                ),
+                                const SizedBox(height: 2),
+                                Text(
+                                  item.description,
+                                  style: AppTypography.bodyMd.copyWith(
+                                    color: AppColors.textSecondary,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  const SizedBox(height: AppSpacing.stackSm),
+                  Text(
+                    'A post can have more than one label. Several labels can appear on the same post.',
+                    style: AppTypography.bodyMd.copyWith(
+                      color: AppColors.textSecondary,
+                      height: 1.35,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        );
+      },
+    );
+  }
+
   /// Contextual status box placed below the description for relevant filtered
   /// posts. Shows a light-red "Status: Under Review" for reported posts and a
-  /// light-orange "You commented:" box for commented posts.
+  /// light-orange "You commented:" box for commented posts. Owners can comment
+  /// on their own posts, so they get the commented box like everyone else.
   List<Widget> _buildContextualStatusBox(bool isCommented, String? myCommentPreview) {
-    if (isOwner) return const [];
     if (post.isReportedByCurrentUser) {
       return [
         const SizedBox(height: AppSpacing.stackMd),
@@ -307,16 +535,51 @@ class PostCard extends StatelessWidget {
               // const Icon(Icons.chat_bubble_outline, size: 16, color: Color(0xFFB26A00)),
               const SizedBox(width: 8),
               Expanded(
-                child: Text(
-                  preview != null
-                      ? 'You commented: "$preview"'
-                      : 'You commented on this post.',
-                  maxLines: 2,
-                  overflow: TextOverflow.ellipsis,
-                  style: AppTypography.labelSm.copyWith(
-                    color: const Color(0xFF8A5200),
-                    fontWeight: FontWeight.w600,
-                  ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    // This preview represents the current user's own
+                    // comment. If the current user also owns the post,
+                    // the comment is an OWNER comment.
+                    if (isOwner)
+                      Container(
+                        margin: const EdgeInsets.only(bottom: 4),
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 7,
+                          vertical: 2,
+                        ),
+                        decoration: BoxDecoration(
+                          color: AppColors.success.withValues(alpha: 0.10),
+                          borderRadius: AppRadii.roundedFull,
+                          border: Border.all(
+                            color: AppColors.success.withValues(alpha: 0.30),
+                          ),
+                        ),
+                        child: Text(
+                          'OWNER',
+                          style: AppTypography.labelSm.copyWith(
+                            color: AppColors.success,
+                            fontWeight: FontWeight.w800,
+                            fontSize: 10,
+                          ),
+                        ),
+                      ),
+                    Text(
+                      preview != null
+                          ? isOwner
+                              ? 'Owner commented: "$preview"'
+                              : 'You commented: "$preview"'
+                          : isOwner
+                              ? 'Owner commented on this post.'
+                              : 'You commented on this post.',
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
+                      style: AppTypography.labelSm.copyWith(
+                        color: const Color(0xFF8A5200),
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                  ],
                 ),
               ),
             ],
@@ -327,18 +590,20 @@ class PostCard extends StatelessWidget {
     return const [];
   }
 
-  /// Engagement footer with like toggle, comments count, and share.
+  /// Engagement footer with like toggle, comments count, and the single
+  /// More (...) action entry point.
+  /// Engagement footer: Like | Comment count | Save/Bookmark.
+  /// The More (...) menu is at the top-right of the card.
   Widget _buildEngagementFooter(bool isLikeInFlight) {
     return Row(
       children: [
-        // LIKE
         Expanded(
           child: InkWell(
             onTap: post.isReportedByCurrentUser
                 ? null
                 : isLikeInFlight
-                ? null
-                : onReaction,
+                    ? null
+                    : onReaction,
             borderRadius: BorderRadius.circular(8),
             child: Padding(
               padding: const EdgeInsets.symmetric(vertical: 8),
@@ -347,23 +612,19 @@ class PostCard extends StatelessWidget {
                 children: [
                   isLikeInFlight
                       ? const SizedBox(
-                    width: 18,
-                    height: 18,
-                    child: CircularProgressIndicator(
-                      strokeWidth: 2,
-                    ),
-                  )
+                          width: 18,
+                          height: 18,
+                          child: CircularProgressIndicator(strokeWidth: 2),
+                        )
                       : Icon(
-                    post.isLiked
-                        ? Icons.favorite
-                        : Icons.favorite_border,
-                    size: 18,
-                    color: post.isReportedByCurrentUser
-                        ? AppColors.textMuted
-                        : post.isLiked
-                        ? AppColors.primary
-                        : AppColors.textMuted,
-                  ),
+                          post.isLiked
+                              ? Icons.favorite
+                              : Icons.favorite_border,
+                          size: 20,
+                          color: post.isLiked
+                              ? AppColors.primary
+                              : AppColors.textMuted,
+                        ),
                   const SizedBox(width: 6),
                   Text(
                     '${post.likes}',
@@ -378,141 +639,61 @@ class PostCard extends StatelessWidget {
           ),
         ),
 
-        // COMMENTS
         Expanded(
-          child: Padding(
-            padding: const EdgeInsets.symmetric(vertical: 8),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                const Icon(
-                  Icons.chat_bubble_outline,
-                  size: 18,
-                  color: AppColors.textMuted,
-                ),
-                const SizedBox(width: 6),
-                Text(
-                  '${post.commentsCount}',
-                  style: AppTypography.labelSm.copyWith(
-                    color: AppColors.textPrimary,
-                    fontWeight: FontWeight.w600,
+          child: InkWell(
+            onTap: onTap,
+            borderRadius: BorderRadius.circular(8),
+            child: Padding(
+              padding: const EdgeInsets.symmetric(vertical: 8),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  const Icon(
+                    Icons.chat_bubble_outline,
+                    size: 20,
+                    color: AppColors.textMuted,
                   ),
-                ),
-              ],
+                  const SizedBox(width: 6),
+                  Text(
+                    '${post.commentsCount}',
+                    style: AppTypography.labelSm.copyWith(
+                      color: AppColors.textPrimary,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                ],
+              ),
             ),
           ),
         ),
 
-        // SHARE
-        Expanded(
-          child: Padding(
-            padding: const EdgeInsets.symmetric(vertical: 8),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                const Icon(
-                  Icons.share_outlined,
-                  size: 18,
-                  color: AppColors.textMuted,
-                ),
-                const SizedBox(width: 6),
-                Text(
-                  'Share',
-                  style: AppTypography.labelSm.copyWith(
-                    color: AppColors.textSecondary,
-                    fontWeight: FontWeight.w600,
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ),
-      ],
-    );
-  }
+        const Spacer(),
 
-  /// Context-aware action footer: Edit/Delete for owners, View Post for
-  /// interacted posts, and Bookmark for standard discover posts.
-  Widget _buildActionFooter(bool isCommented, bool isSaveInFlight) {
-    final isInteracted = !isOwner &&
-        (post.isReportedByCurrentUser || isCommented);
-    if (isOwner) {
-      return Row(
-        children: [
-          Expanded(
-            child: OutlinedButton.icon(
-              onPressed: onEdit,
-              icon: const Icon(Icons.edit_outlined, size: 18),
-              label: const Text('Edit'),
-              style: OutlinedButton.styleFrom(
-                foregroundColor: AppColors.primary,
-                side: BorderSide(color: AppColors.primary.withValues(alpha: 0.4)),
-                padding: const EdgeInsets.symmetric(vertical: 10),
+        // SAVE / BOOKMARK — pinned to the far right.
+        if (!isOwner)
+          InkWell(
+            onTap: post.isReportedByCurrentUser ? null : onSave,
+            borderRadius: BorderRadius.circular(8),
+            child: Padding(
+              padding: const EdgeInsets.symmetric(
+                vertical: 8,
+                horizontal: 4,
+              ),
+              child: Icon(
+                post.isSaved
+                    ? Icons.bookmark
+                    : Icons.bookmark_border,
+                size: 22,
+                color: post.isSaved
+                    ? const Color(0xFF7B61FF)
+                    : AppColors.textMuted,
               ),
             ),
           ),
-          const SizedBox(width: AppSpacing.stackSm),
-          Expanded(
-            child: OutlinedButton.icon(
-              onPressed: onDelete,
-              icon: const Icon(Icons.delete_outline, size: 18),
-              label: const Text('Delete'),
-              style: OutlinedButton.styleFrom(
-                foregroundColor: AppColors.error,
-                side: BorderSide(color: AppColors.error.withValues(alpha: 0.4)),
-                padding: const EdgeInsets.symmetric(vertical: 10),
-              ),
-            ),
-          ),
-        ],
-      );
-    }
-    if (isInteracted) {
-      return SizedBox(
-        width: double.infinity,
-        child: OutlinedButton.icon(
-          onPressed: onTap,
-          icon: const Icon(Icons.remove_red_eye_outlined, size: 18),
-          label: const Text('View Post'),
-          style: OutlinedButton.styleFrom(
-            foregroundColor: AppColors.textPrimary,
-            side: BorderSide(color: AppColors.outlineVariant),
-            padding: const EdgeInsets.symmetric(vertical: 10),
-          ),
-        ),
-      );
-    }
-    // Standard discover post — Bookmark (save/unsave)
-    return SizedBox(
-      width: double.infinity,
-      child: OutlinedButton.icon(
-        onPressed: isSaveInFlight ? null : onSave,
-        icon: isSaveInFlight
-            ? const SizedBox(
-                width: 18,
-                height: 18,
-                child: CircularProgressIndicator(strokeWidth: 2),
-              )
-            : Icon(
-                post.isSaved ? Icons.bookmark : Icons.bookmark_border,
-                size: 18,
-              ),
-        label: Text(post.isSaved ? 'Saved' : 'Bookmark'),
-        style: OutlinedButton.styleFrom(
-          foregroundColor: post.isSaved
-              ? const Color(0xFF7B61FF)
-              : AppColors.primary,
-          side: BorderSide(
-            color: (post.isSaved
-                ? const Color(0xFF7B61FF)
-                : AppColors.primary)
-                .withValues(alpha: 0.4),
-          ),
-          padding: const EdgeInsets.symmetric(vertical: 10),
-        ),
-      ),
-    );
-  }
+              ],
+            );
+          }
+
 
   Widget _buildCardPopupMenu() {
     return PopupMenuButton<String>(
@@ -556,6 +737,8 @@ class PostCard extends StatelessWidget {
             ),
           ),
         ] else if (post.isReportedByCurrentUser) ...[
+          // Reported by the current user: the More menu offers ONLY the
+          // disabled Reported marker — no Save/Unsave, no second Report.
           const PopupMenuItem(
             enabled: false,
             child: Row(
@@ -595,4 +778,18 @@ class PostCard extends StatelessWidget {
       ],
     );
   }
+}
+
+class _RelationshipLabel {
+  const _RelationshipLabel({
+    required this.label,
+    required this.description,
+    required this.color,
+    required this.icon,
+  });
+
+  final String label;
+  final String description;
+  final Color color;
+  final IconData icon;
 }

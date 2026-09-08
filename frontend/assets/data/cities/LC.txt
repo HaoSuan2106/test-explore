@@ -1,0 +1,37 @@
+anse ger	Anse Ger
+anse la raye	Anse La Raye
+au leon	Au Leon
+augier	Augier
+bagatelle	Bagatelle
+balata	Balata
+beausejour	Beauséjour
+bexon	Bexon
+bisee	Bisee
+bocage	Bocage
+cabiche	Cabiche
+canaries	Canaries
+cantonement	Cantonement
+castries	Castries
+choiseul	Choiseul
+ciceron	Ciceron
+corinthe	Corinthe
+dennery	Dennery
+entrepot	Entrepôt
+forestiere	Forestière
+grande riviere	Grande Rivière
+gros islet	Gros Islet
+la clery	La Clery
+la pointe	La Pointe
+la resource	La Resource
+laborie	Laborie
+l’abbayee	L’Abbayée
+micoud	Micoud
+mon repos	Mon Repos
+monchy	Monchy
+morne doudon	Morne Doudon
+pavee	Pavée
+pierrot	Pierrot
+praslin	Praslin
+soufriere	Soufrière
+ti rocher	Ti Rocher
+vieux fort	Vieux Fort

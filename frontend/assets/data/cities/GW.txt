@@ -1,0 +1,48 @@
+ajuda	Ajuda
+bafata	Bafatá
+bairro militar	Bairro Militar
+bambadinca	Bambadinca
+belem	Belem
+bissau	Bissau
+bissora	Bissorã
+bolama	Bolama
+buba	Buba
+bubaque	Bubaque
+bula	Bula
+cacheu	Cacheu
+cacine	Cacine
+caio	Caió
+canchungo	Canchungo
+catio	Catió
+cim	CIM
+contuboel	Contuboel
+contumo	Contumo
+empada	Empada
+farim	Farim
+fulacunda	Fulacunda
+gabu	Gabú
+ingore	Ingoré
+jabicunda	Jabicunda
+luanda	Luanda
+madina do boe	Madina do Boé
+mansaba	Mansabá
+mansoa	Mansôa
+missira	Missira
+nhacra	Nhacra
+pefine	Pefiné
+pirada	Pirada
+pitche	Pitche
+plaque	Plaque
+prabis	Prábis
+quebo	Quebo
+quelele	Quelele
+quinhamel	Quinhámel
+reino de antula	Reino de Antula
+reino de bandim	Reino de Bandim
+safim	Safim
+santa-luzia	Santa-Luzia
+sao domingos	São Domingos
+sintra-nema	Sintra-Nema
+sonaco	Sonaco
+tite	Tite
+xitole	Xitole

@@ -1,0 +1,301 @@
+aheloy	Aheloy
+ahtopol	Ahtopol
+aksakovo	Aksakovo
+alfatar	Alfatar
+anton	Anton
+antonovo	Antonovo
+apriltsi	Apriltsi
+ardino	Ardino
+asenovgrad	Asenovgrad
+asparuhovo	Asparuhovo
+aytos	Aytos
+balchik	Balchik
+balgarevo	Balgarevo
+banite	Banite
+bansko	Bansko
+bata	Bata
+batak	Batak
+batanovtsi	Batanovtsi
+belene	Belene
+belitsa	Belitsa
+belogradchik	Belogradchik
+beloslav	Beloslav
+belovo	Belovo
+berkovitsa	Berkovitsa
+blagoevgrad	Blagoevgrad
+boboshevo	Boboshevo
+bobov dol	Bobov Dol
+bolyarovo	Bolyarovo
+borino	Borino
+borovan	Borovan
+borovo	Borovo
+botevgrad	Botevgrad
+bov	Bov
+boychinovtsi	Boychinovtsi
+boynitsa	Boynitsa
+bozhurishte	Bozhurishte
+bratsigovo	Bratsigovo
+bregovo	Bregovo
+breznik	Breznik
+brezovo	Brezovo
+brusartsi	Brusartsi
+buhovo	Buhovo
+burgas	Burgas
+byala	Byala
+byala cherkva	Byala Cherkva
+byala slatina	Byala Slatina
+chavdar	Chavdar
+chelopech	Chelopech
+chelopechene	Chelopechene
+chepelare	Chepelare
+chepintsi	Chepintsi
+chernomorets	Chernomorets
+cherven bryag	Cherven Bryag
+chiprovtsi	Chiprovtsi
+chirpan	Chirpan
+chuprene	Chuprene
+dalgopol	Dalgopol
+debelets	Debelets
+devin	Devin
+devnya	Devnya
+dimitrovgrad	Dimitrovgrad
+dimovo	Dimovo
+dobrich	Dobrich
+dolna banya	Dolna Banya
+dolna mitropolia	Dolna Mitropolia
+dolni chiflik	Dolni Chiflik
+dolni dabnik	Dolni Dabnik
+dospat	Dospat
+dragoman	Dragoman
+dryanovo	Dryanovo
+dulovo	Dulovo
+dunavtsi	Dunavtsi
+dupnitsa	Dupnitsa
+dve mogili	Dve Mogili
+dzhebel	Dzhebel
+elena	Elena
+elhovo	Elhovo
+elin pelin	Elin Pelin
+elkhovo	Elkhovo
+enina	Enina
+etropole	Etropole
+gabrovo	Gabrovo
+gara hitrino	Gara Hitrino
+garmen	Garmen
+general toshevo	General Toshevo
+glavinitsa	Glavinitsa
+godech	Godech
+gorichevo	Gorichevo
+gorna malina	Gorna Malina
+gorna oryahovitsa	Gorna Oryahovitsa
+gotse delchev	Gotse Delchev
+gramada	Gramada
+gulubovo	Gŭlŭbovo
+gulyantsi	Gulyantsi
+gurkovo	Gurkovo
+gyovren	Gyovren
+hadzhidimitrovo	Hadzhidimitrovo
+hadzhidimovo	Hadzhidimovo
+harmanli	Harmanli
+haskovo	Haskovo
+hayredin	Hayredin
+hisarya	Hisarya
+ihtiman	Ihtiman
+iskar	Iskar
+isperih	Isperih
+ivanovo	Ivanovo
+ivaylovgrad	Ivaylovgrad
+kalofer	Kalofer
+kaloyanovo	Kaloyanovo
+kameno	Kameno
+kaolinovo	Kaolinovo
+kardzhali	Kardzhali
+karlovo	Karlovo
+karnobat	Karnobat
+kaspichan	Kaspichan
+kavarna	Kavarna
+kaynardzha	Kaynardzha
+kazanlak	Kazanlak
+kermen	Kermen
+kilifarevo	Kilifarevo
+kirkovo	Kirkovo
+kiten	Kiten
+klisura	Klisura
+knezha	Knezha
+kocherinovo	Kocherinovo
+kolarovo	Kolarovo
+komuniga	Komuniga
+koprinka	Koprinka
+koprivshtitsa	Koprivshtitsa
+kostinbrod	Kostinbrod
+kotel	Kotel
+koynare	Koynare
+kozloduy	Kozloduy
+kran	Kran
+kremikovtsi	Kremikovtsi
+kresna	Kresna
+krichim	Krichim
+krivodol	Krivodol
+krumovgrad	Krumovgrad
+krushari	Krushari
+kubrat	Kubrat
+kula	Kula
+kyustendil	Kyustendil
+lakatnik	Lakatnik
+laki	Laki
+lesichovo	Lesichovo
+letnitsa	Letnitsa
+levski	Levski
+lom	Lom
+lovech	Lovech
+lozen	Lozen
+loznitsa	Loznitsa
+lukovit	Lukovit
+lyaskovets	Lyaskovets
+lyubimets	Lyubimets
+madan	Madan
+madzharovo	Madzharovo
+maglizh	Maglizh
+makresh	Makresh
+malko tarnovo	Malko Tarnovo
+medkovets	Medkovets
+medovene	Medovene
+mezdra	Mezdra
+mineralni bani	Mineralni Bani
+mirkovo	Mirkovo
+mizia	Mizia
+montana	Montana
+nedelino	Nedelino
+negovan	Negovan
+nesebar	Nesebar
+nevestino	Nevestino
+nikolaevo	Nikolaevo
+nikopol	Nikopol
+nova zagora	Nova Zagora
+novi pazar	Novi Pazar
+novo selo	Novo Selo
+obzor	Obzor
+omurtag	Omurtag
+opaka	Opaka
+oryahovo	Oryahovo
+panagyurishte	Panagyurishte
+parvomay	Parvomay
+parvomaytsi	Parvomaytsi
+pavel banya	Pavel Banya
+pavlikeni	Pavlikeni
+pazardzhik	Pazardzhik
+pernik	Pernik
+perushtitsa	Perushtitsa
+peshtera	Peshtera
+petrich	Petrich
+pirdop	Pirdop
+pleven	Pleven
+pliska	Pliska
+plovdiv	Plovdiv
+polenitsa	Polenitsa
+polski trambesh	Polski Trambesh
+pomorie	Pomorie
+popovo	Popovo
+pordim	Pordim
+pravets	Pravets
+primorsko	Primorsko
+provadia	Provadia
+radnevo	Radnevo
+radomir	Radomir
+rakitovo	Rakitovo
+rakovski	Rakovski
+ravda	Ravda
+razgrad	Razgrad
+razlog	Razlog
+rila	Rila
+roman	Roman
+rudozem	Rudozem
+ruen	Ruen
+rupite	Rupite
+ruse	Ruse
+ruzhintsi	Ruzhintsi
+sadovo	Sadovo
+saedinenie	Saedinenie
+samokov	Samokov
+samuil	Samuil
+sandanski	Sandanski
+sapareva banya	Sapareva Banya
+sarafovo	Sarafovo
+sarnitsa	Sarnitsa
+satovcha	Satovcha
+senovo	Senovo
+septemvri	Septemvri
+seslavtsi	Seslavtsi
+sevlievo	Sevlievo
+shabla	Shabla
+sheynovo	Sheynovo
+shipka	Shipka
+shumen	Shumen
+silistra	Silistra
+simeonovgrad	Simeonovgrad
+simitli	Simitli
+sitovo	Sitovo
+slavyanovo	Slavyanovo
+sliven	Sliven
+slivnitsa	Slivnitsa
+slivo pole	Slivo Pole
+smolyan	Smolyan
+smyadovo	Smyadovo
+sofia	Sofia
+sozopol	Sozopol
+spasovo	Spasovo
+sredets	Sredets
+stamboliyski	Stamboliyski
+stara kresna	Stara Kresna
+stara zagora	Stara Zagora
+straldzha	Straldzha
+strazhitsa	Strazhitsa
+strelcha	Strelcha
+strumyani	Strumyani
+suhindol	Suhindol
+sungurlare	Sungurlare
+suvorovo	Suvorovo
+sveti vlas	Sveti Vlas
+svetovrachane	Svetovrachane
+svilengrad	Svilengrad
+svishtov	Svishtov
+svoge	Svoge
+targovishte	Targovishte
+tervel	Tervel
+teteven	Teteven
+tochilari	Tochilari
+topolovgrad	Topolovgrad
+topolovo	Topolovo
+tran	Tran
+troyan	Troyan
+tryavna	Tryavna
+tsar kaloyan	Tsar Kaloyan
+tsarevo	Tsarevo
+tsenovo	Tsenovo
+tutrakan	Tutrakan
+tvarditsa	Tvarditsa
+ugarchin	Ugarchin
+valchedram	Valchedram
+valchidol	Valchidol
+varbitsa	Varbitsa
+varna	Varna
+varshets	Varshets
+veliki preslav	Veliki Preslav
+veliko turnovo	Veliko Tŭrnovo
+velingrad	Velingrad
+venets	Venets
+vetovo	Vetovo
+vetrino	Vetrino
+vidin	Vidin
+vratsa	Vratsa
+yablanitsa	Yablanitsa
+yakimovo	Yakimovo
+yakoruda	Yakoruda
+yambol	Yambol
+zavet	Zavet
+zelenikovo	Zelenikovo
+zemen	Zemen
+zlataritsa	Zlataritsa
+zlatitsa	Zlatitsa
+zlatni pyasatsi	Zlatni Pyasatsi
+zlatograd	Zlatograd

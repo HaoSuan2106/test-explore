@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:dio/dio.dart';
+import 'package:flutter/foundation.dart' show visibleForTesting;
 import '../secure_storage/secure_storage_service.dart';
 import '../../models/auth_profile/auth_model.dart';
 import '../../models/auth_profile/profile_model.dart';
@@ -12,6 +13,17 @@ import '../../models/post_review/post_model.dart';
 import '../../models/hidden_place/recommended_place_model.dart';
 import 'package:explore_my/models/foot_tracker/route_model.dart';
 import 'package:explore_my/models/foot_tracker/visit_log_model.dart';
+import '../../utilities/error_message.dart';
+
+/// Marks a request that must fail silently rather than raise the shared
+/// "Connection Error" panel — the best-effort calls whose failure the user is
+/// deliberately not told about, and the startup session restore, which runs
+/// before there is any UI to show a dialog over.
+const String kSkipConnectionPrompt = 'skipConnectionPrompt';
+
+/// [Options] for such a request.
+Options get _silentOnConnectionError =>
+    Options(extra: const {kSkipConnectionPrompt: true});
 
 class HttpClient {
   HttpClient({required SecureStorageService secureStorage})
@@ -35,6 +47,16 @@ class HttpClient {
           handler.next(options);
         },
         onError: (error, handler) async {
+          // The backend was unreachable. Ask the app to show the shared
+          // "Connection Error" panel and, if the user retries, re-issue the
+          // request so the caller gets its result instead of an exception.
+          if (isConnectionError(error) &&
+              error.requestOptions.extra[kSkipConnectionPrompt] != true) {
+            final response = await _retryUntilResolvedOrDeclined(error);
+            if (response != null) return handler.resolve(response);
+            return handler.next(error);
+          }
+
           final path = error.requestOptions.path;
           final hasRetriedAuthentication =
               error.requestOptions.extra['authRetryAttempted'] == true;
@@ -94,8 +116,7 @@ class HttpClient {
   //   flutter run --dart-define=API_BASE_URL=http://192.168.1.23:5226
   static const baseUrl = String.fromEnvironment(
       'API_BASE_URL',
-      // defaultValue: 'http://10.0.2.2:5226'
-    defaultValue: 'http://10.0.2.2:5226'
+      defaultValue: 'http://10.0.2.2:5226'
   );
 
   final SecureStorageService _secureStorage;
@@ -106,6 +127,66 @@ class HttpClient {
   /// revoked, or the account was suspended. The app wires this up to sign the
   /// user out locally and send them back to the Login page (FR102-12).
   void Function()? onSessionExpired;
+
+  /// Called when a request could not reach the backend. The app shows the
+  /// shared "Connection Error" panel and resolves to true if the user chose
+  /// Retry, false if they dismissed it.
+  ///
+  /// While this is unset (or returns false), a connection failure surfaces to
+  /// the caller as the DioException it always was, so every screen's existing
+  /// error handling still works.
+  Future<bool> Function()? onConnectionError;
+
+  Future<bool>? _connectionPrompt;
+
+  /// Swaps the transport so tests can drive failures and retries without a
+  /// real server. Not for production use.
+  @visibleForTesting
+  set httpClientAdapter(HttpClientAdapter adapter) =>
+      _dio.httpClientAdapter = adapter;
+
+  /// Re-issues [error]'s request for as long as the user keeps choosing Retry.
+  /// Returns the successful response, or null once they decline — or once a
+  /// retry fails for a reason that is no longer a connection problem, which
+  /// belongs to the caller's own error handling.
+  Future<Response<dynamic>?> _retryUntilResolvedOrDeclined(
+    DioException error,
+  ) async {
+    var pending = error;
+    while (true) {
+      // Single-flight: several screens can have requests in the air when the
+      // network drops, and they must share one panel rather than stack a
+      // dialog per failed request.
+      final retry = await (_connectionPrompt ??= _askToRetry());
+      if (!retry) return null;
+
+      try {
+        return await _dio.fetch(_replayable(pending.requestOptions));
+      } on DioException catch (e) {
+        if (!isConnectionError(e)) return null;
+        pending = e;
+      }
+    }
+  }
+
+  Future<bool> _askToRetry() async {
+    final ask = onConnectionError;
+    if (ask == null) return false;
+    try {
+      return await ask();
+    } finally {
+      _connectionPrompt = null;
+    }
+  }
+
+  /// A copy of [options] safe to send again. A FormData body (photo upload) is
+  /// a one-shot stream, so replaying the original instance would send an empty
+  /// or already-finalized body.
+  RequestOptions _replayable(RequestOptions options) {
+    final data = options.data;
+    if (data is FormData) options.data = data.clone();
+    return options;
+  }
 
   Future<String> _refreshAccessToken() {
     // Single-flight guard: refresh tokens rotate on every use, so if
@@ -134,9 +215,15 @@ class HttpClient {
       throw DioException(requestOptions: RequestOptions(path: '/api/auth/refresh'));
     }
 
-    final response = await _dio.post('/api/auth/refresh', data: {
-      'refreshToken': refreshToken,
-    });
+    final response = await _dio.post(
+      '/api/auth/refresh',
+      data: {'refreshToken': refreshToken},
+      // Silent: this runs at startup, before any Navigator exists to host a
+      // dialog, and again behind a 401 retry the user never sees. A failure
+      // here just means "no session" — the app shows Login, which is the
+      // right screen whether the token is bad or the network is down.
+      options: _silentOnConnectionError,
+    );
 
     final loginResponse = LoginResponse.fromJson(response.data as Map<String, dynamic>);
     await _secureStorage.saveTokens(
@@ -166,7 +253,14 @@ class HttpClient {
   }
 
   Future<void> logout(String refreshToken) async {
-    await _dio.post('/api/auth/logout', data: {'refreshToken': refreshToken});
+    await _dio.post(
+      '/api/auth/logout',
+      data: {'refreshToken': refreshToken},
+      // Silent: AuthProvider.logout() signs the user out locally whatever the
+      // server says, so blocking the sign-out on a retry prompt would strand
+      // them on a screen they asked to leave.
+      options: _silentOnConnectionError,
+    );
   }
 
   /// Signed-out password reset (FR102-13): asks for a code to be emailed to
@@ -229,7 +323,12 @@ class HttpClient {
   /// Abandons an in-progress email change so the issued code stops working
   /// (UC103 A3-4).
   Future<void> cancelEmailChange() async {
-    await _dio.post('/api/profile/email/cancel-change');
+    // Silent: this fires as the user leaves Manage Profile, and the codes
+    // expire on their own — a failure must not hold up their navigation.
+    await _dio.post(
+      '/api/profile/email/cancel-change',
+      options: _silentOnConnectionError,
+    );
   }
 
   Future<void> requestPasswordResetCode() async {
@@ -790,13 +889,6 @@ class HttpClient {
     return SubmitRecommendedPlaceResponse.fromJson(response.data as Map<String, dynamic>);
   }
 
-  /// Supported PLACE report reasons (NOT post-report reasons).
-  Future<List<String>> getRecommendedPlaceReportReasons() async {
-    final response = await _dio.get('/api/recommended-places/report-reasons');
-    final data = response.data as Map<String, dynamic>? ?? const {};
-    return (data['reasons'] as List?)?.cast<String>() ?? const [];
-  }
-
   Future<ToggleVerificationResponse> toggleVerification(
       String submissionId, {required bool verify}) async {
     final response = await _dio.post(
@@ -809,7 +901,7 @@ class HttpClient {
   /// Records ONE user's PLACE report. Stored server-side in
   /// `hidden_place_suppression` as one row per (user, place). Place Report is
   /// NOT a toggle and NOT an anonymous aggregate: the same user cannot create
-  /// a second active report for the same place (backend rejects with 400).
+  /// a second active report for the same place (backend rejects with 409 Conflict).
   Future<ReportPlaceResponse> reportPlace(String submissionId, String reason) async {
     final response = await _dio.post(
       '/api/recommended-places/$submissionId/reports',

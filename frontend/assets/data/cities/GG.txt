@@ -1,0 +1,11 @@
+castel	Castel
+forest parish	Forest Parish
+saint andrew	Saint Andrew
+saint peter port	Saint Peter Port
+saint pierre du bois parish	Saint Pierre du Bois Parish
+saint sampson	Saint Sampson
+saint saviour	Saint Saviour
+st anne	St Anne
+st martin	St Martin
+torteval	Torteval
+vale parish	Vale Parish

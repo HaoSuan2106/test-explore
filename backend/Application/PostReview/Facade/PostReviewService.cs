@@ -81,8 +81,8 @@ public class PostReviewService : IPostReviewService
     public Task<CreateReportResponseDto> CreateReportAsync(int currentUserId, string postId, CreateReportRequestDto request)
         => _socialEngagement.CreateReportAsync(currentUserId, postId, request);
 
-    public Task<PostReportDto> WithdrawReportAsync(int currentUserId, string postId, string reportId)
-        => _socialEngagement.WithdrawReportAsync(currentUserId, postId, reportId);
+    //public Task<PostReportDto> WithdrawReportAsync(int currentUserId, string postId, string reportId)
+    //    => _socialEngagement.WithdrawReportAsync(currentUserId, postId, reportId);
 
     public Task<List<PostReportDto>> GetMyReportsAsync(int currentUserId)
         => _socialEngagement.GetMyReportsAsync(currentUserId);

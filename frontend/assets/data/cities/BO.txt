@@ -1,0 +1,145 @@
+abapo viejo	Abapó Viejo
+achacachi	Achacachi
+achocalla	Achocalla
+aiquile	Aiquile
+amarete	Amarete
+andamarca	Andamarca
+arani	Arani
+ascencion de guarayos	Ascención de Guarayos
+ascension	Ascensión
+atocha	Atocha
+batallas	Batallas
+bermejo	Bermejo
+betanzos	Betanzos
+boyuibe	Boyuibe
+buena vista	Buena Vista
+calchani	Calchani
+camargo	Camargo
+camiri	Camiri
+campamento colquiri	Campamento Colquiri
+capinota	Capinota
+caranavi	Caranavi
+challapata	Challapata
+charagua	Charagua
+chimore	Chimoré
+chulumani	Chulumani
+ckochas	Ckochas
+cliza	Cliza
+cobija	Cobija
+cochabamba	Cochabamba
+colcapirhua	Colcapirhua
+colchani	Colchani
+colomi	Colomi
+colquechaca	Colquechaca
+comarapa	Comarapa
+concepcion	Concepción
+copacabana	Copacabana
+coripata	Coripata
+coroico	Coroico
+cotoca	Cotoca
+cruz de machacamarca	Cruz de Machacamarca
+curahuara de carangas	Curahuara de Carangas
+desaguadero	Desaguadero
+el torno	El Torno
+entre rios	Entre Ríos
+eucaliptus	Eucaliptus
+guanay	Guanay
+guayaramerin	Guayaramerín
+huachacalla	Huachacalla
+huanuni	Huanuni
+huarina	Huarina
+huatajata	Huatajata
+independencia	Independencia
+irpa irpa	Irpa Irpa
+ixiamas	Ixiamas
+jorochito	Jorochito
+la belgica	La Bélgica
+la paz	La Paz
+lahuachaca	Lahuachaca
+laja	Laja
+limoncito	Limoncito
+llallagua	Llallagua
+los negros	Los Negros
+machacamarca	Machacamarca
+mairana	Mairana
+mapiri	Mapiri
+mecapaca	Mecapaca
+mineros	Mineros
+mizque	Mizque
+mocomoco	Mocomoco
+monteagudo	Monteagudo
+montero	Montero
+nueva manoa	Nueva Manoa
+okinawa numero uno	Okinawa Número Uno
+okinawa uno	Okinawa Uno
+oruro	Oruro
+padilla	Padilla
+pailon	Pailón
+patacamaya	Patacamaya
+paurito	Paurito
+poopo	Poopó
+porco	Porco
+portachuelo	Portachuelo
+potosi	Potosí
+pucarani	Pucarani
+puearto pailas	Puearto Pailas
+puerto pailas	Puerto Pailas
+puerto quijarro	Puerto Quijarro
+puerto suarez	Puerto Suárez
+puerto villarroel	Puerto Villarroel
+punata	Punata
+quillacollo	Quillacollo
+quime	Quime
+reyes	Reyes
+riberalta	Riberalta
+robore	Roboré
+rurrenabaque	Rurrenabaque
+sacaba	Sacaba
+samaipata	Samaipata
+san borja	San Borja
+san carlos	San Carlos
+san ignacio de moxo	San Ignacio de Moxo
+san ignacio de velasco	San Ignacio de Velasco
+san juan del surutu	San Juan del Surutú
+san julian	San Julian
+san matias	San Matías
+san pablo de tiquina	San Pablo de Tiquina
+san pedro	San Pedro
+san ramon	San Ramón
+santa ana de yacuma	Santa Ana de Yacuma
+santa barbara	Santa Bárbara
+santa cruz de la sierra	Santa Cruz de la Sierra
+santa fe	Santa Fe
+santa rita	Santa Rita
+santa rosa de yacuma	Santa Rosa de Yacuma
+santa rosa del sara	Santa Rosa del Sara
+santiago de cotagaita	Santiago de Cotagaita
+santivanez	Santiváñez
+sipe sipe	Sipe Sipe
+sorata	Sorata
+sucre	Sucre
+tarabuco	Tarabuco
+tarata	Tarata
+tarija	Tarija
+tiahuanaco	Tiahuanaco
+tiquipaya	Tiquipaya
+totora	Totora
+totoral	Totoral
+trinidad	Trinidad
+tupiza	Tupiza
+uncia	Uncía
+urubicha	Urubichá
+uyuni	Uyuni
+vallegrande	Vallegrande
+viacha	Viacha
+villa charcas	Villa Charcas
+villa serrano	Villa Serrano
+villa yapacani	Villa Yapacaní
+villamontes	Villamontes
+villazon	Villazón
+viloco	Viloco
+vinto	Vinto
+warnes	Warnes
+yacuiba	Yacuiba
+yamparaez	Yamparáez
+yumani	Yumani

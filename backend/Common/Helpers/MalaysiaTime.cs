@@ -3,14 +3,15 @@ using System;
 namespace ExploreMy.Api.Common.Helpers;
 
 /// <summary>
-/// Explicit Malaysia (Asia/Kuala_Lumpur, UTC+08:00) time source for the
-/// <c>place_submissions.created_at / updated_at</c> storage contract.
+/// Explicit Malaysia (Asia/Kuala_Lumpur, UTC+08:00) time helper.
 ///
-/// The DB contract is literal Malaysia wall-clock in DATETIME(6) columns:
-///   Malaysia now  2026-08-30 21:16:00 +08:00  →  DATETIME(6) 2026-08-30 21:16:00
-/// (NOT 13:16:00 UTC). This helper derives Malaysia time from the UTC instant
-/// through <see cref="TimeZoneInfo"/>, so the server OS timezone is never
-/// assumed — a deployment on a UTC host still produces Malaysia wall-clock.
+/// Storage contract (app-wide, D-06): every DB write uses <c>DateTime.UtcNow</c> and
+/// DATETIME(6) columns hold UTC wall-clock. This helper is therefore the API
+/// PRESENTATION converter: <see cref="FromUtc"/> turns a stored UTC instant into
+/// Malaysia wall-clock for MalaysiaLocalDateTimeConverter, which emits the explicit
+/// "+08:00" offset. (It previously produced the DB write value for
+/// place_submissions; that contract was unified to UTC — see the audit report
+/// validation_evidence/DATETIME_TIMEZONE_AUDIT_IMPLEMENTATION.md.)
 ///
 /// No hard-coded +8 arithmetic anywhere: the offset always comes from the
 /// resolved <see cref="TimeZoneInfo"/> for the zone.
@@ -21,13 +22,6 @@ public static class MalaysiaTime
 
     /// <summary>The resolved Asia/Kuala_Lumpur timezone (Windows: "Singapore Standard Time").</summary>
     public static TimeZoneInfo Zone => ZoneValue;
-
-    /// <summary>
-    /// Current Malaysia wall-clock. Returned DateTime has Kind=Unspecified when the
-    /// resolved zone is not the server-local zone, which is exactly what DATETIME(6)
-    /// storage expects — the wall-clock value is written as-is, no conversion.
-    /// </summary>
-    public static DateTime Now => TimeZoneInfo.ConvertTimeFromUtc(DateTime.UtcNow, ZoneValue);
 
     /// <summary>Converts a UTC instant to Malaysia wall-clock (Kind=Unspecified).</summary>
     public static DateTime FromUtc(DateTime utc)

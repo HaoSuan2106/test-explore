@@ -6,16 +6,18 @@ using ExploreMy.Api.Common.Helpers;
 namespace ExploreMy.Api.DTOs.HiddenPlace;
 
 /// <summary>
-/// Serializes a stored Malaysia wall-clock DATETIME(6) value as ISO-8601 with an
-/// explicit +08:00 offset (e.g. 2026-08-30T21:16:00.123456+08:00) so the Flutter
-/// client can parse it unambiguously and render the correct local instant.
+/// Serializes a stored UTC DATETIME(6) value as ISO-8601 Malaysia local time with an
+/// explicit +08:00 offset (e.g. 2026-09-04T17:30:00Z stored → 2026-09-05T01:30:00+08:00
+/// emitted) so the Flutter client can parse it unambiguously and render the correct
+/// local instant.
 ///
-/// Contract: <c>place_submissions.created_at/updated_at</c> hold MALAYSIA WALL-CLOCK
-/// time. EF reads DATETIME(6) back as <c>DateTimeKind.Unspecified</c> whose wall-clock
-/// IS Malaysia time, so we attach the explicit Asia/Kuala_Lumpur offset (from
-/// <see cref="MalaysiaTime"/>) and let the "K" format specifier emit "+08:00". No +8
-/// arithmetic and no reliance on the server OS timezone — the offset comes from the
-/// resolved Malaysia <see cref="TimeZoneInfo"/>.
+/// Contract: <c>place_submissions.created_at/updated_at</c> hold UTC (every app write
+/// uses <c>DateTime.UtcNow</c>, matching the app-wide D-06 storage contract). EF reads
+/// DATETIME(6) back as <c>DateTimeKind.Unspecified</c> whose wall-clock IS UTC, so the
+/// converter relabels it as UTC and converts to Asia/Kuala_Lumpur via
+/// <see cref="MalaysiaTime"/> before emitting with the explicit "+08:00" offset
+/// ("K" specifier). No +8 arithmetic and no reliance on the server OS timezone — the
+/// offset comes from the resolved Malaysia <see cref="TimeZoneInfo"/>.
 /// </summary>
 internal sealed class MalaysiaLocalDateTimeConverter : JsonConverter<DateTime>
 {
@@ -24,16 +26,18 @@ internal sealed class MalaysiaLocalDateTimeConverter : JsonConverter<DateTime>
 
     public override void Write(Utf8JsonWriter writer, DateTime value, JsonSerializerOptions options)
     {
-        // Values may arrive as:
-        //  - Unspecified (DATETIME(6) read-back): wall-clock IS Malaysia time → attach offset as-is;
-        //  - Utc: an actual UTC instant → convert to Malaysia wall-clock first;
-        //  - Local: host-local wall-clock → convert to Malaysia wall-clock first.
-        var malaysiaWallClock = value.Kind switch
+        // Normalize every arrival to the UTC instant first:
+        //  - Unspecified (DATETIME(6) read-back): wall-clock IS UTC → relabel as UTC (D-06 rule);
+        //  - Utc: already the instant;
+        //  - Local: host-local wall-clock → convert to UTC.
+        var utcInstant = value.Kind switch
         {
-            DateTimeKind.Utc => MalaysiaTime.FromUtc(value),
-            DateTimeKind.Local => TimeZoneInfo.ConvertTime(value, MalaysiaTime.Zone),
+            DateTimeKind.Unspecified => DateTime.SpecifyKind(value, DateTimeKind.Utc),
+            DateTimeKind.Local => value.ToUniversalTime(),
             _ => value,
         };
+
+        var malaysiaWallClock = MalaysiaTime.FromUtc(utcInstant);
 
         var offset = new DateTimeOffset(
             DateTime.SpecifyKind(malaysiaWallClock, DateTimeKind.Unspecified),
@@ -147,7 +151,22 @@ public class HiddenPlaceResponseItemDto
     /// <summary>A shorter form of FormattedAddress, better suited to list/card layouts.</summary>
     public string? ShortFormattedAddress { get; set; }
 
-    /// <summary>0.0-1.0, higher = more "hidden gem". The response list is already sorted by this, descending.</summary>
+    /// <summary>
+    /// 0.0-1.0, higher = more "hidden gem".
+    ///
+    /// Two different algorithms produce this, and which one ran is decided by <see cref="Source"/>:
+    ///
+    ///   GOOGLE:    DiscoverHiddenPlaceService - how few people have reviewed the place compared with
+    ///              similar places nearby, balanced against how well it is rated. Both halves count
+    ///              Google's reviews AND this app's own reviews of the same place.
+    ///   COMMUNITY: CommunityPlaceScorer - obscurity taken as given (Google's index does not carry
+    ///              the place at all), plus our own reviewers' rating and how many people have
+    ///              verified the recommendation.
+    ///
+    /// The two land on the same scale but are not the same measurement, so the response is sorted in
+    /// two sections rather than as one list: Google results ranked by this field, then community
+    /// results ranked by this field. Do not re-sort the whole list on it.
+    /// </summary>
     public double HiddenScore { get; set; }
 
     /// <summary>
@@ -161,6 +180,9 @@ public class HiddenPlaceResponseItemDto
     ///
     /// Note this is the INVERSE of the internal popularityNorm, so that - like every other score in this
     /// DTO - higher means "more hidden". The client should not have to remember which way round it is.
+    ///
+    /// For a COMMUNITY place this is always 1: a place that had to be typed in by hand is one Google's
+    /// index does not carry, so there is no distribution to place it in and nothing to estimate.
     /// </summary>
     public double ObscurityScore { get; set; }
 
@@ -169,6 +191,10 @@ public class HiddenPlaceResponseItemDto
     /// that the algorithm's minimum acceptable rating maps to 0 and 5.0 maps to 1. A place rated exactly at
     /// the minimum scores 0 here, not 0.76 - the absolute rating is already in <see cref="Rating"/>, and
     /// what this field adds is "how far above the bar", which is what actually moves HiddenScore.
+    ///
+    /// For a COMMUNITY place the rating is our own reviewers' average, pulled toward 0.5 while there
+    /// are too few of them to trust (see CommunityPlaceScoringOptions.ConfidenceReviews), and replaced
+    /// by the verification score entirely when nobody has reviewed it yet.
     /// </summary>
     public double QualityScore { get; set; }
 
@@ -178,6 +204,15 @@ public class HiddenPlaceResponseItemDto
     ///
     /// Deliberately our URL and not Google's: a Place Photos URI is billed per fetch and expires, so
     /// handing one to the app would charge us again on every render. See PlacePhoto.
+    ///
+    /// Filled from the first source that has something, and the order differs by <see cref="Source"/>:
+    ///
+    ///   GOOGLE:    the photo copied from Google for the place -> a picture from one of our reviews.
+    ///   COMMUNITY: the photos the recommender uploaded        -> a picture from one of our reviews.
+    ///
+    /// All three are URLs in our own bucket and the client treats them identically; the credit in
+    /// <see cref="PhotoAttribution"/> is what says which one arrived. Null still means "no picture
+    /// anywhere" - normal for an obscure place nobody has photographed yet.
     /// </summary>
     public string? PhotoUrl { get; set; }
 
@@ -185,6 +220,9 @@ public class HiddenPlaceResponseItemDto
     /// Who took the photo. Must be shown wherever the image is - Google's terms require the
     /// attribution to travel with the picture, and because we serve the bytes ourselves, Google is
     /// not there to attach it. Null when Google supplied no attribution, or when there is no photo.
+    ///
+    /// A photo borrowed from a review is credited "Photo by {username}" instead, so a visitor's
+    /// snapshot is never passed off as the place's own picture.
     /// </summary>
     public string? PhotoAttribution { get; set; }
 

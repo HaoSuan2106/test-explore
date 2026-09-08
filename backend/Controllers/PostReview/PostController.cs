@@ -574,32 +574,32 @@ public class PostController : ControllerBase
     /// Withdraw one of the authenticated user's own reports on a post.
     /// Moves the report ACTIVE → WITHDRAWN and stamps withdrawn_at.
     /// </summary>
-    [HttpPost("{postId}/reports/{reportId}/withdraw")]
-    public async Task<IActionResult> WithdrawReport(string postId, string reportId)
-    {
-        try
-        {
-            var result = await _postReviewService.WithdrawReportAsync(CurrentUserId, postId, reportId);
-            return Ok(result);
-        }
-        catch (NotFoundException ex)
-        {
-            return NotFound(new { message = ex.Message });
-        }
-        catch (ForbiddenException ex)
-        {
-            return StatusCode(StatusCodes.Status403Forbidden, new { message = ex.Message });
-        }
-        catch (ValidationException ex)
-        {
-            return BadRequest(new { message = ex.Message });
-        }
-        catch (Exception ex)
-        {
-            _logger.LogError(ex, "Unexpected error withdrawing report {ReportId} on post {PostId} for user {UserId}.", reportId, postId, CurrentUserId);
-            return StatusCode(StatusCodes.Status500InternalServerError, new { message = "An unexpected error occurred." });
-        }
-    }
+    //[HttpPost("{postId}/reports/{reportId}/withdraw")]
+    //public async Task<IActionResult> WithdrawReport(string postId, string reportId)
+    //{
+    //    try
+    //    {
+    //        var result = await _postReviewService.WithdrawReportAsync(CurrentUserId, postId, reportId);
+    //        return Ok(result);
+    //    }
+    //    catch (NotFoundException ex)
+    //    {
+    //        return NotFound(new { message = ex.Message });
+    //    }
+    //    catch (ForbiddenException ex)
+    //    {
+    //        return StatusCode(StatusCodes.Status403Forbidden, new { message = ex.Message });
+    //    }
+    //    catch (ValidationException ex)
+    //    {
+    //        return BadRequest(new { message = ex.Message });
+    //    }
+    //    catch (Exception ex)
+    //    {
+    //        _logger.LogError(ex, "Unexpected error withdrawing report {ReportId} on post {PostId} for user {UserId}.", reportId, postId, CurrentUserId);
+    //        return StatusCode(StatusCodes.Status500InternalServerError, new { message = "An unexpected error occurred." });
+    //    }
+    //}
 
     // ============================================================
     // Saved posts

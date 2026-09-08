@@ -1,0 +1,26 @@
+agua ize	Água Izé
+agua porca	Agua Porca
+almas	Almas
+almeirim	Almeirim
+bombom	Bombom
+changra	Changra
+cova barro	Cova Barro
+dona eugenia	Dona Eugénia
+folha fede	Folha Fede
+guadalupe	Guadalupe
+lemos	Lemos
+micolo	Micolo
+micondo	Micondo
+neves	Neves
+pantufo	Pantufo
+piedade	Piedade
+ribeira afonso	Ribeira Afonso
+riboque	Riboque
+riboque santana	Riboque Santana
+rosema	Rosema
+santo amaro	Santo Amaro
+santo antonio	Santo António
+sao joao dos angolares	São João dos Angolares
+sao marcal	São Marçal
+sao tome	São Tomé
+trindade	Trindade

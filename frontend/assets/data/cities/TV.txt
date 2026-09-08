@@ -1,0 +1,9 @@
+alapi village	Alapi Village
+asau village	Asau Village
+fakaifou village	Fakaifou Village
+funafuti	Funafuti
+kulia village	Kulia Village
+savave village	Savave Village
+senala village	Senala Village
+tanrake village	Tanrake Village
+toga village	Toga Village

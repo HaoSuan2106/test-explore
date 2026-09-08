@@ -1,0 +1,728 @@
+ajil	Ajil
+alam damai	Alam Damai
+alor gajah	Alor Gajah
+alor janggus	Alor Janggus
+alor merah	Alor Merah
+alor setar	Alor Setar
+alur pongsu	Alur Pongsu
+ampang	Ampang
+anak bukit	Anak Bukit
+ara damansara	Ara Damansara
+assam jawa	Assam Jawa
+au long	Au Long
+ayer baloi	Ayer Baloi
+ayer hangat	Ayer Hangat
+ayer hitam	Ayer Hitam
+ayer itam	Ayer Itam
+ayer molek	Ayer Molek
+ayer tawar	Ayer Tawar
+bagan datoh	Bagan Datoh
+bagan datuk	Bagan Datuk
+bagan pulau ketam	Bagan Pulau Ketam
+bagan samak	Bagan Samak
+bagan serai	Bagan Serai
+bagan tiang	Bagan Tiang
+bahau	Bahau
+bakri	Bakri
+balik pulau	Balik Pulau
+balingian	Balingian
+bandar 16 sierra	Bandar 16 Sierra
+bandar al-muktafi billah shah	Bandar Al-Muktafi Billah Shah
+bandar baharu	Bandar Baharu
+bandar baru ayer itam	Bandar Baru Ayer Itam
+bandar baru enstek	Bandar Baru Enstek
+bandar baru salak tinggi	Bandar Baru Salak Tinggi
+bandar botanic	Bandar Botanic
+bandar bukit raja	Bandar Bukit Raja
+bandar country homes	Bandar Country Homes
+bandar kinrara	Bandar Kinrara
+bandar labuan	Bandar Labuan
+bandar laguna merbok	Bandar Laguna Merbok
+bandar mahkota cheras	Bandar Mahkota Cheras
+bandar nabawan	Bandar Nabawan
+bandar parklands	Bandar Parklands
+bandar penawar	Bandar Penawar
+bandar permaisuri	Bandar Permaisuri
+bandar puncak alam	Bandar Puncak Alam
+bandar putra kulai	Bandar Putra Kulai
+bandar saujana utama	Bandar Saujana Utama
+bandar seri alam	Bandar Seri Alam
+bandar springhill	Bandar Springhill
+bandar sri damansara	Bandar Sri Damansara
+bandar sri sendayan	Bandar Sri Sendayan
+bandar sungai mati	Bandar Sungai Mati
+bandar sunway	Bandar Sunway
+bandar tasik puteri	Bandar Tasik Puteri
+bandar tenggara	Bandar Tenggara
+bandar tun hussein onn	Bandar Tun Hussein Onn
+bandar tun razak	Bandar Tun Razak
+bandar utama	Bandar Utama
+bandau	Bandau
+bangi	Bangi
+bangsar	Bangsar
+banting	Banting
+batang berjuntai	Batang Berjuntai
+batang kali	Batang Kali
+batu anam	Batu Anam
+batu arang	Batu Arang
+batu berendam	Batu Berendam
+batu caves	Batu Caves
+batu feringgi	Batu Feringgi
+batu gajah	Batu Gajah
+batu hitam	Batu Hitam
+batu itam	Batu Itam
+batu kawan	Batu Kawan
+batu kurau	Batu Kurau
+batu pahat	Batu Pahat
+batu tiga	Batu Tiga
+bau	Bau
+bayan lepas	Bayan Lepas
+beaufort	Beaufort
+bedong	Bedong
+behrang stesen	Behrang Stesen
+bekenu	Bekenu
+bekok	Bekok
+belaga	Belaga
+belawai	Belawai
+beluran	Beluran
+beluru	Beluru
+bemban	Bemban
+bentong town	Bentong Town
+bentung	Bentung
+bercham	Bercham
+berincang	Berincang
+beruas	Beruas
+betong	Betong
+bidur	Bidur
+binatang	Binatang
+bintulu	Bintulu
+blue valley	Blue Valley
+bongawan	Bongawan
+brickfields	Brickfields
+brinchang	Brinchang
+budu	Budu
+bukit beruntung	Bukit Beruntung
+bukit bintang	Bukit Bintang
+bukit damansara	Bukit Damansara
+bukit gambir	Bukit Gambir
+bukit gemuroh	Bukit Gemuroh
+bukit ibam	Bukit Ibam
+bukit indah	Bukit Indah
+bukit jalil	Bukit Jalil
+bukit jambul	Bukit Jambul
+bukit kayu hitam	Bukit Kayu Hitam
+bukit kerinchi	Bukit Kerinchi
+bukit mertajam	Bukit Mertajam
+bukit pinang	Bukit Pinang
+bukit rahman putra	Bukit Rahman Putra
+bukit rambai	Bukit Rambai
+bukit tambun	Bukit Tambun
+bukit tengah	Bukit Tengah
+buloh kasap	Buloh Kasap
+butterworth	Butterworth
+cangkat jong	Cangkat Jong
+cenderiang	Cenderiang
+ceruh	Ceruh
+chaah	Chaah
+chaah bahru	Chaah Bahru
+changloon	Changloon
+chemor	Chemor
+chenderong	Chenderong
+cherang ruku	Cherang Ruku
+cheras	Cheras
+cukai	Cukai
+cyberjaya	Cyberjaya
+dabong	Dabong
+dalat	Dalat
+damansara damai	Damansara Damai
+daro	Daro
+data kakus	Data Kakus
+debak	Debak
+denai alam	Denai Alam
+dengkil	Dengkil
+derga	Derga
+desa parkcity	Desa Parkcity
+desa petaling	Desa Petaling
+donggongon	Donggongon
+dungun	Dungun
+durian tunggal	Durian Tunggal
+eburu	Eburu
+eco sanctuary	Eco Sanctuary
+elmina	Elmina
+empaong	Empaong
+engkilili	Engkilili
+felcra lubek sireh	FELCRA Lubek Sireh
+felda bukit damar	FELDA Bukit Damar
+felda chini	FELDA Chini
+felda gugusan adela	Felda Gugusan Adela
+felda kemansul	FELDA Kemansul
+felda maokil	FELDA Maokil
+felda semenchu	FELDA Semenchu
+felda soeharto	FELDA Soeharto
+felda taib andak	FELDA Taib Andak
+forest city	Forest City
+gambang	Gambang
+gedangsa	Gedangsa
+gelang patah	Gelang Patah
+gelung pepuyu	Gelung Pepuyu
+gemas	Gemas
+gemencheh	Gemencheh
+george town	George Town
+gerik	Gerik
+gerisek	Gerisek
+glenmarie estate	Glenmarie Estate
+glugor	Glugor
+gopeng	Gopeng
+gua musang	Gua Musang
+guar chempedak	Guar Chempedak
+gunong	Gunong
+gurun	Gurun
+hendrop	Hendrop
+horizon hills	Horizon Hills
+hulu langat	Hulu Langat
+hulu yam lama	Hulu Yam Lama
+hutan melintang	Hutan Melintang
+igan	Igan
+ijok	Ijok
+inanam	Inanam
+ipoh	Ipoh
+iskandar puteri	Iskandar Puteri
+jawi	Jawi
+jelutong	Jelutong
+jenjarum	Jenjarum
+jerantut	Jerantut
+jertih	Jertih
+jinjang	Jinjang
+jitra	Jitra
+johor bahru	Johor Bahru
+johor jaya	Johor Jaya
+julau	Julau
+juru	Juru
+kajang	Kajang
+kampar	Kampar
+kampong baharu cheras batu sebelas	Kampong Baharu Cheras Batu Sebelas
+kampong bakai	Kampong Bakai
+kampong chap	Kampong Chap
+kampong chenderong balai	Kampong Chenderong Balai
+kampong cherang hangus	Kampong Cherang Hangus
+kampong datuk keramat	Kampong Datuk Keramat
+kampong dungun	Kampong Dungun
+kampong gunong	Kampong Gunong
+kampong indarasabak	Kampong Indarasabak
+kampong kadok	Kampong Kadok
+kampong masjid tanah	Kampong Masjid Tanah
+kampong menumbok	Kampong Menumbok
+kampong merbok	Kampong Merbok
+kampong pangkal kalong	Kampong Pangkal Kalong
+kampong sidam	Kampong Sidam
+kampong sijangkang	Kampong Sijangkang
+kampong sungai batu	Kampong Sungai Batu
+kampong sungai kechil ulu	Kampong Sungai Kechil Ulu
+kampong sungai rusa	Kampong Sungai Rusa
+kampong tajar	Kampong Tajar
+kampong tanjong chat	Kampong Tanjong Chat
+kampong tok bali	Kampong Tok Bali
+kampong wang tepus	Kampong Wang Tepus
+kampung air lanas	Kampung Air Lanas
+kampung alor mengkudu	Kampung Alor Mengkudu
+kampung asun	Kampung Asun
+kampung ayer keroh	Kampung Ayer Keroh
+kampung ayer molek	Kampung Ayer Molek
+kampung ayer puteh	Kampung Ayer Puteh
+kampung bagan	Kampung Bagan
+kampung baharu nilai	Kampung Baharu Nilai
+kampung baharu paroi	Kampung Baharu Paroi
+kampung baru	Kampung Baru
+kampung baru balakong	Kampung Baru Balakong
+kampung baru subang	Kampung Baru Subang
+kampung baru ulu melaka	Kampung Baru Ulu Melaka
+kampung batang melaka ulu	Kampung Batang Melaka Ulu
+kampung batu empat	Kampung Batu Empat
+kampung batu feringgi	Kampung Batu Feringgi
+kampung batu lima	Kampung Batu Lima
+kampung batu sembilan luar	Kampung Batu Sembilan Luar
+kampung bertam ulu	Kampung Bertam Ulu
+kampung bongor	Kampung Bongor
+kampung bukit baharu	Kampung Bukit Baharu
+kampung bukit beruang	Kampung Bukit Beruang
+kampung bukit bunga	Kampung Bukit Bunga
+kampung bukit jering	Kampung Bukit Jering
+kampung bukit tinggi, bentong	Kampung Bukit Tinggi, Bentong
+kampung cangkat jering	Kampung Cangkat Jering
+kampung cangkat keruing	Kampung Cangkat Keruing
+kampung cheng	Kampung Cheng
+kampung chui chak	Kampung Chui Chak
+kampung chuping	Kampung Chuping
+kampung dong	Kampung Dong
+kampung enggor	Kampung Enggor
+kampung gedung siam	Kampung Gedung Siam
+kampung gula	Kampung Gula
+kampung haji kudong	Kampung Haji Kudong
+kampung hutan arau	Kampung Hutan Arau
+kampung jeli	Kampung Jeli
+kampung jelutong tengah	Kampung Jelutong Tengah
+kampung jerlun	Kampung Jerlun
+kampung kangkar pulai	Kampung Kangkar Pulai
+kampung kangkar teberau	Kampung Kangkar Teberau
+kampung kerubong	Kampung Kerubong
+kampung kilim	Kampung Kilim
+kampung kobah	Kampung Kobah
+kampung kok	Kampung Kok
+kampung kuala balah	Kampung Kuala Balah
+kampung kuala besut	Kampung Kuala Besut
+kampung kuala linggi	Kampung Kuala Linggi
+kampung kuala matu	Kampung Kuala Matu
+kampung kuala muda	Kampung Kuala Muda
+kampung kuala selama	Kampung Kuala Selama
+kampung kuala sepetang	Kampung Kuala Sepetang
+kampung kunak	Kampung Kunak
+kampung kundassang	Kampung Kundassang
+kampung kupang	Kampung Kupang
+kampung labohan dagang	Kampung Labohan Dagang
+kampung ladang sawit lepar	Kampung Ladang Sawit Lepar
+kampung lalang	Kampung Lalang
+kampung lambor kanan	Kampung Lambor Kanan
+kampung larkin lama	Kampung Larkin Lama
+kampung lemal	Kampung Lemal
+kampung lubok merbau	Kampung Lubok Merbau
+kampung machap baru	Kampung Machap Baru
+kampung manjoi	Kampung Manjoi
+kampung minyak beku	Kampung Minyak Beku
+kampung naga lilit	Kampung Naga Lilit
+kampung olak lempit	Kampung Olak Lempit
+kampung on lok	Kampung On Lok
+kampung oran	Kampung Oran
+kampung padang cina	Kampung Padang Cina
+kampung padang lalang	Kampung Padang Lalang
+kampung pantai aceh	Kampung Pantai Aceh
+kampung parit belahan tampok	Kampung Parit Belahan Tampok
+kampung parit panjang	Kampung Parit Panjang
+kampung pasir gudang baru	Kampung Pasir Gudang Baru
+kampung pengkalan gelong	Kampung Pengkalan Gelong
+kampung perak	Kampung Perak
+kampung pering	Kampung Pering
+kampung permatang pasir	Kampung Permatang Pasir
+kampung pondok upih	Kampung Pondok Upih
+kampung pulai	Kampung Pulai
+kampung ramuan china kechil	Kampung Ramuan China Kechil
+kampung relau	Kampung Relau
+kampung sedenak	Kampung Sedenak
+kampung selang	Kampung Selang
+kampung setia	Kampung Setia
+kampung simpang durian	Kampung Simpang Durian
+kampung simpang pulai	Kampung Simpang Pulai
+kampung simpang renggam	Kampung Simpang Renggam
+kampung siong	Kampung Siong
+kampung sirusa	Kampung Sirusa
+kampung sok	Kampung Sok
+kampung sri jaya	Kampung Sri Jaya
+kampung sungai acheh	Kampung Sungai Acheh
+kampung sungai ara	Kampung Sungai Ara
+kampung sungai glugur	Kampung Sungai Glugur
+kampung sungai kajang	Kampung Sungai Kajang
+kampung sungai penchala	Kampung Sungai Penchala
+kampung sungai rusa	Kampung Sungai Rusa
+kampung sungai terap	Kampung Sungai Terap
+kampung sungai udang besar	Kampung Sungai Udang Besar
+kampung tanjung karang	Kampung Tanjung Karang
+kampung tanjung keling	Kampung Tanjung Keling
+kampung tanjung minyak	Kampung Tanjung Minyak
+kampung tawar besar	Kampung Tawar Besar
+kampung tebong	Kampung Tebong
+kampung teh	Kampung Teh
+kampung tekek	Kampung Tekek
+kampung telaga papan	Kampung Telaga Papan
+kampung teluk air tawar	Kampung Teluk Air Tawar
+kampung teluk kemang	Kampung Teluk Kemang
+kampung teluk kumbar	Kampung Teluk Kumbar
+kampung titi tinggi	Kampung Titi Tinggi
+kampung ulu tris	Kampung Ulu Tris
+kampung umbai	Kampung Umbai
+kampung wakaf sku	Kampung Wakaf Sku
+kampung wakaf stan	Kampung Wakaf Stan
+kamunting	Kamunting
+kangar	Kangar
+kangkar baru	Kangkar Baru
+kangkar sedili kecil	Kangkar Sedili Kecil
+kangkong	Kangkong
+kanowit	Kanowit
+kapar	Kapar
+kapit	Kapit
+karak	Karak
+kawasan penempatan ulu benut lima	Kawasan Penempatan Ulu Benut Lima
+kawasan penempatan ulu benut tiga	Kawasan Penempatan Ulu Benut Tiga
+kawasan penempatan ulu sungai benut	Kawasan Penempatan Ulu Sungai Benut
+kawasan perindustrian cheng	Kawasan Perindustrian Cheng
+kelapa sawit	Kelapa Sawit
+kemajuan tanah bukit aping barat	Kemajuan Tanah Bukit Aping Barat
+kemajuan tanah bukit aping timur	Kemajuan Tanah Bukit Aping Timur
+kemajuan tanah bukit besar	Kemajuan Tanah Bukit Besar
+kemajuan tanah bukit easter	Kemajuan Tanah Bukit Easter
+kemajuan tanah bukit goh	Kemajuan Tanah Bukit Goh
+kemajuan tanah bukit kepayang	Kemajuan Tanah Bukit Kepayang
+kemajuan tanah bukit ramon	Kemajuan Tanah Bukit Ramon
+kemajuan tanah chemplak	Kemajuan Tanah Chemplak
+kemajuan tanah chemplak barat	Kemajuan Tanah Chemplak Barat
+kemajuan tanah inas utara dan selatan	Kemajuan Tanah Inas Utara dan Selatan
+kemajuan tanah lok heng barat	Kemajuan Tanah Lok Heng Barat
+kemajuan tanah pasir raja	Kemajuan Tanah Pasir Raja
+kemajuan tanah rentam	Kemajuan Tanah Rentam
+kemajuan tanah sebertak	Kemajuan Tanah Sebertak
+kemajuan tanah simpang waha	Kemajuan Tanah Simpang Waha
+kemajuan tanah sungai pancing selatan	Kemajuan Tanah Sungai Pancing Selatan
+kemajuan tanah sungai pancing timur	Kemajuan Tanah Sungai Pancing Timur
+kemajuan tanah sungai pancing utara	Kemajuan Tanah Sungai Pancing Utara
+kemajuan tanah tembangau	Kemajuan Tanah Tembangau
+kemajuan tanah tementi	Kemajuan Tanah Tementi
+kemajuan tanah ulu tebrau	Kemajuan Tanah Ulu Tebrau
+kemasik	Kemasik
+kemayan	Kemayan
+kempas	Kempas
+keningau	Keningau
+kepala batas	Kepala Batas
+kepong	Kepong
+kerling	Kerling
+kertih	Kertih
+keruh	Keruh
+ketengah jaya	Ketengah Jaya
+ketereh	Ketereh
+kinabatangan	Kinabatangan
+kinarut	Kinarut
+klang	Klang
+klebang besar	Klebang Besar
+kluang	Kluang
+kobang	Kobang
+kodiang	Kodiang
+kota belud	Kota Belud
+kota bharu	Kota Bharu
+kota damansara	Kota Damansara
+kota kinabalu	Kota Kinabalu
+kota kuala muda	Kota Kuala Muda
+kota samarahan	Kota Samarahan
+kota sarang samut	Kota Sarang Samut
+kota tinggi	Kota Tinggi
+kota warisan	Kota Warisan
+kuah	Kuah
+kuala baram	Kuala Baram
+kuala besut	Kuala Besut
+kuala geris	Kuala Geris
+kuala kangsar	Kuala Kangsar
+kuala kedah	Kuala Kedah
+kuala ketil	Kuala Ketil
+kuala klawang	Kuala Klawang
+kuala krai	Kuala Krai
+kuala kubu baharu	Kuala Kubu Baharu
+kuala kurau	Kuala Kurau
+kuala lipis	Kuala Lipis
+kuala lumpur	Kuala Lumpur
+kuala nerang	Kuala Nerang
+kuala nerus	Kuala Nerus
+kuala pahang	Kuala Pahang
+kuala pegang	Kuala Pegang
+kuala penyu	Kuala Penyu
+kuala perlis	Kuala Perlis
+kuala pilah	Kuala Pilah
+kuala rompin	Kuala Rompin
+kuala sanglang	Kuala Sanglang
+kuala selangor	Kuala Selangor
+kuala sungai baru	Kuala Sungai Baru
+kuala terengganu	Kuala Terengganu
+kuala teriang	Kuala Teriang
+kuang	Kuang
+kuantan	Kuantan
+kubang semang	Kubang Semang
+kuchai lama	Kuchai Lama
+kuching	Kuching
+kudat	Kudat
+kukup	Kukup
+kulai	Kulai
+kulim	Kulim
+labis	Labis
+labuan	Labuan
+ladang seri kundang	Ladang Seri Kundang
+lahad datu	Lahad Datu
+lahat	Lahat
+laman permai	Laman Permai
+langgar	Langgar
+lawas	Lawas
+layang layang	Layang Layang
+lenggeng	Lenggeng
+lenggong	Lenggong
+lengkuas	Lengkuas
+lepai	Lepai
+lidung jelo	Lidung Jelo
+limbang	Limbang
+limbong	Limbong
+lingga	Lingga
+linggi	Linggi
+long ampan aing or abanang	Long Ampan Aing or Abanang
+long bedian	Long Bedian
+long lama	Long Lama
+lubok antu	Lubok Antu
+lubok buntar	Lubok Buntar
+lubok china	Lubok China
+lukut	Lukut
+lumut	Lumut
+lunas	Lunas
+lundu	Lundu
+lurah bilut	Lurah Bilut
+machap	Machap
+mahang	Mahang
+malacca	Malacca
+malim nawar	Malim Nawar
+maludam	Maludam
+mambang di awan	Mambang Di Awan
+mantin	Mantin
+maradong	Maradong
+maran	Maran
+marang	Marang
+marudi	Marudi
+masai	Masai
+matu	Matu
+mawai	Mawai
+melor	Melor
+menglembu	Menglembu
+mentakab	Mentakab
+merlimau	Merlimau
+mersing	Mersing
+meru	Meru
+metro city new township	Metro City New Township
+miri	Miri
+mont kiara	Mont Kiara
+morib	Morib
+muadzam shah	Muadzam Shah
+muar	Muar
+mukah	Mukah
+mukim pulai	Mukim Pulai
+mukim tioman	Mukim Tioman
+mulu	Mulu
+mutiara damansara	Mutiara Damansara
+nanga medamit	Nanga Medamit
+nanga merit	Nanga Merit
+neram satu	Neram Satu
+niah	Niah
+nibong tebal	Nibong Tebal
+niyor	Niyor
+nyalas	Nyalas
+oya	Oya
+padang besar	Padang Besar
+padang endau	Padang Endau
+padang hang	Padang Hang
+padang mat sirat	Padang Mat Sirat
+padang rengas	Padang Rengas
+padang serai	Padang Serai
+padang sira	Padang Sira
+padang tengku	Padang Tengku
+pagoh	Pagoh
+paka	Paka
+pakan	Pakan
+paloh	Paloh
+pandamaran	Pandamaran
+pangkor	Pangkor
+pantai belimbing	Pantai Belimbing
+pantai cenang	Pantai Cenang
+pantai remis	Pantai Remis
+pantu	Pantu
+papar	Papar
+parit	Parit
+parit buntar	Parit Buntar
+parit jawa	Parit Jawa
+parit raja	Parit Raja
+parit sulung	Parit Sulung
+pasir gudang	Pasir Gudang
+pasir mas	Pasir Mas
+pasir panjang	Pasir Panjang
+pasir puteh	Pasir Puteh
+paya terubong	Paya Terubong
+pekan	Pekan
+pekan nenas	Pekan Nenas
+pekan serkat	Pekan Serkat
+pelabuhan klang	Pelabuhan Klang
+pelentong	Pelentong
+penaga	Penaga
+pendang	Pendang
+pengerang	Pengerang
+pengkalan chepa	Pengkalan Chepa
+pengkalan kundor	Pengkalan Kundor
+penyabong	Penyabong
+perai	Perai
+peringat	Peringat
+perling	Perling
+permatang kuching	Permatang Kuching
+permatang pasir	Permatang Pasir
+petagas	Petagas
+petaling jaya	Petaling Jaya
+pokok sena	Pokok Sena
+pontian besar	Pontian Besar
+pontian kechil	Pontian Kechil
+port dickson	Port Dickson
+proton city	Proton City
+puchong	Puchong
+pudu	Pudu
+pulai	Pulai
+pulai chondong	Pulai Chondong
+pulau sebang	Pulau Sebang
+pusa	Pusa
+pusing	Pusing
+putatan	Putatan
+putra heights	Putra Heights
+putrajaya	Putrajaya
+ranau	Ranau
+rantau	Rantau
+rantau panjang	Rantau Panjang
+rasa	Rasa
+raub	Raub
+rawang	Rawang
+redang panjang	Redang Panjang
+relau	Relau
+rembau	Rembau
+rembia	Rembia
+rengit	Rengit
+ringlet	Ringlet
+roban	Roban
+rompin	Rompin
+sabak bernam	Sabak Bernam
+sala kechik	Sala Kechik
+sandakan	Sandakan
+saratok	Saratok
+sarikei	Sarikei
+sebauh	Sebauh
+sebuyau	Sebuyau
+segamat	Segamat
+sekinchan	Sekinchan
+selama	Selama
+selama kedah	Selama Kedah
+selangau	Selangau
+selayang baru utara	Selayang Baru Utara
+sematan	Sematan
+semenyih	Semenyih
+semerah	Semerah
+seminyih	Seminyih
+semporna	Semporna
+senggarang	Senggarang
+sentul	Sentul
+sepang	Sepang
+seputeh	Seputeh
+serdang	Serdang
+seremban	Seremban
+seremban 2	Seremban 2
+seremban 3	Seremban 3
+serendah	Serendah
+seri iskandar	Seri Iskandar
+seri kembangan	Seri Kembangan
+seri manjung	Seri Manjung
+serian	Serian
+setapak	Setapak
+setia alam	Setia Alam
+setia tropika	Setia Tropika
+shah alam	Shah Alam
+sibu	Sibu
+sibu jaya	Sibu Jaya
+siburan	Siburan
+sik	Sik
+simpang	Simpang
+simpang empat	Simpang Empat
+simpang pertang	Simpang Pertang
+simpang renggam	Simpang Renggam
+simunjan	Simunjan
+sintok	Sintok
+sipitang	Sipitang
+sitiawan	Sitiawan
+skudai	Skudai
+slim river	Slim River
+song	Song
+spaoh	Spaoh
+sri aman	Sri Aman
+sri petaling	Sri Petaling
+ss2	SS2
+subang jaya	Subang Jaya
+sundar	Sundar
+sungai baharu	Sungai Baharu
+sungai bakap	Sungai Bakap
+sungai besar	Sungai Besar
+sungai buloh	Sungai Buloh
+sungai chenaam	Sungai Chenaam
+sungai dua	Sungai Dua
+sungai durian	Sungai Durian
+sungai jawi	Sungai Jawi
+sungai kob	Sungai Kob
+sungai koyan	Sungai Koyan
+sungai lalang	Sungai Lalang
+sungai lembing	Sungai Lembing
+sungai pelek new village	Sungai Pelek New Village
+sungai petani	Sungai Petani
+sungai siput	Sungai Siput
+sungai sumun	Sungai Sumun
+sungai udang	Sungai Udang
+sungkai	Sungkai
+taiping	Taiping
+taman desa	Taman Desa
+taman dusun setia	Taman Dusun Setia
+taman greenwood	Taman Greenwood
+taman ikan emas	Taman Ikan Emas
+taman kota sarang semut	Taman Kota Sarang Semut
+taman melati	Taman Melati
+taman melawati	Taman Melawati
+taman mount austin	Taman Mount Austin
+taman naga emas	Taman Naga Emas
+taman oug	Taman OUG
+taman pelangi	Taman Pelangi
+taman permas jaya	Taman Permas Jaya
+taman petaling	Taman Petaling
+taman rajawali	Taman Rajawali
+taman scientex	Taman Scientex
+taman senai	Taman Senai
+taman senawang indah	Taman Senawang Indah
+taman sepang putra	Taman Sepang Putra
+taman seremban jaya	Taman Seremban Jaya
+taman sri sinar	Taman Sri Sinar
+taman tun dr ismail	Taman Tun Dr Ismail
+taman universiti	Taman Universiti
+tambunan	Tambunan
+tampin	Tampin
+tanah merah	Tanah Merah
+tanah rata	Tanah Rata
+tangkak	Tangkak
+tanjong malim	Tanjong Malim
+tanjung bungah	Tanjung Bungah
+tanjung piandang	Tanjung Piandang
+tanjung rambutan	Tanjung Rambutan
+tanjung sepat	Tanjung Sepat
+tanjung tokong	Tanjung Tokong
+tapah road	Tapah Road
+tasek glugor	Tasek Glugor
+tatau	Tatau
+tawau	Tawau
+tebedu	Tebedu
+tebengau	Tebengau
+telaga batu	Telaga Batu
+telaga mas	Telaga Mas
+teloi kanan	Teloi Kanan
+teluk bahang	Teluk Bahang
+teluk intan	Teluk Intan
+teluk mas	Teluk Mas
+teluk panglima garang	Teluk Panglima Garang
+temerluh	Temerluh
+templer bestari	Templer Bestari
+tenom	Tenom
+teras	Teras
+terung	Terung
+tikam batu	Tikam Batu
+titi	Titi
+titi gajah	Titi Gajah
+titiwangsa	Titiwangsa
+tokai	Tokai
+tongkang pechah	Tongkang Pechah
+tropicana indah	Tropicana Indah
+trusan	Trusan
+tumpat	Tumpat
+ujong pasir	Ujong Pasir
+ulu kelang	Ulu Kelang
+ulu kinta	Ulu Kinta
+ulu tiram	Ulu Tiram
+val dor	Val Dor
+wakaf baharu	Wakaf Baharu
+wallace bay	Wallace Bay
+wangsa maju	Wangsa Maju
+yan besar	Yan Besar
+yong peng	Yong Peng

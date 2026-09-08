@@ -1,0 +1,26 @@
+argir	Argir
+eidi	Eiði
+eystur	Eystur
+fuglafjordur	Fuglafjørður
+hov	Hov
+hoyvik	Hoyvík
+hvalba	Hvalba
+kirkja	Kirkja
+klaksvik	Klaksvík
+kunoy	Kunoy
+leirvik	Leirvík
+midvagur	Miðvágur
+porkeri	Porkeri
+saltangara	Saltangará
+sandavagur	Sandavágur
+sandur	Sandur
+skalavik	Skálavík
+skopun	Skopun
+skuvoy	Skúvoy
+sorvagur	Sørvágur
+torshavn	Tórshavn
+tvoroyri	Tvøroyri
+vagur	Vágur
+vestmanna	Vestmanna
+vid sjogv	Við Sjógv
+vidareidi	Viðareiði

@@ -1,0 +1,28 @@
+bras-panon	Bras-Panon
+cilaos	Cilaos
+entre-deux	Entre-Deux
+l'etang-sale	L'Étang-Salé
+la mare	La Mare
+la montagne	La Montagne
+la plaine-des-palmistes	La Plaine-des-Palmistes
+la possession	La Possession
+le port	Le Port
+le tampon	Le Tampon
+les avirons	Les Avirons
+les trois-bassins	Les Trois-Bassins
+petite-ile	Petite-Île
+piton saint-leu	Piton Saint-Leu
+saint-andre	Saint-André
+saint-benoit	Saint-Benoît
+saint-denis	Saint-Denis
+saint-joseph	Saint-Joseph
+saint-leu	Saint-Leu
+saint-louis	Saint-Louis
+saint-paul	Saint-Paul
+saint-philippe	Saint-Philippe
+saint-pierre	Saint-Pierre
+sainte-marie	Sainte-Marie
+sainte-rose	Sainte-Rose
+sainte-suzanne	Sainte-Suzanne
+salazie	Salazie
+vincendo	Vincendo

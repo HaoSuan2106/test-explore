@@ -1,0 +1,169 @@
+'akra	'Ākra
+abi al khasib	Abī al Khaşīb
+abu al-kahsib	Abū al-Kahṣīb
+abu ghurayb	Abū Ghurayb
+ad dawr	Ad Dawr
+ad dujayl	Ad Dujayl
+al basrah al qadimah	Al Başrah al Qadīmah
+al ba‘aj	Al Ba‘āj
+al diwaniyah	Al Diwaniyah
+al fallujah	Al Fallūjah
+al faw	Al Fāw
+al hadar	Al Ḩaḑar
+al hamzah	Al Ḩamzah
+al haqlaniyah	Al Ḩaqlānīyah
+al harithah	Al Hārithah
+al hashimiyah	Al Hāshimīyah
+al hawijah	Al Ḩawījah
+al hayy	Al Ḩayy
+al hillah	Al Hillah
+al hindiyah	Al Hindīyah
+al jabayish	Al Jabāyish
+al kahla’	Al Kaḩlā’
+al khalis	Al Khāliş
+al madinah	Al Madīnah
+al mahawil	Al Maḩāwīl
+al mahmudiyah	Al Maḩmūdīyah
+al manadhirah	Al Manādhirah
+al mawsil al jadidah	Al Mawşil al Jadīdah
+al maymunah	Al Maymūnah
+al miqdadiyah	Al Miqdādīyah
+al mishkhab	Al Mishkhāb
+al qayyarah	Al Qayyārah
+al qa’im	Al Qā’im
+al qurnah	Al Qurnah
+al ‘abbasi	Al ‘Abbāsī
+al ‘amadiyah	Al ‘Amādīyah
+al ‘amarah	Al ‘Amārah
+al ‘awjah	Al ‘Awjah
+al ‘aziziyah	Al ‘Azīzīyah
+al-'alam	Al-'Alam
+al-hamdaniya	Al-Hamdaniya
+al-kut	Al-Kut
+al-musayab	Al-Musayab
+al-qasim	Al-Qāsim
+alzwya	AlZwya
+an nu‘maniyah	An Nu‘mānīyah
+ar rifa‘i	Ar Rifā‘ī
+ar riyad	Ar Riyāḑ
+ar rumaythah	Ar Rumaythah
+ar rutbah	Ar Ruţbah
+as salman	As Salmān
+as samawah	As Samawah
+as suwayrah	Aş Şuwayrah
+ash shamiyah	Ash Shāmīyah
+ash sharqat	Ash Sharqāt
+ash shatrah	Ash Shaţrah
+ash shaykhan	Ash Shaykhān
+at tarmiyah	Aţ Ţārmīyah
+az zubayr	Az Zubayr
+badrah	Badrah
+baghdad	Baghdad
+baharkah	Baḥarkah
+balad	Balad
+baladruz	Baladrūz
+bamarni	Bāmarnī
+baqubah	Baqubah
+bartalah	Barţalah
+basrah	Basrah
+batifa	Batifa
+bayji	Bayjī
+baynjiwayn	Baynjiwayn
+begova	Begova
+choman	Choman
+chwarta	Chwarta
+daquq	Dāqūq
+dare tu	Dare Tû
+derbendixan	Derbendîxan
+dereluk devera niheliya	Dêrelûk Devera Nihêliya
+derkar	Derkar
+dibis	Dibis
+dihok	Dihok
+dukan	Dukan
+erbil	Erbil
+habhab	Habhab
+hadithah	Ḩadīthah
+hajiawa	Hajiawa
+halabja	Halabja
+halshaw	Halshaw
+harir	Ḩarir
+hawe ben alean	Hawe Ben Alean
+hayraw	Hayraw
+hetit	Hetit
+hiran	Hīrān
+hit	Hīt
+ibrahim al khalil	Ibrāhīm al Khalīl
+jamjamal	Jamjamāl
+kani masi	Kānī Māsī
+karbala	Karbala
+kays qal‘ah	Kays Qal‘ah
+kelar	Kelar
+khalifan	Khalīfān
+khalis	Khāliş
+khanaqin	Khānaqīn
+khasnahzan	Khasnahzān
+kifri	Kifrī
+kirkuk	Kirkuk
+koysinceq	Koysinceq
+kuchka	Kuchka
+kufa	Kufa
+mandali	Mandalī
+mangesh	Mangêsh
+mawet	Mawet
+mergasur	Mêrgasur
+mexmur	Mexmur
+mosul	Mosul
+nahiyat al fuhud	Nāḩiyat al Fuhūd
+nahiyat al iskandariyah	Nāḩiyat al Iskandarīyah
+nahiyat ali ash sharqi	Nāḩiyat Alī ash Sharqī
+nahiyat ash shinafiyah	Nāḩiyat ash Shināfīyah
+nahiyat bahar	Nāḩiyat Baḩār
+nahiyat ghammas	Nahiyat Ghammas
+nahiyat hiran	Nāḩiyat Hīrān
+nahiyat ‘atbah	Nāḩiyat ‘Atbah
+najaf	Najaf
+nasiriyah	Nasiriyah
+pirmam	Pīrmām
+qal‘at salih	Qal‘at Şāliḩ
+qal‘at sukkar	Qal‘at Sukkar
+qeladize	Qeładizê
+qeredagh	Qeredagh
+qushtepe	Qushtepe
+ramadi	Ramadi
+ranyah	Rānyah
+rawah	Rāwah
+ruwandiz	Ṟuwandiz
+saddat al hindiyah	Saddat al Hindīyah
+sadr city	Sadr City
+safwan	Şafwān
+samarra’	Sāmarrā’
+sarajiq	Sarājīq
+seyid sadiq	Seyid Sadiq
+shaqlawah	Shaqlāwah
+sheladiz	Shelādiz
+shurash	Shūrash
+simele	Simele
+sinah	Sīnah
+sinjar	Sinjār
+soran	Soran
+sulaymaniyah	Sulaymaniyah
+sumayl	Sumayl
+suq ash shuyukh	Sūq ash Shuyūkh
+tall ‘afar	Tall ‘Afar
+tallkayf	Tallkayf
+taxa cheya	Taxa Cheya
+taxe cheya azadiye	Taxe Cheya Azadiye
+tazah khurmatu	Tāzah Khūrmātū
+tikrit	Tikrīt
+tuz khurmatu	Ţūz Khūrmātū
+umm qasr	Umm Qaşr
+xebat	Xebat
+zawitah	Zāwītah
+zaxo	Zaxo
+‘afak	‘Afak
+‘ali al gharbi	‘Alī al Gharbī
+‘anah	‘Anah
+‘anat al qadimah	‘Anat al Qadīmah
+‘aqrah	‘Aqrah
+‘ayn tamr	‘Ayn Tamr
+‘aynkawah	‘Aynkāwah

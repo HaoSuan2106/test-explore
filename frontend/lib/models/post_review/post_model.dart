@@ -449,28 +449,6 @@ class ToggleReactionResponse {
       );
 }
 
-class CreateReportResponse {
-  const CreateReportResponse({
-    required this.reportId,
-    required this.postId,
-    required this.reportCount,
-    required this.message,
-  });
-
-  final String reportId;
-  final String postId;
-  final int reportCount;
-  final String message;
-
-  factory CreateReportResponse.fromJson(Map<String, dynamic> json) =>
-      CreateReportResponse(
-        reportId: json['reportId'] as String? ?? '',
-        postId: json['postId'] as String? ?? '',
-        reportCount: _asInt(json['reportCount']),
-        message: json['message'] as String? ?? '',
-      );
-}
-
 class SavePostResponse {
   const SavePostResponse({
     required this.postId,

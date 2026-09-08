@@ -1,0 +1,21 @@
+basse-pointe	Basse-Pointe
+ducos	Ducos
+fort-de-france	Fort-de-France
+l'ajoupa-bouillon	L'Ajoupa-Bouillon
+la trinite	La Trinité
+le francois	Le François
+le gros-morne	Le Gros-Morne
+le lamentin	Le Lamentin
+le lorrain	Le Lorrain
+le marin	Le Marin
+le morne-rouge	Le Morne-Rouge
+le robert	Le Robert
+le vauclin	Le Vauclin
+les trois-ilets	Les Trois-Îlets
+riviere-pilote	Rivière-Pilote
+saint-esprit	Saint-Esprit
+saint-joseph	Saint-Joseph
+saint-pierre	Saint-Pierre
+sainte-anne	Sainte-Anne
+sainte-luce	Sainte-Luce
+sainte-marie	Sainte-Marie

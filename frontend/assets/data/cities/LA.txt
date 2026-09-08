@@ -1,0 +1,90 @@
+achiang (1)	Achiang (1)
+attapeu	Attapeu
+ban acholaosa	Ban Acholaosa
+ban achung	Ban Achung
+ban antoum	Ban Antoum
+ban bachiang	Ban Bachiang
+ban boten	Ban Botèn
+ban boun-nua	Ban Boun-Nua
+ban dansavan	Ban Dansavan
+ban donghen	Ban Dônghén
+ban fangdeng	Ban Fangdèng
+ban hatgnao	Ban Hatgnao
+ban hatxao	Ban Hatxao
+ban houakhoua	Ban Houakhoua
+ban houayxay	Ban Houayxay
+ban kengkok	Ban Kèngkok
+ban khangviang	Ban Khangviang
+ban khoan	Ban Khoan
+ban lak xao	Ban Lak Xao
+ban laongam	Ban Laongam
+ban lixingxo	Ban Lixingxô
+ban mahaxai	Ban Mahaxai
+ban muang-et	Ban Muang-Èt
+ban muang-nan	Ban Muang-Nan
+ban nahin	Ban Nahin
+ban nakay-tai	Ban Nakay-Tai
+ban nalaotay	Ban Nalaotay
+ban nambak	Ban Nambak
+ban namnga	Ban Namnga
+ban nape	Ban Napè
+ban nasang	Ban Nasang
+ban nongdeun	Ban Nongdeun
+ban pakla	Ban Pakla
+ban phonsavang-nua	Ban Phônsavang-Nua
+ban simuangngam	Ban Simuangngam
+ban siphom	Ban Siphôm
+ban thakham	Ban Thakham
+ban thateng	Ban Thatèng
+ban xamtai	Ban Xamtai
+ban xeno	Ban Xénô
+ban xepon	Ban Xèpôn
+ban xiang-ngeun	Ban Xiang-Ngeun
+borikhan	Borikhan
+champasak	Champasak
+dak cheung	Dak Cheung
+donethat	Donethat
+homyen	Homyen
+houay nga na song	Houay Nga Na Song
+huameung	Huameung
+khoa	Khoa
+lamam	Lamam
+luang namtha	Luang Namtha
+luang prabang	Luang Prabang
+muang hinboun	Muang Hinboun
+muang hongsa	Muang Hôngsa
+muang kasi	Muang Kasi
+muang kenthao	Muang Kènthao
+muang khamkeut	Muang Khamkeut
+muang khong	Muang Không
+muang long	Muang Long
+muang mok	Muang Mok
+muang nale	Muang Nalè
+muang phin	Muang Phin
+muang phon-hong	Muang Phôn-Hông
+muang phonsavan	Muang Phônsavan
+muang sanakham	Muang Sanakham
+muang sing	Muang Sing
+muang xay	Muang Xay
+muang xon	Muang Xon
+oudomsouk	Oudomsouk
+pakkading	Pakkading
+pakse	Pakse
+pakxan	Pakxan
+pakxong	Pakxong
+phongsali	Phôngsali
+phonthong	Phônthong
+sainyabuli	Sainyabuli
+salavan	Salavan
+sanaxy	Sanaxy
+savannakhet	Savannakhet
+sekong	Sekong
+thakhek	Thakhèk
+vang vieng	Vang Vieng
+viangxai	Viangxai
+viengthong	Viengthong
+viengxay	Viengxay
+vientiane	Vientiane
+xam nua	Xam Nua
+xamtay	Xamtay
+xaysetha	Xaysetha

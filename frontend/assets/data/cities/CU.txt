@@ -1,0 +1,204 @@
+abreus	Abreus
+aguada de moya	Aguada de Moya
+aguada de pasajeros	Aguada de Pasajeros
+alacranes	Alacranes
+alamar	Alamar
+almendares	Almendares
+alquizar	Alquízar
+alta habana	Alta Habana
+amancio	Amancio
+antilla	Antilla
+arroyo naranjo	Arroyo Naranjo
+artemisa	Artemisa
+australia	Australia
+baguano	Báguano
+bahia honda	Bahía Honda
+balcon de la lisa	Balcón de la Lisa
+banes	Banes
+baracoa	Baracoa
+baragua	Baraguá
+bartolome maso	Bartolomé Masó
+batabano	Batabanó
+bauta	Bauta
+bayamo	Bayamo
+bejucal	Bejucal
+bolivia	Bolivia
+bolondron	Bolondrón
+boyeros	Boyeros
+buey arriba	Buey Arriba
+cabaiguan	Cabaiguán
+cabanas	Cabañas
+cacocum	Cacocum
+caibarien	Caibarién
+caimito	Caimito
+calabazar de sagua	Calabazar de Sagua
+calimete	Calimete
+calixto	Calixto
+camaguey	Camagüey
+camajuani	Camajuaní
+campechuela	Campechuela
+campo florido	Campo Florido
+candelaria	Candelaria
+cardenas	Cárdenas
+carlos manuel de cespedes	Carlos Manuel de Céspedes
+casablanca	Casablanca
+cauto cristo	Cauto Cristo
+cayo mambi	Cayo Mambí
+centro habana	Centro Habana
+cerro	Cerro
+chambas	Chambas
+ciego de avila	Ciego de Ávila
+cienfuegos	Cienfuegos
+cifuentes	Cifuentes
+ciro redondo	Ciro Redondo
+ciudad camilo cienfuegos	Ciudad Camilo Cienfuegos
+cojimar	Cojímar
+colombia	Colombia
+colon	Colón
+condado	Condado
+consolacion del sur	Consolación del Sur
+contramaestre	Contramaestre
+corralillo	Corralillo
+cruces	Cruces
+cueto	Cueto
+cumanayagua	Cumanayagua
+diez de octubre	Diez de Octubre
+el caney	El Caney
+el cobre	El Cobre
+encrucijada	Encrucijada
+esmeralda	Esmeralda
+esperanza	Esperanza
+florencia	Florencia
+florida	Florida
+fomento	Fomento
+fontanar	Fontanar
+gaspar	Gaspar
+gibara	Gibara
+guaimaro	Guáimaro
+guanabacoa	Guanabacoa
+guanabo	Guanabo
+guanajay	Guanajay
+guane	Guane
+guantanamo	Guantánamo
+guara	Guara
+guayos	Guayos
+guines	Güines
+guira de melena	Güira de Melena
+guisa	Guisa
+havana	Havana
+holguin	Holguín
+isabela de sagua	Isabela de Sagua
+jaguey grande	Jagüey Grande
+jamaica	Jamaica
+jaruco	Jaruco
+jatibonico	Jatibonico
+jesus menendez	Jesús Menéndez
+jiguani	Jiguaní
+jimaguayu	Jimaguayú
+jobabo	Jobabo
+jovellanos	Jovellanos
+la casualidad	La Casualidad
+la habana vieja	La Habana Vieja
+la maquina	La Máquina
+la palma	La Palma
+la salud	La Salud
+la sierpe	La Sierpe
+lajas	Lajas
+las tunas	Las Tunas
+leader	Leader
+limonar	Limonar
+los arabos	Los Arabos
+los palacios	Los Palacios
+luis arcos bergnes	Luis Arcos Bergnes
+madruga	Madruga
+maisi	Maisí
+majagua	Majagua
+manalich	Mañalich
+manati	Manatí
+manguito	Manguito
+manicaragua	Manicaragua
+mantilla	Mantilla
+mantua	Mantua
+manzanillo	Manzanillo
+marianao	Marianao
+mariel	Mariel
+marti	Martí
+matanzas	Matanzas
+mayari	Mayarí
+media luna	Media Luna
+melena del sur	Melena del Sur
+minas	Minas
+minas de matahambre	Minas de Matahambre
+moa	Moa
+moron	Morón
+najasa	Najasa
+naranjito	Naranjito
+naval station guantanamo bay	Naval Station Guantanamo Bay
+niquero	Niquero
+nueva gerona	Nueva Gerona
+nueva paz	Nueva Paz
+nuevitas	Nuevitas
+palenque	Palenque
+palma soriano	Palma Soriano
+palmira	Palmira
+pedro betancourt	Pedro Betancourt
+perico	Perico
+pilon	Pilón
+pinar del rio	Pinar del Río
+placetas	Placetas
+playa baracoa	Playa Baracoa
+plaza de la revolucion	Plaza de la Revolución
+primero de enero	Primero de Enero
+puentes grandes	Puentes Grandes
+puerto esperanza	Puerto Esperanza
+puerto padre	Puerto Padre
+quemado de guines	Quemado de Güines
+quivican	Quivicán
+rancho veloz	Rancho Veloz
+ranchuelo	Ranchuelo
+regla	Regla
+remedios	Remedios
+rio cauto	Río Cauto
+rio guayabal de yateras	Río Guayabal de Yateras
+rodas	Rodas
+sagua de tanamo	Sagua de Tánamo
+sagua la grande	Sagua la Grande
+san antonio de los banos	San Antonio de los Baños
+san antonio del sur	San Antonio del Sur
+san cristobal	San Cristobal
+san diego de los banos	San Diego de Los Baños
+san francisco de paula	San Francisco de Paula
+san german	San Germán
+san jose de las lajas	San José de las Lajas
+san juan y martinez	San Juan y Martínez
+san luis	San Luis
+san miguel del padron	San Miguel del Padrón
+san nicolas de bari	San Nicolás de Bari
+sancti spiritus	Sancti Spíritus
+santa clara	Santa Clara
+santa cruz del norte	Santa Cruz del Norte
+santa cruz del sur	Santa Cruz del Sur
+santa lucia	Santa Lucía
+santiago de cuba	Santiago de Cuba
+santiago de las vegas	Santiago de las Vegas
+santo domingo	Santo Domingo
+segundo frente	Segundo Frente
+sibanicu	Sibanicú
+soroa	Soroa
+taguasco	Taguasco
+tarara	Tarará
+topes de collantes	Topes de Collantes
+trinidad	Trinidad
+union de reyes	Unión de Reyes
+varadero	Varadero
+vedado	Vedado
+vedado del cotorro	Vedado del Cotorro
+vega alta	Vega Alta
+venezuela	Venezuela
+vertientes	Vertientes
+vibora	Víbora
+vibora park	Víbora Park
+vinales	Viñales
+yaguajay	Yaguajay
+yara	Yara
+zaza del medio	Zaza del Medio

@@ -1,0 +1,13 @@
+acquaviva	Acquaviva
+borgo maggiore	Borgo Maggiore
+cailungo	Cailungo
+dogana	Dogana
+domagnano	Domagnano
+faetano	Faetano
+fiorentino	Fiorentino
+monte giardino	Monte Giardino
+murata	Murata
+poggio di chiesanuova	Poggio di Chiesanuova
+san marino	San Marino
+serravalle	Serravalle
+valdragone	Valdragone

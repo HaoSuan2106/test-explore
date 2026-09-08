@@ -1,0 +1,27 @@
+arima	Arima
+arouca	Arouca
+california	California
+chaguanas	Chaguanas
+claxton bay	Claxton Bay
+couva	Couva
+debe	Debe
+diego martin	Diego Martin
+gasparillo	Gasparillo
+laventille	Laventille
+marabella	Marabella
+mon repos	Mon Repos
+mucurapo	Mucurapo
+paradise	Paradise
+penal	Peñal
+petit valley	Petit Valley
+point fortin	Point Fortin
+port of spain	Port of Spain
+princes town	Princes Town
+rio claro	Rio Claro
+san fernando	San Fernando
+sangre grande	Sangre Grande
+scarborough	Scarborough
+siparia	Siparia
+tabaquite	Tabaquite
+talparo	Talparo
+tunapuna	Tunapuna

@@ -1,0 +1,80 @@
+arandis	Arandis
+aranos	Aranos
+aroab	Aroab
+aus	Aus
+aussenkehr	Aussenkehr
+bagani	Bagani
+bethanie	Bethanie
+eenhana	Eenhana
+ekongo	Ekongo
+gibeon	Gibeon
+gobabis	Gobabis
+gochas	Gochas
+groot aub	Groot Aub
+grootfontein	Grootfontein
+helao nafidi	Helao Nafidi
+henties bay	Henties Bay
+hoachanas	Hoachanas
+kalkfeld	Kalkfeld
+kalkrand	Kalkrand
+kamanjab	Kamanjab
+karasburg	Karasburg
+karibib	Karibib
+katima mulilo	Katima Mulilo
+katutura	Katutura
+keetmanshoop	Keetmanshoop
+khorixas	Khorixas
+koes	Koës
+leonardville	Leonardville
+linyanti	Linyanti
+luderitz	Lüderitz
+maltahohe	Maltahöhe
+mariental	Mariental
+ndiyona	Ndiyona
+nkurenkuru	Nkurenkuru
+noordoewer	Noordoewer
+okahandja	Okahandja
+okahao	Okahao
+okakarara	Okakarara
+okalongo	Okalongo
+okombahe	Okombahe
+okondjatu	Okondjatu
+omaruru	Omaruru
+omuthiya	Omuthiya
+ondangwa	Ondangwa
+ondangwa east	Ondangwa East
+ongandjera	Ongandjera
+ongwediva	Ongwediva
+oniipa	Oniipa
+opuwo	Opuwo
+oranjemund	Oranjemund
+oshakati	Oshakati
+oshikango	Oshikango
+oshikuku	Oshikuku
+oshivelo	Oshivelo
+osire	Osire
+otavi	Otavi
+otjimbingwe	Otjimbingwe
+otjinene	Otjinene
+otjiwarongo	Otjiwarongo
+outapi	Outapi
+outjo	Outjo
+rehoboth	Rehoboth
+rosh pinah	Rosh Pinah
+ruacana	Ruacana
+rundu	Rundu
+schlip	Schlip
+sesfontein	Sesfontein
+stampriet	Stampriet
+swakopmund	Swakopmund
+tsandi	Tsandi
+tses	Tses
+tsintsabis	Tsintsabis
+tsumeb	Tsumeb
+tsumkwe	Tsumkwe
+uis	Uis
+usakos	Usakos
+walvis bay	Walvis Bay
+warmbad	Warmbad
+windhoek	Windhoek
+witvlei	Witvlei

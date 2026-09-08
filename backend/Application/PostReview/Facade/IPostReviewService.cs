@@ -38,7 +38,7 @@ public interface IPostReviewService
 
     // ---- Reports ----
     Task<CreateReportResponseDto> CreateReportAsync(int currentUserId, string postId, CreateReportRequestDto request);
-    Task<PostReportDto> WithdrawReportAsync(int currentUserId, string postId, string reportId);
+    //Task<PostReportDto> WithdrawReportAsync(int currentUserId, string postId, string reportId);
     Task<List<PostReportDto>> GetMyReportsAsync(int currentUserId);
     IReadOnlyList<string> GetReportReasons();
 }

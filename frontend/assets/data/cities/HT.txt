@@ -1,0 +1,108 @@
+acul du nord	Acul du Nord
+anse a galets	Anse à Galets
+anse rouge	Anse Rouge
+anse-a-pitre	Anse-à-Pitre
+anse-a-veau	Anse-à-Veau
+aquin	Aquin
+arcahaie	Arcahaie
+bahon	Bahon
+baie de henne	Baie de Henne
+baraderes	Baradères
+belle-anse	Belle-Anse
+bombardopolis	Bombardopolis
+borgne	Borgne
+cabaret	Cabaret
+cap-haitien	Cap-Haïtien
+caracol	Caracol
+carice	Carice
+carrefour	Carrefour
+cavaillon	Cavaillon
+cayes-jacmel	Cayes-Jacmel
+cerca la source	Cerca la Source
+chambellan	Chambellan
+chantal	Chantal
+chardonniere	Chardonnière
+cite soleil	Cité Soleil
+corail	Corail
+cornillon	Cornillon
+croix-des-bouquets	Croix-des-Bouquets
+dame-marie	Dame-Marie
+delmas	Delmas
+derac	Dérac
+desarmes	Désarmes
+dessalines	Dessalines
+dondon	Dondon
+ennery	Ennery
+ferrier	Ferrier
+fond bassin bleu	Fond Bassin Bleu
+fond des blancs	Fond des Blancs
+fond parisien	Fond Parisien
+fonds verrettes	Fonds Verrettes
+fort liberte	Fort Liberté
+gonaives	Gonaïves
+grand gosier	Grand Gosier
+grande riviere du nord	Grande Rivière du Nord
+grande saline	Grande Saline
+grangwav	Grangwav
+gressier	Gressier
+gros morne	Gros Morne
+hinche	Hinche
+jacmel	Jacmel
+jean-rabel	Jean-Rabel
+jeremie	Jérémie
+kenscoff	Kenscoff
+kotdefe	Kotdefè
+koto	Koto
+lascahobas	Lascahobas
+lenbe	Lenbe
+leogane	Léogâne
+les abricots	Les Abricots
+les anglais	Les Anglais
+les cayes	Les Cayes
+les irois	Les Irois
+limonade	Limonade
+marigot	Marigot
+marmelade	Marmelade
+mayisad	Mayisad
+milot	Milot
+miragoane	Miragoâne
+mirebalais	Mirebalais
+mole saint-nicolas	Môle Saint-Nicolas
+montorganize	Montòrganize
+moron	Moron
+ouanaminthe	Ouanaminthe
+perches	Perches
+petionville	Pétionville
+petit trou de nippes	Petit Trou de Nippes
+petite anse	Petite Anse
+petite riviere de nippes	Petite Rivière de Nippes
+phaeton	Phaëton
+pignon	Pignon
+pilate	Pilate
+plaine du nord	Plaine du Nord
+plaisance	Plaisance
+port-a-piment	Port-à-Piment
+port-au-prince	Port-au-Prince
+port-de-paix	Port-de-Paix
+port-margot	Port-Margot
+quartier morin	Quartier Morin
+ranquitte	Ranquitte
+roche-a-bateau	Roche-à-Bateau
+saint-louis du nord	Saint-Louis du Nord
+saint-louis du sud	Saint-Louis du Sud
+saint-marc	Saint-Marc
+saint-michel de l'atalaye	Saint-Michel de l'Atalaye
+saint-raphael	Saint-Raphaël
+sassier	Sassier
+sources chaudes	Sources Chaudes
+terrier rouge	Terrier Rouge
+thiotte	Thiotte
+thomassique	Thomassique
+thomazeau	Thomazeau
+thomonde	Thomonde
+ti port-de-paix	Ti Port-de-Paix
+tiburon	Tiburon
+tigwav	Tigwav
+torbeck	Torbeck
+trou du nord	Trou du Nord
+verrettes	Verrettes

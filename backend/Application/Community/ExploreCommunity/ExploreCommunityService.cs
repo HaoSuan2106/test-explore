@@ -175,6 +175,11 @@ public class ExploreCommunityService : IExploreCommunityService
                         PlaceLongitude = a.PlaceLongitude,
                         PlacePrimaryType = a.PlacePrimaryType,
                         IsCommunityPlace = a.IsCommunityPlace,
+                        PostId = a.PostId,
+                        PostTitle = a.PostTitle,
+                        PostImageUrl = a.PostImageUrl,
+                        PostAuthorName = a.PostAuthorName,
+                        PostLocation = a.PostLocation,
                     }).ToList()
                     : new List<MessageAttachmentDto>(),
             });

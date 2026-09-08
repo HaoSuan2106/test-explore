@@ -722,6 +722,12 @@ public class MySqlDbContext : Microsoft.EntityFrameworkCore.DbContext
             entity.Property(a => a.PlacePrimaryType).HasMaxLength(100);
             entity.Property(a => a.IsCommunityPlace).HasDefaultValue(false);
 
+            entity.Property(a => a.PostId).HasMaxLength(36);
+            entity.Property(a => a.PostTitle).HasMaxLength(100);
+            entity.Property(a => a.PostImageUrl).HasMaxLength(500);
+            entity.Property(a => a.PostAuthorName).HasMaxLength(255);
+            entity.Property(a => a.PostLocation).HasMaxLength(500);
+
             entity.HasOne<Message>()
                 .WithMany()
                 .HasForeignKey(a => a.MessageId)

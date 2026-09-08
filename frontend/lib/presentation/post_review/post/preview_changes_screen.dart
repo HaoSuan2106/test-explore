@@ -1,3 +1,6 @@
+import 'dart:io';
+
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../../../theme/app_theme.dart';
@@ -31,6 +34,14 @@ class PreviewChangesScreen extends StatelessWidget {
         ? postProvider.draftDescription
         : 'No description provided.';
     final location = postProvider.draftLocation;
+    // Draft images: the editor syncs every picked photo's uploaded URL into
+    // draftPhotos BEFORE navigating here, so the preview shows exactly what
+    // will be submitted — order preserved, remove/add reflected instantly via
+    // the draftVersion subscription above. Remote URLs (http/https) render
+    // through CachedNetworkImage; anything else (e.g. a local file path left
+    // by an upload failure) renders through Image.file so a real local image
+    // is never replaced by a broken-image placeholder.
+    final draftPhotos = postProvider.draftPhotos;
 
     return Scaffold(
       backgroundColor: AppColors.background,
@@ -109,6 +120,10 @@ class PreviewChangesScreen extends StatelessWidget {
                                 description,
                                 style: AppTypography.bodyMd,
                               ),
+                              if (draftPhotos.isNotEmpty) ...[
+                                const SizedBox(height: AppSpacing.stackSm),
+                                _buildDraftImages(draftPhotos),
+                              ],
                             ],
                           ),
                         ),
@@ -147,11 +162,17 @@ class PreviewChangesScreen extends StatelessWidget {
                   const SizedBox(width: AppSpacing.gutterMd),
                   Expanded(
                     child: AppButton(
-                      text: 'Publish Changes',
-                      icon: Icons.publish,
+                      // Mode contract: edit an existing post (postId != null)
+                      // => "Save Changes"; create a new post => "Publish Post".
+                      text: postId != null ? 'Save Changes' : 'Publish Post',
+                      icon: postId != null ? Icons.check : Icons.publish,
                       isLoading: isSaving,
                       onPressed: () async {
                         final provider = context.read<PostProvider>();
+                        // In-flight publish: ignore re-entry silently (ONE
+                        // write per action; a rapid double tap must not send a
+                        // second PUT/POST nor show a spurious failure toast).
+                        if (provider.isPublishing) return;
                         // Post title is compulsory (business decision H-4);
                         // block publishing when the title is missing.
                         if (provider.draftTitle.trim().isEmpty) {
@@ -161,7 +182,13 @@ class PreviewChangesScreen extends StatelessWidget {
                         final postId = await provider.publishDraft(postId: this.postId);
                         if (!context.mounted) return;
                         if (postId != null) {
-                          AppFeedback.show(context, message: 'Post published successfully.', isSuccess: true);
+                          AppFeedback.show(
+                            context,
+                            message: this.postId != null
+                                ? 'Post updated successfully.'
+                                : 'Post published successfully.',
+                            isSuccess: true,
+                          );
                           if (this.postId != null) {
                             // Edit flow: return to Post Details.
                             Navigator.of(context).pop(); // pop Preview
@@ -185,6 +212,62 @@ class PreviewChangesScreen extends StatelessWidget {
             ],
           ),
         ),
+      ),
+    );
+  }
+
+  /// Renders the draft post images in submitted display order.
+  ///
+  /// Network URLs use CachedNetworkImage (same widget family as the feed's
+  /// [PostImageGalleryView]); non-URL entries fall back to Image.file so a
+  /// valid local file renders instead of a broken-image placeholder. Images
+  /// re-render from the current draft state on every rebuild — no stale
+  /// preview model is involved.
+  Widget _buildDraftImages(List<String> photos) {
+    return SizedBox(
+      height: 160,
+      child: ListView.separated(
+        scrollDirection: Axis.horizontal,
+        itemCount: photos.length,
+        separatorBuilder: (_, _) => const SizedBox(width: AppSpacing.stackSm),
+        itemBuilder: (context, i) {
+          final url = photos[i];
+          final Widget image = (url.startsWith('http://') ||
+                  url.startsWith('https://'))
+              ? ClipRRect(
+                  borderRadius: AppRadii.roundedMd,
+                  child: CachedNetworkImage(
+                    imageUrl: url,
+                    width: 240,
+                    height: 160,
+                    fit: BoxFit.cover,
+                    errorWidget: (_, _, _) => Container(
+                      width: 240,
+                      height: 160,
+                      color: AppColors.surfaceVariant,
+                      child:
+                          const Icon(Icons.image, color: AppColors.textMuted),
+                    ),
+                  ),
+                )
+              : ClipRRect(
+                  borderRadius: AppRadii.roundedMd,
+                  child: Image.file(
+                    File(url),
+                    width: 240,
+                    height: 160,
+                    fit: BoxFit.cover,
+                    errorBuilder: (_, _, _) => Container(
+                      width: 240,
+                      height: 160,
+                      color: AppColors.surfaceVariant,
+                      child:
+                          const Icon(Icons.image, color: AppColors.textMuted),
+                    ),
+                  ),
+                );
+          return image;
+        },
       ),
     );
   }

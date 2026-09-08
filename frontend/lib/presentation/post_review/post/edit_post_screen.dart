@@ -316,7 +316,6 @@ class _EditPostScreenState extends State<EditPostScreen> {
                     Expanded(
                       child: Text(_taggedLocation, style: AppTypography.bodyMd),
                     ),
-                    const Icon(Icons.keyboard_arrow_down, color: AppColors.textSecondary),
                   ],
                 ),
               ),
@@ -400,6 +399,10 @@ class _EditPostScreenState extends State<EditPostScreen> {
               const SizedBox(height: AppSpacing.sectionGap),
 
               // 6. Action Buttons (Preview & Save Changes)
+              // Upload-readiness rule (selected ≠ uploaded): while an image
+              // batch is still uploading, both buttons stay disabled so the
+              // draft/submit can never capture a partial image list — the
+              // pick button's spinner shows what is still running.
               Row(
                 children: [
                   Expanded(
@@ -408,50 +411,79 @@ class _EditPostScreenState extends State<EditPostScreen> {
                       icon: Icons.visibility_outlined,
                       variant: AppButtonVariant.outline,
                       isLoading: isSaving,
-                      onPressed: () {
-                        if (!_validateTitle()) return;
-                        _syncDraftToProvider();
-                        AppNavigation.toPreviewChanges(
-                          context,
-                          postId: widget.postId,
-                        );
-                      },
+                      onPressed: _isUploading
+                          ? null
+                          : () {
+                              if (!_validateTitle()) return;
+                              _syncDraftToProvider();
+                              AppNavigation.toPreviewChanges(
+                                context,
+                                postId: widget.postId,
+                              );
+                            },
                     ),
                   ),
                   const SizedBox(width: AppSpacing.gutterMd),
                   Expanded(
                     child: AppButton(
-                      text: 'Save Changes',
-                      icon: Icons.check,
+                      // Mode contract: the SAME submit button serves both
+                      // flows, but the label and behavior follow the screen
+                      // mode (widget.postId != null = editing an existing
+                      // post). Create must never read or behave like "Save
+                      // Changes".
+                      text: widget.postId != null ? 'Save Changes' : 'Publish Post',
+                      icon: widget.postId != null ? Icons.check : Icons.publish,
                       isLoading: isSaving,
-                      onPressed: () async {
-                        if (!_validateTitle()) return;
-                        _syncDraftToProvider();
-                        final provider = context.read<PostProvider>();
-                        final postId = await provider.publishDraft(postId: widget.postId);
-                        if (!context.mounted) return;
-                        if (postId != null) {
-                          AppFeedback.show(context,
-                            message: widget.postId != null
-                                ? 'Post updated successfully.'
-                                : 'Post published successfully.',
-                            isSuccess: true,
-                          );
-                          if (widget.postId != null) {
-                            // Edit flow: return to Post Details with the
-                            // result so the parent can refresh authoritative data.
-                            Navigator.of(context).pop(PostEditResult.updated);
-                          } else {
-                            // Create flow: return to the Feed (root shell).
-                            Navigator.of(context).popUntil((route) => route.isFirst);
-                          }
-                        } else {
-                          AppFeedback.show(context,
-                            message: provider.errorMessage ?? 'Failed to save the post. Please try again.',
-                            isSuccess: false,
-                          );
-                        }
-                      },
+                      onPressed: _isUploading
+                          ? null
+                          : () async {
+                              // In-flight publish: ignore re-entry silently
+                              // (ONE write per action; no duplicate request,
+                              // no spurious failure toast on a rapid 2nd tap).
+                              final provider = context.read<PostProvider>();
+                              if (provider.isPublishing) return;
+                              if (!_validateTitle()) return;
+
+                              _syncDraftToProvider();
+
+                              final postId = await provider.publishDraft(
+                                postId: widget.postId,
+                              );
+
+                              if (!context.mounted) return;
+
+                              if (postId != null) {
+                                AppFeedback.show(
+                                  context,
+                                  message: widget.postId != null
+                                      ? 'Post updated successfully.'
+                                      : 'Post published successfully.',
+                                  isSuccess: true,
+                                );
+
+                                if (widget.postId != null) {
+                                  // EDIT FLOW: return to Post Details with the
+                                  // result so the parent reloads authoritative
+                                  // post data on arrival.
+                                  Navigator.of(context).pop(
+                                    PostEditResult.updated,
+                                  );
+                                } else {
+                                  // CREATE FLOW: return to the Feed (root
+                                  // shell); publishDraft already refreshed it.
+                                  Navigator.of(context).popUntil(
+                                    (route) => route.isFirst,
+                                  );
+                                }
+                              } else {
+                                AppFeedback.show(
+                                  context,
+                                  message: provider.errorMessage ??
+                                      'Failed to save the post. Please try again.',
+                                  isSuccess: false,
+                                );
+                              }
+                            },
                     ),
                   ),
                 ],

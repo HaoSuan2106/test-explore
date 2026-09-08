@@ -1,0 +1,302 @@
+algarrobo	Algarrobo
+alto del carmen	Alto del Carmen
+alto hospicio	Alto Hospicio
+ancud	Ancud
+andacollo	Andacollo
+angol	Angol
+antofagasta	Antofagasta
+antuco	Antuco
+arauco	Arauco
+arica	Arica
+baquedano	Baquedano
+batuco	Batuco
+buin	Buin
+bulnes	Bulnes
+cabildo	Cabildo
+cabrero	Cabrero
+calama	Calama
+calbuco	Calbuco
+caldera	Caldera
+calera de tango	Calera de Tango
+calle larga	Calle Larga
+cameron	Cámeron
+camina	Camiña
+canela	Canela
+canete	Cañete
+capitan pastene	Capitán Pastene
+carahue	Carahue
+cartagena	Cartagena
+casablanca	Casablanca
+castro	Castro
+catemu	Catemu
+cauquenes	Cauquenes
+chaiten	Chaitén
+chanaral	Chañaral
+chanco	Chanco
+chepica	Chépica
+chicureo	Chicureo
+chiguayante	Chiguayante
+chile chico	Chile Chico
+chillan	Chillán
+chillan viejo	Chillán Viejo
+chimbarongo	Chimbarongo
+cholchol	Cholchol
+chonchi	Chonchi
+cobquecura	Cobquecura
+cochamo	Cochamó
+cochrane	Cochrane
+codegua	Codegua
+coelemu	Coelemu
+coihueco	Coihueco
+colbun	Colbún
+colchane	Colchane
+colina	Colina
+collipulli	Collipulli
+coltauco	Coltauco
+combarbala	Combarbalá
+concepcion	Concepción
+concon	Concón
+constitucion	Constitución
+contulmo	Contulmo
+copiapo	Copiapó
+coquimbo	Coquimbo
+coronel	Coronel
+corral	Corral
+coya	Coya
+coyhaique	Coyhaique
+cunco	Cunco
+curacautin	Curacautín
+curacavi	Curacaví
+curanilahue	Curanilahue
+curarrehue	Curarrehue
+curico	Curicó
+cuya	Cuya
+dalcahue	Dalcahue
+dichato	Dichato
+diego de almagro	Diego de Almagro
+donihue	Doñihue
+el carmen	El Carmen
+el monte	El Monte
+el quisco	El Quisco
+el tabo	El Tabo
+empedrado	Empedrado
+ercilla	Ercilla
+florida	Florida
+freire	Freire
+freirina	Freirina
+fresia	Fresia
+frutillar	Frutillar
+futaleufu	Futaleufú
+futrono	Futrono
+galvarino	Galvarino
+gorbea	Gorbea
+graneros	Graneros
+hacienda la calera	Hacienda La Calera
+hanga roa	Hanga Roa
+hijuelas	Hijuelas
+hualane	Hualañe
+hualpen	Hualpén
+hualqui	Hualqui
+huara	Huara
+huasco	Huasco
+huentelauquen	Huentelauquén
+huepil	Huepil
+illapel	Illapel
+iquique	Iquique
+isla de maipo	Isla de Maipo
+la calera	La Calera
+la cruz	La Cruz
+la ensenada	La Ensenada
+la higuera	La Higuera
+la islita	La Islita
+la junta	La Junta
+la ligua	La Ligua
+la pintana	La Pintana
+la serena	La Serena
+la union	La Unión
+labranza	Labranza
+lago ranco	Lago Ranco
+laja	Laja
+lampa	Lampa
+lanco	Lanco
+las animas	Las Animas
+las cabras	Las Cabras
+las gaviotas	Las Gaviotas
+lautaro	Lautaro
+lebu	Lebu
+limache	Limache
+linares	Linares
+llaillay	Llaillay
+llanquihue	Llanquihue
+lo prado	Lo Prado
+lolol	Lolol
+loncoche	Loncoche
+loncura	Loncura
+longavi	Longaví
+lonquimay	Lonquimay
+los alamos	Los Álamos
+los andes	Los Andes
+los angeles	Los Ángeles
+los lagos	Los Lagos
+los laureles	Los Laureles
+los muermos	Los Muermos
+los sauces	Los Sauces
+los vilos	Los Vilos
+lota	Lota
+lumaco	Lumaco
+machali	Machalí
+maipu	Maipú
+marchihue	Marchihue
+maria elena	María Elena
+maria pinto	María Pinto
+maule	Maule
+maullin	Maullín
+mejillones	Mejillones
+melipeuco	Melipeuco
+melipilla	Melipilla
+molina	Molina
+monte patria	Monte Patria
+mulchen	Mulchén
+nacimiento	Nacimiento
+nancagua	Nancagua
+negrete	Negrete
+ninhue	Ninhue
+nogales	Nogales
+nueva imperial	Nueva Imperial
+nueva tolten	Nueva Toltén
+nunoa	Ñuñoa
+olivar	Olivar
+olmue	Olmué
+osorno	Osorno
+ovalle	Ovalle
+padre hurtado	Padre Hurtado
+padre las casas	Padre Las Casas
+paiguano	Paiguano
+paillaco	Paillaco
+paine	Paine
+palena	Palena
+palmilla	Palmilla
+panguipulli	Panguipulli
+panquehue	Panquehue
+papudo	Papudo
+paredones	Paredones
+parral	Parral
+pelarco	Pelarco
+pemuco	Pemuco
+penaflor	Peñaflor
+penalolen	Peñalolén
+pencahue	Pencahue
+penco	Penco
+peor es nada	Peor Es Nada
+peralillo	Peralillo
+perquenco	Perquenco
+petorca	Petorca
+peumo	Peumo
+pica	Pica
+pichidegua	Pichidegua
+pichilemu	Pichilemu
+pinto	Pinto
+pirque	Pirque
+pitrufquen	Pitrufquén
+placilla	Placilla
+porvenir	Porvenir
+pozo almonte	Pozo Almonte
+providencia	Providencia
+puchuncavi	Puchuncaví
+pucon	Pucón
+puente alto	Puente Alto
+puerto aysen	Puerto Aysén
+puerto chacabuco	Puerto Chacabuco
+puerto cisnes	Puerto Cisnes
+puerto montt	Puerto Montt
+puerto natales	Puerto Natales
+puerto varas	Puerto Varas
+puerto williams	Puerto Williams
+punitaqui	Punitaqui
+punta arenas	Punta Arenas
+puren	Purén
+purranque	Purranque
+putaendo	Putaendo
+putre	Putre
+puyehue	Puyehue
+quellon	Quellón
+quilaco	Quilaco
+quilicura	Quilicura
+quilleco	Quilleco
+quillon	Quillón
+quillota	Quillota
+quilpue	Quilpué
+quinta de tilcoco	Quinta de Tilcoco
+quintero	Quintero
+quirihue	Quirihue
+rancagua	Rancagua
+rauco	Rauco
+renaico	Renaico
+renca	Renca
+rengo	Rengo
+requinoa	Requínoa
+retiro	Retiro
+rinconada de los andes	Rinconada de Los Andes
+rinconada de malloa	Rinconada de Malloa
+rio bueno	Río Bueno
+rio negro	Río Negro
+romeral	Romeral
+saavedra	Saavedra
+sagrada familia	Sagrada Familia
+salamanca	Salamanca
+san antonio	San Antonio
+san bernardo	San Bernardo
+san carlos	San Carlos
+san clemente	San Clemente
+san esteban	San Esteban
+san fabian de alico	San Fabián de Alico
+san felipe	San Felipe
+san francisco de mostazal	San Francisco de Mostazal
+san ignacio	San Ignacio
+san javier	San Javier
+san jose de la mariquina	San José de la Mariquina
+san jose de maipo	San José de Maipo
+san nicolas	San Nicolás
+san pablo	San Pablo
+san pedro de atacama	San Pedro de Atacama
+san pedro de la paz	San Pedro de la Paz
+san rafael	San Rafael
+san vicente	San Vicente
+san vicente de tagua tagua	San Vicente de Tagua Tagua
+santa barbara	Santa Bárbara
+santa cruz	Santa Cruz
+santa juana	Santa Juana
+santa maria	Santa María
+santiago	Santiago
+santo domingo	Santo Domingo
+sierra gorda	Sierra Gorda
+talagante	Talagante
+talca	Talca
+talcahuano	Talcahuano
+taltal	Taltal
+temuco	Temuco
+teno	Teno
+teodoro schmidt	Teodoro Schmidt
+tierra amarilla	Tierra Amarilla
+tiltil	Tiltil
+tirua	Tirúa
+tocopilla	Tocopilla
+tome	Tomé
+traiguen	Traiguén
+tucapel	Tucapel
+valdivia	Valdivia
+vallenar	Vallenar
+valparaiso	Valparaíso
+victoria	Victoria
+vicuna	Vicuña
+vilcun	Vilcún
+villa alegre	Villa Alegre
+villa alemana	Villa Alemana
+villa alhue	Villa Alhué
+villa mercedes	Villa Mercedes
+villa presidente frei	Villa Presidente Frei
+villarrica	Villarrica
+vina del mar	Viña del Mar
+yerbas buenas	Yerbas Buenas
+yumbel	Yumbel
+yungay	Yungay

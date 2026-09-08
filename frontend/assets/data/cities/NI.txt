@@ -1,0 +1,165 @@
+achuapa	Achuapa
+acoyapa	Acoyapa
+alamikambang	Alamikambang
+altagracia	Altagracia
+belen	Belén
+bluefields	Bluefields
+boaco	Boaco
+boca de sabalos	Boca de Sábalos
+bocana de paiwas	Bocana de Paiwas
+bonanza	Bonanza
+buenos aires	Buenos Aires
+camoapa	Camoapa
+cardenas	Cárdenas
+catarina	Catarina
+chichigalpa	Chichigalpa
+chinandega	Chinandega
+cinco pinos	Cinco Pinos
+ciudad antigua	Ciudad Antigua
+ciudad dario	Ciudad Darío
+ciudad sandino	Ciudad Sandino
+comalapa	Comalapa
+condega	Condega
+corinto	Corinto
+dipilto	Dipilto
+diria	Diriá
+diriamba	Diriamba
+diriomo	Diriomo
+dolores	Dolores
+el almendro	El Almendro
+el ayote	El Ayote
+el coral	El Coral
+el crucero	El Crucero
+el cua	El Cuá
+el jicaral	El Jicaral
+el jicaro	El Jícaro
+el realejo	El Realejo
+el rosario	El Rosario
+el sauce	El Sauce
+el tortuguero	El Tortuguero
+el viejo	El Viejo
+esquipulas	Esquipulas
+esteli	Estelí
+granada	Granada
+grey town	Grey Town
+jalapa	Jalapa
+jinotega	Jinotega
+jinotepe	Jinotepe
+jiquilillo	Jiquilillo
+juigalpa	Juigalpa
+karawala	Karawala
+kukra hill	Kukra Hill
+la concepcion	La Concepción
+la concordia	La Concordia
+la conquista	La Conquista
+la cruz de rio grande	La Cruz de Río Grande
+la dalia	La Dalia
+la libertad	La Libertad
+la paz centro	La Paz Centro
+la paz de carazo	La Paz de Carazo
+la trinidad	La Trinidad
+larreynaga	Larreynaga
+las praderas	Las Praderas
+las sabanas	Las Sabanas
+leon	León
+llano de la cruz	LLano de La Cruz
+los copeles	Los Copeles
+macuelizo	Macuelizo
+malpaisillo	Malpaisillo
+managua	Managua
+masachapa	Masachapa
+masatepe	Masatepe
+masaya	Masaya
+matagalpa	Matagalpa
+mateare	Mateare
+matiguas	Matiguás
+morrito	Morrito
+moyogalpa	Moyogalpa
+mozonte	Mozonte
+muelle de los bueyes	Muelle de los Bueyes
+mulukuku	Mulukukú
+murra	Murra
+muy muy	Muy Muy
+nagarote	Nagarote
+nandaime	Nandaime
+nandasmo	Nandasmo
+nindiri	Nindirí
+niquinohomo	Niquinohomo
+nueva guinea	Nueva Guinea
+nuevo renacer	Nuevo Renacer
+ocotal	Ocotal
+palacaguina	Palacagüina
+pantasma	Pantasma
+pearl city	Pearl City
+poneloya	Poneloya
+posoltega	Posoltega
+potosi	Potosí
+prinzapolka	Prinzapolka
+pueblo nuevo	Pueblo Nuevo
+puerto cabezas	Puerto Cabezas
+puerto morazan	Puerto Morazán
+puerto sandino	Puerto Sandino
+quezalguaque	Quezalguaque
+quilali	Quilalí
+rama	Rama
+rancho grande	Rancho Grande
+rio blanco	Río Blanco
+rivas	Rivas
+san carlos	San Carlos
+san dionisio	San Dionisio
+san fernando	San Fernando
+san francisco de cuapa	San Francisco de Cuapa
+san francisco del norte	San Francisco del Norte
+san francisco libre	San Francisco Libre
+san isidro	San Isidro
+san jorge	San Jorge
+san jose de bocay	San José de Bocay
+san jose de cusmapa	San José de Cusmapa
+san jose de los remates	San José de los Remates
+san juan de limay	San Juan de Limay
+san juan de oriente	San Juan de Oriente
+san juan de rio coco	San Juan de Río Coco
+san juan del sur	San Juan del Sur
+san lorenzo	San Lorenzo
+san lucas	San Lucas
+san marcos	San Marcos
+san miguelito	San Miguelito
+san nicolas	San Nicolás
+san pedro de lovago	San Pedro de Lóvago
+san pedro del norte	San Pedro del Norte
+san rafael del norte	San Rafael del Norte
+san rafael del sur	San Rafael del Sur
+san ramon	San Ramón
+san sebastian de yali	San Sebastián de Yalí
+santa lucia	Santa Lucía
+santa maia de pantasma	Santa Maía de Pantasma
+santa maria	Santa María
+santa rosa del penon	Santa Rosa del Peñón
+santa teresa	Santa Teresa
+santo domingo	Santo Domingo
+santo tomas	Santo Tomás
+santo tomas del norte	Santo Tomás del Norte
+sebaco	Sébaco
+siuna	Siuna
+somotillo	Somotillo
+somoto	Somoto
+south end	South End
+telica	Telica
+telpaneca	Telpaneca
+terrabona	Terrabona
+teustepe	Teustepe
+ticuantepe	Ticuantepe
+tipitapa	Tipitapa
+tisma	Tisma
+tola	Tola
+tonala	Tonalá
+totogalpa	Totogalpa
+valle san francisco	Valle San Francisco
+villa el carmen	Villa El Carmen
+villa sandino	Villa Sandino
+villanueva	Villanueva
+waslala	Waslala
+waspan	Waspán
+wiwili	Wiwilí
+wiwili de jinotega	Wiwilí de Jinotega
+yalaguina	Yalagüina

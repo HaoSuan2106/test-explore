@@ -1,0 +1,112 @@
+'ardamata	'Ārdamatā
+abu jibeha	Abu Jibeha
+abu zabad	Abū Zabad
+abyei	Abyei
+ad dabbah	Ad Dabbah
+ad dindar	Ad Dindar
+ad douiem	Ad Douiem
+ad-damazin	Ad-Damazin
+ad-damir	Ad-Damir
+ad-dindar	Ad-Dindar
+al fulah	Al Fūlah
+al giref gharb	Al Giref Gharb
+al hasaheisa	Al Hasaheisa
+al hawatah	Al Ḩawātah
+al hilaliyya	Al Hilāliyya
+al jazeera aba	Al Jazeera Aba
+al kawa	Al Kawa
+al kiremit al ‘arakiyyin	Al Kiremit al ‘Arakiyyīn
+al lagowa	Al Lagowa
+al manaqil	Al Manāqil
+al manshiya	Al Manshiya
+al masallamiyya	Al Masallamiyya
+al mijlad	Al Mijlad
+al qadarif	Al Qadarif
+al qitena	Al Qiţena
+al taif	ِAl Taif
+al-fashaqah	Al-Fashaqah
+al-faw	Al-Fāw
+al-fulah	Al-Fulah
+al-junaynah	Al-Junaynah
+al-qutaynah	Al-Quṭaynah
+aldinigila wad dhahi	ALdinigila wad dhahi
+an nuhud	An Nuhūd
+ar rahad	Ar Rahad
+argo	Argo
+aroma	Aroma
+as suki	As Sūkī
+ash shallal	Ash Shallāl
+atbara	Atbara
+babanusah	Babanūsah
+barah	Bārah
+berber	Berber
+buram	Burām
+burri al drayssah	Burri Al Drayssah
+burri al lamab	Burri Al Lamab
+burri al mahas	Burri Al Mahas
+burri al shreef	Burri Al Shreef
+dilling	Dilling
+doka	Doka
+dongola	Dongola
+el bauga	El Bauga
+el daein	El Daein
+el fasher	El Fasher
+el geneina fort	El Geneina Fort
+el matama	El Matama
+el obeid	El Obeid
+er roseires	Er Roseires
+garden city	Garden City
+gebeit	Gebeit
+gereida	Gereida
+ghubaysh	Ghubaysh
+jalqani	Jalqani
+jubayt	Jubayt
+kabkabiyah	Kabkābīyah
+kadugli	Kadugli
+karmah an nuzul	Karmah an Nuzul
+kas	Kas
+kassala	Kassala
+khartoum	Khartoum
+khartoum north	Khartoum North
+khashm al qirbah	Khashm al Qirbah
+kinana	Kināna
+kosti	Kosti
+kuraymah	Kuraymah
+kurmuk	Kurmuk
+kutum	Kutum
+maiurno	Maiurno
+marabba	Marabba
+mellit	Mellit
+merowe	Merowe
+nagaro	Nagaro
+najaru	Najaru
+nasir extension	Nasir Extension
+new halfa	New Halfa
+nyala	Nyala
+omdurman	Omdurman
+port sudan	Port Sudan
+rabak	Rabak
+rahad al bardi	Rahad al Bardi
+riyadh	Riyadh
+rufa‘a	Rufā‘a
+sennar	Sennar
+sh'iariah	Sh'īarīah
+shendi	Shendi
+singa	Singa
+sinkat	Sinkat
+suakin	Suakin
+talodi	Talodi
+tandalti	Tandaltī
+tokar	Tokār
+tullus	Tullus
+um jar al gharbiyya	Um Jar Al Gharbiyya
+umm dafog	Umm Dafog
+umm kaddadah	Umm Kaddadah
+umm ruwaba	Umm Ruwaba
+umm shawkah	Umm Shawkah
+wad az zaki	Wad az Zāki
+wad medani	Wad Medani
+wad rawah	Wad Rāwah
+wadi halfa	Wadi Halfa
+wagar	Wagar
+zalinjay	Zalinjay

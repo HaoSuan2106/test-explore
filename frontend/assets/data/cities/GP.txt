@@ -1,0 +1,25 @@
+anse-bertrand	Anse-Bertrand
+baie-mahault	Baie-Mahault
+baillif	Baillif
+basse-terre	Basse-Terre
+beausejour	Beauséjour
+capesterre-belle-eau	Capesterre-Belle-Eau
+deshaies	Deshaies
+gourbeyre	Gourbeyre
+grand-bourg	Grand-Bourg
+lamentin	Lamentin
+le gosier	Le Gosier
+le moule	Le Moule
+les abymes	Les Abymes
+petit-bourg	Petit-Bourg
+petit-canal	Petit-Canal
+petites anses	Petites Anses
+pointe-a-pitre	Pointe-à-Pitre
+pointe-noire	Pointe-Noire
+port-louis	Port-Louis
+saint-claude	Saint-Claude
+saint-francois	Saint-François
+sainte-anne	Sainte-Anne
+sainte-rose	Sainte-Rose
+trois-rivieres	Trois-Rivières
+vieux-habitants	Vieux-Habitants

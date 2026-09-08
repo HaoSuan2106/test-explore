@@ -1,0 +1,571 @@
+achiote	Achiote
+achutupo	Achutupo
+agua buena	Agua Buena
+agua de salud	Agua de Salud
+agua fria numero uno	Agua Fría Número Uno
+aguadulce	Aguadulce
+aguas blancas	Aguas Blancas
+ailigandi	Ailigandí
+alanje	Alanje
+alcalde diaz	Alcalde Díaz
+almirante	Almirante
+alto boquete	Alto Boquete
+alto caballero	Alto Caballero
+alto de jesus	Alto de Jesús
+alto de la estancia	Alto de La Estancia
+alto del espino	Alto del Espino
+altos de guera	Altos de Güera
+altos de san francisco	Altos de San Francisco
+ancon	Ancón
+anton	Antón
+arco iris	Arco Iris
+arenas	Arenas
+arosemena	Arosemena
+arraijan	Arraiján
+aserrio de gariche	Aserrío de Gariché
+atalaya	Atalaya
+ave maria	Ave María
+bagala	Bágala
+bahia azul	Bahía Azul
+bahia honda	Bahía Honda
+bajo boquete	Bajo Boquete
+bajo corral	Bajo Corral
+bajo solis	Bajo Solís
+bajos de guera	Bajos de Güera
+barnizal	Barnizal
+barranco	Barranco
+barranco adentro	Barranco Adentro
+barranco colorado	Barranco Colorado
+barriales	Barriales
+barrio guadalupe	Barrio Guadalupe
+bastimentos	Bastimentos
+bayamon	Bayamón
+bayano	Bayano
+bejuco	Bejuco
+bella vista	Bella Vista
+betania	Betania
+bijagual	Bijagual
+bisira	Bisira
+bisvalles	Bisvalles
+boca chica	Boca Chica
+boca de balsa	Boca de Balsa
+boca de cupe	Boca de Cupe
+boca de parita	Boca de Parita
+boca de rio chiriqui	Boca de Río Chiriquí
+boca de rio indio	Boca de Río Indio
+boca del monte	Boca del Monte
+bocas del toro	Bocas del Toro
+boqueron	Boquerón
+boquete	Boquete
+boro	Boró
+brenon	Breñón
+brujas	Brujas
+buena vista	Buena Vista
+buenos aires	Buenos Aires
+bugaba	Bugaba
+bugabita arriba	Bugabita Arriba
+burica	Burica
+burunga	Burunga
+caballero	Caballero
+cabecera de cerro puerco	Cabecera de Cerro Puerco
+cabra numero uno	Cabra Número Uno
+cabuya	Cabuya
+cacao	Cacao
+cacique	Cacique
+caimitillo	Caimitillo
+caimito	Caimito
+calabacito	Calabacito
+caldera	Caldera
+calidonia	Calidonia
+calobre	Calobre
+calovebora	Calovébora
+calzada larga	Calzada Larga
+camaron arriba	Camarón Arriba
+cambutal	Cambutal
+camoganti	Camogantí
+canas	Cañas
+canas gordas	Cañas Gordas
+canaveral	Cañaveral
+canazas	Cañazas
+canita	Cañita
+canoa	Canoa
+canto del llano	Canto del Llano
+capellania	Capellanía
+capira	Capira
+carti sugtupu	Cartí Sugtupu
+cascabel	Cascabel
+cativa	Cativá
+cauchero	Cauchero
+cedro arriba	Cedro Arriba
+celmira	Celmira
+cermeno	Cermeño
+cerro azul	Cerro Azul
+cerro banco	Cerro Banco
+cerro cama	Cerro Cama
+cerro cana	Cerro Caña
+cerro iglesia	Cerro Iglesia
+cerro largo	Cerro Largo
+cerro pelado	Cerro Pelado
+cerro plata	Cerro Plata
+cerro punta	Cerro Punta
+cerro silvestre	Cerro Silvestre
+cerro venado	Cerro Venado
+cerro viejo	Cerro Viejo
+chacarero	Chacarero
+chame	Chame
+changuinola	Changuinola
+chepigana	Chepigana
+chepillo	Chepillo
+chepo	Chepo
+chichica	Chichica
+chigore	Chigoré
+chiguiri arriba	Chiguirí Arriba
+chilibre	Chilibre
+chiman	Chimán
+chiriqui	Chiriquí
+chiriqui grande	Chiriquí Grande
+chitre	Chitré
+chumical	Chumical
+chupa	Chupá
+chupampa	Chupampa
+churuquita chiquita	Churuquita Chiquita
+churuquita grande	Churuquita Grande
+ciricito abajo	Ciricito Abajo
+ciricito de los sotos	Ciricito de Los Sotos
+cochea abajo	Cochea Abajo
+cocle	Coclé
+cocle del norte	Coclé del Norte
+coclecito	Coclecito
+colon	Colón
+contadora	Contadora
+cordillera	Cordillera
+coronte	Coronte
+corozal	Corozal
+cristobal	Cristóbal
+cuango	Cuango
+cucunati	Cucunatí
+cuipo	Cuipo
+curundu	Curundú
+david	David
+divala	Divalá
+dolega district	Dolega District
+dos rios	Dos Ríos
+el alto	El Alto
+el bale	El Bale
+el barrero	El Barrero
+el barrito	El Barrito
+el bebedero	El Bebedero
+el cacao	El Cacao
+el calabacito	El Calabacito
+el canafistulo	El Cañafístulo
+el cano	El Caño
+el capuri	El Capurí
+el carate	El Carate
+el cedro	El Cedro
+el chiru	El Chirú
+el chorrillo	El Chorrillo
+el cocal	El Cocal
+el cocla	El Cocla
+el coco	El Coco
+el cope	El Copé
+el cortezo	El Cortezo
+el cristo	El Cristo
+el ejido	El Ejido
+el empalme	El Empalme
+el espinal	El Espinal
+el espino	El Espino
+el espino amarillo	El Espino Amarillo
+el espino de santa rosa	El Espino de Santa Rosa
+el giral	El Giral
+el guabo	El Guabo
+el guasimo	El Guásimo
+el hato	El Hato
+el higo	El Higo
+el limon	El Limón
+el macano	El Macano
+el manantial	El Manantial
+el maranon	El Marañón
+el maria	El María
+el munoz	El Muñoz
+el nancito	El Nancito
+el pajaro	El Pájaro
+el palmar	El Palmar
+el pantano	El Pantano
+el pedregoso	El Pedregoso
+el penon	El Peñón
+el picador	El Picador
+el piro	El Piro
+el porvenir	El Porvenir
+el potrero	El Potrero
+el prado	El Prado
+el progreso	El Progreso
+el puerto	El Puerto
+el quiteno	El Quiteño
+el retiro	El Retiro
+el rincon	El Rincón
+el roble	El Roble
+el sesteadero	El Sesteadero
+el silencio	El Silencio
+el tejar	El Tejar
+el toro	El Toro
+el uvito	El Uvito
+el valle de la union	El Valle de La Unión
+entradero	Entradero
+escobal	Escobal
+espave	Espavé
+farallon	Farallón
+finca blanco	Finca Blanco
+flores	Flores
+garachine	Garachiné
+gatu	Gatú
+gatun	Gatún
+gatuncillo	Gatuncillo
+gobea	Gobea
+gobernadora	Gobernadora
+gomez	Gómez
+gonzalillo	Gonzalillo
+gonzalo vasquez	Gonzalo Vásquez
+guabal	Guabal
+guabito	Guabito
+guaca arriba	Guacá Arriba
+guadalupe	Guadalupe
+gualaca	Gualaca
+guarare	Guararé
+guarare arriba	Guararé Arriba
+guarumal	Guarumal
+guayabal	Guayabal
+guayabito	Guayabito
+guibale	Güibale
+guzman	Guzmán
+hato chami	Hato Chamí
+hato corotu	Hato Corotú
+hato culantro	Hato Culantro
+hato jobo	Hato Jobo
+hato juli	Hato Julí
+hato montana	Hato Montaña
+hato pilon	Hato Pilón
+horconcitos	Horconcitos
+howard	Howard
+isla bastimentos	Isla Bastimentos
+jaque	Jaqué
+jaramillo arriba	Jaramillo Arriba
+jingurudo	Jingurudo
+juan diaz	Juan Díaz
+juay	Juay
+kankintu	Kankintú
+kusapin	Kusapín
+la arena	La Arena
+la arenosa	La Arenosa
+la boca del guasimo	La Boca del Guásimo
+la cabima	La Cabima
+la cabuya	La Cabuya
+la carrillo	La Carrillo
+la chorrera	La Chorrera
+la colorada	La Colorada
+la concepcion	La Concepción
+la encantada	La Encantada
+la enea	La Enea
+la ensenada	La Ensenada
+la ermita	La Ermita
+la esmeralda	La Esmeralda
+la esperanza	La Esperanza
+la espigadilla	La Espigadilla
+la estrella	La Estrella
+la garceana	La Garceana
+la guinea	La Guinea
+la herradura	La Herradura
+la laguna	La Laguna
+la laja	La Laja
+la loma	La Loma
+la mesa	La Mesa
+la miel	La Miel
+la mitra	La Mitra
+la montanuela	La Montañuela
+la palma	La Palma
+la pasera	La Pasera
+la pena	La Peña
+la pesa	La Pesa
+la pintada	La Pintada
+la raya de calobre	La Raya de Calobre
+la raya de santa maria	La Raya de Santa María
+la soledad	La Soledad
+la tiza	La Tiza
+la trinidad	La Trinidad
+la tronosa	La Tronosa
+la yeguada	La Yeguada
+lagarterita	Lagarterita
+lajamina	Lajamina
+lajas adentro	Lajas Adentro
+lajas blancas	Lajas Blancas
+lajas de tole	Lajas de Tolé
+lajero	Lajero
+las cabras	Las Cabras
+las colinas	Las Colinas
+las cruces	Las Cruces
+las cumbres	Las Cumbres
+las guabas	Las Guabas
+las guias abajo	Las Guías Abajo
+las huacas	Las Huacas
+las huacas del quije	Las Huacas del Quije
+las lajas	Las Lajas
+las lomas	Las Lomas
+las margaritas	Las Margaritas
+las marias	Las Marias
+las minas	Las Minas
+las ollas arriba	Las Ollas Arriba
+las palmas	Las Palmas
+las palmitas	Las Palmitas
+las sabanas	Las Sabanas
+las tablas	Las Tablas
+las trancas	Las Trancas
+las uvas	Las Uvas
+las zanguengas	Las Zangüengas
+leones arriba	Leones Arriba
+libano	Líbano
+lidice	Lídice
+limon de tijeras	Limón de Tijeras
+limones	Limones
+llano abajo	Llano Abajo
+llano bonito	Llano Bonito
+llano culebra	Llano Culebra
+llano de la cruz	Llano de La Cruz
+llano de piedra	Llano de Piedra
+llano grande	Llano Grande
+llano largo	Llano Largo
+llano marin	Llano Marín
+llano nopo	Llano Ñopo
+llano tugri	Llano Tugrí
+lola	Lolá
+loma yuca	Loma Yuca
+los algarrobos	Los Algarrobos
+los algarrobos arriba	Los Algarrobos Arriba
+los anastacios	Los Anastacios
+los angeles	Los Ángeles
+los asientos	Los Asientos
+los canelos	Los Canelos
+los castillos	Los Castillos
+los cerritos	Los Cerritos
+los cerros de paja	Los Cerros de Paja
+los corotues	Los Corotúes
+los higos	Los Higos
+los llanitos	Los Llanitos
+los lotes	Los Lotes
+los naranjos	Los Naranjos
+los olivos	Los Olivos
+los pollos	Los Pollos
+los pozos	Los Pozos
+los santos	Los Santos
+los valles	Los Valles
+macaracas	Macaracas
+manaca civil	Manaca Civil
+manaca norte	Manaca Norte
+maraca	Maraca
+margarita	Margarita
+maria chiquita	María Chiquita
+mariabe	Mariabé
+mata del nance	Mata del Nance
+mendoza	Mendoza
+meteti	Metetí
+miguel de la borda	Miguel de La Borda
+miramar	Miramar
+mirones	Mirones
+mogollon	Mogollón
+monagrillo	Monagrillo
+monjaras	Monjarás
+monte lirio	Monte Lirio
+montijo	Montijo
+morti	Mortí
+mulatupo	Mulatupo
+nargana	Narganá
+nata	Natá
+nombre de dios	Nombre de Dios
+norteno	Norteño
+nuario	Nuario
+nuestro amo	Nuestro Amo
+nueva arenosa	Nueva Arenosa
+nueva esperanza	Nueva Esperanza
+nueva gorgona	Nueva Gorgona
+nueva providencia	Nueva Providencia
+nuevo arraijan	Nuevo Arraiján
+nuevo belen	Nuevo Belén
+nuevo chagres	Nuevo Chagres
+nuevo emperador	Nuevo Emperador
+nuevo san carlitos	Nuevo San Carlitos
+nuevo san juan	Nuevo San Juan
+nuevo vigia	Nuevo Vigía
+ocu	Ocú
+ola	Olá
+oma	Oma
+oria arriba	Oria Arriba
+pacora	Pacora
+paja de sombrero	Paja de Sombrero
+palenque	Palenque
+palmas bellas	Palmas Bellas
+palmira	Palmira
+palmira centro	Palmira Centro
+palo grande	Palo Grande
+panama city	Panama City
+paraiso	Paraíso
+paredon arriba	Paredón Arriba
+paris	París
+parita	Parita
+paritilla	Paritilla
+parque lefevre	Parque Lefevre
+pasiga	Pásiga
+paso canoas arriba	Paso Canoas Arriba
+paya	Paya
+pedasi	Pedasí
+pedregal	Pedregal
+pena blanca	Peña Blanca
+penas chatas	Peñas Chatas
+penonome	Penonomé
+perales	Perales
+pese	Pesé
+piedra roja	Piedra Roja
+piedras gordas	Piedras Gordas
+pilon	Pilón
+pinogana	Pinogana
+pitaloza arriba	Pitaloza Arriba
+plan de chorcha	Plan de Chorcha
+platanillo	Platanillo
+playa chiquita	Playa Chiquita
+playa leona	Playa Leona
+playon chico	Playón Chico
+plaza de caisan	Plaza de Caisán
+pocri	Pocrí
+ponuga	Ponuga
+portobelillo	Portobelillo
+portobelo	Portobelo
+potrerillos abajo	Potrerillos Abajo
+potrerillos arriba	Potrerillos Arriba
+potrero de cana	Potrero de Caña
+potrero grande	Potrero Grande
+potuga	Potuga
+progreso	Progreso
+pucuro	Púcuro
+pueblo nuevo	Pueblo Nuevo
+pueblo viejo	Pueblo Viejo
+puerto armuelles	Puerto Armuelles
+puerto caimito	Puerto Caimito
+puerto escondido	Puerto Escondido
+puerto lindo	Puerto Lindo
+puerto obaldia	Puerto Obaldía
+puerto pilon	Puerto Pilón
+puerto vidal	Puerto Vidal
+punta laurel	Punta Laurel
+punta pena	Punta Peña
+punta robalo	Punta Róbalo
+quebrada bonita adentro	Quebrada Bonita Adentro
+quebrada de loro	Quebrada de Loro
+quebrada de oro	Quebrada de Oro
+quebrada de piedra	Quebrada de Piedra
+quebrada del rosario	Quebrada del Rosario
+quebrada del rosario arriba	Quebrada del Rosario Arriba
+quebrada tula	Quebrada Tula
+quebro	Quebro
+querevalo	Querévalo
+rambala	Rambala
+remedios	Remedios
+rincon	Rincón
+rincon hondo	Rincón Hondo
+rio abajo	Río Abajo
+rio alejandro	Río Alejandro
+rio congo	Río Congo
+rio de jesus	Río de Jesús
+rio duque	Río Duque
+rio grande	Río Grande
+rio hato	Río Hato
+rio hondo	Río Hondo
+rio luis	Río Luís
+rio rita	Río Rita
+rio sereno	Río Sereno
+rodeo viejo	Rodeo Viejo
+rovira arriba	Rovira Arriba
+sabana grande	Sabana Grande
+sabanitas	Sabanitas
+salto dupi	Salto Dupí
+salud	Salud
+san andres	San Andrés
+san antonio	San Antonio
+san bartolo	San Bartolo
+san carlos	San Carlos
+san felipe	San Felipe
+san felix	San Félix
+san francisco	San Francisco
+san ignacio de tupile	San Ignacio de Tupile
+san isidro	San Isidro
+san jose	San José
+san juan	San Juan
+san juan bautista	San Juan Bautista
+san juan de dios	San Juan de Dios
+san lorenzo	San Lorenzo
+san marcelo	San Marcelo
+san miguel	San Miguel
+san miguelito	San Miguelito
+san pablo nuevo	San Pablo Nuevo
+san pablo viejo abajo	San Pablo Viejo Abajo
+san pedro del espino	San Pedro del Espino
+san vicente	San Vicente
+san vicente de bique	San Vicente de Bique
+santa ana arriba	Santa Ana Arriba
+santa catalina	Santa Catalina
+santa clara	Santa Clara
+santa cruz	Santa Cruz
+santa fe	Santa Fé
+santa fe	Santa Fe
+santa isabel	Santa Isabel
+santa lucia	Santa Lucía
+santa maria	Santa María
+santa marta	Santa Marta
+santa rita	Santa Rita
+santa rita arriba	Santa Rita Arriba
+santa rosa	Santa Rosa
+santa rosa numero uno	Santa Rosa Número Uno
+santiago de veraguas	Santiago de Veraguas
+santo domingo	Santo Domingo
+santo tomas	Santo Tomás
+sardinilla	Sardinilla
+seteganti	Setegantí
+siogui abajo	Sioguí Abajo
+siogui arriba	Sioguí Arriba
+sitio prado	Sitio Prado
+soloy	Soloy
+sona	Soná
+sora	Sorá
+sortova	Sortová
+tebario	Tebario
+tijeras	Tijeras
+tinajas	Tinajas
+toabre	Toabré
+tobobe	Tobobe
+tocumen	Tocumen
+tole	Tolé
+tonosi	Tonosí
+torti	Tortí
+toza	Toza
+tres quebradas	Tres Quebradas
+tubuala	Tubualá
+tucuti	Tucutí
+union choco	Unión Chocó
+union de azuero	Unión de Azuero
+union santena	Unión Santeña
+ustupo	Ustupo
+utira	Utirá
+valle de las minas	Valle de Las Minas
+valle de risco	Valle de Riscó
+valle rico	Valle Rico
+vallerriquito	Vallerriquito
+veladero	Veladero
+veracruz	Veracruz
+viento frio	Viento Frío
+vigui	Viguí
+villa carmen	Villa Carmen
+villa lourdes	Villa Lourdes
+villa rosario	Villa Rosario
+villa unida	Villa Unida
+vista alegre	Vista Alegre
+vista hermosa	Vista Hermosa
+volcan	Volcán
+yape	Yape
+yaviza	Yaviza
+zapotillo	Zapotillo

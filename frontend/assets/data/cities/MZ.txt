@@ -1,0 +1,94 @@
+alto molocue	Alto Molocue
+angoche	Angoche
+bairro 25 de junho a	Bairro 25 de Junho A
+bairro 25 de junho b	Bairro 25 de Junho B
+beira	Beira
+bela vista	Bela Vista
+bilene	Bilene
+boane	Boane
+buzi	Búzi
+caia	Caia
+canicado	Caniçado
+catandica	Catandica
+chibuto	Chibuto
+chimoio	Chimoio
+chinde	Chinde
+chiure	Chiúre
+chokwe	Chokwé
+cuamba	Cuamba
+dondo	Dondo
+gondola	Gondola
+gorongosa	Gorongosa
+gurue	Gurúè
+homoine	Homoíne
+iapala	Iapala
+ibo	Ibo
+inhambane	Inhambane
+inhaminga	Inhaminga
+inharrime	Inharrime
+inhassoro	Inhassoro
+insaca	Insaca
+lichinga	Lichinga
+luabo	Luabo
+machipanda	Machipanda
+macia	Macia
+macomia	Macomia
+maganja	Maganja
+magude	Magude
+malema	Malema
+mandimba	Mandimba
+manhica	Manhiça
+manica	Manica
+manjacaze	Manjacaze
+maputo	Maputo
+marracuene	Marracuene
+marromeu	Marromeu
+marrupa	Marrupa
+massinga	Massinga
+matola	Matola
+maxixe	Maxixe
+meconta	Meconta
+messica	Messica
+metangula	Metangula
+micolene	Micolene
+milange	Milange
+moamba	Moamba
+moatize	Moatize
+mocimboa	Mocímboa
+mocimboa da praia	Mocímboa da Praia
+mocuba	Mocuba
+monapo	Monapo
+montepuez	Montepuez
+morrumbala	Morrumbala
+morrumbene	Morrumbene
+mossuril	Mossuril
+mozambique	Mozambique
+mueda	Mueda
+murrupula	Murrupula
+mutuali	Mutuáli
+nacala	Nacala
+namaacha	Namaacha
+namacurra	Namacurra
+namapa-erati	Namapa-erati
+nametil	Nametil
+namialo	Namialo
+nampula	Nampula
+nhamatanda	Nhamatanda
+nhamayabue	Nhamayabué
+nova mambone	Nova Mambone
+pebane	Pebane
+pemba	Pemba
+ponta d'ouro	Ponta d'Ouro
+quelimane	Quelimane
+quissico	Quissico
+ressano garcia	Ressano Garcia
+ribaue	Ribáuè
+sanga	Sanga
+songo	Songo
+tete	Tete
+ulongue	Ulongué
+vila eduardo mondlane	Vila Eduardo Mondlane
+vilankulo	Vilankulo
+xai-xai	Xai-Xai
+xilembene	Xilembene
+xinavane	Xinavane

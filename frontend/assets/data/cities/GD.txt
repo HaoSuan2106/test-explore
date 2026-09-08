@@ -1,0 +1,9 @@
+gouyave	Gouyave
+grand roy	Grand Roy
+grenville	Grenville
+hillsborough	Hillsborough
+saint david’s	Saint David’s
+saint george's	Saint George's
+sauteurs	Sauteurs
+upper la taste	Upper La Taste
+victoria	Victoria

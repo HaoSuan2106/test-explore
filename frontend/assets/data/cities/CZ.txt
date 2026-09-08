@@ -1,0 +1,1421 @@
+abertamy	Abertamy
+adamov	Adamov
+albrechtice	Albrechtice
+albrechtice nad orlici	Albrechtice nad Orlicí
+albrechtice nad vltavou	Albrechtice nad Vltavou
+as	Aš
+babice	Babice
+babice nad svitavou	Babice nad Svitavou
+bakov nad jizerou	Bakov nad Jizerou
+banov	Bánov
+bartosovice	Bartošovice
+baska	Baška
+bast	Bašť
+batelov	Batelov
+bavorov	Bavorov
+bechlin	Bechlín
+bechyne	Bechyně
+becov	Bečov
+bedihost	Bedihošť
+bela nad radbuzou	Bělá nad Radbuzou
+bela pod bezdezem	Bělá pod Bezdězem
+bela pod pradedem	Bělá pod Pradědem
+belkovice-lastany	Bělkovice-Lašťany
+belotin	Bělotín
+benatky nad jizerou	Benátky nad Jizerou
+benecko	Benecko
+benesov	Benešov
+benesov nad cernou	Benešov nad Černou
+benesov nad ploucnici	Benešov nad Ploučnicí
+bernartice	Bernartice
+beroun	Beroun
+bila lhota	Bílá Lhota
+bila tremesna	Bílá Třemešná
+bilina	Bílina
+bilovec	Bílovec
+bilovice	Bílovice
+bilovice nad svitavou	Bílovice nad Svitavou
+blansko	Blansko
+blatna	Blatná
+blatnice pod svatym antoninkem	Blatnice pod Svatým Antonínkem
+blazovice	Blažovice
+blizejov	Blížejov
+blizkovice	Blížkovice
+blovice	Blovice
+blucina	Blučina
+bludov	Bludov
+bochov	Bochov
+bohdalov	Bohdalov
+bohdikov	Bohdíkov
+bohnice	Bohnice
+bohumin	Bohumín
+bohunice	Bohunice
+bohunovice	Bohuňovice
+bohuslavice	Bohuslavice
+bohusovice nad ohri	Bohušovice nad Ohří
+bohutin	Bohutín
+bojkovice	Bojkovice
+bolatice	Bolatice
+bor	Bor
+borek	Borek
+boretice	Bořetice
+boritov	Bořitov
+borohradek	Borohrádek
+borova lada	Borová Lada
+borovany	Borovany
+borsice	Boršice
+borsov nad vltavou	Boršov nad Vltavou
+boskovice	Boskovice
+bosonohy	Bosonohy
+bosovice	Bošovice
+bouzov	Bouzov
+bozice	Božice
+branany	Braňany
+brandys nad labem-stara boleslav	Brandýs nad Labem-Stará Boleslav
+brandys nad orlici	Brandýs nad Orlicí
+brandysek	Brandýsek
+branik	Braník
+branka u opavy	Branka u Opavy
+brantice	Brantice
+brasy	Břasy
+breclav	Břeclav
+brezi	Březí
+brezina	Březina
+breznice	Březnice
+brezno	Březno
+brezolupy	Březolupy
+brezova	Březová
+brezova nad svitavou	Březová nad Svitavou
+brezova-olesko	Březová-Oleško
+bridlicna	Břidličná
+brloh	Brloh
+brnenec	Brněnec
+brniste	Brniště
+brno	Brno
+brno stred	Brno střed
+brno-jih	Brno-jih
+brodek u prerova	Brodek u Přerova
+brodek u prostejova	Brodek u Prostějova
+broumov	Broumov
+brozany nad ohri	Brozany nad Ohří
+brtnice	Brtnice
+brumov-bylnice	Brumov-Bylnice
+brumovice	Brumovice
+bruntal	Bruntál
+brusperk	Brušperk
+buchlovice	Buchlovice
+bucovice	Bučovice
+budisov	Budišov
+budisov nad budisovkou	Budišov nad Budišovkou
+budyne nad ohri	Budyně nad Ohří
+bukovany	Bukovany
+bukovec	Bukovec
+bustehrad	Buštěhrad
+bysice	Byšice
+byst	Býšť
+bystrany	Bystřany
+bystrc	Bystrc
+bystre	Bystré
+bystrec	Bystřec
+bystrice	Bystřice
+bystrice nad pernstejnem	Bystřice nad Pernštejnem
+bystrice pod hostynem	Bystřice pod Hostýnem
+bzenec	Bzenec
+cakovice	Čakovice
+caslav	Čáslav
+castolovice	Častolovice
+cebin	Čebín
+cechovice	Čechovice
+cechtice	Čechtice
+cechy pod kosirem	Čechy pod Kosířem
+cejc	Čejč
+cejkovice	Čejkovice
+celadna	Čeladná
+celakovice	Čelákovice
+celechovice na hane	Čelechovice na Hané
+cercany	Čerčany
+cerhenice	Cerhenice
+cerna hora	Černá Hora
+cerncice	Černčice
+cernilov	Černilov
+cernosice	Černošice
+cernosin	Černošín
+cernovice	Černovice
+cernozice	Černožice
+cerny most	Černý Most
+cervena voda	Červená Voda
+cervene pecky	Červené Pečky
+cervenka	Červenka
+cerveny kostelec	Červený Kostelec
+cerveny ujezd	Červený Újezd
+ceska	Česká
+ceska kamenice	Česká Kamenice
+ceska lipa	Česká Lípa
+ceska skalice	Česká Skalice
+ceska trebova	Česká Třebová
+ceska ves	Česká Ves
+ceske budejovice	České Budějovice
+ceske mezirici	České Meziříčí
+ceske velenice	České Velenice
+cesky brod	Český Brod
+cesky dub	Český Dub
+cesky krumlov	Český Krumlov
+cesky rudolec	Český Rudolec
+cesky tesin	Český Těšín
+chabarovice	Chabařovice
+cheb	Cheb
+chlebicov	Chlebičov
+chlum u trebone	Chlum u Třeboně
+chlumcany	Chlumčany
+chlumec	Chlumec
+chlumec nad cidlinou	Chlumec nad Cidlinou
+chocen	Choceň
+chodov	Chodov
+chodova plana	Chodová Planá
+chomutov	Chomutov
+chotebor	Chotěboř
+chotebuz	Chotěbuz
+chotesov	Chotěšov
+chotoviny	Chotoviny
+chrast	Chrast
+chrast	Chrást
+chrastany	Chrášťany
+chrastava	Chrastava
+chribska	Chřibská
+chrlice	Chrlice
+chropyne	Chropyně
+chroustovice	Chroustovice
+chrudim	Chrudim
+chrustenice	Chrustenice
+chuchelna	Chuchelná
+chvalcov	Chvalčov
+chvaletice	Chvaletice
+chvalsiny	Chvalšiny
+chynava	Chyňava
+chyne	Chýně
+chynov	Chýnov
+chysky	Chyšky
+cimelice	Čimelice
+cimice	Čimice
+cirkvice	Církvice
+citov	Cítov
+cizkovice	Čížkovice
+ckyne	Čkyně
+cvikov	Cvikov
+dacice	Dačice
+dalovice	Dalovice
+damborice	Dambořice
+darkovice	Darkovice
+dasice	Dašice
+davle	Davle
+decin	Děčín
+dejvice	Dejvice
+desna	Desná
+detmarovice	Dětmarovice
+divisov	Divišov
+dlouha loucka	Dlouhá Loučka
+dlouha trebova	Dlouhá Třebová
+dobra	Dobrá
+dobra voda u ceskych budejovic	Dobrá Voda u Českých Budějovic
+dobrany	Dobřany
+dobratice	Dobratice
+dobrejovice	Dobřejovice
+dobrichovice	Dobřichovice
+dobris	Dobříš
+dobriv	Dobřív
+dobromerice	Dobroměřice
+dobronin	Dobronín
+dobrovice	Dobrovice
+dobruska	Dobruška
+dobsice	Dobšice
+doksy	Doksy
+dolany	Dolany
+dolni becva	Dolní Bečva
+dolni benesov	Dolní Benešov
+dolni berkovice	Dolní Beřkovice
+dolni bojanovice	Dolní Bojanovice
+dolni bousov	Dolní Bousov
+dolni brezany	Dolní Břežany
+dolni bukovsko	Dolní Bukovsko
+dolni cerekev	Dolní Cerekev
+dolni cermna	Dolní Čermná
+dolni cernilov	Dolní Černilov
+dolni chabry	Dolní Chabry
+dolni dobrouc	Dolní Dobrouč
+dolni dunajovice	Dolní Dunajovice
+dolni dvoriste	Dolní Dvořiště
+dolni kounice	Dolní Kounice
+dolni lhota	Dolní Lhota
+dolni loucky	Dolní Loućky
+dolni lutyne	Dolní Lutyně
+dolni nemci	Dolní Němčí
+dolni pocernice	Dolní Počernice
+dolni podluzi	Dolní Podluží
+dolni poustevna	Dolní Poustevna
+dolni roven	Dolní Roveň
+dolni rychnov	Dolní Rychnov
+dolni sloupnice	Dolní Sloupnice
+dolni studenky	Dolní Studénky
+dolni ujezd	Dolní Újezd
+dolni zandov	Dolní Žandov
+dolni zivotice	Dolní Životice
+doloplazy	Doloplazy
+domamyslice	Domamyslice
+domanin	Domanín
+domazlice	Domažlice
+doubrava	Doubrava
+doubravice nad svitavou	Doubravice nad Svitavou
+doudleby nad orlici	Doudleby nad Orlicí
+drahanovice	Drahanovice
+drasov	Drásov
+drevohostice	Dřevohostice
+driten	Dřiteň
+drnholec	Drnholec
+drnovice	Drnovice
+drzovice	Držovice
+dub nad moravou	Dub nad Moravou
+duba	Dubá
+dubi	Dubí
+dubicko	Dubicko
+dubnany	Dubňany
+dubne	Dubné
+duchcov	Duchcov
+dvorce	Dvorce
+dvur kralove nad labem	Dvůr Králové nad Labem
+dysina	Dýšina
+francova lhota	Francova Lhota
+frantiskovy lazne	Františkovy Lázně
+frenstat pod radhostem	Frenštát pod Radhoštěm
+frycovice	Fryčovice
+frydek-mistek	Frýdek-Místek
+frydlant	Frýdlant
+frydlant nad ostravici	Frýdlant nad Ostravicí
+frymburk	Frymburk
+frystak	Fryšták
+fulnek	Fulnek
+golcuv jenikov	Golčův Jeníkov
+grygov	Grygov
+habartov	Habartov
+habry	Habry
+haj u duchcova	Háj u Duchcova
+haj ve slezsku	Háj ve Slezsku
+haje	Háje
+halenkov	Halenkov
+halenkovice	Halenkovice
+hamry nad sazavou	Hamry nad Sázavou
+hanusovice	Hanušovice
+harrachov	Harrachov
+hat	Hať
+havirov	Havířov
+havlickuv brod	Havlíčkův Brod
+hazlov	Hazlov
+hejnice	Hejnice
+heralec	Herálec
+herink	Herink
+hermanova hut	Heřmanova Huť
+hermanuv mestec	Heřmanův Městec
+hevlin	Hevlín
+hlinsko	Hlinsko
+hlohovec	Hlohovec
+hloubetin	Hloubětín
+hlubocepy	Hlubočepy
+hlubocky	Hlubočky
+hluboka nad vltavou	Hluboká nad Vltavou
+hlucin	Hlučín
+hluk	Hluk
+hlusovice	Hlušovice
+hnevosice	Hněvošice
+hnevotin	Hněvotín
+hnojnik	Hnojník
+hodkovice nad mohelkou	Hodkovice nad Mohelkou
+hodkovicky	Hodkovičky
+hodonice	Hodonice
+hodonin	Hodonín
+hodslavice	Hodslavice
+holasovice	Holasovice
+holesov	Holešov
+holesovice	Holešovice
+holice	Holice
+holoubkov	Holoubkov
+holubice	Holubice
+holysov	Holýšov
+horazdovice	Horažďovice
+horice	Hořice
+horka nad moravou	Horka nad Moravou
+horni becva	Horní Bečva
+horni benesov	Horní Benešov
+horni bludovice	Horní Bludovice
+horni branna	Horní Branná
+horni briza	Horní Bříza
+horni cerekev	Horní Cerekev
+horni cermna	Horní Čermná
+horni jeleni	Horní Jelení
+horni jiretin	Horní Jiřetín
+horni lidec	Horní Lideč
+horni mecholupy	Horní Měcholupy
+horni mesto	Horní Město
+horni mostenice	Horní Moštěnice
+horni plana	Horní Planá
+horni pocaply	Horní Počaply
+horni pocernice	Horní Počernice
+horni slavkov	Horní Slavkov
+horni sloupnice	Horní Sloupnice
+horni stropnice	Horní Stropnice
+horni sucha	Horní Suchá
+horni terlicko	Horní Těrlicko
+horomerice	Horoměřice
+horovice	Hořovice
+horsovsky tyn	Horšovský Týn
+hostalkova	Hošťálková
+hostavice	Hostavice
+hosteradice	Hostěradice
+hostinne	Hostinné
+hostivar	Hostivař
+hostivice	Hostivice
+hostka	Hošťka
+hostomice	Hostomice
+hostoun	Hostouň
+hovezi	Hovězí
+hovorany	Hovorany
+hovorcovice	Hovorčovice
+hrabyne	Hrabyně
+hradec kralove	Hradec Králové
+hradec nad moravici	Hradec nad Moravicí
+hradec nad svitavou	Hradec nad Svitavou
+hradek	Hrádek
+hradek nad nisou	Hrádek nad Nisou
+hradistko	Hradištko
+hranice	Hranice
+hrdejovice	Hrdějovice
+hrebec	Hřebeč
+hrob	Hrob
+hrochuv tynec	Hrochův Týnec
+hromnice	Hromnice
+hronov	Hronov
+hrotovice	Hrotovice
+hroznetin	Hroznětín
+hroznova lhota	Hroznová Lhota
+hrusky	Hrušky
+hrusovany nad jevisovkou	Hrušovany nad Jevišovkou
+hrusovany u brna	Hrušovany u Brna
+hudlice	Hudlice
+hukvaldy	Hukvaldy
+hulin	Hulín
+humpolec	Humpolec
+husinec	Husinec
+huslenky	Huslenky
+hustopece	Hustopeče
+hustopece nad becvou	Hustopeče Nad Bečvou
+hutisko-solanec	Hutisko-Solanec
+hvozdna	Hvozdná
+hyskov	Hýskov
+ivancice	Ivančice
+ivanovice	Ivanovice
+ivanovice na hane	Ivanovice na Hané
+jablonec nad jizerou	Jablonec nad Jizerou
+jablonec nad nisou	Jablonec nad Nisou
+jablonne nad orlici	Jablonné nad Orlicí
+jablonne v podjestedi	Jablonné v Podještědí
+jablunka	Jablůnka
+jablunkov	Jablunkov
+jachymov	Jáchymov
+jakartovice	Jakartovice
+jalubi	Jalubí
+janov nad nisou	Janov nad Nisou
+janovice	Janovice
+janovice nad uhlavou	Janovice nad Úhlavou
+jaromer	Jaroměř
+jaromerice	Jaroměřice
+jaromerice nad rokytnou	Jaroměřice nad Rokytnou
+jaroslavice	Jaroslavice
+jarosov nad nezarkou	Jarošov nad Nežárkou
+javornik	Javorník
+jedlova	Jedlová
+jedovnice	Jedovnice
+jehnice	Jehnice
+jemnice	Jemnice
+jenec	Jeneč
+jesenice	Jesenice
+jesenik	Jeseník
+jesenik nad odrou	Jeseník nad Odrou
+jevicko	Jevíčko
+jevisovice	Jevišovice
+jicin	Jičín
+jihlava	Jihlava
+jilemnice	Jilemnice
+jilove	Jílové
+jilove u prahy	Jílové u Prahy
+jimramov	Jimramov
+jince	Jince
+jindrichov	Jindřichov
+jindrichuv hradec	Jindřichův Hradec
+jinocany	Jinočany
+jinonice	Jinonice
+jirikov	Jiříkov
+jirkov	Jirkov
+jirny	Jirny
+jistebnice	Jistebnice
+jistebnik	Jistebník
+josefuv dul	Josefův Důl
+jundrov	Jundrov
+kacice	Kačice
+kadan	Kadaň
+kajov	Kájov
+kamenice	Kamenice
+kamenice nad lipou	Kamenice nad Lipou
+kamenicky senov	Kamenický Šenov
+kamenne zehrovice	Kamenné Žehrovice
+kamenny privoz	Kamenný Přívoz
+kamenny ujezd	Kamenný Újezd
+kanice	Kanice
+kaplice	Kaplice
+kardasova recice	Kardašova Řečice
+karlin	Karlín
+karlovice	Karlovice
+karlovy vary	Karlovy Vary
+karolinka	Karolinka
+karvina	Karviná
+kasejovice	Kasejovice
+kasperske hory	Kašperské Hory
+katovice	Katovice
+kaznejov	Kaznějov
+kbely	Kbely
+kdyne	Kdyně
+kelc	Kelč
+kladno	Kladno
+kladruby	Kladruby
+klaster	Klášter
+klasterec nad ohri	Klášterec nad Ohří
+klatovy	Klatovy
+klecany	Klecany
+klenci pod cerchovem	Klenčí pod Čerchovem
+klimkovice	Klimkovice
+klobouky u brna	Klobouky u Brna
+klobuky	Klobuky
+knezdub	Kněždub
+knezice	Kněžice
+knezmost	Kněžmost
+knezpole	Kněžpole
+kninicky	Kníničky
+koberice	Kobeřice
+kobyli	Kobylí
+kobylisy	Kobylisy
+kohoutovice	Kohoutovice
+kojetin	Kojetín
+kokory	Kokory
+kolin	Kolín
+kolinec	Kolinec
+kolodeje	Koloděje
+komarov	Komárov
+komin	Komín
+komorni lhotka	Komorní Lhotka
+konice	Konice
+kopidlno	Kopidlno
+koprivnice	Kopřivnice
+korenov	Kořenov
+korycany	Koryčany
+kosire	Košíře
+kosmonosy	Kosmonosy
+kosova hora	Kosova Hora
+kostalov	Košťálov
+kostany	Košťany
+kostelec na hane	Kostelec na Hané
+kostelec nad cernymi lesy	Kostelec nad Černými lesy
+kostelec nad labem	Kostelec nad Labem
+kostelec nad orlici	Kostelec nad Orlicí
+kostice	Kostice
+kostomlaty nad labem	Kostomlaty nad Labem
+kourim	Kouřim
+kout na sumave	Kout na Šumavě
+kovarov	Kovářov
+kovarska	Kovářská
+kozlany	Kožlany
+kozlovice	Kozlovice
+kozmice	Kozmice
+kralice na hane	Kralice na Hané
+kralice nad oslavou	Kralice nad Oslavou
+kraliky	Králíky
+kralovice	Kralovice
+kralovo pole	Královo Pole
+kralovske vinohrady	Královské Vinohrady
+kralupy nad vltavou	Kralupy nad Vltavou
+kraluv dvur	Králův Dvůr
+kraslice	Kraslice
+krasna hora nad vltavou	Krásná Hora nad Vltavou
+krasna lipa	Krásná Lípa
+kravare	Kravaře
+krc	Krč
+krelov-bruchotin	Křelov-Břuchotín
+kremze	Křemže
+krenice	Křenice
+krenovice	Křenovice
+krepice	Křepice
+kresice	Křešice
+krhova	Krhová
+krinec	Křinec
+krizanov	Křižanov
+krmelin	Krmelín
+krnov	Krnov
+kromeriz	Kroměříž
+krouna	Krouna
+krucemburk	Krucemburk
+krumvir	Krumvíř
+krupka	Krupka
+kryry	Kryry
+kuncice pod ondrejnikem	Kunčice pod Ondřejníkem
+kuncina	Kunčina
+kunin	Kunín
+kunovice	Kunovice
+kunratice	Kunratice
+kunstat	Kunštát
+kunvald	Kunvald
+kunzak	Kunžak
+kurim	Kuřim
+kutna hora	Kutná Hora
+kvasice	Kvasice
+kvasiny	Kvasiny
+kvetnice	Květnice
+kyje	Kyje
+kyjov	Kyjov
+kynsperk nad ohri	Kynšperk nad Ohří
+kysice	Kyšice
+ladna	Ladná
+lanov	Lánov
+lanskroun	Lanškroun
+lany	Lány
+lanzhot	Lanžhot
+lazne belohrad	Lázně Bělohrad
+lazne bohdanec	Lázně Bohdaneč
+lazne kynzvart	Lázně Kynžvart
+lazne tousen	Lázně Toušeň
+ledec nad sazavou	Ledeč nad Sázavou
+ledenice	Ledenice
+lednice	Lednice
+lelekovice	Lelekovice
+lenesice	Lenešice
+lesna	Lešná
+lestina	Leština
+letnany	Letňany
+letohrad	Letohrad
+letonice	Letonice
+letovice	Letovice
+lety	Lety
+lhenice	Lhenice
+liban	Libáň
+libavske udoli	Libavské Údolí
+libcice nad vltavou	Libčice nad Vltavou
+liben	Libeň
+liber	Libeř
+liberec	Liberec
+libesice	Liběšice
+libeznice	Líbeznice
+libhost	Libhošť
+libice nad cidlinou	Libice nad Cidlinou
+libina	Libina
+libis	Libiš
+libochovice	Libochovice
+libouchec	Libouchec
+libus	Libuš
+libusin	Libušín
+lichnov	Lichnov
+lidecko	Lidečko
+line	Líně
+lipa	Lípa
+lipnik nad becvou	Lipník nad Bečvou
+lipov	Lipov
+lipova-lazne	Lipová-lázně
+lipovec	Lipovec
+liptal	Liptál
+lipuvka	Lipůvka
+lisen	Líšeň
+lisov	Lišov
+litomerice	Litoměřice
+litomysl	Litomyšl
+litovel	Litovel
+litvinov	Litvínov
+litvinovice	Litvínovice
+lochovice	Lochovice
+lodenice	Loděnice
+loket	Loket
+lom	Lom
+lomnice	Lomnice
+lomnice nad luznici	Lomnice nad Lužnicí
+lomnice nad popelkou	Lomnice nad Popelkou
+losina	Losiná
+lostice	Loštice
+loucen	Loučeň
+loucna nad desnou	Loučná nad Desnou
+loucovice	Loučovice
+louny	Louny
+lovosice	Lovosice
+lubenec	Lubenec
+luby	Luby
+lucany nad nisou	Lučany nad Nisou
+lucina	Lučina
+ludgerovice	Ludgeřovice
+luhacovice	Luhačovice
+luka nad jihlavou	Luka nad Jihlavou
+lukavec	Lukavec
+lukavice	Lukavice
+lukov	Lukov
+lustenice	Luštěnice
+lutin	Lutín
+luze	Luže
+luzec nad vltavou	Lužec nad Vltavou
+luzice	Lužice
+luzna	Lužná
+lysa nad labem	Lysá nad Labem
+lysice	Lysice
+machov	Machov
+majetin	Majetín
+mala skala	Malá Skála
+mala strana	Malá Strana
+male svatonovice	Malé Svatoňovice
+malesice	Malešice
+malhostovice	Malhostovice
+malomerice	Maloměřice
+malonty	Malonty
+malsice	Malšice
+manetin	Manětín
+marianske lazne	Mariánské Lázně
+markvartovice	Markvartovice
+mecholupy	Měcholupy
+mecin	Měčín
+meclov	Meclov
+medlanky	Medlánky
+medlov	Medlov
+melnik	Mělník
+menin	Měnín
+merin	Měřín
+merklin	Merklín
+mesice	Měšice
+mestec kralove	Městec Králové
+mestecko trnavka	Městečko Trnávka
+mesto albrechtice	Město Albrechtice
+mesto libava	Město Libavá
+mesto touskov	Město Touškov
+metylovice	Metylovice
+mezibori	Meziboři
+mezimesti	Meziměstí
+michle	Michle
+mikulasovice	Mikulášovice
+mikulcice	Mikulčice
+mikulov	Mikulov
+mikulovice	Mikulovice
+milevsko	Milevsko
+milikov	Milíkov
+milin	Milín
+milotice	Milotice
+milovice	Milovice
+mimon	Mimoň
+miretice	Miřetice
+miroslav	Miroslav
+mirosov	Mirošov
+mirotice	Mirotice
+mirovice	Mirovice
+mistrice	Mistřice
+mlada boleslav	Mladá Boleslav
+mlada vozice	Mladá Vožice
+mlade buky	Mladé Buky
+mnichovice	Mnichovice
+mnichovo hradiste	Mnichovo Hradiště
+mnisek	Mníšek
+mnisek pod brdy	Mníšek pod Brdy
+modrany	Modřany
+modrice	Modřice
+mohelnice	Mohelnice
+mohelno	Mohelno
+mokra hora	Mokrá Hora
+mokra-horakov	Mokrá-Horákov
+mokre lazce	Mokré Lazce
+moravany	Moravany
+moravicany	Moravičany
+moravka	Morávka
+moravska nova ves	Moravská Nová Ves
+moravska trebova	Moravská Třebová
+moravske budejovice	Moravské Budějovice
+moravsky beroun	Moravský Beroun
+moravsky krumlov	Moravský Krumlov
+moravsky pisek	Moravský Písek
+moravsky zizkov	Moravský Žižkov
+morkov	Mořkov
+morkovice-slizany	Morkovice-Slížany
+most	Most
+mostek	Mostek
+mostkovice	Mostkovice
+mosty u jablunkova	Mosty u Jablunkova
+moutnice	Moutnice
+mrakov	Mrákov
+mratin	Mratín
+msene-lazne	Mšené-lázně
+mseno	Mšeno
+mukarov	Mukařov
+mutenice	Mutěnice
+myto	Mýto
+naceradec	Načeradec
+nachod	Náchod
+naklo	Náklo
+nalzovske hory	Nalžovské Hory
+namest na hane	Náměšť na Hané
+namest nad oslavou	Náměšť nad Oslavou
+napajedla	Napajedla
+nasavrky	Nasavrky
+navsi	Návsí
+nechanice	Nechanice
+nedakonice	Nedakonice
+nedasov	Nedašov
+nedvedice	Nedvědice
+nehvizdy	Nehvizdy
+nejdek	Nejdek
+nelahozeves	Nelahozeves
+nemanice	Nemanice
+nemcice nad hanou	Němčice nad Hanou
+nepomuk	Nepomuk
+neratovice	Neratovice
+nesovice	Nesovice
+netolice	Netolice
+netvorice	Netvořice
+neveklov	Neveklov
+nezamyslice	Nezamyslice
+nezvestice	Nezvěstice
+nivnice	Nivnice
+nizbor	Nižbor
+nosislav	Nosislav
+nova bystrice	Nová Bystřice
+nova cerekev	Nová Cerekev
+nova paka	Nová Paka
+nova role	Nová Role
+nova vcelnice	Nová Včelnice
+nova ves	Nová Ves
+nova ves i	Nová Ves I
+nove hrady	Nové Hrady
+nove mesto	Nové Město
+nove mesto na morave	Nové Město na Moravě
+nove mesto nad metuji	Nové Město nad Metují
+nove mesto pod smrkem	Nové Město pod Smrkem
+nove sedlo	Nové Sedlo
+nove straseci	Nové Strašecí
+nove syrovice	Nové Syrovice
+nove veseli	Nové Veselí
+novosedlice	Novosedlice
+novosedly	Novosedly
+novy bor	Nový Bor
+novy bydzov	Nový Bydžov
+novy hrozenkov	Nový Hrozenkov
+novy jicin	Nový Jičín
+novy knin	Nový Knín
+novy liskovec	Nový Lískovec
+novy malin	Nový Malín
+novy saldorf-sedlesovice	Nový Šaldorf-Sedlešovice
+nucice	Nučice
+nupaky	Nupaky
+nusle	Nusle
+nydek	Nýdek
+nymburk	Nymburk
+nyrany	Nýřany
+nyrsko	Nýrsko
+obecnice	Obecnice
+obrnice	Obrnice
+ochoz u brna	Ochoz u Brna
+odolena voda	Odolena Voda
+odry	Odry
+ohrazenice	Ohrazenice
+ohrobec	Ohrobec
+okrisky	Okříšky
+okrouhlice	Okrouhlice
+olbramovice	Olbramovice
+oldrisov	Oldřišov
+olesnice	Olešnice
+olomouc	Olomouc
+olovi	Oloví
+olsany	Olšany
+olsany u prostejova	Olšany u Prostějova
+ondrejov	Ondřejov
+oparany	Opařany
+opatov	Opatov
+opatovice nad labem	Opatovice nad Labem
+opava	Opava
+opocno	Opočno
+orechov	Ořechov
+orlova	Orlová
+osecna	Osečná
+osek	Osek
+osek nad becvou	Osek nad Bečvou
+osik	Osík
+oskava	Oskava
+oslavany	Oslavany
+osoblaha	Osoblaha
+ostopovice	Ostopovice
+ostrava	Ostrava
+ostravice	Ostravice
+ostromer	Ostroměř
+ostrov	Ostrov
+ostrov u macochy	Ostrov u Macochy
+ostrozska lhota	Ostrožská Lhota
+ostrozska nova ves	Ostrožská Nová Ves
+otaslavice	Otaslavice
+otice	Otice
+otnice	Otnice
+otrokovice	Otrokovice
+pacov	Pacov
+palkovice	Palkovice
+pardubice	Pardubice
+paseka	Paseka
+paskov	Paskov
+pavlikov	Pavlíkov
+pchery	Pchery
+pecka	Pecka
+pecky	Pečky
+pelhrimov	Pelhřimov
+pencin	Pěnčín
+perstejn	Perštejn
+peruc	Peruc
+petrov	Petrov
+petrov nad desnou	Petrov nad Desnou
+petrovice	Petrovice
+petrovice u karvine	Petrovice u Karviné
+petrvald	Petřvald
+pilnikov	Pilníkov
+pilsen	Pilsen
+pisecna	Písečná
+pisek	Písek
+pist	Píšť
+plana	Planá
+plana nad luznici	Planá nad Lužnicí
+planany	Plaňany
+planice	Plánice
+plasy	Plasy
+plavy	Plavy
+plesna	Plesná
+plumlov	Plumlov
+pobezovice	Poběžovice
+pocatky	Počátky
+podborany	Podbořany
+podebrady	Poděbrady
+podivin	Podivín
+podoli	Podolí
+pohorelice	Pohořelice
+polepy	Polepy
+polesovice	Polešovice
+police nad metuji	Police nad Metují
+policka	Polička
+policna	Poličná
+polna	Polná
+pomezi	Pomezí
+ponikla	Poniklá
+popovice	Popovice
+poricany	Poříčany
+porici nad sazavou	Poříčí nad Sázavou
+postoloprty	Postoloprty
+postrekov	Postřekov
+postrelmov	Postřelmov
+postupice	Postupice
+potstat	Potštát
+povrly	Povrly
+pozlovice	Pozlovice
+pozorice	Pozořice
+prachatice	Prachatice
+prachovice	Prachovice
+prague	Prague
+praslavice	Přáslavice
+prazmo	Pražmo
+predboj	Předboj
+predklasteri	Předklášteří
+predmerice nad labem	Předměřice nad Labem
+prelouc	Přelouč
+premyslovice	Přemyslovice
+prerov	Přerov
+prerov nad labem	Přerov nad Labem
+prestice	Přeštice
+prezletice	Přezletice
+pribor	Příbor
+pribram	Příbram
+pribyslav	Přibyslav
+prikazy	Příkazy
+primda	Přimda
+prisovice	Příšovice
+probostov	Proboštov
+prosec	Proseč
+prosek	Prosek
+prostejov	Prostějov
+prostredni becva	Prostřední Bečva
+protivanov	Protivanov
+protivin	Protivín
+provodov-sonov	Provodov-Šonov
+pruhonice	Průhonice
+prusanky	Prušánky
+prusinovice	Prusinovice
+przno	Pržno
+psary	Psáry
+pteni	Ptení
+pusta polom	Pustá Polom
+pustimer	Pustiměř
+pysely	Pyšely
+racice-pistovice	Račice-Pístovice
+radimer	Radiměř
+radnice	Radnice
+radomysl	Radomyšl
+radonice	Radonice
+radotin	Radotín
+radslavice	Radslavice
+radvanice	Radvanice
+rajec-jestrebi	Rájec-Jestřebí
+rajecko	Ráječko
+rajhrad	Rajhrad
+rajhradice	Rajhradice
+rakovnik	Rakovník
+rakvice	Rakvice
+ralsko	Ralsko
+rapotin	Rapotín
+raskovice	Raškovice
+raspenava	Raspenava
+rataje	Rataje
+ratibor	Ratiboř
+ratiskovice	Ratíškovice
+rebesovice	Rebešovice
+recany nad labem	Řečany nad Labem
+reckovice	Řečkovice
+rehlovice	Řehlovice
+repiste	Řepiště
+reporyje	Řeporyje
+repy	Řepy
+revnice	Řevnice
+revnicov	Řevničov
+rez	Řež
+ricany	Říčany
+ritka	Řitka
+rohatec	Rohatec
+rokycany	Rokycany
+rokytnice	Rokytnice
+rokytnice nad jizerou	Rokytnice nad Jizerou
+rokytnice v orlickych horach	Rokytnice v Orlických Horách
+ronov nad doubravou	Ronov nad Doubravou
+ropice	Ropice
+rosice	Rosice
+rotava	Rotava
+rouchovany	Rouchovany
+roudnice nad labem	Roudnice nad Labem
+rousinov	Rousínov
+rovensko pod troskami	Rovensko pod Troskami
+rozdalovice	Rožďalovice
+rozdrojovice	Rozdrojovice
+rozmital pod tremsinem	Rožmitál pod Třemšínem
+roznov pod radhostem	Rožnov pod Radhoštěm
+roztoky	Roztoky
+rtyne v podkrkonosi	Rtyně v Podkrkonoší
+ruda nad moravou	Ruda nad Moravou
+rudna	Rudná
+rudnik	Rudník
+rudolfov	Rudolfov
+rumburk	Rumburk
+ruzyne	Ruzyně
+rybi	Rybí
+rybitvi	Rybitví
+rychnov nad kneznou	Rychnov nad Kněžnou
+rychnov u jablonce nad nisou	Rychnov u Jablonce nad Nisou
+rychvald	Rychvald
+rymarov	Rýmařov
+sadov	Sadov
+sadska	Sadská
+sakvice	Šakvice
+samotisky	Samotíšky
+sanov	Šanov
+sardice	Šardice
+satalice	Satalice
+satov	Šatov
+sazava	Sázava
+sec	Seč
+sedlcany	Sedlčany
+sedlec	Sedlec
+sedlec-prcice	Sedlec-Prčice
+sedlice	Sedlice
+sedliste	Sedliště
+sedlnice	Sedlnice
+semily	Semily
+senice na hane	Senice na Hané
+senov	Šenov
+senov u noveho jicina	Šenov u Nového Jičína
+sepekov	Sepekov
+sestajovice	Šestajovice
+sevetin	Ševětín
+sezemice	Sezemice
+sezimovo usti	Sezimovo Ústí
+sibrina	Sibřina
+silherovice	Šilheřovice
+sitborice	Šitbořice
+sivice	Sivice
+skalice u ceske lipy	Skalice u České Lípy
+skalna	Skalná
+skrben	Skrbeň
+skripov	Skřipov
+skuhrov nad belou	Skuhrov nad Bělou
+skutec	Skuteč
+slany	Slaný
+slapanice	Šlapanice
+slatina	Slatina
+slatinany	Slatiňany
+slatinice	Slatinice
+slavicin	Slavičín
+slavkov	Slavkov
+slavkov u brna	Slavkov u Brna
+slavonice	Slavonice
+sloupnice	Sloupnice
+sluknov	Šluknov
+slusovice	Slušovice
+smecno	Smečno
+smichov	Smíchov
+smidary	Smidary
+smirice	Smiřice
+smrzice	Smržice
+smrzovka	Smržovka
+sobeslav	Soběslav
+sobotin	Sobotín
+sobotka	Sobotka
+sokolnice	Sokolnice
+sokolov	Sokolov
+solnice	Solnice
+spalene porici	Spálené Poříčí
+spindleruv mlyn	Špindlerův Mlýn
+spytihnev	Spytihněv
+srubec	Srubec
+stachy	Stachy
+stahlavy	Šťáhlavy
+stankov	Staňkov
+stara hut	Stará Huť
+stara paka	Stará Paka
+stara ves nad ondrejnici	Stará Ves nad Ondřejnicí
+stare hradiste	Staré Hradiště
+stare krecany	Staré Křečany
+stare mesto	Staré Město
+stare nechanice	Staré Nechanice
+stare strasnice	Staré Strašnice
+starec	Stařeč
+staric	Staříč
+stary bohumin	Starý Bohumín
+stary jicin	Starý Jičín
+stary kolin	Starý Kolín
+stary liskovec	Starý Lískovec
+stary plzenec	Starý Plzenec
+statenice	Statenice
+steborice	Stěbořice
+stechovice	Štěchovice
+stehelceves	Stehelčeves
+stenovice	Štěnovice
+stepankovice	Štěpánkovice
+stepanov	Štěpánov
+sternberk	Šternberk
+steti	Štětí
+stezery	Stěžery
+stitina	Štítina
+stitna nad vlari-popov	Štítná nad Vláří-Popov
+stity	Štíty
+stochov	Stochov
+stod	Stod
+stodulky	Stodůlky
+stoky	Štoky
+stonava	Stonava
+strakonice	Strakonice
+stramberk	Štramberk
+strancice	Strančice
+strani	Strání
+strasice	Strašice
+straskov-vodochody	Straškov-Vodochody
+straz	Stráž
+straz nad nisou	Stráž nad Nisou
+straz pod ralskem	Stráž pod Ralskem
+strazna	Strážná
+straznice	Strážnice
+strazov	Strážov
+stredokluky	Středokluky
+strelice	Střelice
+stresovice	Střešovice
+stribro	Stříbro
+strizkov	Střížkov
+strmilov	Strmilov
+strunkovice nad blanici	Strunkovice nad Blanicí
+studena	Studená
+studenec	Studenec
+studenka	Studénka
+sucha loz	Suchá Loz
+suchdol	Suchdol
+suchdol nad luznici	Suchdol nad Lužnicí
+suchdol nad odrou	Suchdol nad Odrou
+suchohrdly	Suchohrdly
+sudkov	Sudkov
+sudomerice	Sudoměřice
+sumice	Šumice
+sumperk	Šumperk
+sumvald	Šumvald
+susice	Sušice
+svatava	Svatava
+svatoborice-mistrin	Svatobořice-Mistřín
+svetla hora	Světlá Hora
+svetla nad sazavou	Světlá nad Sázavou
+sviadnov	Sviadnov
+svihov	Švihov
+svitavka	Svitávka
+svitavy	Svitavy
+svoboda nad upou	Svoboda nad Úpou
+svratka	Svratka
+tabor	Tábor
+tachov	Tachov
+tanvald	Tanvald
+tasovice	Tasovice
+tecovice	Tečovice
+telc	Telč
+telnice	Telnice
+tepla	Teplá
+teplice	Teplice
+teplice nad metuji	Teplice nad Metují
+terezin	Terezín
+terlicko	Těrlicko
+tesany	Těšany
+tesetice	Těšetice
+ticha	Tichá
+tisice	Tišice
+tisnov	Tišnov
+tlucna	Tlučná
+tlumacov	Tlumačov
+topolna	Topolná
+touzim	Toužim
+tovacov	Tovačov
+tranovice	Třanovice
+traplice	Traplice
+trebechovice pod orebem	Třebechovice pod Orebem
+trebenice	Třebenice
+trebic	Třebíč
+trebon	Třeboň
+trebotov	Třebotov
+tremosna	Třemošná
+tremosnice	Třemošnice
+trest	Třešť
+trhove sviny	Trhové Sviny
+trhovy stepanov	Trhový Štěpánov
+tri sekery	Tři Sekery
+trinec	Třinec
+trmice	Trmice
+trnava	Trnava
+troja	Troja
+trojanovice	Trojanovice
+troubelice	Troubelice
+troubky	Troubky
+troubsko	Troubsko
+trsice	Tršice
+trutnov	Trutnov
+tuchlovice	Tuchlovice
+tuchomerice	Tuchoměřice
+tupesy	Tupesy
+turany	Tuřany
+turnov	Turnov
+tvarozna	Tvarožná
+tvrdonice	Tvrdonice
+tymakov	Tymákov
+tyn nad vltavou	Týn nad Vltavou
+tynec	Týnec
+tynec nad labem	Týnec nad Labem
+tynec nad sazavou	Týnec nad Sázavou
+tyniste nad orlici	Týniště nad Orlicí
+udlice	Údlice
+uherske hradiste	Uherské Hradiště
+uhersky brod	Uherský Brod
+uhersky ostroh	Uherský Ostroh
+uhlirske janovice	Uhlířské Janovice
+uhonice	Úhonice
+uhrineves	Uhříněves
+ujezd	Újezd
+ujezd nad lesy	Újezd nad Lesy
+ujezd u brna	Újezd u Brna
+unanov	Únanov
+unhost	Unhošť
+unicov	Uničov
+upice	Úpice
+urcice	Určice
+usov	Úsov
+ustek	Úštěk
+usti nad labem	Ústí nad Labem
+usti nad orlici	Ústí nad Orlicí
+uvaly	Úvaly
+vacenovice	Vacenovice
+vaclavovice	Václavovice
+vacov	Vacov
+valasska bystrice	Valašská Bystřice
+valasska polanka	Valašská Polanka
+valasske klobouky	Valašské Klobouky
+valasske mezirici	Valašské Meziříčí
+valdice	Valdice
+valtice	Valtice
+vamberk	Vamberk
+vapenna	Vápenná
+varnsdorf	Varnsdorf
+vcelna	Včelná
+vejprnice	Vejprnice
+vejprty	Vejprty
+velehrad	Velehrad
+velemin	Velemín
+velen	Veleň
+velesin	Velešín
+veleslavin	Veleslavín
+velesovice	Velešovice
+velim	Velim
+velka bites	Velká Bíteš
+velka bystrice	Velká Bystřice
+velka chuchle	Velká Chuchle
+velka dobra	Velká Dobrá
+velka hledsebe	Velká Hleďsebe
+velka nad velickou	Velká nad Veličkou
+velka polom	Velká Polom
+velke bilovice	Velké Bílovice
+velke brezno	Velké Březno
+velke hamry	Velké Hamry
+velke heraltice	Velké Heraltice
+velke hostice	Velké Hoštice
+velke karlovice	Velké Karlovice
+velke losiny	Velké Losiny
+velke mezirici	Velké Meziříčí
+velke nemcice	Velké Němčice
+velke opatovice	Velké Opatovice
+velke pavlovice	Velké Pavlovice
+velke popovice	Velké Popovice
+velke porici	Velké Poříčí
+velke prilepy	Velké Přílepy
+velke svatonovice	Velké Svatoňovice
+velky beranov	Velký Beranov
+velky osek	Velký Osek
+velky senov	Velký Šenov
+velky tynec	Velký Týnec
+velky ujezd	Velký Újezd
+veltruby	Veltruby
+veltrusy	Veltrusy
+velvary	Velvary
+vendryne	Vendryně
+vernerice	Verneřice
+verovany	Věrovany
+verovice	Veřovice
+veseli nad luznici	Veselí nad Lužnicí
+veseli nad moravou	Veselí nad Moravou
+vestec	Vestec
+vetrni	Větřní
+veverska bityska	Veverská Bítýška
+vidce	Vidče
+vidnava	Vidnava
+vikyrovice	Vikýřovice
+vilemov	Vilémov
+vimperk	Vimperk
+vinarice	Vinařice
+vinicne sumice	Viničné Šumice
+vinohrady	Vinohrady
+vintirov	Vintířov
+visnova	Višňova
+visnove	Višňové
+vitezna	Vítězná
+vitkov	Vítkov
+vizovice	Vizovice
+vlachovice	Vlachovice
+vlachovo brezi	Vlachovo Březí
+vladislav	Vladislav
+vlasim	Vlašim
+vlcnov	Vlčnov
+vlkos	Vlkoš
+vnorovy	Vnorovy
+vodnany	Vodňany
+vojkovice	Vojkovice
+vokovice	Vokovice
+volary	Volary
+volduchy	Volduchy
+volyne	Volyně
+votice	Votice
+vracov	Vracov
+vrahovice	Vrahovice
+vrane nad vltavou	Vrané nad Vltavou
+vranovice	Vranovice
+vratimov	Vratimov
+vrbatky	Vrbátky
+vrbice	Vrbice
+vrbno pod pradedem	Vrbno pod Pradědem
+vrbovec	Vrbovec
+vrchlabi	Vrchlabí
+vrdy	Vrdy
+vresina	Vřesina
+vroutek	Vroutek
+vrsovice	Vršovice
+vsemina	Všemina
+vsenory	Všenory
+vseruby	Všeruby
+vsestary	Všestary
+vsetaty	Všetaty
+vsetin	Vsetín
+vysehrad	Vyšehrad
+vyskov	Vyškov
+vysocany	Vysočany
+vysoke myto	Vysoké Mýto
+vysoke nad jizerou	Vysoké nad Jizerou
+vysoky ujezd	Vysoký Újezd
+vyssi brod	Vyšší Brod
+zabcice	Žabčice
+zabehlice	Záběhlice
+zabovresky	Žabovřesky
+zabreh	Zábřeh
+zabrusany	Zabrušany
+zacler	Žacléř
+zadni mostek	Zadní Mostek
+zadverice-rakova	Zádveřice-Raková
+zahorovice	Záhorovice
+zajeci	Zaječí
+zajecov	Zaječov
+zakupy	Zákupy
+zamberk	Žamberk
+zandov	Žandov
+zasmuky	Zásmuky
+zasova	Zašová
+zastavka	Zastávka
+zatec	Žatec
+zator	Zátor
+zbiroh	Zbiroh
+zborovice	Zborovice
+zbraslav	Zbraslav
+zbraslavice	Zbraslavice
+zbuch	Zbůch
+zbuzany	Zbuzany
+zbysov	Zbýšov
+zdanice	Ždánice
+zdar	Žďár
+zdar nad sazavou	Žďár nad Sázavou
+zdiby	Zdiby
+zdice	Zdice
+zdikov	Zdíkov
+zdirec nad doubravkou	Ždírec nad Doubravkou
+zdounky	Zdounky
+zebetin	Žebětín
+zebrak	Žebrák
+zelechovice nad drevnici	Želechovice nad Dřevnicí
+zelenec	Zeleneč
+zelesice	Želešice
+zeletava	Želetava
+zelezna ruda	Železná Ruda
+zeleznice	Železnice
+zelezny brod	Železný Brod
+zeliv	Želiv
+zeravice	Žeravice
+zidenice	Židenice
+zidlochovice	Židlochovice
+zihle	Žihle
+zirovnice	Žirovnice
+zitenice	Žitenice
+zizelice	Žiželice
+zizkov	Žižkov
+zlate hory	Zlaté Hory
+zlatniky-hodkovice	Zlatníky-Hodkovice
+zleby	Žleby
+zlechov	Zlechov
+zlicin	Zlíčín
+zlin	Zlín
+zliv	Zliv
+zlonice	Zlonice
+zlutava	Žlutava
+zlutice	Žlutice
+znojmo	Znojmo
+zruc nad sazavou	Zruč nad Sázavou
+zruc-senec	Zruč-Senec
+zubri	Zubří
+zulova	Žulová
+zvole	Zvole

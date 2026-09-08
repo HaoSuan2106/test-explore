@@ -1,4 +1,37 @@
+import 'dart:io' show SocketException;
+
 import 'package:dio/dio.dart';
+
+/// The one message shown when the backend could not be reached. Never varies
+/// by feature: the user's problem is the same everywhere, and the fix is too.
+const String kConnectionErrorMessage =
+    'Cannot connect to the server. Check your connection and try again.';
+
+/// Whether [error] means the request never reached the backend — it timed out,
+/// the connection was refused, or there is no network at all.
+///
+/// Deliberately narrow: an HTTP response of any status (400, 404, 500) is the
+/// backend answering, not a connection problem, and must keep its own message.
+bool isConnectionError(Object? error) {
+  if (error is SocketException) return true;
+  if (error is! DioException) return false;
+
+  switch (error.type) {
+    case DioExceptionType.connectionError:
+    case DioExceptionType.connectionTimeout:
+    case DioExceptionType.sendTimeout:
+    case DioExceptionType.receiveTimeout:
+      return true;
+    case DioExceptionType.unknown:
+      // Dio reports a dead socket as `unknown` on some platforms, with the
+      // real cause attached.
+      return error.error is SocketException;
+    // badResponse (the backend answered), cancel, badCertificate and
+    // transformTimeout are all failures the connection panel must not claim.
+    default:
+      return false;
+  }
+}
 
 /// Shared mapping from a [DioException] to a safe, user-facing error message.
 ///
@@ -44,12 +77,10 @@ String? messageForError(DioException e) {
   // No HTTP response at all — the failure happened before the backend could
   // answer (server down, wrong address, timeout, no connectivity). These are
   // NOT the backend's fault and must not look like a server error.
-  if (e.type == DioExceptionType.connectionError ||
-      e.type == DioExceptionType.connectionTimeout ||
-      e.type == DioExceptionType.sendTimeout ||
-      e.type == DioExceptionType.receiveTimeout) {
-    return 'Cannot connect to the server. Check your connection and try again.';
-  }
+  //
+  // Most of these never get this far: HttpClient offers the user a retry
+  // first, and only a declined retry falls through to the caller's message.
+  if (isConnectionError(e)) return kConnectionErrorMessage;
 
   return null;
 }

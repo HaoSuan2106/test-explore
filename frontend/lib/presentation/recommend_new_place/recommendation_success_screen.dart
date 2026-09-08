@@ -7,8 +7,7 @@ import '../../../widgets/app_button.dart';
 import '../../../widgets/content_constraint.dart';
 import '../../../widgets/app_feedback.dart';
 import '../../../providers/hidden_place/hidden_place_provider.dart';
-import '../hidden_place_discovery/hidden_place_discovery_ui.dart'
-    hide AppColors;
+import '../hidden_place_discovery/hidden_place_discovery_ui.dart';
 import '../navigation/app_navigation.dart';
 import '../place_details/place_details_ui.dart';
 

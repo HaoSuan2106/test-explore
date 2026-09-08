@@ -1,0 +1,966 @@
+abbotsdale	Abbotsdale
+aberdeen	Aberdeen
+acornhoek	Acornhoek
+addo	Addo
+adelaide	Adelaide
+albert falls	Albert Falls
+albertina	Albertina
+alberton	Alberton
+alexander bay	Alexander Bay
+alexandra	Alexandra
+alexandria	Alexandria
+alice	Alice
+alicedale	Alicedale
+aliwal north	Aliwal North
+allandale a	Allandale A
+allanridge	Allanridge
+alldays	Alldays
+allemansdrif	Allemansdrif
+amalia	Amalia
+amandelbult	Amandelbult
+amersfoort	Amersfoort
+apel	Apel
+arlington	Arlington
+arniston	Arniston
+arthur’s seat	Arthur’s Seat
+ashburton	Ashburton
+ashton	Ashton
+athlone	Athlone
+atlantis	Atlantis
+augrabies	Augrabies
+babanango	Babanango
+babirwa	Babirwa
+bagale	Bagale
+balfour	Balfour
+ballitoville	Ballitoville
+barberton	Barberton
+barkly east	Barkly East
+barkly west	Barkly West
+barrydale	Barrydale
+bathurst	Bathurst
+beaufort west	Beaufort West
+bedford	Bedford
+bela bela	Bela Bela
+bela-bela	Bela-Bela
+belfast	Belfast
+benoni	Benoni
+berea	Berea
+bergnek	Bergnek
+bergville	Bergville
+bergvliet	Bergvliet
+bertha shaft village	Bertha Shaft Village
+bethal	Bethal
+bethlehem	Bethlehem
+bethulie	Bethulie
+betty's goed	Betty's Goed
+betty’s bay	Betty’s Bay
+bhisho	Bhisho
+bizana	Bizana
+blinkpan	Blinkpan
+bloemfontein	Bloemfontein
+bloemhof	Bloemhof
+bochum	Bochum
+boipelo	Boipelo
+boksburg	Boksburg
+bolla-tau	Bolla-Tau
+bonnievale	Bonnievale
+bontrug	Bontrug
+bosbokrand	Bosbokrand
+bosfontein	Bosfontein
+boshof	Boshof
+bosoord	Bosoord
+bothaville	Bothaville
+botha’s hill	Botha’s Hill
+botrivier	Botrivier
+botshabelo	Botshabelo
+brakpan	Brakpan
+brandvlei	Brandvlei
+brandwag	Brandwag
+bray	Bray
+bredasdorp	Bredasdorp
+breyten	Breyten
+brits	Brits
+bronkhorstspruit	Bronkhorstspruit
+buffeljagsrivier	Buffeljagsrivier
+bultfontein	Bultfontein
+bulwer	Bulwer
+burgersdorp	Burgersdorp
+burgersfort	Burgersfort
+burlington	Burlington
+butterworth	Butterworth
+buyisonto	Buyisonto
+cacadu	Cacadu
+cala	Cala
+calcutta	Calcutta
+caledon	Caledon
+calitzdorp	Calitzdorp
+calvinia	Calvinia
+camperdown	Camperdown
+cape town	Cape Town
+carletonville	Carletonville
+carnarvon	Carnarvon
+carolina	Carolina
+carousel view	Carousel View
+cathcart	Cathcart
+cato ridge	Cato Ridge
+cedarville	Cedarville
+centane	Centane
+centurion	Centurion
+century city	Century City
+ceres	Ceres
+charlestown	Charlestown
+chatsworth	Chatsworth
+chrissiesmeer	Chrissiesmeer
+christiana	Christiana
+cibelichle	Cibelichle
+cillie	Cillie
+cintsa mouth west	Cintsa Mouth West
+citrusdal	Citrusdal
+clanwilliam	Clanwilliam
+clare a	Clare A
+claremont	Claremont
+clarendon marine	Clarendon Marine
+clarens	Clarens
+clarkson	Clarkson
+clydesdale	Clydesdale
+cofimvaba	Cofimvaba
+colchester	Colchester
+coldstream	Coldstream
+colenso	Colenso
+colesberg	Colesberg
+coligny	Coligny
+constantia	Constantia
+cookhouse	Cookhouse
+cool air	Cool Air
+cornelia	Cornelia
+coronation	Coronation
+cradock	Cradock
+craigieburn	Craigieburn
+creighton	Creighton
+croquet lawn a	Croquet Lawn A
+cullinan	Cullinan
+daggakraal	Daggakraal
+dalton	Dalton
+danielskuil	Daniëlskuil
+dannhauser	Dannhauser
+darling	Darling
+darnall	Darnall
+davel	Davel
+de aar	De Aar
+de doorns	De Doorns
+de rust	De Rust
+dealesville	Dealesville
+delareyville	Delareyville
+delmas	Delmas
+dendron	Dendron
+deneysville	Deneysville
+derby	Derby
+devon	Devon
+dewetsdorp	Dewetsdorp
+diepsloot	Diepsloot
+dimbaza	Dimbaza
+dingleydale a	Dingleydale A
+dingleydale b	Dingleydale B
+dirkiesdorp	Dirkiesdorp
+doornkop	Doornkop
+dordrecht	Dordrecht
+doringbaai	Doringbaai
+douglas	Douglas
+driefontein	Driefontein
+driekoppies	Driekoppies
+drummond	Drummond
+ducats	Ducats
+duiwelskloof	Duiwelskloof
+dullstroom	Dullstroom
+dumfries a	Dumfries A
+dumfries b	Dumfries B
+dundee	Dundee
+dundonald	Dundonald
+durban	Durban
+durbanville	Durbanville
+dutywa	Dutywa
+dwarsloop	Dwarsloop
+dysselsdorp	Dysselsdorp
+east london	East London
+eastleigh	Eastleigh
+ebenhaeser	Ebenhaeser
+eden glen	Eden Glen
+eden glen ext 60	Eden Glen Ext 60
+edenburg	Edenburg
+edenvale	Edenvale
+edenville	Edenville
+edinburgh a	Edinburgh A
+edinburgh b	Edinburgh B
+eendekuil	Eendekuil
+eglington a	Eglington A
+eglington b	Eglington B
+ekangala	Ekangala
+ekhephini	Ekhephini
+ekulindeni	Ekulindeni
+ekuvukeni	Ekuvukeni
+elandsbaai	Elandsbaai
+elandshoek	Elandshoek
+elandskraal	Elandskraal
+elim	Elim
+elliotdale	Elliotdale
+eloff	Eloff
+elsburg gold mine	Elsburg Gold Mine
+emakhazeni b	eMakhazeni B
+emalahleni	Emalahleni
+emanzana	eManzana
+emanzimtoti	eManzimtoti
+emaqeleni	Emaqeleni
+embalenhle	eMbalenhle
+embangweni	eMbangweni
+embhojeni	Embhojeni
+emdloti	eMdloti
+emgwenya	Emgwenya
+emkhomazi	eMkhomazi
+emkhuze	eMkhuze
+emona	Emona
+empangeni	Empangeni
+empuluzu	Empuluzu
+emtfuntini	Emtfuntini
+emuziwezinto	eMuziwezinto
+emvelo	eMvelo
+enduli	eNduli
+enon	Enon
+ermelo	Ermelo
+eshowe	Eshowe
+esikhaleni	eSikhaleni
+estcourt	Estcourt
+etwatwa	Etwatwa
+evander	Evander
+evaton	Evaton
+excelsior	Excelsior
+ezibomvu	Ezibomvu
+fauresmith	Fauresmith
+fayini	Fayini
+felixton	Felixton
+fernie	Fernie
+ficksburg	Ficksburg
+fisantekraal	Fisantekraal
+flagstaff	Flagstaff
+fochville	Fochville
+folweni	Folweni
+fort beaufort	Fort Beaufort
+fouriesburg	Fouriesburg
+frankfort	Frankfort
+franklin	Franklin
+franschhoek	Franschhoek
+fraserburg	Fraserburg
+friemersheim	Friemersheim
+frischgewaagd	Frischgewaagd
+ga-boelang	Ga-Boelang
+ga-josepha	Ga-Josepha
+ga-kgapane	Ga-Kgapane
+ga-malakhe	Ga-Malakhe
+ga-maotole	Ga-Maotole
+ga-rankuwa	Ga-Rankuwa
+gannaput	Gannaput
+gansbaai	Gansbaai
+ganyesa	Ganyesa
+gariep dam	Gariep Dam
+garies	Garies
+gasekhaolelo	GaSekhaolelo
+gemsbokspruit	Gemsbokspruit
+genadendal	Genadendal
+george	George
+germiston	Germiston
+geysdorp	Geysdorp
+giyani	Giyani
+glaudina	Glaudina
+glen mill	Glen Mill
+glencoe	Glencoe
+glenharvie	Glenharvie
+glenmore	Glenmore
+godide	Godide
+goedverwag	Goedverwag
+gonubie	Gonubie
+gouda	Gouda
+gqeberha	Gqeberha
+graaff reinet	Graaff Reinet
+graafwater	Graafwater
+grabouw	Grabouw
+grahamstown	Grahamstown
+graigieburn	Graigieburn
+graskop	Graskop
+gravelotte	Gravelotte
+greylands	Greylands
+greyton	Greyton
+greytown	Greytown
+groblersdal	Groblersdal
+groblershoop	Groblershoop
+groenpunt	Groenpunt
+groot-brakrivier	Groot-Brakrivier
+groot-marico	Groot-Marico
+grootdrink	Grootdrink
+grootvlei	Grootvlei
+ha-mavhunga	Ha-Mavhunga
+haarlem	Haarlem
+hambanathi	Hambanathi
+hamburg	Hamburg
+hammanskraal	Hammanskraal
+hankey	Hankey
+hanover	Hanover
+harding	Harding
+harrismith	Harrismith
+hartbeesfontein	Hartbeesfontein
+hartbeespoort	Hartbeespoort
+hartbeestfontein-a	Hartbeestfontein-A
+hartswater	Hartswater
+hazelmere	Hazelmere
+hazyview	Hazyview
+hectorspruit	Hectorspruit
+heidelberg	Heidelberg
+heilbron	Heilbron
+hendrina	Hendrina
+hennenman	Hennenman
+hermanus	Hermanus
+herolds bay	Herolds Bay
+hertzogville	Hertzogville
+hibberdene	Hibberdene
+hillshaven	Hillshaven
+hilton	Hilton
+himeville	Himeville
+hlabisa	Hlabisa
+hlalanathi	Hlalanathi
+hlanganani	Hlanganani
+hlavekisa	Hlavekisa
+hlengesha	Hlengesha
+hlobane	Hlobane
+hlohlolwane	Hlohlolwane
+hluhluwe	Hluhluwe
+hluvukani	Hluvukani
+hobhouse	Hobhouse
+hoedspruit	Hoedspruit
+hofmeyr	Hofmeyr
+hogsback	Hogsback
+hoopstad	Hoopstad
+hopefield	Hopefield
+hopetown	Hopetown
+hopewell	Hopewell
+howick	Howick
+hugenote	Hugenote
+humansdorp	Humansdorp
+humulani	Humulani
+hundzukani	Hundzukani
+ibisikululwa	Ibisikululwa
+ikgomotseng	Ikgomotseng
+ilinge	Ilinge
+ilitha	Ilitha
+impendle	Impendle
+inanda	Inanda
+indwe	Indwe
+ingwavuma	Ingwavuma
+islington	Islington
+iswepe	Iswepe
+itekeng	Itekeng
+itsoseng	Itsoseng
+ivory park	Ivory Park
+ixopo	Ixopo
+izingolweni	Izingolweni
+jacobsdal	Jacobsdal
+jagersfontein	Jagersfontein
+james calata	James Calata
+jan kempdorp	Jan Kempdorp
+jane furse	Jane Furse
+jansenville	Jansenville
+jeffreys bay	Jeffreys Bay
+jim brown	Jim Brown
+johannesburg	Johannesburg
+joubertina	Joubertina
+jozini	Jozini
+justicia	Justicia
+ka-mahonisi	Ka-Mahonisi
+ka-mhinga	Ka-Mhinga
+ka-xihosana	Ka-Xihosana
+kakamas	Kakamas
+kalbaskraal	Kalbaskraal
+kamalamule	Kamalamule
+kamaqhekeza	Kamaqhekeza
+kameelkraal	Kameelkraal
+kamhlushwa	Kamhlushwa
+kandengeza	KaNdengeza
+kareedouw	Kareedouw
+kariega	Kariega
+kathu	Kathu
+kei mouth	Kei Mouth
+kei road	Kei Road
+keiskammahoek	Keiskammahoek
+kenhardt	Kenhardt
+kenton	Kenton
+kestell	Kestell
+kgapamadi	Kgapamadi
+kgwaripe	Kgwaripe
+khaya mnandi	Khaya Mnandi
+khokhamoya	Khokhamoya
+khomanani	Khomanani
+khowa	Khowa
+kimberley	Kimberley
+kinross	Kinross
+kirkwood	Kirkwood
+klapmuts	Klapmuts
+klawer	Klawer
+kleinmond	Kleinmond
+klerksdorp	Klerksdorp
+klipheuwel	Klipheuwel
+klipplaat	Klipplaat
+knysna	Knysna
+koekenaap	Koekenaap
+koffiefontein	Koffiefontein
+kokstad	Kokstad
+komati	Komati
+komatipoort	Komatipoort
+komga	Komga
+koppies	Koppies
+koringberg	Koringberg
+koster	Koster
+kraaifontein	Kraaifontein
+kragbron	Kragbron
+krakeelrivier	Krakeelrivier
+kranshoek	Kranshoek
+kranskop	Kranskop
+kriel	Kriel
+kriel power station	Kriel Power Station
+kroonstad	Kroonstad
+krugersdorp	Krugersdorp
+kruisfontein	Kruisfontein
+kuils river	Kuils River
+kumana	Kumana
+kurland	Kurland
+kuruman	Kuruman
+kutloanong	Kutloanong
+kwadela	KwaDela
+kwadukuza	KwaDukuza
+kwaggafontein	Kwaggafontein
+kwagingindlovu	KwaGingindlovu
+kwambonambi	KwaMbonambi
+kwamhlanga	Kwamhlanga
+kwangema	KwaNgema
+kwathandeka	KwaThandeka
+kylemore	Kylemore
+la mercy	La Mercy
+ladismith	Ladismith
+lady frere	Lady Frere
+lady grey	Lady Grey
+ladybrand	Ladybrand
+ladysmith	Ladysmith
+laersdrift	Laersdrift
+laingsburg	Laingsburg
+lamberts bay	Lamberts Bay
+langebaan	Langebaan
+languedoc	Languedoc
+lansdowne	Lansdowne
+le roux	Le Roux
+lebohang	Lebohang
+lebowakgomo	Lebowakgomo
+leerkrans	Leerkrans
+leeu-gamka	Leeu-Gamka
+leeudoorn mine	Leeudoorn Mine
+leeudoringstad	Leeudoringstad
+leeupoort	Leeupoort
+leeuwfontein-c	Leeuwfontein-C
+lehurutshe	Lehurutshe
+lenyenye	Lenyenye
+lephalale	Lephalale
+leslie	Leslie
+letlhabile	Letlhabile
+libode	Libode
+lichtenburg	Lichtenburg
+lidgetton	Lidgetton
+lillydale	Lillydale
+lindley	Lindley
+loerieheuwel	Loerieheuwel
+loss	Loss
+lothair	Lothair
+louieville	Louieville
+louis trichardt	Louis Trichardt
+louis trichardt airforce base	Louis Trichardt Airforce Base
+louterwater	Louterwater
+louwsburg	Louwsburg
+luckhoff	Luckhoff
+ludlow	Ludlow
+lukwatini	Lukwatini
+luphisi	Luphisi
+lusikisiki	Lusikisiki
+lutzville	Lutzville
+lwamondo	Lwamondo
+lydenburg	Lydenburg
+mabharule	Mabharule
+maboke	Maboke
+mabopane	Mabopane
+machadodorp	Machadodorp
+maclear	Maclear
+madikwe	Madikwe
+madras a	Madras A
+madyembeni	Madyembeni
+mafemani	Mafemani
+mafikeng	Mafikeng
+magabeni	Magabeni
+magaliesburg	Magaliesburg
+magogeni	Magogeni
+mahlabatini	Mahlabatini
+mahlobyanini	Mahlobyanini
+mahukule b	Mahukule B
+maile	Maile
+makapanstad	Makapanstad
+makwassie	Makwassie
+malamulele	Malamulele
+malelane	Malelane
+malmesbury	Malmesbury
+maluti	Maluti
+mamafubedu	Mamafubedu
+mamello	Mamello
+mamelodi	Mamelodi
+mamre	Mamre
+mandeni	Mandeni
+manguzi	Manguzi
+mankoeng	Mankoeng
+mankweng	Mankweng
+manyakatana	Manyakatana
+mapaleng a	Mapaleng A
+mapulaneng view	Mapulaneng View
+marapong	Marapong
+marble hall	Marble Hall
+margate	Margate
+marikana	Marikana
+marite	Marite
+marloth park	Marloth Park
+marquard	Marquard
+masakeng	Masakeng
+masakhane	Masakhane
+masana	Masana
+matatiele	Matatiele
+mathibela	Mathibela
+matsamo	Matsamo
+matsavana	Matsavana
+matshaye	Matshaye
+matsulu	Matsulu
+maviljan a	Maviljan A
+maviljan b	Maviljan B
+mbombela	Mbombela
+mcgregor	McGregor
+mdantsane	Mdantsane
+meetse	Meetse
+melkbosstrand	Melkbosstrand
+melkhoutfontein	Melkhoutfontein
+melmoth	Melmoth
+memel	Memel
+merry pebble stream	Merry Pebble Stream
+merweville	Merweville
+meyerton	Meyerton
+mhlambanyatsi	Mhlambanyatsi
+middelburg	Middelburg
+middelplaas	Middelplaas
+middledrift	Middledrift
+midrand	Midrand
+midstream	Midstream
+migdol	Migdol
+mkhuhlu	Mkhuhlu
+mkukwini	Mkukwini
+mkuze	Mkuze
+mmabatho	Mmabatho
+mmametlhake	Mmametlhake
+modderfontein	Modderfontein
+modimolle	Modimolle
+mogwase	Mogwase
+mokgoba	Mokgoba
+mokopane	Mokopane
+moloro	Moloro
+moloto south	Moloto South
+molteno	Molteno
+mondlo	Mondlo
+monnakato	Monnakato
+montagu	Montagu
+mooi river	Mooi River
+mooinooi	Mooinooi
+mooiplaas	Mooiplaas
+mookgophong	Mookgophong
+moorreesburg	Moorreesburg
+morbeng	Morbeng
+morgenzon	Morgenzon
+morolaneng	Morolaneng
+moshate	Moshate
+mossel bay	Mossel Bay
+motetema	Motetema
+motlamogale	Motlamogale
+motlamogatsane	Motlamogatsane
+mount ayliff	Mount Ayliff
+mount frere	Mount Frere
+mpakeni	Mpakeni
+mphenyatsatsi	Mphenyatsatsi
+mpophomeni	Mpophomeni
+mpumalanga	Mpumalanga
+mpungamhlophe	Mpungamhlophe
+mqanduli	Mqanduli
+msobomvu	Msobomvu
+mthatha	Mthatha
+mtititi	Mtititi
+mtubatuba	Mtubatuba
+mtunzini	Mtunzini
+muizenberg	Muizenberg
+muldersdriseloop	Muldersdriseloop
+murchison	Murchison
+murraysburg	Murraysburg
+musina	Musina
+mutale	Mutale
+mvelaphanda	Mvelaphanda
+nababeep	Nababeep
+namakgale	Namakgale
+napier	Napier
+ncotshane	Ncotshane
+ndevana	Ndevana
+ndwedwe	Ndwedwe
+nelspoort	Nelspoort
+new forest a	New Forest A
+new forest b	New Forest B
+new hanover	New Hanover
+new line	New Line
+newcastle	Newcastle
+newlands	Newlands
+ngabangu	Ngabangu
+ngagane	Ngagane
+ngcobo	Ngcobo
+ngema tribal trust	Ngema Tribal Trust
+ngodwana	Ngodwana
+ngqamakhwe	Ngqamakhwe
+ngqeleni	Ngqeleni
+nhlazatje	Nhlazatje
+nieu-bethesda	Nieu-Bethesda
+nigel	Nigel
+nkandla	Nkandla
+nkongolwane	Nkongolwane
+nkowakowa	Nkowakowa
+nomathamasanqa	Nomathamasanqa
+nondweni	Nondweni
+nongoma	Nongoma
+northam	Northam
+nottingham road	Nottingham Road
+noupoort	Noupoort
+nqutu	Nqutu
+ntabankulu	Ntabankulu
+ntabozuko	Ntabozuko
+nthabalala	Nthabalala
+nthabiseng	Nthabiseng
+nthrowane	Nthrowane
+ntuzuma	Ntuzuma
+nuwerus nc	Nuwerus NC
+oakglen	Oakglen
+oakley	Oakley
+ocean drive-in	Ocean Drive-In
+odendaalsrus	Odendaalsrus
+ogies	Ogies
+onverwacht	Onverwacht
+op-die-berg	Op-die-Berg
+orange farm	Orange Farm
+orania	Orania
+oranjeville	Oranjeville
+orient hills	Orient Hills
+orinoco a	Orinoco A
+orinoco b	Orinoco B
+orinoco c	Orinoco C
+orkney	Orkney
+ottosdal	Ottosdal
+oudtshoorn	Oudtshoorn
+paarl	Paarl
+palmietfontein	Palmietfontein
+pampierstad	Pampierstad
+parys	Parys
+patensie	Patensie
+paternoster	Paternoster
+paterson	Paterson
+paul roux	Paul Roux
+paulpietersburg	Paulpietersburg
+pearly beach	Pearly Beach
+pearston	Pearston
+peddie	Peddie
+pelindaba	Pelindaba
+pella wc	Pella WC
+penge	Penge
+pennington	Pennington
+perdekop	Perdekop
+petrusburg	Petrusburg
+petrusville	Petrusville
+phakamisa	Phakamisa
+phalaborwa	Phalaborwa
+phatsima	Phatsima
+phaweni	Phaweni
+philandersbron	Philandersbron
+philippolis	Philippolis
+philipstown	Philipstown
+phola	Phola
+phomolong	Phomolong
+phuthaditjhaba	Phuthaditjhaba
+pienaarsrivier	Pienaarsrivier
+piet plessis	Piet Plessis
+piet retief	Piet Retief
+pietermaritzburg	Pietermaritzburg
+piketberg	Piketberg
+pilgrim’s rest	Pilgrim’s Rest
+pinetown	Pinetown
+plettenberg bay	Plettenberg Bay
+pniel	Pniel
+pofadder	Pofadder
+polokwane	Polokwane
+pomfret	Pomfret
+pongola	Pongola
+poortje	Poortje
+port alfred	Port Alfred
+port edward	Port Edward
+port nolloth	Port Nolloth
+port saint john’s	Port Saint John’s
+port shepstone	Port Shepstone
+porterville	Porterville
+postmasburg	Postmasburg
+potchefstroom	Potchefstroom
+praktiseer	Praktiseer
+pretoria	Pretoria
+prieska	Prieska
+prince albert	Prince Albert
+prince alfred hamlet	Prince Alfred Hamlet
+pullens hope	Pullens Hope
+qonce	Qonce
+queensdale	Queensdale
+queenstown	Queenstown
+qumbu	Qumbu
+raaswater	Raaswater
+randburg	Randburg
+randfontein	Randfontein
+randgate	Randgate
+randvaal	Randvaal
+rawsonville	Rawsonville
+rayton	Rayton
+reddersburg	Reddersburg
+redhill	Redhill
+reitz	Reitz
+relani	Relani
+rethabiseng	Rethabiseng
+retreat	Retreat
+rheenendal	Rheenendal
+richards bay	Richards Bay
+richmond	Richmond
+riebeek west	Riebeek West
+riebeek-kasteel	Riebeek-Kasteel
+rietbron	Rietbron
+rietkuil	Rietkuil
+rietvlei	Rietvlei
+ritchie	Ritchie
+riversdale	Riversdale
+riviersonderend	Riviersonderend
+rivoni	Rivoni
+robertson	Robertson
+rondebosch	Rondebosch
+roodepoort	Roodepoort
+rooiberg	Rooiberg
+rooiboklaagte a	Rooiboklaagte A
+rooiboklaagte b	Rooiboklaagte B
+roossenekal	Roossenekal
+rosebank	Rosebank
+rosendal	Rosendal
+rouxville	Rouxville
+rulani	Rulani
+rustenburg	Rustenburg
+sabi-sand game reserve	Sabi-Sand Game Reserve
+sabie	Sabie
+saint helena bay	Saint Helena Bay
+saint lucia	Saint Lucia
+saldanha	Saldanha
+sanddrif	Sanddrif
+sannieshof	Sannieshof
+santombe	Santombe
+saron	Saron
+saselamani	Saselamani
+sasolburg	Sasolburg
+schoemansdal	Schoemansdal
+schweizer-reneke	Schweizer-Reneke
+scottburgh	Scottburgh
+sebayeng	Sebayeng
+seberuberung	Seberuberung
+secunda	Secunda
+sedgefield	Sedgefield
+sekrepeng	Sekrepeng
+senekal	Senekal
+senwamokgope	Senwamokgope
+seville b	Seville B
+seymour	Seymour
+sezela	Sezela
+shakaskraal	Shakaskraal
+shata	Shata
+shatale	Shatale
+sheepmoor	Sheepmoor
+sidlamafa	Sidlamafa
+simon's town	Simon's Town
+siyabuswa	Siyabuswa
+sizanane	Sizanane
+skoonplaas	Skoonplaas
+slangrivier	Slangrivier
+smithfield	Smithfield
+solomon linda	Solomon Linda
+somaroboro	Somaroboro
+somerset east	Somerset East
+somerset west	Somerset West
+soshanguve	Soshanguve
+southbroom	Southbroom
+soweto	Soweto
+springbok	Springbok
+springfontein	Springfontein
+springs	Springs
+st francis bay	St Francis Bay
+standerton	Standerton
+stanford	Stanford
+steelpoort	Steelpoort
+stella	Stella
+stellenbosch	Stellenbosch
+sterkstroom	Sterkstroom
+steynsburg	Steynsburg
+steynsrus	Steynsrus
+steytlerville	Steytlerville
+stilbaai	Stilbaai
+stilfontein	Stilfontein
+stormsrivier	Stormsrivier
+struisbaai	Struisbaai
+stutterheim	Stutterheim
+sun city	Sun City
+sun village	Sun Village
+sundumbili	Sundumbili
+sunset beach	Sunset Beach
+suurbraak	Suurbraak
+swalluwnest	Swalluwnest
+swartklip	Swartklip
+swartkop	Swartkop
+swartruggens	Swartruggens
+swellendam	Swellendam
+tarkastad	Tarkastad
+taung	Taung
+teka mahala	Teka Mahala
+teko springs	Teko Springs
+tekwane	Tekwane
+tesselaarsdal	Tesselaarsdal
+thaba nchu	Thaba Nchu
+thabakgolo	Thabakgolo
+thabazimbi	Thabazimbi
+thabo mbeki	Thabo Mbeki
+thembalethu	Thembalethu
+thembisa	Thembisa
+thembisile	Thembisile
+theunissen	Theunissen
+thohoyandou	Thohoyandou
+thornhill	Thornhill
+thubelihle	Thubelihle
+thulamahashe	Thulamahashe
+thulamahashi	Thulamahashi
+thulani	Thulani
+thuli	Thuli
+thusang	Thusang
+tiyimeleni a	Tiyimeleni A
+tiyimeleni b	Tiyimeleni B
+tjakastad	Tjakastad
+tlokoeng	Tlokoeng
+tokoza	Tokoza
+tongaat	Tongaat
+tongaat beach	Tongaat Beach
+touwsrivier	Touwsrivier
+trichardt	Trichardt
+trompsburg	Trompsburg
+trust feed	Trust Feed
+tsakani	Tsakani
+tshandama	Tshandama
+tshiame	Tshiame
+tshitereke	Tshitereke
+tshituni	Tshituni
+tsolo	Tsolo
+tsomo	Tsomo
+tswafeng	Tswafeng
+tugela	Tugela
+tugela ferry	Tugela Ferry
+tukakgomo	Tukakgomo
+tulbagh	Tulbagh
+tutuka	Tutuka
+tweeling	Tweeling
+tweespruit	Tweespruit
+tyusha	Tyusha
+tzaneen	Tzaneen
+ugie	Ugie
+ulundi	Ulundi
+umzimhle	Umzimhle
+underberg	Underberg
+uniondale	Uniondale
+upington	Upington
+utrecht	Utrecht
+vaalbank	Vaalbank
+vaalwater	Vaalwater
+van stadensrus	Van Stadensrus
+van wyksvlei	Van Wyksvlei
+vanderbijlpark	Vanderbijlpark
+vanrhynsdorp	Vanrhynsdorp
+velddrif	Velddrif
+ventersburg	Ventersburg
+ventersdorp	Ventersdorp
+venterstad	Venterstad
+vereeniging	Vereeniging
+verena	Verena
+verkeerdevlei	Verkeerdevlei
+victor verster	Victor Verster
+victoria west	Victoria West
+vierlanden	Vierlanden
+viljoenskroon	Viljoenskroon
+villiers	Villiers
+villiersdorp	Villiersdorp
+violetbank d	Violetbank D
+virginia	Virginia
+volksrust	Volksrust
+vrede	Vrede
+vredefort	Vredefort
+vredenburg	Vredenburg
+vredendal	Vredendal
+vryburg	Vryburg
+vryheid	Vryheid
+vuwani	Vuwani
+waay hoek	Waay Hoek
+wakkerstroom	Wakkerstroom
+wales	Wales
+walkerville	Walkerville
+warburton	Warburton
+warden	Warden
+warrenton	Warrenton
+wartburg	Wartburg
+wasbank	Wasbank
+waterval	Waterval
+weenen	Weenen
+wegdraai	Wegdraai
+welkom	Welkom
+wellington	Wellington
+welverdiend	Welverdiend
+wembesi	Wembesi
+wemmershoek	Wemmershoek
+wepener	Wepener
+wesley	Wesley
+wesselsbron	Wesselsbron
+westbrook	Westbrook
+western areas	Western Areas
+westonaria	Westonaria
+westville	Westville
+white river	White River
+whittlesea	Whittlesea
+wiesiesdraai	Wiesiesdraai
+wilderness	Wilderness
+williston	Williston
+willowmore	Willowmore
+willowvale	Willowvale
+winburg	Winburg
+winnie mandela	Winnie Mandela
+winterton	Winterton
+witpoort	Witpoort
+wittedrif	Wittedrif
+wolfenkop	Wolfenkop
+wolmaransstad	Wolmaransstad
+wolseley	Wolseley
+woodlands	Woodlands
+worcester	Worcester
+xanthia	Xanthia
+xikhusese	Xikhusese
+yzerfontein	Yzerfontein
+zastron	Zastron
+zeerust	Zeerust
+zoar	Zoar

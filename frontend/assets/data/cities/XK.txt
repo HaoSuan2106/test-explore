@@ -1,0 +1,65 @@
+bradash	Bradash
+budakovo	Budakovo
+cabra	Čabra
+cerrce	Cerrcë
+decan	Deçan
+dragash	Dragash
+dranoc	Dranoc
+dubova (driloni)	Dubova (Driloni)
+ferizaj	Ferizaj
+gjakove	Gjakovë
+gjilan	Gjilan
+gjinoc	Gjinoc
+glanica	Glanica
+gllogjan	Gllogjan
+glogovac	Glogovac
+gropa e erenikut	Gropa e Erenikut
+hani i elezit	Hani i Elezit
+irzniq	Irzniq
+isniq	Isniq
+istok	Istok
+junik	Junik
+kacanik	Kačanik
+kamenica	Kamenica
+klina	Klina
+klokot	Klokot
+kosovo polje	Kosovo Polje
+kosuriq	Kosuriq
+laplje selo	Laplje Selo
+lebushe	Lëbushë
+leposaviq	Leposaviq
+leshan	Leshan
+lipljan	Lipljan
+llazice	Llazicë
+lloqan	Lloqan
+lluka e eperme	Lluka e Eperme
+lumbardhi	Lumbardhi
+malisevo	Mališevo
+mamusa	Mamuša
+mitrovice	Mitrovicë
+nishor	Nishor
+novo brdo	Novo Brdo
+obiliq	Obiliq
+orahovac	Orahovac
+pagarusa	Pagaruša
+papraqan	Papraqan
+partesh	Partesh
+peje	Pejë
+peqan	Peqan
+podujeva	Podujeva
+prilep	Prilep
+pristina	Pristina
+prizren	Prizren
+ranilug	Ranilug
+shipol	Shipol
+shtime	Shtime
+srbica	Srbica
+strellc i eperm	Strellc i Epërm
+strellc i ulet	Strellc i Ulët
+strpce	Štrpce
+suva reka	Suva Reka
+vitina	Vitina
+vushtrri	Vushtrri
+zhabari i ulte	Zhabari i Ultë
+zubin potok	Zubin Potok
+zvecan	Zvečan

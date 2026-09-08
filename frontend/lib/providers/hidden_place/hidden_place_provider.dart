@@ -15,6 +15,15 @@ bool _isRemotePhotoUrl(String path) {
   return path.startsWith('http://') || path.startsWith('https://');
 }
 
+/// Content-aware refresh outcome for the My Recommended Places list
+/// (refresh-feedback spec Part 8): [changed] → "Updated successfully",
+/// [unchanged] → "Already up to date", [error] → "Couldn't refresh. Please
+/// try again." HTTP 200 alone is never treated as "data changed" — the
+/// provider fingerprints the meaningful displayed fields (ids, names,
+/// status, coordinates, votes, photos, per-user flags; timestamps excluded)
+/// before and after the refresh.
+enum RecommendationRefreshOutcome { changed, unchanged, error }
+
 /// State manager for the "Hidden Place Recommendation" module
 /// (UC502 — Manage Hidden Place Recommendation).
 ///
@@ -126,27 +135,90 @@ class HiddenPlaceProvider extends ChangeNotifier implements SessionScopedProvide
   // Data loading
   // ============================================================
 
-  /// Loads the current user's own recommendations (REQ502_26/27/28).
+  /// Loads the current user's own recommendations for the My Recommended
+  /// Places list (REQ502_1/REQ502_2; list-level withdraw action = REQ502_26).
+  ///
+  /// Refresh-safe: the fresh page is fetched BEFORE the list is replaced, so a
+  /// pull-to-refresh keeps the current cards visible (no blank flash) and a
+  /// failed refresh leaves the previously loaded list intact.
   Future<void> loadMyRecommendations() async {
-    isLoading = true;
-    errorMessage = null;
-    notifyListeners();
-
-    try {
-      _userRecommendations
-        ..clear()
-        ..addAll((await _httpClient.getMyRecommendedPlaces())
-            .map(RecommendedPlaceModel.fromApi));
-    } on DioException {
-      errorMessage = 'Failed to load your recommended places.';
-    } finally {
-      isLoading = false;
+    // Keep any already-loaded list visible while refreshing; only the very
+    // first load (empty list) shows the full-screen progress state.
+    final isRefresh = _userRecommendations.isNotEmpty;
+    if (!isRefresh) {
+      isLoading = true;
+      errorMessage = null;
       notifyListeners();
     }
+
+    List<RecommendedPlaceModel> fresh;
+    try {
+      fresh = (await _httpClient.getMyRecommendedPlaces())
+          .map(RecommendedPlaceModel.fromApi)
+          .toList();
+    } on DioException {
+      // Failed load/refresh: the previously loaded list and its state stay
+      // untouched (no blank flash). errorMessage is ALWAYS set so callers can
+      // distinguish "couldn't refresh" from "already up to date" — the screen
+      // shows the full error state only when nothing was loaded before, so a
+      // failed refresh keeps the existing cards visible.
+      errorMessage = 'Failed to load your recommended places.';
+      isLoading = false;
+      notifyListeners();
+      return;
+    }
+
+    _userRecommendations
+      ..clear()
+      ..addAll(fresh);
+    errorMessage = null;
+    isLoading = false;
+    notifyListeners();
   }
 
-  /// Loads a single recommendation's details for the details screen (REQ502_29/30/31).
-  /// Returns the loaded place or null if the API call fails.
+  /// Content-aware refresh for the My Recommended Places list (refresh
+  /// spec Part 8). See [RecommendationRefreshOutcome] for the outcome
+  /// contract; previous data stays visible on failure because
+  /// [loadMyRecommendations] only replaces the list after a successful
+  /// fetch.
+  Future<RecommendationRefreshOutcome>
+      refreshMyRecommendationsWithFeedback() async {
+    final before = _recommendationsFingerprint;
+    await loadMyRecommendations();
+    if (errorMessage != null) return RecommendationRefreshOutcome.error;
+    // listEquals (NOT ==): two lists with identical contents are distinct
+    // instances, so identity comparison would always report "changed".
+    return listEquals(_recommendationsFingerprint, before)
+        ? RecommendationRefreshOutcome.unchanged
+        : RecommendationRefreshOutcome.changed;
+  }
+
+  /// Stable fingerprint of the currently loaded recommendations for refresh
+  /// comparison. Order-sensitive (the cards render in list order).
+  List<String> get _recommendationsFingerprint => [
+        for (final r in _userRecommendations)
+          [
+            r.id,
+            r.name,
+            r.status,
+            r.latitude?.toString() ?? '',
+            r.longitude?.toString() ?? '',
+            r.primaryType,
+            r.description,
+            r.priceLevel?.toString() ?? '',
+            r.businessStatus ?? '',
+            (r.photosJson ?? const []).join('|'),
+            r.currentVotes.toString(),
+            r.reportCount.toString(),
+            r.requiredVotes.toString(),
+            r.isVerifiedByCurrentUser.toString(),
+            r.isReportedByCurrentUser.toString(),
+          ].join('\u0001'),
+      ];
+
+  /// Loads a single recommendation's details for the details screen
+  /// (REQ502_12/REQ502_13). Returns the loaded place or null if the API call
+  /// fails.
   Future<RecommendedPlaceModel?> loadRecommendationDetails(String placeId) async {
     try {
       await refreshPlace(placeId);
@@ -204,8 +276,21 @@ class HiddenPlaceProvider extends ChangeNotifier implements SessionScopedProvide
           photosJson.add(path);
           continue;
         }
-        final url = await _httpClient.uploadRecommendedPlaceImage(File(path));
-        if (url.isNotEmpty) photosJson.add(url);
+        // Upload-safety rule: ONE failed upload must block the whole
+        // submission — never silently drop the photo and submit a partial
+        // image set. Covers HTTP failures AND a vanished/unreadable local
+        // file (the picker's temp cache can be cleared before submit).
+        try {
+          final url = await _httpClient.uploadRecommendedPlaceImage(File(path));
+          if (url.isEmpty) {
+            errorMessage = 'A photo failed to upload. Please try again.';
+            return null;
+          }
+          photosJson.add(url);
+        } catch (_) {
+          errorMessage = 'A photo failed to upload. Please try again.';
+          return null;
+        }
       }
       final response = await _httpClient.submitRecommendedPlace(
         SubmitRecommendedPlaceRequest(
@@ -261,8 +346,19 @@ class HiddenPlaceProvider extends ChangeNotifier implements SessionScopedProvide
           photosJson.add(path);
           continue;
         }
-        final url = await _httpClient.uploadRecommendedPlaceImage(File(path));
-        if (url.isNotEmpty) photosJson.add(url);
+        // Same upload-safety rule as [submitRecommendation]: a failed upload
+        // blocks the update — no silent partial photo set.
+        try {
+          final url = await _httpClient.uploadRecommendedPlaceImage(File(path));
+          if (url.isEmpty) {
+            errorMessage = 'A photo failed to upload. Please try again.';
+            return null;
+          }
+          photosJson.add(url);
+        } catch (_) {
+          errorMessage = 'A photo failed to upload. Please try again.';
+          return null;
+        }
       }
       final response = await _httpClient.updateRecommendedPlace(
         submissionId,
@@ -366,15 +462,6 @@ class HiddenPlaceProvider extends ChangeNotifier implements SessionScopedProvide
     } finally {
       isLoading = false;
       notifyListeners();
-    }
-  }
-
-  /// Loads supported PLACE report reasons from the backend.
-  Future<List<String>> loadPlaceReportReasons() async {
-    try {
-      return await _httpClient.getRecommendedPlaceReportReasons();
-    } catch (_) {
-      return const [];
     }
   }
 

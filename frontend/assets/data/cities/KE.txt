@@ -1,0 +1,327 @@
+ahero	Ahero
+amagoru	Amagoru
+archers post	Archers Post
+athi river	Athi River
+awasi	Awasi
+awendo	Awendo
+bahati	Bahati
+bamba	Bamba
+banissa	Banissa
+baragoi	Baragoi
+baraton	Baraton
+baringo	Baringo
+bomet	Bomet
+bondo	Bondo
+brooke	Brooke
+bungoma	Bungoma
+bura	Bura
+bura tana	Bura Tana
+burnt forest	Burnt Forest
+busia	Busia
+bute	Bute
+butere	Butere
+chaka	Chaka
+chavakali	Chavakali
+chepareria	Chepareria
+cheptai	Cheptai
+chogoria	Chogoria
+chuka	Chuka
+chwele	Chwele
+dadaab	Dadaab
+dundori	Dundori
+el wak	El Wak
+elburgon	Elburgon
+eldama ravine	Eldama Ravine
+eldas	Eldas
+eldoret	Eldoret
+emali	Emali
+embu	Embu
+endarasha	Endarasha
+engineer	Engineer
+ewuaso	Ewuaso
+faza	Faza
+funyula	Funyula
+funzi	Funzi
+garba tula	Garba Tula
+garissa	Garissa
+garsen	Garsen
+gatundu	Gatundu
+gazi	Gazi
+gilgil	Gilgil
+giriftu	Giriftu
+githiga a	Githiga A
+githunguri	Githunguri
+gongoni	Gongoni
+habaswein	Habaswein
+hola	Hola
+homa bay	Homa Bay
+ijara	Ijara
+ikinu	Ikinu
+il	Il
+illasit	Illasit
+imara daima estate	Imara Daima Estate
+isebania	Isebania
+isineti	Isineti
+isinya	Isinya
+isiolo	Isiolo
+iten	Iten
+jebilat	Jebilat
+jomvu	Jomvu
+juja	Juja
+kabarnet	Kabarnet
+kagio	Kagio
+kagumo	Kagumo
+kainuk	Kainuk
+kajiado	Kajiado
+kakamega	Kakamega
+kakuma	Kakuma
+kaloleni	Kaloleni
+kampi ya moto	Kampi Ya Moto
+kangare	Kangare
+kangema	Kangema
+kangundo	Kangundo
+kapcherop	Kapcherop
+kapenguria	Kapenguria
+kapkatet	Kapkatet
+kapsabet	Kapsabet
+kapsoit	Kapsoit
+kapsokwony	Kapsokwony
+kapsowar	Kapsowar
+karatina	Karatina
+karuga	Karuga
+karuri	Karuri
+kasuku	Kasuku
+kathwana	Kathwana
+katito	Katito
+kavati	Kavati
+kawaida	Kawaida
+kebirigo	Kebirigo
+kendu bay	Kendu Bay
+kenol	Kenol
+kenyenya	Kenyenya
+kericho	Kericho
+keringet	Keringet
+keroka	Keroka
+kerugoya	Kerugoya
+kesses	Kesses
+khayega	Khayega
+khwisero	Khwisero
+kiambu	Kiambu
+kiambur	Kiambur
+kianyaga	Kianyaga
+kiboko	Kiboko
+kibwezi	Kibwezi
+kiganjo	Kiganjo
+kihancha	Kihancha
+kiirua	Kiirua
+kijabe	Kijabe
+kikima	Kikima
+kikuyu	Kikuyu
+kilgoris	Kilgoris
+kilifi	Kilifi
+kimana	Kimana
+kimbimbi	Kimbimbi
+kimende	Kimende
+kimilili	Kimilili
+kiminini	Kiminini
+kinango	Kinango
+kinna	Kinna
+kinoi	Kinoi
+kinungi	Kinungi
+kipini	Kipini
+kipkelion	Kipkelion
+kiriaini	Kiriaini
+kiserian	Kiserian
+kisii	Kisii
+kisumu	Kisumu
+kitale	Kitale
+kitengela	Kitengela
+kithii	Kithii
+kithimani	Kithimani
+kitui	Kitui
+konza	Konza
+kutus	Kutus
+kwale	Kwale
+lafey	Lafey
+laisamis	Laisamis
+lamu	Lamu
+lang'ata	Lang'ata
+lare	Lare
+limuru	Limuru
+litein	Litein
+lodwar	Lodwar
+loiyangalani	Loiyangalani
+lokichar	Lokichar
+lokichokio	Lokichokio
+lolgorien	Lolgorien
+londiani	Londiani
+luanda	Luanda
+lugulu	Lugulu
+lunga-lunga	Lunga-Lunga
+maai mahiu	Maai Mahiu
+machakos	Machakos
+mackinnon road	Mackinnon Road
+mado gashi	Mado Gashi
+magadi	Magadi
+magena marabu	Magena Marabu
+mai	Mai
+mairo inya	Mairo Inya
+majengo	Majengo
+maji mazuri	Maji Mazuri
+makindu	Makindu
+makueni boma	Makueni Boma
+makutano	Makutano
+malaba	Malaba
+malava	Malava
+malikisi	Malikisi
+malindi	Malindi
+mandera	Mandera
+maragua	Maragua
+maralal	Maralal
+marereni	Marereni
+mariakani	Mariakani
+marigat	Marigat
+marimanti	Marimanti
+marsabit	Marsabit
+masalani	Masalani
+maseno	Maseno
+masii	Masii
+matuga	Matuga
+matunda	Matunda
+matuu	Matuu
+mau narok	Mau Narok
+maua	Maua
+maungu	Maungu
+mazeras	Mazeras
+mbale	Mbale
+mbita	Mbita
+merti	Merti
+meru	Meru
+migori	Migori
+mitunguu	Mitunguu
+mlolongo	Mlolongo
+mogonga	Mogonga
+mogotio	Mogotio
+moi‘s bridge	Moi‘s Bridge
+mokowe	Mokowe
+molo	Molo
+mombasa	Mombasa
+mosocho	Mosocho
+mosoriot	Mosoriot
+moyale	Moyale
+mpeketoni	Mpeketoni
+msambweni	Msambweni
+mtito andei	Mtito Andei
+mtwapa	Mtwapa
+muchorwi	Muchorwi
+muhoroni	Muhoroni
+muhuru	Muhuru
+mukurwe-ini	Mukurwe-ini
+mulot	Mulot
+mumias	Mumias
+murang’a	Murang’a
+mwala	Mwala
+mwatate	Mwatate
+mweiga	Mweiga
+mwingi	Mwingi
+nairagi enkare	Nairagi Enkare
+nairobi	Nairobi
+naivasha	Naivasha
+nakuru	Nakuru
+nambare	Nambare
+nandi hills	Nandi Hills
+nanyuki	Nanyuki
+naro moru	Naro Moru
+narok	Narok
+ndhiwa	Ndhiwa
+ndori	Ndori
+ndunyu njeru	Ndunyu Njeru
+ngewa	Ngewa
+ngong	Ngong
+njoro	Njoro
+nkubu	Nkubu
+north horr	North Horr
+ntulelei	Ntulelei
+nunguni	Nunguni
+nyahururu	Nyahururu
+nyambunwa	Nyambunwa
+nyamira	Nyamira
+nyandiwa	Nyandiwa
+nyangusu	Nyangusu
+nyansiongo	Nyansiongo
+nyeri	Nyeri
+ogembo	Ogembo
+ogunja	Ogunja
+ol donyo	Ol Donyo
+ol joro orok	Ol Joro Orok
+ol kalau south settlement	Ol Kalau South Settlement
+ol kalou	Ol Kalou
+olenguruone	Olenguruone
+oloitokitok	Oloitokitok
+olulung’a	Olulung’a
+ongata rongai	Ongata Rongai
+ortum	Ortum
+othaya	Othaya
+oyugis	Oyugis
+port victoria	Port Victoria
+pumwani	Pumwani
+rabuor	Rabuor
+ramu	Ramu
+rironi	Rironi
+rodi	Rodi
+rombo	Rombo
+rongai	Rongai
+rongo	Rongo
+ruiru	Ruiru
+rumuruti	Rumuruti
+runyenjes	Runyenjes
+saba saba	Saba Saba
+sagana	Sagana
+samburu	Samburu
+sawa sawa	Sawa Sawa
+sega	Sega
+serem	Serem
+shianda	Shianda
+shimoni	Shimoni
+siakago	Siakago
+siaya	Siaya
+simba	Simba
+sindo	Sindo
+sirisia	Sirisia
+sololo	Sololo
+sondu	Sondu
+sori	Sori
+sotik	Sotik
+south kinangop	South Kinangop
+subukia	Subukia
+suguta	Suguta
+sultan hamud	Sultan Hamud
+tabaka	Tabaka
+takaba	Takaba
+takaungu	Takaungu
+tala	Tala
+tarbaj	Tarbaj
+taveta	Taveta
+tetu	Tetu
+thika	Thika
+thomas magena home	Thomas Magena home
+timau	Timau
+timboroa	Timboroa
+tinganga	Tinganga
+turbo	Turbo
+ukunda	Ukunda
+upper gilgil	Upper Gilgil
+usenge	Usenge
+vipingo	Vipingo
+voi	Voi
+wajir	Wajir
+wamba	Wamba
+wamunyu	Wamunyu
+wanguru	Wanguru
+watamu	Watamu
+webuye	Webuye
+witu	Witu
+wiyumiririe	Wiyumiririe
+wote	Wote
+wundanyi	Wundanyi
+yala	Yala

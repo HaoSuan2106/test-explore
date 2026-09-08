@@ -106,6 +106,10 @@ flutter:
   assets:
     - assets/images/
     - assets/geojson/
+    # Country list + per-country city lists for the Manage Profile city
+    # picker. Regenerate with tools/build_world_cities.py.
+    - assets/data/
+    - assets/data/cities/
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/to/resolution-aware-images

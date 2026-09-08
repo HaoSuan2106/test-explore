@@ -1,8 +1,7 @@
-use exploremy_dev;
-
+-- =============================================================================
 -- MODULE 1: User Authentication & Profile Management
+-- =============================================================================
 
--- Users table
 CREATE TABLE IF NOT EXISTS users (
     user_id INT AUTO_INCREMENT PRIMARY KEY,
     email VARCHAR(255) NOT NULL UNIQUE,
@@ -15,9 +14,10 @@ CREATE TABLE IF NOT EXISTS users (
     account_status VARCHAR(30) NOT NULL DEFAULT 'pending_verification',
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
-);
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
--- Email verification token table (depends on users)
+-- pending_email holds the address a user is trying to change TO, so the change
+-- only lands once the new address is proven reachable.
 CREATE TABLE IF NOT EXISTS email_verification_token (
     token_id INT AUTO_INCREMENT PRIMARY KEY,
     user_id INT NOT NULL,
@@ -27,12 +27,12 @@ CREATE TABLE IF NOT EXISTS email_verification_token (
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     pending_email VARCHAR(255) DEFAULT NULL,
 
-    FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE,
+    CONSTRAINT fk_email_verification_token_users_user_id
+        FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE,
 
     INDEX idx_evt_user_id (user_id)
-);
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
--- Password reset token table (depends on users)
 CREATE TABLE IF NOT EXISTS password_reset_token (
     token_id INT AUTO_INCREMENT PRIMARY KEY,
     user_id INT NOT NULL,
@@ -41,12 +41,12 @@ CREATE TABLE IF NOT EXISTS password_reset_token (
     is_used BOOLEAN NOT NULL DEFAULT FALSE,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
 
-    FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE,
+    CONSTRAINT fk_password_reset_token_users_user_id
+        FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE,
 
     INDEX idx_prt_user_id (user_id)
-);
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
--- User session table (depends on users)
 CREATE TABLE IF NOT EXISTS user_session (
     session_id INT AUTO_INCREMENT PRIMARY KEY,
     user_id INT NOT NULL,
@@ -55,24 +55,26 @@ CREATE TABLE IF NOT EXISTS user_session (
     expires_at DATETIME NOT NULL,
     is_active BOOLEAN NOT NULL DEFAULT TRUE,
 
-    FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE,
+    CONSTRAINT fk_user_session_users_user_id
+        FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE,
 
     INDEX idx_session_user_id (user_id)
-);
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
+
+-- =============================================================================
 -- MODULE 2: Hidden Place Discovery
+-- =============================================================================
 
--- Hidden place cache table (no dependencies)
---
 -- A disposable cache of Google Places results, bucketed by cache_grid_key -
--- a "<place type>:<grid x>:<grid y>" key such as 'restaurant:118:5761'. Every row
--- fetched under the same bucket shares one fetched_at_utc, and a bucket is
+-- a "<place type>:<grid x>:<grid y>" key such as 'restaurant:118:5761'. Every
+-- row fetched under the same bucket shares one fetched_at_utc, and a bucket is
 -- replaced as a whole (old rows deleted, new rows inserted) when it goes stale.
 -- Not a source of truth: safe to TRUNCATE at any time, it refills on the next
 -- search. See backend/Application/HiddenPlace/Facade/SearchGridPlanner.cs.
 --
--- fetched_at_utc is DATETIME(6) rather than TIMESTAMP because cache freshness is
--- compared against UTC "now" in code, and TIMESTAMP would apply session
+-- fetched_at_utc is DATETIME(6) rather than TIMESTAMP because cache freshness
+-- is compared against UTC "now" in code, and TIMESTAMP would apply session
 -- timezone conversion on the way in and out.
 CREATE TABLE IF NOT EXISTS hidden_place_cache (
     hidden_place_cache_id INT AUTO_INCREMENT PRIMARY KEY,
@@ -103,11 +105,10 @@ CREATE TABLE IF NOT EXISTS hidden_place_cache (
     -- currentOpeningHours, which is per-request and would go stale in a day.
     regular_opening_hours_json JSON DEFAULT NULL,
 
-    -- Added on top of the original set. All Pro tier or lower in the Places API
-    -- SKU, so free given the mask is already Enterprise (see the FieldMask
-    -- comment on GooglePlacesApiClient). Presentation detail, except
-    -- pure_service_area_business, which is a candidate signal for the
-    -- discovery quality gate but is not wired into it yet.
+    -- All Pro tier or lower in the Places API SKU, so free given the mask is
+    -- already Enterprise (see the FieldMask comment on GooglePlacesApiClient).
+    -- Presentation detail, except pure_service_area_business, which is a
+    -- candidate signal for the discovery quality gate but is not wired in yet.
     address_components_json JSON DEFAULT NULL,
     viewport_json JSON DEFAULT NULL,
     google_maps_links_json JSON DEFAULT NULL,
@@ -133,76 +134,40 @@ CREATE TABLE IF NOT EXISTS hidden_place_cache (
     UNIQUE KEY ix_hidden_place_cache_cache_grid_key_place_id (cache_grid_key, place_id)
 );
 
-CREATE TABLE `recommended_places` (
-  `recommend_place_id` varchar(255) NOT NULL,
-  `name` varchar(255) NOT NULL,
-  `primary_type` varchar(100) NOT NULL,
-  `latitude` double NOT NULL,
-  `longitude` double NOT NULL,
-  `rating` double DEFAULT NULL,
-  `user_rating_count` int NOT NULL DEFAULT '0',
-  `price_level` int DEFAULT NULL,
-  `business_status` varchar(50) NOT NULL,
-  `description` text,
-  `photo_json` json DEFAULT NULL,
-  PRIMARY KEY (`recommend_place_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
-
-
--- Hidden place suppression table (no dependencies)
---
--- Google-sourced places the community has reported out of the app: closed down, wrong location,
--- inappropriate. One row = one place that must never be shown again.
---
--- Why a table and not a DELETE: hidden_place_cache is refilled from Google on a 30-day cycle, so
--- deleting the cached row hides the place until the next refresh and then hands it straight back,
--- with every report against it silently undone. The exclusion has to live somewhere the refresh
--- cannot reach, and be applied when results are read.
---
--- Note this is only for GOOGLE places. A community submission is our own data, so hiding one is
--- just a status change on its recommended_places row - see RecommendedPlaceStatus.REPORTED_CLOSED.
-CREATE TABLE `hidden_place_suppression` (
-  `hidden_place_suppression_id` int NOT NULL AUTO_INCREMENT,
-  `user_id` int NOT NULL DEFAULT '0',
-  `place_id` varchar(255) NOT NULL,
-  `recommended_place_id` varchar(255) DEFAULT NULL,
-  `name` varchar(255) NOT NULL,
-  `reason` varchar(100) NOT NULL,
-  `report_count` int NOT NULL DEFAULT '0',
-  `suppressed_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  PRIMARY KEY (`hidden_place_suppression_id`),
-  UNIQUE KEY `uq_hidden_place_suppression_user_place` (`user_id`,`place_id`),
-  KEY `idx_hidden_place_suppression_place_id` (`place_id`),
-  KEY `idx_hidden_place_suppression_recommended_place_id` (`recommended_place_id`),
-  KEY `idx_hidden_place_suppression_suppressed_at` (`suppressed_at`)
-) ENGINE=InnoDB AUTO_INCREMENT=44 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
-
--- Place photo table (no dependencies)
---
 -- Permanent cache of one photo per place, copied out of Google and into our own
 -- Supabase bucket (Google's photo URIs are short-lived). Populated lazily by
 -- PlacePhotoService whenever a place is first surfaced by a discovery search -
 -- not every place has a row here. FavouritePlaceService looks this table up by
 -- place_id to attach a photo to favourited places without re-fetching from
 -- Google. See backend/Application/HiddenPlace/PlacePhotos/PlacePhotoService.cs.
-CREATE TABLE `place_photo` (
-  `place_photo_id` int NOT NULL AUTO_INCREMENT,
-  `place_id` varchar(255) NOT NULL,
-  `photo_url` varchar(500) NOT NULL,
-  `photo_reference` varchar(500) DEFAULT NULL,
-  `attribution` varchar(255) DEFAULT NULL,
-  `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  PRIMARY KEY (`place_photo_id`),
-  UNIQUE KEY `ix_place_photo_place_id` (`place_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=36 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+-- CREATE TABLE `place_photo` (
+--   `place_photo_id` int NOT NULL AUTO_INCREMENT,
+--   `place_id` varchar(255) NOT NULL,
+--   `photo_url` varchar(500) NOT NULL,
+--   `photo_reference` varchar(500) DEFAULT NULL,
+--   `attribution` varchar(255) DEFAULT NULL,
+--   `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+--   PRIMARY KEY (`place_photo_id`),
+--   UNIQUE KEY `ix_place_photo_place_id` (`place_id`)
+-- ) ENGINE=InnoDB AUTO_INCREMENT=36 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
+-- Table structure for table `community_posts`
+--
+DROP TABLE IF EXISTS `community_post_reports`;
+DROP TABLE IF EXISTS `community_post_images`;
+DROP TABLE IF EXISTS `community_post_comments`;
+DROP TABLE IF EXISTS `community_post_reactions`;
+DROP TABLE IF EXISTS `community_post_reports`;
+DROP TABLE IF EXISTS `community_posts`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `community_posts` (
   `post_id` varchar(36) NOT NULL,
   `author_id` int NOT NULL,
-  `tagged_place_id` varchar(255) NOT NULL,
+  `tagged_place_id` longtext NOT NULL,
   `title` varchar(100) DEFAULT NULL,
   `description` varchar(2000) NOT NULL,
-  `views_count` int NOT NULL DEFAULT '0',
+  `views_count` int NOT NULL,
   `status` varchar(20) NOT NULL,
   `created_at` datetime(6) NOT NULL,
   `updated_at` datetime(6) NOT NULL,
@@ -211,28 +176,16 @@ CREATE TABLE `community_posts` (
   KEY `ix_community_posts_status` (`status`),
   CONSTRAINT `fk_community_posts_users_author_id` FOREIGN KEY (`author_id`) REFERENCES `users` (`user_id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
 
-CREATE TABLE `place_submissions` (
-  `submission_id` varchar(36) NOT NULL,
-  `submitter_id` int NOT NULL,
-  `recommend_place_id` varchar(255) NOT NULL,
-  `status` varchar(30) NOT NULL DEFAULT 'UNDER_VOTING',
-  `created_at` datetime(6) NOT NULL,
-  `updated_at` datetime(6) NOT NULL,
-  PRIMARY KEY (`submission_id`),
-  KEY `idx_place_submissions_submitter_id` (`submitter_id`),
-  KEY `idx_place_submissions_recommend_place_id` (`recommend_place_id`),
-  KEY `idx_place_submissions_status` (`status`),
-  CONSTRAINT `place_submissions_ibfk_1` FOREIGN KEY (`submitter_id`) REFERENCES `users` (`user_id`) ON DELETE CASCADE,
-  CONSTRAINT `place_submissions_ibfk_2` FOREIGN KEY (`recommend_place_id`) REFERENCES `recommended_places` (`recommend_place_id`) ON DELETE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
-
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `community_post_comments` (
   `comment_id` varchar(36) NOT NULL,
   `post_id` varchar(36) NOT NULL,
   `author_id` int NOT NULL,
   `content` varchar(300) NOT NULL,
-  `likes_count` int NOT NULL DEFAULT '0',
+  `likes_count` int NOT NULL,
   `status` varchar(20) NOT NULL,
   `created_at` datetime(6) NOT NULL,
   `updated_at` datetime(6) NOT NULL,
@@ -242,7 +195,14 @@ CREATE TABLE `community_post_comments` (
   CONSTRAINT `fk_community_post_comments_community_posts_post_id` FOREIGN KEY (`post_id`) REFERENCES `community_posts` (`post_id`) ON DELETE CASCADE,
   CONSTRAINT `fk_community_post_comments_users_author_id` FOREIGN KEY (`author_id`) REFERENCES `users` (`user_id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
 
+--
+-- Table structure for table `community_post_images`
+--
+
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `community_post_images` (
   `image_id` varchar(36) NOT NULL,
   `post_id` varchar(36) NOT NULL,
@@ -254,7 +214,14 @@ CREATE TABLE `community_post_images` (
   KEY `ix_community_post_images_post_id` (`post_id`),
   CONSTRAINT `fk_community_post_images_community_posts_post_id` FOREIGN KEY (`post_id`) REFERENCES `community_posts` (`post_id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
 
+--
+-- Table structure for table `community_post_reactions`
+--
+
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `community_post_reactions` (
   `reaction_id` varchar(36) NOT NULL,
   `post_id` varchar(36) NOT NULL,
@@ -270,7 +237,15 @@ CREATE TABLE `community_post_reactions` (
   CONSTRAINT `fk_community_post_reactions_community_posts_post_id` FOREIGN KEY (`post_id`) REFERENCES `community_posts` (`post_id`) ON DELETE CASCADE,
   CONSTRAINT `fk_community_post_reactions_users_user_id` FOREIGN KEY (`user_id`) REFERENCES `users` (`user_id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
 
+--
+-- Table structure for table `community_post_reports`
+--
+
+
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `community_post_reports` (
   `report_id` varchar(36) NOT NULL,
   `post_id` varchar(36) NOT NULL,
@@ -280,12 +255,94 @@ CREATE TABLE `community_post_reports` (
   `created_at` datetime(6) NOT NULL,
   `withdrawn_at` datetime(6) DEFAULT NULL,
   PRIMARY KEY (`report_id`),
+  UNIQUE KEY `ix_community_post_reports_post_id_reporter_id` (`post_id`,`reporter_id`),
   KEY `ix_community_post_reports_post_id` (`post_id`),
   KEY `ix_community_post_reports_reporter_id` (`reporter_id`),
   CONSTRAINT `fk_community_post_reports_community_posts_post_id` FOREIGN KEY (`post_id`) REFERENCES `community_posts` (`post_id`) ON DELETE CASCADE,
   CONSTRAINT `fk_community_post_reports_users_reporter_id` FOREIGN KEY (`reporter_id`) REFERENCES `users` (`user_id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
 
+--
+
+
+--
+-- Table structure for table `hidden_place_suppression`
+--
+
+DROP TABLE IF EXISTS `hidden_place_suppression`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `hidden_place_suppression` (
+  `hidden_place_suppression_id` int NOT NULL AUTO_INCREMENT,
+  `user_id` int NOT NULL DEFAULT '0',
+  `place_id` varchar(255) NOT NULL,
+  `name` varchar(255) NOT NULL,
+  `reason` varchar(100) NOT NULL,
+  `report_count` int NOT NULL,
+  `suppressed_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `recommended_place_id` varchar(255) DEFAULT NULL,
+  PRIMARY KEY (`hidden_place_suppression_id`),
+  UNIQUE KEY `uq_hidden_place_suppression_user_place` (`user_id`,`place_id`),
+  KEY `idx_hidden_place_suppression_recommended_place_id` (`recommended_place_id`),
+  KEY `idx_hidden_place_suppression_place_id` (`place_id`),
+  KEY `idx_hidden_place_suppression_suppressed_at` (`suppressed_at`)
+) ENGINE=InnoDB AUTO_INCREMENT=41 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+
+--
+-- Table structure for table `recommended_places`
+--
+
+DROP TABLE IF EXISTS `recommended_places`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `recommended_places` (
+  `recommend_place_id` varchar(255) NOT NULL,
+  `name` varchar(255) NOT NULL,
+  `primary_type` varchar(100) NOT NULL,
+  `latitude` double NOT NULL,
+  `longitude` double NOT NULL,
+  `rating` double DEFAULT NULL,
+  `user_rating_count` int NOT NULL DEFAULT '0',
+  `price_level` int DEFAULT NULL,
+  `business_status` varchar(50) NOT NULL,
+  `description` text,
+  `photo_json` json DEFAULT NULL,
+  PRIMARY KEY (`recommend_place_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+--
+-- Table structure for table `place_submissions`
+--
+
+DROP TABLE IF EXISTS `place_submissions`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `place_submissions` (
+  `submission_id` varchar(36) NOT NULL,
+  `submitter_id` int NOT NULL,
+  `recommend_place_id` varchar(255) NOT NULL,
+  `status` varchar(30) NOT NULL,
+  `created_at` datetime(6) NOT NULL,
+  `updated_at` datetime(6) NOT NULL,
+  PRIMARY KEY (`submission_id`),
+  KEY `ix_place_submissions_recommend_place_id` (`recommend_place_id`),
+  KEY `ix_place_submissions_status` (`status`),
+  KEY `ix_place_submissions_submitter_id` (`submitter_id`),
+  CONSTRAINT `fk_place_submissions_recommend_places_recommend_place_id` FOREIGN KEY (`recommend_place_id`) REFERENCES `recommended_places` (`recommend_place_id`) ON DELETE CASCADE,
+  CONSTRAINT `fk_place_submissions_users_submitter_id` FOREIGN KEY (`submitter_id`) REFERENCES `users` (`user_id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `recommended_place_verifications`
+--
+
+DROP TABLE IF EXISTS `recommended_place_verifications`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `recommended_place_verifications` (
   `verification_id` varchar(36) NOT NULL,
   `submission_id` varchar(36) NOT NULL,
@@ -294,29 +351,24 @@ CREATE TABLE `recommended_place_verifications` (
   `created_at` datetime(6) NOT NULL,
   PRIMARY KEY (`verification_id`),
   UNIQUE KEY `uq_recommended_place_verifications_submission_user` (`submission_id`,`user_id`),
-  KEY `ix_recommended_place_verifications_submission_id` (`submission_id`),
   KEY `ix_recommended_place_verifications_user_id` (`user_id`),
-  CONSTRAINT `fk_recommended_place_verifications_place_submissions` FOREIGN KEY (`submission_id`) REFERENCES `place_submissions` (`submission_id`) ON DELETE CASCADE,
-  CONSTRAINT `fk_recommended_place_verifications_users` FOREIGN KEY (`user_id`) REFERENCES `users` (`user_id`) ON DELETE CASCADE
+  CONSTRAINT `fk_recommended_place_verifications_place_submissions_submission` FOREIGN KEY (`submission_id`) REFERENCES `place_submissions` (`submission_id`) ON DELETE CASCADE,
+  CONSTRAINT `fk_recommended_place_verifications_users_user_id` FOREIGN KEY (`user_id`) REFERENCES `users` (`user_id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
-
-CREATE TABLE `user_saved_posts` (
-  `saved_id` varchar(36) NOT NULL,
-  `post_id` varchar(36) NOT NULL,
-  `user_id` int NOT NULL,
-  `created_at` datetime(6) NOT NULL,
-  PRIMARY KEY (`saved_id`),
-  UNIQUE KEY `ix_user_saved_posts_post_id_user_id` (`post_id`,`user_id`),
-  KEY `ix_user_saved_posts_post_id` (`post_id`),
-  KEY `ix_user_saved_posts_user_id` (`user_id`),
-  CONSTRAINT `fk_user_saved_posts_posts_post_id` FOREIGN KEY (`post_id`) REFERENCES `community_posts` (`post_id`) ON DELETE CASCADE,
-  CONSTRAINT `fk_user_saved_posts_users_user_id` FOREIGN KEY (`user_id`) REFERENCES `users` (`user_id`) ON DELETE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
 
 
 
--- Place Review
-CREATE TABLE hidden_place_review (
+
+-- =============================================================================
+-- MODULE 4: Place Reviews
+-- =============================================================================
+
+-- Exactly one of google_place_id / recommend_place_id is set, depending on
+-- where the reviewed place came from. Neither carries a FK: google_place_id
+-- points at Google's data, and hidden_place_cache is a disposable cache that
+-- gets truncated, so a FK there would delete reviews on every refresh.
+CREATE TABLE IF NOT EXISTS hidden_place_review (
     review_id BIGINT NOT NULL AUTO_INCREMENT,
 
     google_place_id VARCHAR(255) NULL,
@@ -335,22 +387,14 @@ CREATE TABLE hidden_place_review (
     PRIMARY KEY (review_id),
 
     CONSTRAINT fk_hidden_place_review_users_user_id
-        FOREIGN KEY (user_id)
-        REFERENCES users(user_id)
-        ON DELETE CASCADE,
+        FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE,
 
-    INDEX ix_hidden_place_review_google_place_id
-        (google_place_id),
+    INDEX ix_hidden_place_review_google_place_id (google_place_id),
+    INDEX ix_hidden_place_review_recommend_place_id (recommend_place_id),
+    INDEX ix_hidden_place_review_user_id (user_id)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
-    INDEX ix_hidden_place_review_recommend_place_id
-        (recommend_place_id),
-
-    INDEX ix_hidden_place_review_user_id
-        (user_id)
-);
-
--- Review Photos
-CREATE TABLE hidden_place_review_photo (
+CREATE TABLE IF NOT EXISTS hidden_place_review_photo (
     review_photo_id BIGINT NOT NULL AUTO_INCREMENT,
     review_id BIGINT NOT NULL,
     photo_url VARCHAR(500) NOT NULL,
@@ -360,19 +404,15 @@ CREATE TABLE hidden_place_review_photo (
     PRIMARY KEY (review_photo_id),
 
     CONSTRAINT fk_hidden_place_review_photo_review
-        FOREIGN KEY (review_id)
-        REFERENCES hidden_place_review(review_id)
-        ON DELETE CASCADE,
+        FOREIGN KEY (review_id) REFERENCES hidden_place_review(review_id) ON DELETE CASCADE,
 
-    INDEX ix_hidden_place_review_photo_review_id
-        (review_id),
+    INDEX ix_hidden_place_review_photo_review_id (review_id),
+    UNIQUE KEY ix_hidden_place_review_photo_review_id_display_order (review_id, display_order)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
-    UNIQUE KEY ix_hidden_place_review_photo_review_id_display_order
-        (review_id, display_order)
-);
-
--- Review Reports
-CREATE TABLE hidden_place_review_report (
+-- One report per (review, user). Matches the live schema, which has no FK on
+-- user_id here - only the unique key constrains it.
+CREATE TABLE IF NOT EXISTS hidden_place_review_report (
     report_id BIGINT NOT NULL AUTO_INCREMENT,
     review_id BIGINT NOT NULL,
     user_id INT NOT NULL,
@@ -382,31 +422,30 @@ CREATE TABLE hidden_place_review_report (
     PRIMARY KEY (report_id),
 
     CONSTRAINT fk_hidden_place_review_report_review
-        FOREIGN KEY (review_id)
-        REFERENCES hidden_place_review(review_id)
-        ON DELETE CASCADE,
+        FOREIGN KEY (review_id) REFERENCES hidden_place_review(review_id) ON DELETE CASCADE,
 
-    INDEX ix_hidden_place_review_report_review_id
-        (review_id),
+    INDEX ix_hidden_place_review_report_review_id (review_id),
+    UNIQUE KEY ix_hidden_place_review_report_review_id_user_id (review_id, user_id)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
-    UNIQUE KEY ix_hidden_place_review_report_review_id_user_id
-        (review_id, user_id)
-);
 
--- MODULE 4: Foot Tracker - Favourite Places & Exploration History (UC102, UC201)
+-- =============================================================================
+-- MODULE 5: Foot Tracker - Favourite Places & Exploration History (UC102, UC201)
 --
--- Redesigned 2026-09-01: `places` is now the single canonical, permanent detail
--- store for ANY place (Google-sourced or community-submitted from
--- recommended_places), keyed by place_id. `favourite_place` is a thin (user,
--- place) pointer only - it no longer duplicates place detail per favourite.
--- Pressing the love icon on the Details page upserts the full place detail
--- into `places` first (see FavouritePlaceService.AddFavouritePlaceAsync),
--- then creates/points a favourite_place row at it. See migrations
--- PromoteFavouritePlaceDetailsToPlaces and SyncPlaceCoordinateTypes.
+-- `places` is the single canonical, permanent detail store for ANY place
+-- (Google-sourced or community-submitted from recommended_places), keyed by
+-- place_id. `favourite_place` is a thin (user, place) pointer only - it does
+-- not duplicate place detail per favourite. Pressing the love icon on the
+-- Details page upserts the full place detail into `places` first (see
+-- FavouritePlaceService.AddFavouritePlaceAsync), then creates/points a
+-- favourite_place row at it.
+-- =============================================================================
 
--- Places table (no dependencies)
+-- NOTE business_status. Live exploremy_dev currently has this column misnamed
+-- as `business_statuplacess`, which breaks every EF query on DbSet<Place> with
+-- error 1054. See the REPAIR block at the end of this file.
 CREATE TABLE IF NOT EXISTS places (
-    place_id VARCHAR(255) PRIMARY KEY,
+    place_id VARCHAR(255) NOT NULL,
     name VARCHAR(150) NOT NULL,
     address VARCHAR(500) NOT NULL,
     description LONGTEXT DEFAULT NULL,
@@ -431,17 +470,15 @@ CREATE TABLE IF NOT EXISTS places (
     address_components_json JSON DEFAULT NULL,
     google_maps_links_json JSON DEFAULT NULL,
     viewport_json JSON DEFAULT NULL,
-    opening_date DATE DEFAULT NULL
-);
+    opening_date DATE DEFAULT NULL,
 
--- Favourite place table (depends on users, places)
---
--- One row per (user, place) - uq_user_place prevents favouriting the same
--- place twice. place_id holds either a Google Place ID or a recommended
--- place's recommend_place_id - both are just strings, so one column covers
--- both sources. All place detail lives in `places`, referenced here by
--- fk_favourite_place_places_place_id - this table no longer stores its own
--- copy of name/address/lat-long/rating/etc.
+    PRIMARY KEY (place_id)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+-- One row per (user, place) - uq_user_place prevents favouriting the same place
+-- twice. place_id holds either a Google Place ID or a recommend_place_id - both
+-- are just strings, so one column covers both sources. All place detail lives
+-- in `places`, referenced here by fk_favourite_place_places_place_id.
 CREATE TABLE IF NOT EXISTS favourite_place (
     favourite_place_id INT AUTO_INCREMENT PRIMARY KEY,
     user_id INT NOT NULL,
@@ -449,22 +486,22 @@ CREATE TABLE IF NOT EXISTS favourite_place (
     last_visit_at DATETIME DEFAULT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
 
-    CONSTRAINT fk_favourite_place_users_user_id FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE,
-    CONSTRAINT fk_favourite_place_places_place_id FOREIGN KEY (place_id) REFERENCES places(place_id) ON DELETE CASCADE,
+    CONSTRAINT fk_favourite_place_users_user_id
+        FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE,
+    CONSTRAINT fk_favourite_place_places_place_id
+        FOREIGN KEY (place_id) REFERENCES places(place_id) ON DELETE CASCADE,
 
     UNIQUE KEY uq_user_place (user_id, place_id),
     INDEX ix_favourite_place_place_id (place_id)
-);
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
--- Foot tracker log table (depends on users)
---
--- One row per completed visit, recorded only once GPS arrival has been
--- verified during navigation (UC201). Unlike favourite_place, duplicates are
--- intentional. No FK to places - foot_tracker_log doesn't need that
--- durability; title/primary_type/address/latitude/longitude are denormalized
--- copies of the place's details at the time of the visit.
+-- One row per completed visit, recorded only once GPS arrival has been verified
+-- during navigation (UC201). Unlike favourite_place, duplicates are
+-- intentional. No FK to places - foot_tracker_log doesn't need that durability;
+-- title/primary_type/address/latitude/longitude are denormalized copies of the
+-- place's details at the time of the visit.
 CREATE TABLE IF NOT EXISTS foot_tracker_log (
-    log_id VARCHAR(255) PRIMARY KEY,
+    log_id VARCHAR(255) NOT NULL,
     user_id INT NOT NULL,
     place_id VARCHAR(255) DEFAULT NULL,
     title LONGTEXT,
@@ -479,20 +516,23 @@ CREATE TABLE IF NOT EXISTS foot_tracker_log (
     created_at DATETIME(6) NOT NULL,
     updated_at DATETIME(6) NOT NULL,
 
-    CONSTRAINT fk_foot_tracker_log_users_user_id FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE,
+    PRIMARY KEY (log_id),
+
+    CONSTRAINT fk_foot_tracker_log_users_user_id
+        FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE,
 
     INDEX ix_foot_tracker_log_user_id (user_id),
     INDEX ix_foot_tracker_log_place_id (place_id)
-);
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
--- MODULE: Communication (Community Chat)
--- NOTE: kept in sync with backend/Persistence/DbContext/MySqlDbContext.cs's
--- OnModelCreating for the Community entities. This hand-written script mirrors
--- the project's existing manual convention (see MODULE 1 above); it is not a
--- substitute for a real EF Core migration. Applied via migration
--- AddCommunityChatModule (2026-09-01) - already run against exploremy_dev.
 
--- Community table
+-- =============================================================================
+-- MODULE 6: Communication (Community Chat)
+--
+-- Kept in sync with the Community entities in
+-- backend/Persistence/DbContext/MySqlDbContext.cs OnModelCreating.
+-- =============================================================================
+
 CREATE TABLE IF NOT EXISTS community (
     community_id INT AUTO_INCREMENT PRIMARY KEY,
     name VARCHAR(150) NOT NULL,
@@ -505,9 +545,10 @@ CREATE TABLE IF NOT EXISTS community (
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
 
     INDEX idx_community_state (state)
-);
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
--- Community member table (depends on community, users)
+-- is_active + left_at rather than a DELETE, so rejoining a community keeps the
+-- original membership row and its history.
 CREATE TABLE IF NOT EXISTS community_member (
     community_member_id INT AUTO_INCREMENT PRIMARY KEY,
     community_id INT NOT NULL,
@@ -517,13 +558,19 @@ CREATE TABLE IF NOT EXISTS community_member (
     joined_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     left_at DATETIME DEFAULT NULL,
 
-    FOREIGN KEY (community_id) REFERENCES community(community_id) ON DELETE CASCADE,
-    FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE,
+    CONSTRAINT fk_community_member_community_community_id
+        FOREIGN KEY (community_id) REFERENCES community(community_id) ON DELETE CASCADE,
+    CONSTRAINT fk_community_member_users_user_id
+        FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE,
 
     UNIQUE INDEX idx_member_community_user (community_id, user_id)
-);
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
--- Message table (depends on community, users)
+-- sender_user_id is ON DELETE RESTRICT, not CASCADE: deleting a user must not
+-- silently blow holes in other people's conversation history.
+--
+-- reply_to_message_id is intentionally not a FK - a reply must survive the
+-- message it quotes being deleted.
 CREATE TABLE IF NOT EXISTS message (
     message_id INT AUTO_INCREMENT PRIMARY KEY,
     community_id INT NOT NULL,
@@ -533,22 +580,28 @@ CREATE TABLE IF NOT EXISTS message (
     is_deleted BOOLEAN NOT NULL DEFAULT FALSE,
     sent_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
 
-    FOREIGN KEY (community_id) REFERENCES community(community_id) ON DELETE CASCADE,
-    FOREIGN KEY (sender_user_id) REFERENCES users(user_id) ON DELETE RESTRICT,
+    CONSTRAINT fk_message_community_community_id
+        FOREIGN KEY (community_id) REFERENCES community(community_id) ON DELETE CASCADE,
+    CONSTRAINT fk_message_users_sender_user_id
+        FOREIGN KEY (sender_user_id) REFERENCES users(user_id) ON DELETE RESTRICT,
 
     INDEX idx_message_community_sent_at (community_id, sent_at)
-);
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
--- Message attachment table (depends on message)
--- place_id is VARCHAR, not INT: real place identifiers are a Google Place ID
--- or a recommended-place submission UUID, both strings. place_latitude/
--- place_longitude/place_primary_type/is_community_place are a snapshot taken
--- at share time (Share Location feature) so reopening a shared place never
--- needs a live re-fetch — see MessageAttachment.cs.
+-- place_id is VARCHAR, not INT: real place identifiers are a Google Place ID or
+-- a recommended-place submission UUID, both strings. place_latitude /
+-- place_longitude / place_primary_type / is_community_place are a snapshot
+-- taken at share time (Share Location) so reopening a shared place never needs
+-- a live re-fetch - see MessageAttachment.cs. The post_* columns are the
+-- equivalent snapshot for Share to Community (Post): they only render the chat
+-- preview bubble, since PostDetailsScreen self-fetches by id when tapped.
+--
+-- Unlike CreateTable.sql, the post_* columns are part of the table definition
+-- here rather than a trailing commented-out ALTER block.
 CREATE TABLE IF NOT EXISTS message_attachment (
     attachment_id INT AUTO_INCREMENT PRIMARY KEY,
     message_id INT NOT NULL,
-    type VARCHAR(20) NOT NULL, -- "Image" | "PlaceShare"
+    type VARCHAR(20) NOT NULL, -- "Image" | "PlaceShare" | "PostShare"
     media_url VARCHAR(500) DEFAULT NULL,
     place_id VARCHAR(255) DEFAULT NULL,
     place_name VARCHAR(255) DEFAULT NULL,
@@ -559,13 +612,18 @@ CREATE TABLE IF NOT EXISTS message_attachment (
     place_longitude DOUBLE DEFAULT NULL,
     place_primary_type VARCHAR(100) DEFAULT NULL,
     is_community_place BOOLEAN NOT NULL DEFAULT FALSE,
+    post_id VARCHAR(36) DEFAULT NULL,
+    post_title VARCHAR(100) DEFAULT NULL,
+    post_image_url VARCHAR(500) DEFAULT NULL,
+    post_author_name VARCHAR(255) DEFAULT NULL,
+    post_location VARCHAR(500) DEFAULT NULL,
 
-    FOREIGN KEY (message_id) REFERENCES message(message_id) ON DELETE CASCADE,
+    CONSTRAINT fk_message_attachment_message_message_id
+        FOREIGN KEY (message_id) REFERENCES message(message_id) ON DELETE CASCADE,
 
     INDEX idx_attachment_message_id (message_id)
-);
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
--- Message report table (depends on message, users)
 CREATE TABLE IF NOT EXISTS message_report (
     report_id INT AUTO_INCREMENT PRIMARY KEY,
     message_id INT NOT NULL,
@@ -573,8 +631,79 @@ CREATE TABLE IF NOT EXISTS message_report (
     reason VARCHAR(500) DEFAULT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
 
-    FOREIGN KEY (message_id) REFERENCES message(message_id) ON DELETE CASCADE,
-    FOREIGN KEY (reporter_user_id) REFERENCES users(user_id) ON DELETE RESTRICT,
+    CONSTRAINT fk_message_report_message_message_id
+        FOREIGN KEY (message_id) REFERENCES message(message_id) ON DELETE CASCADE,
+    CONSTRAINT fk_message_report_users_reporter_user_id
+        FOREIGN KEY (reporter_user_id) REFERENCES users(user_id) ON DELETE RESTRICT,
 
     UNIQUE INDEX idx_report_message_reporter (message_id, reporter_user_id)
-);
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+
+-- =============================================================================
+-- REPAIR BLOCK - for an EXISTING database only.
+--
+-- Everything above is CREATE TABLE IF NOT EXISTS, so on a database that already
+-- has these tables it is a no-op and will NOT fix anything that is already
+-- wrong. Run the statement below by hand against such a database.
+--
+-- Live exploremy_dev (checked 2026-09-07) has places.business_status misnamed
+-- as `business_statuplacess`. EF maps Place.BusinessStatus to `business_status`
+-- with no HasColumnName override (MySqlDbContext.cs:405), so every read or
+-- write through DbSet<Place> currently fails with:
+--     ERROR 1054 (42S22): Unknown column 'business_status' in 'field list'
+-- The table has 0 rows today, which is the only reason this has not surfaced.
+--
+-- ALTER TABLE places
+--     CHANGE business_statuplacess business_status VARCHAR(50) DEFAULT NULL;
+-- =============================================================================
+
+
+-- =============================================================================
+-- EF MIGRATIONS BASELINE - optional, for an EXISTING database only.
+--
+-- backend/Migrations/ holds 27 migrations, but live exploremy_dev has no
+-- __EFMigrationsHistory table at all. EF therefore believes nothing has been
+-- applied, and `dotnet ef database update` will try to replay
+-- AddHiddenPlaceCache from scratch and fail on tables that already exist.
+--
+-- Uncomment this block to tell EF the schema is already at head. Only do this
+-- on a database whose schema genuinely matches the current model - including
+-- the business_status repair above. Skip it entirely if you have decided this
+-- script, and not EF migrations, owns the schema.
+--
+-- CREATE TABLE IF NOT EXISTS `__EFMigrationsHistory` (
+--     `MigrationId` VARCHAR(150) NOT NULL,
+--     `ProductVersion` VARCHAR(32) NOT NULL,
+--     PRIMARY KEY (`MigrationId`)
+-- ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+--
+-- INSERT IGNORE INTO `__EFMigrationsHistory` (`MigrationId`, `ProductVersion`) VALUES
+--   ('20260823194435_AddHiddenPlaceCache', '10.0.9'),
+--   ('20260824125930_AddPasswordResetToken', '10.0.9'),
+--   ('20260824170013_AddPassedQualityGateColumn', '10.0.9'),
+--   ('20260825134952_MatchHandWrittenSqlSchema', '10.0.9'),
+--   ('20260826080422_AddFavouritePlace', '10.0.9'),
+--   ('20260826091856_AddPlaceDetailFields', '10.0.9'),
+--   ('20260826144036_AddCommunityAndRecommendedPlaces', '10.0.9'),
+--   ('20260826162149_ReconcileFavouritePlaceWithMain', '10.0.9'),
+--   ('20260826223706_AddPlacePhoto', '10.0.9'),
+--   ('20260826234749_AddPostAndRecommendedPlaceSchema', '10.0.9'),
+--   ('20260826235011_AddPlacePhotoAndSuppression', '10.0.9'),
+--   ('20260827055151_NormalizeRecommendPlaceSchema', '10.0.9'),
+--   ('20260827074531_RemoveAddressAndReports', '10.0.9'),
+--   ('20260827142714_AddPhotosJsonToRecommendPlace', '10.0.9'),
+--   ('20260827152128_AddLocationFieldsToFootTrackerLog', '10.0.9'),
+--   ('20260827160000_AddRecommendedPlaceIdToSuppression', '10.0.9'),
+--   ('20260828083819_AddHiddenPlaceReview', '10.0.9'),
+--   ('20260828154735_AddReviewPhoto', '10.0.9'),
+--   ('20260829051118_AddReviewReport', '10.0.9'),
+--   ('20260829090000_AddAdditionalGooglePlaceFields', '10.0.9'),
+--   ('20260901090703_AddCommunityChatModule', '10.0.9'),
+--   ('20260901090735_AddFavouritePlaceRichDetailColumns', '10.0.9'),
+--   ('20260901090754_FixHiddenPlaceSuppressionColumns', '10.0.9'),
+--   ('20260901090817_AddCommunityPostReportWithdrawnAt', '10.0.9'),
+--   ('20260901090837_RestructureRecommendedPlacesAndPlaceSubmissions', '10.0.9'),
+--   ('20260901142827_PromoteFavouritePlaceDetailsToPlaces', '10.0.9'),
+--   ('20260901145424_SyncPlaceCoordinateTypes', '10.0.9');
+-- =============================================================================

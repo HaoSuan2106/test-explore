@@ -1,0 +1,105 @@
+abu dhabi	Abu Dhabi
+abu hayl	Abū Hayl
+abu musa	Abū Mūsá
+adh dhayd	Adh Dhayd
+ajman	Ajman
+al ain city	Al Ain City
+al bada'a	Al Bada'a
+al faqaa	Al Faqaa
+al furjan	Al Furjan
+al hamidiyah	Al Ḩamīdīyah
+al hamriyah	Al Ḩamrīyah
+al hudaiba	Al Hudaiba
+al jazirah al hamra’	Al Jazīrah al Ḩamrā’
+al jurf	Al Jurf
+al karama	Al Karama
+al khabaisi	Al Khabaisi
+al khawaneej 1	Al Khawaneej 1
+al lusayli	Al Lusaylī
+al madam	Al Madam
+al majaz	Al Majaz
+al manamah	Al Manāmah
+al mizhar first	Al Mizhar First
+al mizhar second	Al Mizhar Second
+al murar al qadim	Al Murar al Qadīm
+al muteena	Al Muteena
+al qusais 1	Al Qusais 1
+al qusais second	Al Qusais Second
+al raafah	Al Raafah
+al safa	Al Safa
+al sajaah	Al Sajaah
+al shamkhah city	Al Shamkhah City
+al sufouh	Al Sufouh
+al twar 3	Al Twar 3
+al twar first	Al Twar First
+al twar second	AL Twar Second
+al waheda	Al Waheda
+al warqaa	Al Warqaa
+al wasl	Al Wasl
+al wiqan	Al Wiqan
+ar rams	Ar Rams
+ar rashidiyah	Ar Rāshidīyah
+ar riqqah	Ar Riqqah
+ar rumaylah	Ar Rumaylah
+ar ruways	Ar Ruways
+as satwah	As Saţwah
+as satwah sharq	As Saţwah Sharq
+ash sha‘m	Ash Sha‘m
+bani yas city	Bani Yas City
+bur dubai	Bur Dubai
+bur sa‘id	Būr Sa‘īd
+business bay	Business Bay
+damac hills	DAMAC Hills
+dayrah	Dayrah
+dibba al-fujairah	Dibba Al-Fujairah
+dibba al-hisn	Dibba Al-Hisn
+downtown dubai	Downtown Dubai
+dubai	Dubai
+dubai festival city	Dubai Festival City
+dubai international financial centre	Dubai International Financial Centre
+dubai internet city	Dubai Internet City
+dubai investments park	Dubai Investments Park
+dubai marina	Dubai Marina
+dubai motor city	Dubai Motor City
+dubai silicon oasis	Dubai Silicon Oasis
+dubai sports city	Dubai Sports City
+fujairah	Fujairah
+halwan	Halwan
+hatta	Ḩattā
+hawr al ‘anz	Hawr al ‘Anz
+international city	International City
+jebel ali	Jebel Ali
+jumayra	Jumayrā
+kalba	Kalbā
+khalifah a city	Khalifah A City
+khawr fakkan	Khawr Fakkān
+knowledge village	Knowledge Village
+lahbab	Lahbab
+mankhul	Mankhūl
+margham	Margham
+masdar city	Masdar City
+masfut	Maşfūţ
+mirdif	Mirdif
+mohammed bin zayed city	Mohammed Bin Zayed City
+murbah	Murbaḩ
+musaffah	Musaffah
+mushayrif	Mushayrif
+muzayri‘	Muzayri‘
+nadd al humr	Nadd al Ḩumr
+nayf	Nāyf
+oud metha	Oud Metha
+ras al khaimah	Ras Al Khaimah
+reef al fujairah city	Reef Al Fujairah City
+sha'biyyat al hiyar	Sha'biyyat Al Hiyar
+sha'biyyat milеhah	Sha'biyyat Milе̄hah
+shakhbout city	Shakhbout City
+sharjah	Sharjah
+suwayhan	Suwayḩān
+tarif kalba	Ţarīf Kalbā
+the palm jumeirah	The Palm Jumeirah
+umm al quwain city	Umm Al Quwain City
+umm al sheif	Umm Al Sheif
+umm suqaym	Umm Suqaym
+warisan	Warīsān
+za'abeel	Za'abeel
+zayed city	Zayed City

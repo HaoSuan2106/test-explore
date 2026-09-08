@@ -13,7 +13,7 @@ import '../place_details/place_details_ui.dart';
 // =============================================================================
 // COLORS
 // =============================================================================
-class AppColors {
+class MapPalette {
   static const coral = Color(0xFFFF6B4A);
   static const coralLight = Color(0xFFFFE4DB);
 
@@ -111,7 +111,7 @@ class PlaceData {
 
   /// The community recommendation's submission id (UUID). Null for Google-sourced
   /// places. This is the AUTHORITATIVE field for deciding whether a place is a
-  /// community recommendation — the UI shows Community / Verification Status only
+  /// community recommendation â€” the UI shows Community / Verification Status only
   /// when this field is non-null.
   ///
   /// For community places in the discover list, this is the same UUID as [placeId]
@@ -119,12 +119,12 @@ class PlaceData {
   final String? recommendPlaceId;
 
   /// True when this place came from a community submission rather than Google - see
-  /// AppColors.pinCommunity. Also means rating/ratingCount are placeholders, not
+  /// MapPalette.pinCommunity. Also means rating/ratingCount are placeholders, not
   /// real measurements.
   ///
   /// DERIVED from the actual [recommendPlaceId]: a place is community ONLY when the
   /// real recommend_place_id exists. It cannot be force-set to true (per the
-  /// "do not force isCommunity" rule) — callers pass recommendPlaceId and this
+  /// "do not force isCommunity" rule) â€” callers pass recommendPlaceId and this
   /// getter reflects it.
   bool get isCommunity => recommendPlaceId != null;
 
@@ -254,8 +254,8 @@ const List<_FilterChipData> _typeFilters = [
 /// Picks a marker glyph for a place from its Google Places primary type. Places API doesn't hand us
 /// an icon, so this is our own mapping.
 ///
-/// The glyph is the ONLY thing that varies per category - a pin is drawn in AppColors.pin, or
-/// AppColors.pinSelected while it's the selected one. Don't reintroduce a per-category colour here.
+/// The glyph is the ONLY thing that varies per category - a pin is drawn in MapPalette.pin, or
+/// MapPalette.pinSelected while it's the selected one. Don't reintroduce a per-category colour here.
 ///
 /// The type we get back is the place's OWN primaryType, which is almost always more specific than
 /// the type that was searched for: a "cafe" search returns coffee_shop / bakery / tea_house /
@@ -465,7 +465,7 @@ PlaceData _toPlaceData(HiddenPlaceModel place) {
 // Google Maps native markers can't embed arbitrary widgets, so we rasterize
 // a teardrop pin into a PNG and hand it to BitmapDescriptor.
 //
-// The fill is AppColors.pin, or AppColors.pinSelected for the single selected place - the pin still
+// The fill is MapPalette.pin, or MapPalette.pinSelected for the single selected place - the pin still
 // doesn't take a colour parameter, so there is no way for a call site to slip a per-category colour
 // back in. Only the glyph, the size and the selected state vary.
 // =============================================================================
@@ -487,14 +487,14 @@ class _MarkerFactory {
     // treatment - while its card is open the question is "which pin did I tap", not "is this one
     // verified", and that answer is in the card itself.
     final color = selected
-        ? AppColors.pinSelected
+        ? MapPalette.pinSelected
         : isPendingCommunity
-            ? AppColors.pinCommunityPending
-            : community
-                ? AppColors.pinCommunity
-                : AppColors.pin;
+        ? MapPalette.pinCommunityPending
+        : community
+        ? MapPalette.pinCommunity
+        : MapPalette.pin;
 
-    final glyphColor = !selected && community ? AppColors.pinCommunityGlyph : color;
+    final glyphColor = !selected && community ? MapPalette.pinCommunityGlyph : color;
     final double size = selected ? 64 : 52;
     final double tailExtra = 16;
     final recorder = ui.PictureRecorder();
@@ -541,7 +541,7 @@ class _MarkerFactory {
       canvas.drawPath(
         pin,
         Paint()
-          ..color = AppColors.pinCommunityPendingRing
+          ..color = MapPalette.pinCommunityPendingRing
           ..style = PaintingStyle.stroke
           ..strokeWidth = 2.5,
       );
@@ -592,7 +592,7 @@ class _MarkerFactory {
     final center = const Offset(size / 2, size / 2);
 
     canvas.drawCircle(center, outerRadius, Paint()..color = Colors.white);
-    canvas.drawCircle(center, innerRadius, Paint()..color = AppColors.gmapsBlue);
+    canvas.drawCircle(center, innerRadius, Paint()..color = MapPalette.gmapsBlue);
 
     final picture = recorder.endRecording();
     final image = await picture.toImage(size.toInt(), size.toInt());
@@ -605,7 +605,14 @@ class _MarkerFactory {
 // SCREEN
 // =============================================================================
 class HiddenPlaceDiscoveryUI extends StatefulWidget {
-  const HiddenPlaceDiscoveryUI({super.key});
+  /// Optional callback for the Create Place action.
+  /// Navigation stays owned by the parent/shell instead of guessing a route.
+  final VoidCallback? onCreatePlace;
+
+  const HiddenPlaceDiscoveryUI({
+    super.key,
+    this.onCreatePlace,
+  });
 
   @override
   State<HiddenPlaceDiscoveryUI> createState() => _HiddenPlaceDiscoveryUIState();
@@ -621,6 +628,12 @@ class _HiddenPlaceDiscoveryUIState extends State<HiddenPlaceDiscoveryUI>
   PlaceData? _selectedPlace;
   bool _showPlaceDetail = false;
   bool _mapReady = false;
+
+  /// Two-step Create Place control: false shows only the floating "+" circle;
+  /// true has the card slid out. Tapping the circle toggles this (never
+  /// navigates); tapping the expanded card navigates. Local UI state on
+  /// purpose - nothing outside this screen needs it.
+  bool _isCreatePlaceExpanded = false;
 
   List<PlaceData> _places = [];
   bool _isLoadingPlaces = true;
@@ -843,8 +856,8 @@ class _HiddenPlaceDiscoveryUIState extends State<HiddenPlaceDiscoveryUI>
     });
   }
 
-  /// Rebuilds one place's marker in the given state (selected = big + AppColors.pinSelected,
-  /// unselected = normal size + AppColors.pin) and swaps it into _markers. Shared by
+  /// Rebuilds one place's marker in the given state (selected = big + MapPalette.pinSelected,
+  /// unselected = normal size + MapPalette.pin) and swaps it into _markers. Shared by
   /// _selectPlace/_deselect so a marker always gets reverted the same way it got highlighted,
   /// instead of each call site duplicating the marker-rebuild logic.
   Future<void> _setMarkerSelected(PlaceData place, bool selected) async {
@@ -917,6 +930,13 @@ class _HiddenPlaceDiscoveryUIState extends State<HiddenPlaceDiscoveryUI>
     _setMarkerSelected(place, false);
   }
 
+  /// Expands/collapses the Create Place card. Purely a reveal toggle - it
+  /// never navigates; navigation happens only when the expanded card itself
+  /// is tapped (via onCreatePlace).
+  void _toggleCreatePlace() {
+    setState(() => _isCreatePlaceExpanded = !_isCreatePlaceExpanded);
+  }
+
   void _zoomBy(double delta) {
     _mapController?.animateCamera(
       delta > 0 ? CameraUpdate.zoomIn() : CameraUpdate.zoomOut(),
@@ -957,7 +977,7 @@ class _HiddenPlaceDiscoveryUIState extends State<HiddenPlaceDiscoveryUI>
       // squaring them off while the sheet is part-way down.
       clipBehavior: Clip.antiAlias,
       decoration: const BoxDecoration(
-        color: AppColors.cardBg,
+        color: MapPalette.cardBg,
         borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
         boxShadow: [
           BoxShadow(
@@ -993,7 +1013,7 @@ class _HiddenPlaceDiscoveryUIState extends State<HiddenPlaceDiscoveryUI>
                     width: 96,
                     height: 5,
                     decoration: BoxDecoration(
-                      color: AppColors.coral,
+                      color: MapPalette.coral,
                       borderRadius: BorderRadius.circular(20),
                     ),
                   ),
@@ -1009,13 +1029,13 @@ class _HiddenPlaceDiscoveryUIState extends State<HiddenPlaceDiscoveryUI>
                         style: TextStyle(
                           fontSize: 21,
                           fontWeight: FontWeight.w800,
-                          color: AppColors.textDark,
+                          color: MapPalette.textDark,
                           letterSpacing: -0.3,
                         ),
                       ),
                       Text(
                         '${listedPlaces.length} nearby',
-                        style: const TextStyle(fontSize: 12, color: AppColors.textGrey),
+                        style: const TextStyle(fontSize: 12, color: MapPalette.textGrey),
                       ),
                     ],
                   ),
@@ -1026,14 +1046,14 @@ class _HiddenPlaceDiscoveryUIState extends State<HiddenPlaceDiscoveryUI>
                 Expanded(
                   child: _isLoadingPlaces
                       ? const Center(
-                    child: CircularProgressIndicator(color: AppColors.coral),
+                    child: CircularProgressIndicator(color: MapPalette.coral),
                   )
                       : _placesError != null
                       ? Center(
                     child: Text(
                       _placesError!,
                       style: const TextStyle(
-                        color: AppColors.textGrey,
+                        color: MapPalette.textGrey,
                         fontSize: 13,
                       ),
                     ),
@@ -1042,7 +1062,7 @@ class _HiddenPlaceDiscoveryUIState extends State<HiddenPlaceDiscoveryUI>
                       ? const Center(
                     child: Text(
                       'No hidden places found nearby yet.',
-                      style: TextStyle(color: AppColors.textGrey, fontSize: 13),
+                      style: TextStyle(color: MapPalette.textGrey, fontSize: 13),
                     ),
                   )
                       : ListView.separated(
@@ -1082,7 +1102,7 @@ class _HiddenPlaceDiscoveryUIState extends State<HiddenPlaceDiscoveryUI>
     final topInset = MediaQuery.paddingOf(context).top;
 
     return Scaffold(
-      backgroundColor: AppColors.cardBg,
+      backgroundColor: MapPalette.cardBg,
       body: SafeArea(
         top: false,
         // DraggableScrollableSheet measures its extents against the space IT is given - this
@@ -1103,7 +1123,7 @@ class _HiddenPlaceDiscoveryUIState extends State<HiddenPlaceDiscoveryUI>
                 Positioned.fill(
                   child: !_mapReady
                       ? const Center(
-                    child: CircularProgressIndicator(color: AppColors.coral),
+                    child: CircularProgressIndicator(color: MapPalette.coral),
                   )
                       : AnimatedBuilder(
                     animation: _pulseController,
@@ -1118,7 +1138,17 @@ class _HiddenPlaceDiscoveryUIState extends State<HiddenPlaceDiscoveryUI>
                           controller.setMapStyle(_lightMapStyle);
                         },
                         markers: _markers,
-                        onTap: (_) => _deselect(),
+                        // A tap on the map itself doubles as the Create
+                        // Place card's "tap outside to collapse": the event
+                        // still reaches the map untouched (no overlay, no
+                        // absorbed gestures), it just also tucks the card
+                        // back in before the normal deselect runs.
+                        onTap: (_) {
+                          if (_isCreatePlaceExpanded) {
+                            setState(() => _isCreatePlaceExpanded = false);
+                          }
+                          _deselect();
+                        },
                         myLocationButtonEnabled: false,
                         zoomControlsEnabled: false,
                         mapToolbarEnabled: false,
@@ -1128,7 +1158,7 @@ class _HiddenPlaceDiscoveryUIState extends State<HiddenPlaceDiscoveryUI>
                             circleId: const CircleId('pulse'),
                             center: _searchOrigin,
                             radius: 40 + _pulseController.value * 70,
-                            fillColor: AppColors.gmapsBlue.withOpacity(
+                            fillColor: MapPalette.gmapsBlue.withOpacity(
                               (1 - _pulseController.value) * 0.25,
                             ),
                             strokeWidth: 0,
@@ -1271,6 +1301,31 @@ class _HiddenPlaceDiscoveryUIState extends State<HiddenPlaceDiscoveryUI>
                     final sheetTop = extent * constraints.maxHeight;
                     return Stack(
                       children: [
+                        // -------------------------------------------------------
+                        // CREATE PLACE ACTION
+                        // A single floating coral "+" circle just above the
+                        // Explore Places sheet (it follows the sheet while it
+                        // is dragged). Tapping it slides the compact Create
+                        // Place card out to the right; the circle stays in
+                        // place as the card's leading button. Tapping the
+                        // card opens Recommend New Place via the parent
+                        // (onCreatePlace). Left edge uses the same 20px
+                        // content inset as the sheet heading and place cards.
+                        // -------------------------------------------------------
+                        if (!_showPlaceDetail)
+                          Positioned(
+                            left: 20,
+                            bottom: sheetTop + 18,
+                            child: _CreatePlaceAction(
+                              expanded: _isCreatePlaceExpanded,
+                              onToggle: _toggleCreatePlace,
+                              onOpen: widget.onCreatePlace,
+                            ),
+                          ),
+
+                        // Keep map controls on the right side.
+                        // Create Place is compact, so it no longer
+                        // occupies the whole row or pushes these controls.
                         Positioned(
                           right: 12,
                           bottom: sheetTop + 84,
@@ -1370,7 +1425,7 @@ class _FilterChip extends StatelessWidget {
         duration: const Duration(milliseconds: 150),
         padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
         decoration: BoxDecoration(
-          color: selected ? AppColors.coral : AppColors.chipBg,
+          color: selected ? MapPalette.coral : MapPalette.chipBg,
           borderRadius: BorderRadius.circular(20),
           boxShadow: [
             BoxShadow(
@@ -1386,13 +1441,13 @@ class _FilterChip extends StatelessWidget {
             Icon(
               data.icon,
               size: 14,
-              color: selected ? Colors.white : AppColors.textDark,
+              color: selected ? Colors.white : MapPalette.textDark,
             ),
             const SizedBox(width: 6),
             Text(
               data.label,
               style: TextStyle(
-                color: selected ? Colors.white : AppColors.textDark,
+                color: selected ? Colors.white : MapPalette.textDark,
                 fontSize: 12,
                 fontWeight: FontWeight.w600,
               ),
@@ -1405,8 +1460,188 @@ class _FilterChip extends StatelessWidget {
 }
 
 // =============================================================================
-// ZOOM CONTROLS
+// CREATE PLACE ACTION
+// Two-step control. Resting state: a single floating coral "+" circle. Tapping
+// it slides the compact card out to the right - the circle stays exactly where
+// it is and becomes the card's leading button, so there is only ever one "+".
+// Tapping the card body navigates (onOpen); tapping the circle again slides
+// the card back. Sizes are deliberately compact (56px circle, 64px card) so
+// the control reads as a small action reveal, not a panel.
 // =============================================================================
+class _CreatePlaceAction extends StatelessWidget {
+  final bool expanded;
+  final VoidCallback onToggle;
+  final VoidCallback? onOpen;
+
+  const _CreatePlaceAction({
+    required this.expanded,
+    required this.onToggle,
+    required this.onOpen,
+  });
+
+  static const Duration _duration = Duration(milliseconds: 300);
+  static const double _circleSize = 56;
+  static const double _cardHeight = 64;
+  static const double _maxCardWidth = 300;
+  static const double _cardRadius = 32;
+  static const double _leadingInset = _circleSize + 12;
+  static const double _chevronSize = 24;
+
+  @override
+  Widget build(BuildContext context) {
+    final screenWidth = MediaQuery.sizeOf(context).width;
+    final cardWidth = (screenWidth - 40).clamp(250.0, _maxCardWidth);
+
+    return SizedBox(
+      width: expanded ? cardWidth : _circleSize,
+      height: _cardHeight,
+      child: Stack(
+        alignment: Alignment.centerLeft,
+        children: [
+          _buildCard(cardWidth),
+          _buildCircle(),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildCard(double cardWidth) {
+    return Align(
+      alignment: Alignment.centerLeft,
+      child: AnimatedOpacity(
+        opacity: expanded ? 1 : 0,
+        duration: expanded
+            ? const Duration(milliseconds: 120)
+            : _duration,
+        child: ClipRRect(
+          borderRadius: BorderRadius.circular(_cardRadius),
+          child: AnimatedSize(
+            duration: _duration,
+            curve: Curves.easeOutCubic,
+            alignment: Alignment.centerLeft,
+            clipBehavior: Clip.hardEdge,
+            child: expanded
+                ? _buildCardBody(cardWidth)
+                : const SizedBox(
+              width: 0,
+              height: _cardHeight,
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildCardBody(double cardWidth) {
+    final enabled = onOpen != null;
+    final textWidth = (cardWidth -
+        _leadingInset -
+        8 -
+        _chevronSize -
+        14)
+        .clamp(80.0, cardWidth);
+
+    return GestureDetector(
+      onTap: onOpen,
+      child: Container(
+        width: cardWidth,
+        height: _cardHeight,
+        decoration: BoxDecoration(
+          color: const Color(0xFFFFF7F3),
+          borderRadius: BorderRadius.circular(_cardRadius),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withOpacity(0.14),
+              blurRadius: 14,
+              offset: const Offset(0, 4),
+            ),
+          ],
+        ),
+        padding: const EdgeInsets.only(right: 14),
+        child: Row(
+          children: [
+            const SizedBox(width: _leadingInset),
+            Expanded(
+              child: ConstrainedBox(
+                constraints: BoxConstraints(maxWidth: textWidth),
+                child: const Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      'Create a Place',
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: TextStyle(
+                        color: MapPalette.textDark,
+                        fontSize: 16,
+                        fontWeight: FontWeight.w800,
+                      ),
+                    ),
+                    SizedBox(height: 2),
+                    Text(
+                      'Share a place with the community',
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: TextStyle(
+                        color: MapPalette.textGrey,
+                        fontSize: 12,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+            const SizedBox(width: 8),
+            Icon(
+              Icons.chevron_right,
+              color: enabled
+                  ? MapPalette.textGrey
+                  : MapPalette.hairline,
+              size: _chevronSize,
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildCircle() {
+    return Align(
+      alignment: Alignment.centerLeft,
+      child: GestureDetector(
+        onTap: onToggle,
+        child: Container(
+          width: _circleSize,
+          height: _circleSize,
+          decoration: BoxDecoration(
+            color: MapPalette.coral,
+            shape: BoxShape.circle,
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withOpacity(0.18),
+                blurRadius: 8,
+                offset: const Offset(0, 3),
+              ),
+            ],
+          ),
+          alignment: Alignment.center,
+          child: AnimatedRotation(
+            turns: expanded ? 0.125 : 0,
+            duration: _duration,
+            curve: Curves.easeOutCubic,
+            child: const Icon(
+              Icons.add,
+              color: Colors.white,
+              size: 30,
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
 class _ZoomControls extends StatelessWidget {
   final VoidCallback onZoomIn;
   final VoidCallback onZoomOut;
@@ -1434,15 +1669,15 @@ class _ZoomControls extends StatelessWidget {
             onTap: onZoomIn,
             child: const Padding(
               padding: EdgeInsets.all(10),
-              child: Icon(Icons.add, size: 20, color: AppColors.textDark),
+              child: Icon(Icons.add, size: 20, color: MapPalette.textDark),
             ),
           ),
-          const Divider(height: 1, color: AppColors.hairline),
+          const Divider(height: 1, color: MapPalette.hairline),
           InkWell(
             onTap: onZoomOut,
             child: const Padding(
               padding: EdgeInsets.all(10),
-              child: Icon(Icons.remove, size: 20, color: AppColors.textDark),
+              child: Icon(Icons.remove, size: 20, color: MapPalette.textDark),
             ),
           ),
         ],
@@ -1468,7 +1703,7 @@ class _RoundIconButton extends StatelessWidget {
         onTap: onTap,
         child: Padding(
           padding: const EdgeInsets.all(12),
-          child: Icon(icon, size: 20, color: AppColors.gmapsBlue),
+          child: Icon(icon, size: 20, color: MapPalette.gmapsBlue),
         ),
       ),
     );
@@ -1525,7 +1760,7 @@ class _MiniPlaceCard extends StatelessWidget {
                     style: const TextStyle(
                       fontSize: 14,
                       fontWeight: FontWeight.w700,
-                      color: AppColors.textDark,
+                      color: MapPalette.textDark,
                     ),
                   ),
                   const SizedBox(height: 2),
@@ -1541,15 +1776,15 @@ class _MiniPlaceCard extends StatelessWidget {
                         '${place.rating}',
                         style: const TextStyle(
                           fontSize: 12,
-                          color: AppColors.textGrey,
+                          color: MapPalette.textGrey,
                         ),
                       ),
                       const SizedBox(width: 6),
                       Text(
-                        '· ${place.category}',
+                        'Â· ${place.category}',
                         style: const TextStyle(
                           fontSize: 12,
-                          color: AppColors.textGrey,
+                          color: MapPalette.textGrey,
                         ),
                       ),
                     ],
@@ -1597,9 +1832,9 @@ class _PlaceCard extends StatelessWidget {
                       fit: BoxFit.cover,
                       // Hold the placeholder while the bytes arrive instead of flashing empty space.
                       frameBuilder: (_, child, frame, wasSynchronouslyLoaded) =>
-                          wasSynchronouslyLoaded || frame != null
-                              ? child
-                              : _PhotoPlaceholder(icon: place.icon),
+                      wasSynchronouslyLoaded || frame != null
+                          ? child
+                          : _PhotoPlaceholder(icon: place.icon),
                       errorBuilder: (_, __, ___) =>
                           _PhotoPlaceholder(icon: place.icon),
                     ),
@@ -1648,12 +1883,12 @@ class _PlaceCard extends StatelessWidget {
             style: const TextStyle(
               fontSize: 13,
               fontWeight: FontWeight.w700,
-              color: AppColors.textDark,
+              color: MapPalette.textDark,
             ),
           ),
           Text(
             place.category,
-            style: const TextStyle(fontSize: 11, color: AppColors.coral),
+            style: const TextStyle(fontSize: 11, color: MapPalette.coral),
           ),
         ],
       ),
@@ -1675,9 +1910,9 @@ class _PhotoPlaceholder extends StatelessWidget {
     return Container(
       width: size,
       height: size,
-      color: AppColors.hairline,
+      color: MapPalette.hairline,
       alignment: Alignment.center,
-      child: Icon(icon, size: (size ?? 54) * 0.4, color: AppColors.pin),
+      child: Icon(icon, size: (size ?? 54) * 0.4, color: MapPalette.pin),
     );
   }
 }

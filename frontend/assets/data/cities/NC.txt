@@ -1,0 +1,60 @@
+aerodrome	Aérodrome
+anse-vata	Anse-Vata
+artillerie	Artillerie
+baie des citrons	Baie Des Citrons
+bouloupari	Bouloupari
+bourail	Bourail
+canala	Canala
+ducos	Ducos
+dumbea	Dumbéa
+faubourg blanchot	Faubourg Blanchot
+haut-magenta	Haut-Magenta
+hienghene	Hienghène
+houailou	Houaïlou
+kaala-gomen	Kaala-Gomén
+kamere	Kaméré
+kone	Koné
+koumac	Koumac
+la foa	La Foa
+logicoop	Logicoop
+magenta	Magenta
+mont-dore	Mont-Dore
+montravel	Montravel
+n'gea	N'Géa
+normandie	Normandie
+noumea	Nouméa
+nouville	Nouville
+orphelinat	Orphelinat
+ouegoa	Ouégoa
+ouemo	Ouémo
+ouvea	Ouvéa
+paita	Païta
+poindimie	Poindimié
+ponerihouen	Ponérihouen
+portes de fer	Portes de Fer
+pouebo	Pouébo
+pouembout	Pouembout
+poum	Poum
+poya	Poya
+quartier latin	Quartier Latin
+quatrieme kilometre	Quatrième Kilomètre
+receiving	Receiving
+riviere-salee	Rivière-Salée
+septieme kilometre	Septième Kilomètre
+sixieme kilometre	Sixième Kilomètre
+tadine	Tadine
+thio	Thio
+tina	Tina
+tindu	Tindu
+touho	Touho
+trianon	Trianon
+val plaisance	Val Plaisance
+vallee des colons	Vallée des Colons
+vallee du genie	Vallée du Génie
+vallee du tir	Vallée du Tir
+vao	Vao
+voh	Voh
+wala	Wala
+we	Wé
+yate-barrage	Yaté-Barrage
+zone industriel ducos	Zone industriel Ducos

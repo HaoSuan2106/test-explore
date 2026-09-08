@@ -1,0 +1,14 @@
+balzers	Balzers
+bendern	Bendern
+eschen	Eschen
+gamprin	Gamprin
+mals	Mäls
+mauren	Mauren
+nendeln	Nendeln
+planken	Planken
+ruggell	Ruggell
+schaan	Schaan
+schellenberg	Schellenberg
+triesen	Triesen
+triesenberg	Triesenberg
+vaduz	Vaduz

@@ -1,0 +1,20 @@
+all saints	All Saints
+barbuda parish	Barbuda Parish
+bolands	Bolands
+codrington	Codrington
+falmouth	Falmouth
+jacks hill	Jacks Hill
+liberta	Liberta
+new winthorpes	New Winthorpes
+parham	Parham
+piggotts	Piggotts
+potters village	Potters Village
+saint john’s	Saint John’s
+st. george parish	St. George Parish
+st. mary parish	St. Mary Parish
+st. paul parish	St. Paul Parish
+st. peter parish	St. Peter Parish
+st. philip parish	St. Philip Parish
+sugar factory	Sugar Factory
+swetes	Swetes
+willikies	Willikies

@@ -3,8 +3,8 @@ namespace ExploreMy.Api.Domain.Entities;
 /// <summary>
 /// A community verification (vote) for a place submission. One row per user
 /// per submission; the UNIQUE constraint on (submission_id, user_id) prevents
-/// duplicate votes. A user may withdraw their verification by setting the
-/// status to WITHDRAWN.
+/// duplicate votes. Withdrawing a verification DELETES the user's row, so
+/// every stored row is ACTIVE.
 /// Maps to the <c>recommended_place_verifications</c> table.
 /// </summary>
 public class PlaceSubmissionVerification
@@ -23,5 +23,4 @@ public class PlaceSubmissionVerification
 public static class RecommendedPlaceVerificationStatus
 {
     public const string Active = "ACTIVE";
-    public const string Withdrawn = "WITHDRAWN";
 }

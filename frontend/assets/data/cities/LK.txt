@@ -1,0 +1,89 @@
+ambalangoda	Ambalangoda
+ambalantota	Ambalantota
+ampara	Ampara
+anuradhapura	Anuradhapura
+badulla	Badulla
+battaramulla south	Battaramulla South
+batticaloa	Batticaloa
+beliatta	Beliatta
+bentota	Bentota
+beruwala	Beruwala
+bogahakumbura	Bogahakumbura
+chilaw	Chilaw
+colombo	Colombo
+dambulla	Dambulla
+dehiwala-mount lavinia	Dehiwala-Mount Lavinia
+devinuwara	Devinuwara
+ekkassa	Ekkassa
+ella town	Ella Town
+eravur town	Eravur Town
+galle	Galle
+gampaha	Gampaha
+gampola	Gampola
+hambantota	Hambantota
+hanwella ihala	Hanwella Ihala
+haputale	Haputale
+hatton	Hatton
+hendala	Hendala
+hikkaduwa	Hikkaduwa
+homagama	Homagama
+horana south	Horana South
+horawala junction	Horawala Junction
+ja ela	Ja Ela
+jaffna	Jaffna
+kadugannawa	Kadugannawa
+kalmunai	Kalmunai
+kalutara	Kalutara
+kandana	Kandana
+kandy	Kandy
+kataragama	Kataragama
+katunayaka	Katunayaka
+kegalle	Kegalle
+kelaniya	Kelaniya
+keppapularu	Keppapularu
+kilinochchi	Kilinochchi
+koggala	Koggala
+kolonnawa	Kolonnawa
+kotikawatta	Kotikawatta
+kuliyapitiya	Kuliyapitiya
+kurunegala	Kurunegala
+maharagama	Maharagama
+mannar	Mannar
+matale	Matale
+matara	Matara
+mawalgama	Mawalgama
+mihintale	Mihintale
+minuwangoda	Minuwangoda
+mirissa city	Mirissa city
+monaragala	Monaragala
+moratuwa	Moratuwa
+mullaittivu	Mullaittivu
+mulleriyawa	Mulleriyawa
+negombo	Negombo
+nuwara eliya	Nuwara Eliya
+padaviya divisional secretariat	Padaviya Divisional Secretariat
+panadura	Panadura
+peliyagoda	Peliyagoda
+pita kotte	Pita Kotte
+point pedro	Point Pedro
+polonnaruwa	Polonnaruwa
+pottuvil	Pottuvil
+puttalam	Puttalam
+ratnapura	Ratnapura
+sigiriya	Sigiriya
+sri jayewardenepura kotte	Sri Jayewardenepura Kotte
+talawakele	Talawakele
+talpe	Talpe
+tangalle	Tangalle
+trincomalee	Trincomalee
+unawatuna	Unawatuna
+urawatawangoda	Urawatawangoda
+vakarai	Vakarai
+valvedditturai	Valvedditturai
+vavuniya	Vavuniya
+wanduruppa	Wanduruppa
+wattala	Wattala
+wattegama	Wattegama
+weligama	Weligama
+welisara	Welisara
+wellawaya	Wellawaya

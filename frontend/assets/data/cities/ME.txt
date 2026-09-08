@@ -1,0 +1,41 @@
+andrijevica	Andrijevica
+bar	Bar
+berane	Berane
+bijela	Bijela
+bijelo polje	Bijelo Polje
+budva	Budva
+cetinje	Cetinje
+danilovgrad	Danilovgrad
+dobrota	Dobrota
+golubovci	Golubovci
+goricani	Goričani
+gusinje	Gusinje
+herceg novi	Herceg Novi
+ibarac	Ibarac
+igalo	Igalo
+kolasin	Kolašin
+kotor	Kotor
+lipci	Lipci
+mataguzi	Mataguži
+mojanovici	Mojanovići
+mojkovac	Mojkovac
+niksic	Nikšić
+pesca	Pešca
+petnjica	Petnjica
+petrovac na moru	Petrovac na Moru
+plav	Plav
+pljevlja	Pljevlja
+pluzine	Plužine
+podgorica	Podgorica
+prcanj	Prčanj
+risan	Risan
+rozaje	Rožaje
+savnik	Šavnik
+spuz	Spuž
+stari bar	Stari Bar
+susanj	Šušanj
+sutomore	Sutomore
+tivat	Tivat
+tuzi	Tuzi
+ulcinj	Ulcinj
+zabljak	Žabljak

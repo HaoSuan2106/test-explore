@@ -14,7 +14,11 @@ const Color _kMuted = Color(0xFF94A3B8);
 /// whatever PlaceDetailUI happened to be showing (Google-sourced or a
 /// community recommendation) — see MessageAttachment's PlaceLatitude/
 /// PlaceLongitude/PlacePrimaryType/IsCommunityPlace snapshot fields.
-SharedPlaceRequest _toSharedPlaceRequest(PlaceData place) {
+///
+/// Public (not the sheet's own concern any more) so callers such as
+/// PlaceDetailUI's Share button can build the request themselves and pass
+/// it into [ShareToCommunitySheet]'s generic `onShare` callback.
+SharedPlaceRequest sharedPlaceRequestFromPlaceData(PlaceData place) {
   return SharedPlaceRequest(
     placeId: place.placeId,
     placeName: place.title,
@@ -28,19 +32,45 @@ SharedPlaceRequest _toSharedPlaceRequest(PlaceData place) {
   );
 }
 
-/// "Share" action on Place Details: pick one of the user's joined communities
-/// and send this place into that group's chat as a PlaceShare message.
+/// "Share" action shared by Place Details and Post Details: pick one of the
+/// user's joined communities and hand off the actual send to [onShare] —
+/// this sheet only owns the community picker UI, not what's being shared.
 class ShareToCommunitySheet extends StatefulWidget {
-  const ShareToCommunitySheet({super.key, required this.place});
+  const ShareToCommunitySheet({
+    super.key,
+    required this.previewTitle,
+    required this.onShare,
+    this.failureMessage = 'Failed to share.',
+  });
 
-  final PlaceData place;
+  /// Shown under the sheet's title as a one-line preview of what's being
+  /// shared (a place name, a post title, ...).
+  final String previewTitle;
 
-  static Future<void> show(BuildContext context, {required PlaceData place}) {
+  /// Sends the thing being shared into the given community's chat. Returns
+  /// true on success — the sheet itself has no idea what's inside the
+  /// message, it just reports the outcome.
+  final Future<bool> Function(int communityId) onShare;
+
+  /// Shown in the result snackbar when [onShare] returns false and the
+  /// provider didn't have a more specific error message of its own.
+  final String failureMessage;
+
+  static Future<void> show(
+    BuildContext context, {
+    required String previewTitle,
+    required Future<bool> Function(int communityId) onShare,
+    String failureMessage = 'Failed to share.',
+  }) {
     return showModalBottomSheet(
       context: context,
       isScrollControlled: true,
       shape: const RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(20))),
-      builder: (_) => ShareToCommunitySheet(place: place),
+      builder: (_) => ShareToCommunitySheet(
+        previewTitle: previewTitle,
+        onShare: onShare,
+        failureMessage: failureMessage,
+      ),
     );
   }
 
@@ -64,17 +94,14 @@ class _ShareToCommunitySheetState extends State<ShareToCommunitySheet> {
     setState(() => _sendingToCommunityId = communityId);
 
     final provider = context.read<CommunicationProvider>();
-    final success = await provider.shareLocationToCommunity(
-      communityId,
-      _toSharedPlaceRequest(widget.place),
-    );
+    final success = await widget.onShare(communityId);
 
     if (!mounted) return;
     Navigator.of(context).pop();
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Text(
-          success ? 'Shared to $communityName.' : (provider.errorMessage ?? 'Failed to share this location.'),
+          success ? 'Shared to $communityName.' : (provider.errorMessage ?? widget.failureMessage),
         ),
       ),
     );
@@ -105,7 +132,7 @@ class _ShareToCommunitySheetState extends State<ShareToCommunitySheet> {
           ),
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 20),
-            child: Text(widget.place.title,
+            child: Text(widget.previewTitle,
                 style: GoogleFonts.plusJakartaSans(fontSize: 13, color: _kMuted),
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis),

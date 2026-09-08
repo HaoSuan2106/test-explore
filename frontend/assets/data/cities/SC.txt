@@ -1,0 +1,25 @@
+anse aux pins	Anse aux Pins
+anse boileau	Anse Boileau
+anse royale	Anse Royale
+baie lazare	Baie Lazare
+baie sainte anne	Baie Sainte Anne
+beau vallon	Beau Vallon
+bel air	Bel Air
+bel ombre	Bel Ombre
+cascade	Cascade
+english river	English River
+glacis	Glacis
+grand'anse	Grand'Anse
+la digue	La Digue
+la passe	La Passe
+les mamelles	Les Mamelles
+mont buxton	Mont Buxton
+mont fleuri	Mont Fleuri
+perseverance	Perseverance
+plaisance	Plaisance
+pointe la rue	Pointe La Rue
+port glaud	Port Glaud
+roche caiman	Roche Caïman
+saint louis	Saint Louis
+takamaka	Takamaka
+victoria	Victoria

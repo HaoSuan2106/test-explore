@@ -1,0 +1,26 @@
+adacao	Adacao
+agana heights village	Agana Heights Village
+agat village	Agat Village
+anao	Anao
+apotgan	Apotgan
+apra harbor	Apra Harbor
+asan-maina village	Asan-Maina Village
+barrigada village	Barrigada Village
+chaguian	Chaguian
+chalan pago-ordot village	Chalan Pago-Ordot Village
+dededo village	Dededo Village
+hagatna	Hagåtña
+hagatna village	Hagåtña Village
+inarajan village	Inarajan Village
+mangilao village	Mangilao Village
+merizo village	Merizo Village
+mongmong-toto-maite village	Mongmong-Toto-Maite Village
+piti village	Piti Village
+santa rita village	Santa Rita Village
+sinajana village	Sinajana Village
+talofofo village	Talofofo Village
+tamuning	Tamuning
+tamuning-tumon-harmon village	Tamuning-Tumon-Harmon Village
+umatac village	Umatac Village
+yigo village	Yigo Village
+yona village	Yona Village

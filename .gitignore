@@ -45,3 +45,12 @@
 .DS_Store
 Thumbs.db
 backend_log.txt
+
+# ========================
+# Secrets - never commit
+# ========================
+*.local.md
+*.local.json
+.env
+.env.*
+secrets.json

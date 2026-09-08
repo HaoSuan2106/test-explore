@@ -1,0 +1,335 @@
+acatenango	Acatenango
+agua blanca	Agua Blanca
+aguacatan	Aguacatán
+almolonga	Almolonga
+alotenango	Alotenango
+amatitlan	Amatitlán
+antigua guatemala	Antigua Guatemala
+asuncion mita	Asunción Mita
+atescatempa	Atescatempa
+barberena	Barberena
+barillas	Barillas
+cabanas	Cabañas
+cabrican	Cabricán
+cahabon	Cahabón
+cajola	Cajolá
+camotan	Camotán
+canilla	Canillá
+cantel	Cantel
+casillas	Casillas
+catarina	Catarina
+chahal	Chahal
+chajul	Chajul
+champerico	Champerico
+chiantla	Chiantla
+chicacao	Chicacao
+chicaman	Chicamán
+chiche	Chiché
+chichicastenango	Chichicastenango
+chimaltenango	Chimaltenango
+chinautla	Chinautla
+chinique	Chinique
+chiquimula	Chiquimula
+chiquimulilla	Chiquimulilla
+chisec	Chisec
+chuarrancho	Chuarrancho
+ciudad tecun uman	Ciudad Tecún Umán
+ciudad vieja	Ciudad Vieja
+coatepeque	Coatepeque
+coban	Cobán
+colomba	Colomba
+colotenango	Colotenango
+comalapa	Comalapa
+comapa	Comapa
+comitancillo	Comitancillo
+concepcion	Concepción
+concepcion chiquirichapa	Concepción Chiquirichapa
+concepcion huista	Concepción Huista
+concepcion las minas	Concepción Las Minas
+concepcion tutuapa	Concepción Tutuapa
+conguaco	Conguaco
+cubulco	Cubulco
+cuilapa	Cuilapa
+cuilco	Cuilco
+cunen	Cunén
+cuyotenango	Cuyotenango
+dolores	Dolores
+el adelanto	El Adelanto
+el asintal	El Asintal
+el chal	El Chal
+el chol	El Chol
+el estor	El Estor
+el jicaro	El Jícaro
+el palmar	El Palmar
+el progreso	El Progreso
+el quetzal	El Quetzal
+el rodeo	El Rodeo
+el tejar	El Tejar
+el tumbador	El Tumbador
+escuintla	Escuintla
+esquipulas	Esquipulas
+esquipulas palo gordo	Esquipulas Palo Gordo
+estanzuela	Estanzuela
+flores	Flores
+flores costa cuca	Flores Costa Cuca
+fraijanes	Fraijanes
+fray bartolome de las casas	Fray Bartolomé de Las Casas
+genova	Génova
+granados	Granados
+gualan	Gualán
+guanagazapa	Guanagazapa
+guastatoya	Guastatoya
+guatemala city	Guatemala City
+guazacapan	Guazacapán
+huehuetenango	Huehuetenango
+huitan	Huitán
+huite	Huité
+ipala	Ipala
+ixchiguan	Ixchiguán
+ixtahuacan	Ixtahuacán
+iztapa	Iztapa
+jacaltenango	Jacaltenango
+jalapa	Jalapa
+jalpatagua	Jalpatagua
+jerez	Jerez
+jocotan	Jocotán
+jocotenango	Jocotenango
+joyabaj	Joyabaj
+jutiapa	Jutiapa
+la blanca	La Blanca
+la democracia	La Democracia
+la esperanza	La Esperanza
+la gomera	La Gomera
+la libertad	La Libertad
+la maquina	La Máquina
+la reforma	La Reforma
+la tinta	La Tinta
+la union	La Unión
+lanquin	Lanquín
+livingston	Lívingston
+los amates	Los Amates
+magdalena milpas altas	Magdalena Milpas Altas
+malacatan	Malacatán
+malacatancito	Malacatancito
+masagua	Masagua
+mataquescuintla	Mataquescuintla
+mazatenango	Mazatenango
+melchor de mencos	Melchor de Mencos
+mixco	Mixco
+momostenango	Momostenango
+monjas	Monjas
+morales	Morales
+morazan	Morazán
+moyuta	Moyuta
+nahuala	Nahualá
+nebaj	Nebaj
+nenton	Nentón
+nueva concepcion	Nueva Concepción
+nueva santa rosa	Nueva Santa Rosa
+nuevo leon	Nuevo León
+nuevo progreso	Nuevo Progreso
+nuevo san carlos	Nuevo San Carlos
+ocos	Ocós
+olintepeque	Olintepeque
+olopa	Olopa
+oratorio	Oratorio
+ostuncalco	Ostuncalco
+pachalum	Pachalum
+pajapita	Pajapita
+palencia	Palencia
+palestina de los altos	Palestina de los Altos
+palin	Palín
+panajachel	Panajachel
+panzos	Panzos
+parramos	Parramos
+pasaco	Pasaco
+pastores	Pastores
+patulul	Patulul
+patzicia	Patzicía
+patzite	Patzité
+patzun	Patzún
+petapa	Petapa
+playa grande	Playa Grande
+pochuta	Pochuta
+poptun	Poptún
+pueblo nuevo	Pueblo Nuevo
+pueblo nuevo vinas	Pueblo Nuevo Viñas
+puerto barrios	Puerto Barrios
+puerto san jose	Puerto San José
+purulha	Purulhá
+quesada	Quesada
+quetzaltenango	Quetzaltenango
+quezaltepeque	Quezaltepeque
+rabinal	Rabinal
+raxruha	Raxruhá
+retalhuleu	Retalhuleu
+rio blanco	Río Blanco
+rio bravo	Río Bravo
+rio hondo	Río Hondo
+sacapulas	Sacapulas
+salama	Salamá
+salcaja	Salcajá
+samayac	Samayac
+san agustin acasaguastlan	San Agustín Acasaguastlán
+san andres	San Andrés
+san andres itzapa	San Andrés Itzapa
+san andres sajcabaja	San Andrés Sajcabajá
+san andres semetabaj	San Andrés Semetabaj
+san andres villa seca	San Andrés Villa Seca
+san andres xecul	San Andrés Xecul
+san antonio aguas calientes	San Antonio Aguas Calientes
+san antonio huista	San Antonio Huista
+san antonio ilotenango	San Antonio Ilotenango
+san antonio la paz	San Antonio La Paz
+san antonio palopo	San Antonio Palopó
+san antonio sacatepequez	San Antonio Sacatepéquez
+san antonio suchitepequez	San Antonio Suchitepéquez
+san bartolo	San Bartolo
+san bartolome jocotenango	San Bartolomé Jocotenango
+san bartolome milpas altas	San Bartolomé Milpas Altas
+san benito	San Benito
+san bernardino	San Bernardino
+san carlos alzatate	San Carlos Alzatate
+san carlos sija	San Carlos Sija
+san cristobal acasaguastlan	San Cristóbal Acasaguastlán
+san cristobal cucho	San Cristóbal Cucho
+san cristobal totonicapan	San Cristóbal Totonicapán
+san cristobal verapaz	San Cristóbal Verapaz
+san diego	San Diego
+san felipe	San Felipe
+san francisco	San Francisco
+san francisco el alto	San Francisco El Alto
+san francisco la union	San Francisco la Unión
+san francisco zapotitlan	San Francisco Zapotitlán
+san gabriel	San Gabriel
+san gaspar ixchil	San Gaspar Ixchil
+san jacinto	San Jacinto
+san jeronimo	San Jerónimo
+san jorge	San Jorge
+san jose	San José
+san jose acatempa	San José Acatempa
+san jose chacaya	San José Chacayá
+san jose del golfo	San José del Golfo
+san jose el idolo	San José El Ídolo
+san jose la arada	San José La Arada
+san jose ojetenam	San José Ojetenam
+san jose ojetenan	San José Ojetenán
+san jose pinula	San José Pinula
+san jose poaquil	San José Poaquil
+san juan atitan	San Juan Atitán
+san juan bautista	San Juan Bautista
+san juan chamelco	San Juan Chamelco
+san juan cotzal	San Juan Cotzal
+san juan ermita	San Juan Ermita
+san juan ixcoy	San Juan Ixcoy
+san juan la laguna	San Juan La Laguna
+san juan ostuncalco	San Juan Ostuncalco
+san juan sacatepequez	San Juan Sacatepéquez
+san juan tecuaco	San Juan Tecuaco
+san lorenzo	San Lorenzo
+san lucas sacatepequez	San Lucas Sacatepéquez
+san lucas toliman	San Lucas Tolimán
+san luis	San Luis
+san luis jilotepeque	San Luis Jilotepeque
+san manuel chaparron	San Manuel Chaparrón
+san marcos	San Marcos
+san marcos la laguna	San Marcos La Laguna
+san martin jilotepeque	San Martín Jilotepeque
+san martin sacatepequez	San Martín Sacatepéquez
+san martin zapotitlan	San Martín Zapotitlán
+san mateo	San Mateo
+san mateo ixtatan	San Mateo Ixtatán
+san miguel acatan	San Miguel Acatán
+san miguel chicaj	San Miguel Chicaj
+san miguel duenas	San Miguel Dueñas
+san miguel ixtahuacan	San Miguel Ixtahuacán
+san miguel panan	San Miguel Panán
+san miguel siguila	San Miguel Sigüilá
+san pablo	San Pablo
+san pablo jocopilas	San Pablo Jocopilas
+san pablo la laguna	San Pablo La Laguna
+san pedro ayampuc	San Pedro Ayampuc
+san pedro carcha	San Pedro Carchá
+san pedro jocopilas	San Pédro Jocopilas
+san pedro la laguna	San Pedro La Laguna
+san pedro necta	San Pedro Necta
+san pedro pinula	San Pedro Pinula
+san pedro sacatepequez	San Pedro Sacatepéquez
+san rafael la independencia	San Rafael La Independencia
+san rafael las flores	San Rafael Las Flores
+san rafael petzal	San Rafael Petzal
+san rafael pie de la cuesta	San Rafael Pie de la Cuesta
+san raimundo	San Raimundo
+san sebastian	San Sebastián
+san sebastian coatan	San Sebastián Coatán
+san sebastian huehuetenango	San Sebastián Huehuetenango
+san vicente pacaya	San Vicente Pacaya
+sanarate	Sanarate
+sansare	Sansare
+santa ana	Santa Ana
+santa ana huista	Santa Ana Huista
+santa apolonia	Santa Apolonia
+santa barbara	Santa Bárbara
+santa catarina barahona	Santa Catarina Barahona
+santa catarina ixtahuacan	Santa Catarina Ixtahuacán
+santa catarina mita	Santa Catarina Mita
+santa catarina palopo	Santa Catarina Palopó
+santa catarina pinula	Santa Catarina Pinula
+santa clara la laguna	Santa Clara La Laguna
+santa cruz balanya	Santa Cruz Balanyá
+santa cruz del quiche	Santa Cruz del Quiché
+santa cruz la laguna	Santa Cruz La Laguna
+santa cruz mulua	Santa Cruz Muluá
+santa cruz naranjo	Santa Cruz Naranjo
+santa cruz verapaz	Santa Cruz Verapaz
+santa eulalia	Santa Eulalia
+santa lucia cotzumalguapa	Santa Lucía Cotzumalguapa
+santa lucia la reforma	Santa Lucia La Reforma
+santa lucia milpas altas	Santa Lucía Milpas Altas
+santa lucia utatlan	Santa Lucía Utatlán
+santa maria chiquimula	Santa María Chiquimula
+santa maria de jesus	Santa María de Jesús
+santa maria ixhuatan	Santa María Ixhuatán
+santa maria visitacion	Santa María Visitación
+santa rosa de lima	Santa Rosa de Lima
+santiago atitlan	Santiago Atitlán
+santiago chimaltenango	Santiago Chimaltenango
+santiago sacatepequez	Santiago Sacatepéquez
+santo domingo suchitepequez	Santo Domingo Suchitepéquez
+santo domingo xenacoj	Santo Domingo Xenacoj
+santo tomas la union	Santo Tomás La Unión
+sayaxche	Sayaxché
+senahu	Senahú
+sibilia	Sibilia
+sibinal	Sibinal
+sipacapa	Sipacapa
+siquinala	Siquinalá
+solola	Sololá
+soloma	Soloma
+sumpango	Sumpango
+tacana	Tacaná
+tactic	Tactic
+tajumulco	Tajumulco
+tamahu	Tamahú
+taxisco	Taxisco
+tecpan guatemala	Tecpán Guatemala
+tectitan	Tectitán
+teculutan	Teculután
+tejutla	Tejutla
+tiquisate	Tiquisate
+todos santos cuchumatan	Todos Santos Cuchumatán
+totonicapan	Totonicapán
+tucuru	Tucurú
+union	Unión
+uspantan	Uspantán
+usumatlan	Usumatlán
+villa canales	Villa Canales
+villa nueva	Villa Nueva
+yepocapa	Yepocapa
+yupiltepeque	Yupiltepeque
+zacapa	Zacapa
+zacualpa	Zacualpa
+zapotitlan	Zapotitlán
+zaragoza	Zaragoza
+zunil	Zunil
+zunilito	Zunilito

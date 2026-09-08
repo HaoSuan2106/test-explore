@@ -21,11 +21,68 @@ public class PlaceCandidate
     public double Latitude { get; init; }
     public double Longitude { get; init; }
 
-    /// <summary>Average rating 0.0-5.0. Null when Google has no rating yet.</summary>
+    /// <summary>Average rating 0.0-5.0, AS GOOGLE HAS IT. Null when Google has no rating yet.
+    /// Scoring reads <see cref="EffectiveRating"/> instead; this stays untouched so the app can still
+    /// show "what Google says" next to what our own users say.</summary>
     public double? Rating { get; init; }
 
-    /// <summary>Total number of user ratings/reviews. This is the main "popularity" proxy signal.</summary>
+    /// <summary>Number of user ratings/reviews ON GOOGLE. Scoring reads
+    /// <see cref="EffectiveUserRatingCount"/>; see that property for why the two are separate.</summary>
     public int UserRatingCount { get; init; }
+
+    // ---- Our own app's reviews of this same place. Settable rather than init-only because they are
+    // attached AFTER the candidate is built: the candidate comes out of Google or the cache, then
+    // HiddenPlaceService.AttachAppReviewStatsAsync fills these in from our reviews table in one
+    // batched read. Both stay at their defaults (no reviews) for any caller that skips that step, and
+    // the Effective* properties below then reduce to the plain Google numbers. ----
+
+    /// <summary>Average rating our own users gave this place, or null when nobody here has reviewed
+    /// it. Only ACTIVE reviews count - a review removed by reports must not keep voting.</summary>
+    public double? AppRating { get; set; }
+
+    /// <summary>How many ACTIVE reviews our own users wrote about this place. 0 for most places.</summary>
+    public int AppReviewCount { get; set; }
+
+    /// <summary>
+    /// The rating the algorithm actually scores: Google's and ours pooled, each weighted by how many
+    /// people it represents.
+    ///
+    /// Weighted rather than averaged flat, because the two samples are nowhere near the same size -
+    /// giving 3 of our reviews the same say as 800 of Google's would let a handful of our users swing
+    /// a place's quality score entirely. As our review count grows, our voice grows with it, which is
+    /// the behaviour we want and needs no threshold to switch over.
+    /// </summary>
+    public double? EffectiveRating
+    {
+        get
+        {
+            if (AppReviewCount <= 0 || AppRating is null)
+            {
+                return Rating;
+            }
+
+            if (Rating is null || UserRatingCount <= 0)
+            {
+                // Nobody on Google has rated it, so ours is the only rating there is. This is also
+                // what lets a place Google has no opinion about clear the rating gate at all.
+                return AppRating;
+            }
+
+            var total = UserRatingCount + AppReviewCount;
+            return ((Rating.Value * UserRatingCount) + (AppRating.Value * AppReviewCount)) / total;
+        }
+    }
+
+    /// <summary>
+    /// The "how many people know about this" count the algorithm actually scores: Google's reviewers
+    /// plus ours.
+    ///
+    /// Our reviews count toward popularity, not just quality, because a place our own community has
+    /// already written about is, by that much, less of a discovery for the next person. Today this
+    /// barely moves anything - a few reviews against Google's hundreds - and that is the point: it
+    /// scales in on its own as the app grows, instead of needing to be switched on later.
+    /// </summary>
+    public int EffectiveUserRatingCount => UserRatingCount + AppReviewCount;
 
     /// <summary>0 (free) - 4 (very expensive). Null when unknown. Not used in scoring yet, kept for future filters.</summary>
     public int? PriceLevel { get; init; }

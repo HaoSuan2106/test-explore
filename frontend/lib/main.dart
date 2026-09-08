@@ -1,5 +1,3 @@
-import 'package:explore_my/presentation/favourite_place/favourite_place_screen.dart';
-import 'package:explore_my/presentation/route_navigation/route_navigation_active_ui.dart';
 import 'package:explore_my/providers/post_review/post_provider.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -11,18 +9,14 @@ import 'providers/auth_profile/auth_provider.dart';
 import 'providers/auth_profile/profile_provider.dart';
 import 'providers/community/communication_provider.dart';
 import 'providers/foot_tracker/exploration_map_provider.dart';
-import 'utilities/onboarding_preferences.dart';
-import 'presentation/authentication/login/login_ui.dart';
-import 'presentation/navigation/entry_page_ui.dart';
-import 'presentation/route_navigation/navigation_screen.dart';
 import 'providers/foot_tracker/favourite_provider.dart';
-import 'presentation/navigation/main_page.dart';
 import 'providers/hidden_place/hidden_place_provider.dart';
 import 'presentation/navigation/app_router.dart';
 import 'providers/foot_tracker/navigation_provider.dart';
 import 'providers/hidden_place/review_provider.dart';
 import 'providers/session_scoped_provider.dart';
 import 'utilities/image_cache_guard.dart';
+import 'widgets/connection_error_dialog.dart';
 
 void main() {
   // Ensure the binding exists before registering the app-wide observer.
@@ -89,6 +83,22 @@ class _ExploreMYAppState extends State<ExploreMYApp> {
     // suspended mid-use) must not leave the user sitting on signed-in screens
     // — drop the cached data and send them back to Login.
     _httpClient.onSessionExpired = _handleSessionExpired;
+
+    // Any backend call that cannot reach the server raises the shared
+    // Connection Error panel instead of surfacing an exception. Wired once,
+    // here, so every screen and provider is covered without its own handling.
+    _httpClient.onConnectionError = _handleConnectionError;
+  }
+
+  /// Shows the Connection Error panel and reports whether the user chose
+  /// Retry. Returns false when there is no navigator to show it over — during
+  /// startup, before the first route is built — so the caller falls back to
+  /// its own error handling rather than waiting on a dialog that can't appear.
+  Future<bool> _handleConnectionError() async {
+    final context = rootNavigatorKey.currentContext;
+    if (context == null || !context.mounted) return false;
+
+    return showConnectionErrorDialog(context);
   }
 
   Future<void> _handleSessionExpired() async {

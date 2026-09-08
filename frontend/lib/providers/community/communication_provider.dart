@@ -146,6 +146,15 @@ class CommunicationProvider extends ChangeNotifier {
       participants = await _httpClient.getParticipants(communityId);
     } on DioException {
       errorMessage = 'Failed to open the chat room.';
+    } catch (e) {
+      // The SignalR hub is a separate transport from Dio, so a hub that can't
+      // be reached throws something other than a DioException and would
+      // otherwise escape as an unhandled error, leaving the room blank with no
+      // explanation. It gets the same connection message as everything else.
+      debugPrint('[CommunicationProvider] openChatRoom failed: $e');
+      errorMessage = isConnectionError(e)
+          ? kConnectionErrorMessage
+          : 'Failed to open the chat room.';
     } finally {
       isLoading = false;
       notifyListeners();
@@ -235,6 +244,27 @@ class CommunicationProvider extends ChangeNotifier {
       return true;
     } on DioException catch (e) {
       errorMessage = messageForError(e) ?? 'Failed to share this location.';
+      notifyListeners();
+      return false;
+    }
+  }
+
+  /// Share to Community (Post): the Post equivalent of
+  /// [shareLocationToCommunity] — same standalone-send behaviour, since it's
+  /// invoked from Post Details rather than from inside a chat room.
+  Future<bool> sharePostToCommunity(int communityId, SharedPostRequest post) async {
+    try {
+      final sent = await _httpClient.sendMessage(SendMessageRequest(
+        communityId: communityId,
+        sharedPosts: [post],
+      ));
+      if (communityId == _activeCommunityId && !messages.any((m) => m.messageId == sent.messageId)) {
+        messages = [...messages, sent];
+        notifyListeners();
+      }
+      return true;
+    } on DioException catch (e) {
+      errorMessage = messageForError(e) ?? 'Failed to share this post.';
       notifyListeners();
       return false;
     }

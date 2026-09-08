@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import '../theme/app_theme.dart';
-import 'app_button.dart';
 
 /// Shared full-screen / centered error state used across screens.
 ///

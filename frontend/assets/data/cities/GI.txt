@@ -1,0 +1,6 @@
+gibraltar	Gibraltar
+reclamation areas	Reclamation Areas
+sandpits	Sandpits
+south district	South District
+town area	Town Area
+upper town	Upper Town

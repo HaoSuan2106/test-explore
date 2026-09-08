@@ -58,8 +58,12 @@ class _ReportReasonSheetState extends State<ReportReasonSheet> {
     final reportId = await provider.submitReport(widget.postId, reason);
     if (!mounted) return;
     if (reportId == null) {
+      // Surface the backend's business message (409 duplicate report, 403
+      // self-report rule) when it sent one; keep the generic retry text
+      // otherwise.
       AppFeedback.show(context,
-          message: 'Failed to submit the report. Please try again.',
+          message: provider.errorMessage ??
+              'Failed to submit the report. Please try again.',
           isSuccess: false);
       setState(() => _submitting = false);
       return;

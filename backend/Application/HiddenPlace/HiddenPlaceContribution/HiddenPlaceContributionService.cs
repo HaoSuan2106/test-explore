@@ -215,7 +215,27 @@ public class HiddenPlaceContributionService : IHiddenPlaceContributionService
             Status = RecommendedPlaceStatus.UnderVoting,
         };
 
-        await _repository.CreateSubmissionAsync(place, submission);
+        // New Add architecture: every successful Add also persists a row in the shared
+        // `places` table, keyed by the SAME identifier (places.place_id == recommend_place_id).
+        // Only fields the Add flow actually collects are populated; everything else stays
+        // NULL/default — no fabricated data. photo_json/JSON shape is identical in both tables
+        // (a JSON array of public URLs), so PhotosJson is mirrored as-is.
+        var placeRecord = new Place
+        {
+            // PlaceId is enforced again in the repository (defense in depth): it MUST equal
+            // the canonical recommend_place_id — no independent ID is generated here.
+            Name = name,
+            Address = string.Empty,               // Add does not collect an address (coordinates-only design)
+            Description = description,
+            Latitude = place.Latitude,
+            Longitude = place.Longitude,
+            PrimaryType = primaryType,
+            PriceLevel = request.PriceLevel,
+            BusinessStatus = businessStatus,
+            PhotosJson = photosJson,
+        };
+
+        await _repository.CreateSubmissionAsync(place, submission, placeRecord);
 
         _logger.LogInformation("User {UserId} submitted recommended place {SubmissionId}.", currentUserId, submission.SubmissionId);
         return new SubmitRecommendedPlaceResponseDto
@@ -335,8 +355,27 @@ public class HiddenPlaceContributionService : IHiddenPlaceContributionService
         var place = await _repository.GetByIdAsync(submissionId)
             ?? throw new NotFoundException($"Recommended place '{submissionId}' was not found.");
 
-        if (place.Status != RecommendedPlaceStatus.UnderVoting)
-            throw new ValidationException($"This place is not eligible for community verification (current status: {place.Status}).");
+        // Status gates split by vote direction (REQ502_37 vs REQ502_18):
+        //
+        //   VERIFY      — only accepted while the place is still UNDER_VOTING. Once
+        //                 the community promotes the place to VERIFIED the decision
+        //                 is final; a late verify would also skew the published count.
+        //   WITHDRAW    — stays available on a VERIFIED place. REQ502_18 allows a
+        //                 user to withdraw their verification WITHOUT reverting the
+        //                 VERIFIED status: the vote row is removed and the promotion
+        //                 is never undone (the withdrawal branch below never writes
+        //                 place.Status). Only REPORTED_CLOSED / WITHDRAWN — places
+        //                 already off the voting lifecycle — reject it.
+        if (verify)
+        {
+            if (place.Status != RecommendedPlaceStatus.UnderVoting)
+                throw new ValidationException($"This place is not eligible for community verification (current status: {place.Status}).");
+        }
+        else if (place.Status == RecommendedPlaceStatus.ReportedClosed
+              || place.Status == RecommendedPlaceStatus.Withdrawn)
+        {
+            throw new ValidationException($"This place is not eligible for verification changes (current status: {place.Status}).");
+        }
 
         // Submitter may not self-verify
         if (place.SubmitterId == currentUserId)
@@ -349,16 +388,7 @@ public class HiddenPlaceContributionService : IHiddenPlaceContributionService
             if (existing != null)
                 throw new ValidationException("You have already verified this place.");
 
-            // A previous verification may exist in WITHDRAWN state (same user re-verifying after
-            // withdrawing). Reactivate that row instead of inserting a new one — the database has
-            // a unique constraint on (submission_id, user_id), so an INSERT would violate it.
-            var prior = await _repository.GetAnyVerificationAsync(submissionId, currentUserId);
-            if (prior is not null)
-            {
-                prior.Status = RecommendedPlaceVerificationStatus.Active;
-                await _repository.UpdateVerificationAsync(prior);
-            }
-            else
+            try
             {
                 await _repository.CreateVerificationAsync(new PlaceSubmissionVerification
                 {
@@ -367,6 +397,13 @@ public class HiddenPlaceContributionService : IHiddenPlaceContributionService
                     UserId = currentUserId,
                     Status = RecommendedPlaceVerificationStatus.Active,
                 });
+            }
+            catch (ConcurrentDuplicateException)
+            {
+                // A concurrent verify slipped past the existing-verification check;
+                // the DB unique constraint rejected the second insert. Return the
+                // same outcome as the sequential duplicate path instead of a raw 500.
+                throw new ValidationException("You have already verified this place.");
             }
 
             var count = await _repository.GetActiveVerificationCountAsync(submissionId);
@@ -378,11 +415,14 @@ public class HiddenPlaceContributionService : IHiddenPlaceContributionService
             // no matter how many people agreed with it - it never entered the public discover listing
             // and its map pin stayed drawn as unverified forever.
             //
-            // One-way on purpose. The guard at the top of this method rejects any vote once the status
-            // leaves UNDER_VOTING, so a verified place cannot be un-verified by withdrawals afterwards.
-            // A place that flickers between verified and not - as people change their minds, or a
-            // single withdrawal drops it back to four - is worse than one that settles: this status is
-            // what other users decide whether to trust.
+            // One-way on purpose for VERIFY: the gate above rejects any new vote once
+            // the status leaves UNDER_VOTING, so a verified place cannot be un-verified
+            // by NEW verifications. A single WITHDRAWAL does not drop it back to four
+            // either — REQ502_18 removes only the user's vote row and never reverts the
+            // VERIFIED status (the withdrawal branch below never writes place.Status).
+            // A place that flickers between verified and not - as people change their
+            // minds, or a single withdrawal drops it back to four - is worse than one
+            // that settles: this status is what other users decide whether to trust.
             //
             // Reports are the way back, and they are handled separately: enough of them move the place
             // to REPORTED_CLOSED from VERIFIED as well as from UNDER_VOTING (see ReportPlaceAsync).
@@ -474,6 +514,14 @@ public class HiddenPlaceContributionService : IHiddenPlaceContributionService
         if (string.IsNullOrWhiteSpace(reason) || reason.Length > 100)
             throw new ValidationException("A report reason (max 100 characters) is required.");
 
+        // The reason MUST be one of the system-defined fixed reasons (see
+        // PlaceReportReasons.All). Reasons are NOT admin-managed — arbitrary
+        // strings are never trusted from the frontend (mirrors the post-report
+        // check in SocialEngagementService).
+        if (!PlaceReportReasons.Contains(reason))
+            throw new ValidationException(
+                $"Unsupported report reason. Allowed reasons: {string.Join(", ", PlaceReportReasons.All)}.");
+
         var place = await _repository.GetByIdAsync(submissionId);
 
         // The Community Verification / Report Place UI is reachable from BOTH community
@@ -494,6 +542,12 @@ public class HiddenPlaceContributionService : IHiddenPlaceContributionService
 
         if (place.Status == RecommendedPlaceStatus.Withdrawn)
             throw new ValidationException("Withdrawn recommendations cannot be reported.");
+
+        // REPORTED_CLOSED is a terminal state (DB-02): the place is already hidden from
+        // the community map. Accepting further reports would inflate the report count
+        // past the threshold with no observable effect — reject like the withdrawn case.
+        if (place.Status == RecommendedPlaceStatus.ReportedClosed)
+            throw new ValidationException("This place has been hidden after enough community reports.");
 
         // ONE USER + ONE PLACE = ONE ACTIVE REPORT. The report is stored per (user, place):
         //

@@ -1,0 +1,429 @@
+agalteca	Agalteca
+agua azul	Agua Azul
+agua azul rancho	Agua Azul Rancho
+agua blanca sur	Agua Blanca Sur
+agua caliente	Agua Caliente
+agua fria	Agua Fría
+agualote	Agualote
+aguanqueterique	Aguanqueterique
+aguas del padre	Aguas del Padre
+ajuterique	Ajuterique
+alauca	Alauca
+alubaren	Alubarén
+amapala	Amapala
+antigua ocotepeque	Antigua Ocotepeque
+arada	Arada
+aramecina	Aramecina
+arauli	Araulí
+arenal	Arenal
+arimis	Arimís
+arizona	Arizona
+armenia	Armenia
+armenta	Armenta
+atenas de san cristobal	Atenas de San Cristóbal
+atima	Atima
+auas	Auas
+auka	Auka
+ayapa	Ayapa
+azacualpa	Azacualpa
+baja mar	Baja Mar
+balsamo oriental	Bálsamo Oriental
+baracoa	Baracoa
+barra patuca	Barra Patuca
+bejuco	Bejuco
+belen gualcho	Belén Gualcho
+berlin	Berlín
+bonito oriental	Bonito Oriental
+brus laguna	Brus Laguna
+buenos aires	Buenos Aires
+callejones	Callejones
+camalote	Camalote
+camasca	Camasca
+campamento	Campamento
+canaveral	Cañaveral
+cane	Cane
+carbajales	Carbajales
+caridad	Caridad
+casa quemada	Casa Quemada
+catacamas	Catacamas
+cedros	Cedros
+ceguaca	Ceguaca
+cerro blanco	Cerro Blanco
+cerro grande	Cerro Grande
+chalmeca	Chalmeca
+chinacla	Chinacla
+chinda	Chinda
+chivana	Chivana
+choloma	Choloma
+chotepe	Chotepe
+ciudad choluteca	Ciudad Choluteca
+cofradia	Cofradía
+cololaca	Cololaca
+colomoncagua	Colomoncagua
+comayagua	Comayagua
+concepcion de guasistagua	Concepción de Guasistagua
+concepcion de la barranca	Concepción de la Barranca
+concepcion del norte	Concepción del Norte
+concepcion del sur	Concepción del Sur
+concordia	Concordia
+copan ruinas	Copán Ruinas
+corocito	Corocito
+corozal	Corozal
+corpus	Corpus
+corquin	Corquín
+correderos	Correderos
+coxen hole	Coxen Hole
+coyoles central	Coyoles Central
+cucuyagua	Cucuyagua
+cusuna	Cusuna
+cuyali	Cuyalí
+cuyamel	Cuyamel
+danli	Danlí
+dolores	Dolores
+dulce nombre	Dulce Nombre
+dulce nombre de culmi	Dulce Nombre de Culmí
+duyure	Duyure
+el achiotal	El Achiotal
+el agua dulcita	El Agua Dulcita
+el balsamo	El Bálsamo
+el benque	El Benque
+el chichicaste	El Chichicaste
+el chimbo	El Chimbo
+el ciruelo	El Ciruelo
+el corozal	El Corozal
+el corpus	El Corpús
+el cubolero	El Cubolero
+el escanito	El Escanito
+el escano de tepale	El Escaño de Tepale
+el guante	El Guante
+el guantillo	El Guantillo
+el guapinol	El Guapinol
+el guayabito	El Guayabito
+el juncal	El Juncal
+el llano	El Llano
+el lolo	El Lolo
+el maranon	El Marañón
+el milagro	El Milagro
+el mochito	El Mochito
+el negrito	El Negrito
+el nispero	El Níspero
+el obraje	El Obraje
+el ocote	El Ocote
+el ocoton	El Ocotón
+el olivar	El Olivar
+el paraiso	El Paraíso
+el pedernal	El Pedernal
+el perico	El Perico
+el pino	El Pino
+el plan	El Plan
+el porvenir	El Porvenir
+el progreso	El Progreso
+el puente	El Puente
+el rancho	El Rancho
+el rincon	El Rincón
+el rosario	El Rosario
+el rusio	El Rusio
+el sauce	El Sauce
+el socorro	El Socorro
+el suyatal	El Suyatal
+el tablon	El Tablón
+el terrero	El Terrero
+el tigre	El Tigre
+el transito	El Tránsito
+el triunfo	El Triunfo
+el triunfo de la cruz	El Triunfo de la Cruz
+el tular	El Tular
+el zapotal del norte	El Zapotal del Norte
+elixir	Elíxir
+erandique	Erandique
+esquias	Esquías
+esquipulas del norte	Esquipulas del Norte
+flores	Flores
+florida	Florida
+francia	Francia
+french harbor	French Harbor
+goascoran	Goascorán
+gracias	Gracias
+guacamaya	Guacamaya
+guaimaca	Guaimaca
+guaimitas	Guaimitas
+guajiquiro	Guajiquiro
+gualaco	Gualaco
+gualcince	Gualcince
+gualjoco	Gualjoco
+guanaja	Guanaja
+guarita	Guarita
+guarizama	Guarizama
+guayape	Guayape
+guinope	Güinope
+humuya	Humuya
+ilama	Ilama
+intibuca	Intibucá
+iralaya	Iralaya
+iriona	Iriona
+jacaleapa	Jacaleapa
+jamalteca	Jamalteca
+jerico	Jericó
+jesus de otoro	Jesús de Otoro
+jicaro galan	Jícaro Galán
+jiquinlaca	Jiquinlaca
+jocon	Jocón
+joconal	Joconal
+jutiapa	Jutiapa
+juticalpa	Juticalpa
+jutiquile	Jutiquile
+la alianza	La Alianza
+la brea	La Brea
+la bueso	La Bueso
+la ceiba	La Ceiba
+la concepcion	La Concepción
+la criba	La Criba
+la encarnacion	La Encarnación
+la entrada	La Entrada
+la ermita	La Ermita
+la esperanza	La Esperanza
+la estancia	La Estancia
+la flecha	La Flecha
+la guacamaya	La Guacamaya
+la guama	La Guama
+la guata	La Guata
+la iguala	La Iguala
+la jutosa	La Jutosa
+la labor	La Labor
+la libertad	La Libertad
+la lima	La Lima
+la masica	La Masica
+la mina	La Mina
+la paz	La Paz
+la playona	La Playona
+la rosa	La Rosa
+la sabana	La Sabana
+la sarrosa	La Sarrosa
+la trinidad	La Trinidad
+la union	La Unión
+la virtud	La Virtud
+la zumbadora	La Zumbadora
+laguna seca	Laguna Seca
+laguna verde	Laguna Verde
+lamani	Lamaní
+langue	Langue
+las animas	Las Ánimas
+las lajas	Las Lajas
+las tejeras	Las Tejeras
+las trojes	Las Trojes
+las vegas	Las Vegas
+las vegas, santa barbara	Las Vegas, Santa Barbara
+lauterique	Lauterique
+lejamani	Lejamaní
+lepaera	Lepaera
+lepaterique	Lepaterique
+limon	Limón
+liure	Liure
+loma alta	Loma Alta
+lomitas	Lomitas
+los caminos	Los Caminos
+los llanitos	Los Llanitos
+los naranjos	Los Naranjos
+los planes	Los Planes
+los tangos	Los Tangos
+lucerna	Lucerna
+macuelizo	Macuelizo
+mangrove bight	Mangrove Bight
+mangulile	Mangulile
+manto	Manto
+mapulaca	Mapulaca
+maraita	Maraita
+marale	Marale
+marcala	Marcala
+marcovia	Marcovia
+mata de platano	Mata de Plátano
+mateo	Mateo
+meambar	Meámbar
+mercedes de oriente	Mercedes de Oriente
+mezapa	Mezapa
+minas de oro	Minas de Oro
+mojiman	Mojimán
+monjaras	Monjarás
+monterrey	Monterrey
+morazan	Morazán
+moroceli	Morocelí
+morolica	Morolica
+nacaome	Nacaome
+naco	Naco
+namasigue	Namasigüe
+naranjito	Naranjito
+nombre de jesus	Nombre de Jesús
+nueva armenia	Nueva Armenia
+nueva esperanza	Nueva Esperanza
+nueva jalapa	Nueva Jalapa
+nueva ocotepeque	Nueva Ocotepeque
+nuevo celilac	Nuevo Celilac
+nuevo chamelecon	Nuevo Chamelecón
+ocote paulino	Ocote Paulino
+ojo de agua	Ojo de Agua
+ojojona	Ojojona
+ojos de agua	Ojos de Agua
+olanchito	Olanchito
+omoa	Omoa
+opatoro	Opatoro
+orica	Orica
+orocuina	Orocuina
+oropendolas	Oropéndolas
+oropoli	Oropolí
+paptalaya	Paptalaya
+paujiles	Paujiles
+pena blanca	Peña Blanca
+pespire	Pespire
+petoa	Petoa
+pimienta vieja	Pimienta Vieja
+pinalejo	Pinalejo
+piraera	Piraera
+potrerillos	Potrerillos
+prieta	Prieta
+proteccion	Protección
+pueblo nuevo	Pueblo Nuevo
+puerto alto	Puerto Alto
+puerto castilla	Puerto Castilla
+puerto cortez	Puerto Cortez
+puerto lempira	Puerto Lempira
+punta ocote	Punta Ocote
+punta piedra	Punta Piedra
+punuare	Punuare
+quebrada de arena	Quebrada de Arena
+quebrada larga	Quebrada Larga
+quebrada seca	Quebrada Seca
+quebradas	Quebradas
+quezailica	Quezailica
+quimistan	Quimistán
+rancho grande	Rancho Grande
+reitoca	Reitoca
+rio abajo	Río Abajo
+rio blanquito	Río Blanquito
+rio bonito	Río Bonito
+rio chiquito	Río Chiquito
+rio esteban	Río Esteban
+rio lindo	Río Lindo
+saba	Sabá
+sabanagrande	Sabanagrande
+salama	Salamá
+sambo creek	Sambo Creek
+san agustin	San Agustín
+san andres	San Andrés
+san antonio	San Antonio
+san antonio de cortes	San Antonio de Cortés
+san antonio de la cuesta	San Antonio de la Cuesta
+san antonio del norte	San Antonio del Norte
+san buenaventura	San Buenaventura
+san diego	San Diego
+san esteban	San Esteban
+san fernando	San Fernando
+san francisco	San Francisco
+san francisco de becerra	San Francisco de Becerra
+san francisco de cones	San Francisco de Cones
+san francisco de coray	San Francisco de Coray
+san francisco de la paz	San Francisco de la Paz
+san francisco de ojuera	San Francisco de Ojuera
+san francisco de yojoa	San Francisco de Yojoa
+san francisco del valle	San Francisco del Valle
+san ignacio	San Ignacio
+san jeronimo	San Jerónimo
+san joaquin	San Joaquín
+san jose	San José
+san jose de colinas	San José de Colinas
+san jose de comayagua	San José de Comayagua
+san jose de las conchas	San José de Las Conchas
+san jose de rio tinto	San José de Río Tinto
+san jose de tarros	San José de Tarros
+san jose del boqueron	San José del Boquerón
+san jose del potrero	San José del Potrero
+san juan de flores	San Juan de Flores
+san juan de opoa	San Juan de Opoa
+san juan de planes	San Juan de Planes
+san juan guarita	San Juan Guarita
+san juan pueblo	San Juan Pueblo
+san lorenzo	San Lorenzo
+san lucas	San Lucas
+san luis	San Luis
+san luis de planes	San Luis de Planes
+san manuel	San Manuel
+san manuel de colohete	San Manuel de Colohete
+san marcos	San Marcos
+san marcos de colon	San Marcos de Colón
+san matias	San Matías
+san nicolas	San Nicolás
+san pedro de copan	San Pedro de Copán
+san pedro de tutule	San Pedro de Tutule
+san pedro sula	San Pedro Sula
+san pedro zacapa	San Pedro Zacapa
+san sebastian	San Sebastián
+san vicente centenario	San Vicente Centenario
+sandy bay	Sandy Bay
+santa ana	Santa Ana
+santa ana de yusguare	Santa Ana de Yusguare
+santa barbara	Santa Bárbara
+santa cruz	Santa Cruz
+santa cruz de yojoa	Santa Cruz de Yojoa
+santa elena	Santa Elena
+santa lucia	Santa Lucía
+santa maria del real	Santa María del Real
+santa rita	Santa Rita
+santa rita, copan	Santa Rita, Copan
+santa rosa de aguan	Santa Rosa de Aguán
+santa rosa de copan	Santa Rosa de Copán
+santiago de puringla	Santiago de Puringla
+savannah bight	Savannah Bight
+sensenti	Sensenti
+siguatepeque	Siguatepeque
+silca	Silca
+sinuapa	Sinuapa
+sonaguera	Sonaguera
+subirana	Subirana
+sula	Sula
+sulaco	Sulaco
+talanga	Talanga
+talgua	Talgua
+tamara	Támara
+taragual	Taragual
+taujica	Taujica
+taulabe	Taulabé
+teguajinal	Teguajinal
+tegucigalpa	Tegucigalpa
+tela	Tela
+tepanguare	Tepanguare
+tepusteca	Tepusteca
+teupasenti	Teupasenti
+texiguat	Texíguat
+tocoa	Tocoa
+tomala	Tomalá
+tornabe	Tornabé
+toyos	Toyós
+tras cerros	Tras Cerros
+travesia	Travesía
+trinidad	Trinidad
+trinidad de copan	Trinidad de Copán
+trojas	Trojas
+trujillo	Trujillo
+valladolid	Valladolid
+valle de angeles	Valle de Ángeles
+vallecillo	Vallecillo
+veracruz	Veracruz
+victoria	Victoria
+villa de san antonio	Villa de San Antonio
+villa de san francisco	Villa de San Francisco
+villa nueva	Villa Nueva
+villanueva	Villanueva
+virginia	Virginia
+wawina	Wawina
+yaguacire	Yaguacire
+yamaranguila	Yamaranguila
+yaruchel	Yaruchel
+yarula	Yarula
+yarumela	Yarumela
+yauyupe	Yauyupe
+yocon	Yocón
+yorito	Yorito
+yoro	Yoro
+yuscaran	Yuscarán
+zambrano	Zambrano
+zamora	Zamora
+zopilotepe	Zopilotepe

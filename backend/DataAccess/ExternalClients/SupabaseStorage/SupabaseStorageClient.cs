@@ -27,7 +27,26 @@ public class SupabaseStorageClient : IStorageClient
     {
         var targetBucket = string.IsNullOrWhiteSpace(bucket) ? _settings.Bucket : bucket;
 
-        using var fileContent = new StreamContent(content);
+        // Buffer the body instead of wrapping the caller's stream in
+        // StreamContent. Two reasons, both observed as SocketException 10054
+        // ("connection was forcibly closed by the remote host") wrapped in
+        // HttpRequestException("Error while copying content to a stream"):
+        //
+        // 1. A StreamContent over a non-seekable stream (every IFormFile
+        //    stream is) sends no Content-Length - the body goes out with
+        //    Transfer-Encoding: chunked, which some CDN gateways fronting
+        //    Supabase handle badly, and leaves the request unresendable.
+        // 2. SocketsHttpHandler reuses pooled keep-alive connections that the
+        //    edge may have silently closed while idle. With non-seekable
+        //    content such a request cannot be re-sent on a fresh connection,
+        //    so the reset surfaces to the caller. Seekable content (a byte
+        //    buffer) is, so the pool retries transparently instead.
+        //
+        // All callers upload bounded media (post images are capped at 5 MB
+        // by the controller), so buffering is cheap.
+        using var buffered = new MemoryStream();
+        await content.CopyToAsync(buffered);
+        using var fileContent = new ByteArrayContent(buffered.ToArray());
         fileContent.Headers.ContentType = new MediaTypeHeaderValue(contentType);
 
         var requestUri = $"/storage/v1/object/{targetBucket}/{path}";

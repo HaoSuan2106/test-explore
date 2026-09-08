@@ -1,0 +1,123 @@
+abuko	Abuko
+albadarr	Albadarr
+alohungari	Alohungari
+amdalai	Amdalai
+badja kunda	Badja Kunda
+bakadagy	Bakadagy
+bakau	Bakau
+bakau new town	Bakau New Town
+bakau wasulun	Bakau Wasulun
+bakoti	Bakoti
+bambali	Bambali
+banjul	Banjul
+banjul nding	Banjul NDing
+bansang	Bansang
+baro kunda	Baro Kunda
+barra	Barra
+basse santa su	Basse Santa Su
+bijilo	Bijilo
+brifu	Brifu
+brikama	Brikama
+brikama ba	Brikama Ba
+brikama nding	Brikama Nding
+brufut	Brufut
+bulok	Bulok
+bununka kunda	Bununka Kunda
+bureng	Bureng
+busumbala	Busumbala
+bwiam	Bwiam
+chilla	Chilla
+daba kunda	Daba Kunda
+dankunku	Dankunku
+daru rilwan	Daru Rilwan
+demba kunda	Demba Kunda
+denton	Denton
+diabugu	Diabugu
+diabugu basilla	Diabugu Basilla
+dippa kunda	Dippa Kunda
+djalabango	Djalabango
+essau	Essau
+faji kunda	Faji Kunda
+farafenni	Farafenni
+farato	Farato
+galleh manda	Galleh Manda
+gambissar	Gambissar
+garawol	Garawol
+ghana town	Ghana Town
+gunjur	Gunjur
+gunjur kuta	Gunjur Kuta
+ibo town	Ibo Town
+jakhaly	Jakhaly
+jali	Jali
+jambanjali	Jambanjali
+jamisa	Jamisa
+janjanbureh	Janjanbureh
+jarreng	Jarreng
+jenoi	Jenoi
+jifarong	Jifarong
+kaiaf	Kaiaf
+kaimbujae nding	Kaimbujae NDing
+kalagi	Kalagi
+kanifing	Kanifing
+karantaba	Karantaba
+kartung	Kartung
+kass wollof	Kass Wollof
+katchang	Katchang
+keneba	Keneba
+kerewan	Kerewan
+kerr serign	Kerr Serign
+koina	Koina
+kololi	Kololi
+kotu	Kotu
+kulari	Kulari
+kumbija	Kumbija
+kunkujang	Kunkujang
+kuntaur	Kuntaur
+kunting	Kunting
+lamin	Lamin
+latri kunda	Latri Kunda
+latri sabiji	Latri Sabiji
+madiana	Madiana
+mandinari	Mandinari
+manjai kunda	Manjai Kunda
+mansa konko	Mansa Konko
+nema kunku	Nema Kunku
+new jeshwang	New Jeshwang
+nioro	Nioro
+no kunda	No Kunda
+nyamanari	Nyamanari
+old jeswang	Old Jeswang
+old yundum	Old Yundum
+pakali nding	Pakali Nding
+pateh sam	Pateh Sam
+perai	Perai
+saba	Saba
+sabi	Sabi
+salikene	Salikene
+sami	Sami
+sanchaba	Sanchaba
+sankwia	Sankwia
+sanyang	Sanyang
+sara kunda	Sara Kunda
+saruja	Saruja
+serekunda	Serekunda
+si kunda	Si Kunda
+sifoe	Sifoe
+sinchu alagi	Sinchu Alagi
+sinchu balla	Sinchu Balla
+sinchu sorry	Sinchu Sorry
+soma	Soma
+somita	Somita
+sudowol	Sudowol
+sukuta	Sukuta
+sun kunda	Sun Kunda
+sutukoba	Sutukoba
+sutukung	Sutukung
+talinding	Talinding
+tanji	Tanji
+toniataba	Toniataba
+tujering	Tujering
+wassu	Wassu
+welingara	Welingara
+wellingara ba	Wellingara Ba
+yundum	Yundum

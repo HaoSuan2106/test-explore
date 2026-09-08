@@ -52,9 +52,10 @@ public class CommunicationService : ICommunicationService
         var hasContent = !string.IsNullOrWhiteSpace(request.Content);
         var hasImages = request.ImageUrls is { Count: > 0 };
         var hasPlaces = request.SharedPlaces is { Count: > 0 };
-        if (!hasContent && !hasImages && !hasPlaces)
+        var hasPosts = request.SharedPosts is { Count: > 0 };
+        if (!hasContent && !hasImages && !hasPlaces && !hasPosts)
         {
-            throw new ArgumentException("A message needs text, an image, or a shared place.");
+            throw new ArgumentException("A message needs text, an image, a shared place, or a shared post.");
         }
 
         if (request.ReplyToMessageId.HasValue)
@@ -102,6 +103,19 @@ public class CommunicationService : ICommunicationService
                 PlaceLongitude = p.PlaceLongitude,
                 PlacePrimaryType = p.PlacePrimaryType,
                 IsCommunityPlace = p.IsCommunityPlace,
+            }));
+        }
+        if (hasPosts)
+        {
+            attachments.AddRange(request.SharedPosts!.Select(p => new MessageAttachment
+            {
+                MessageId = message.MessageId,
+                Type = "PostShare",
+                PostId = p.PostId,
+                PostTitle = p.PostTitle,
+                PostImageUrl = p.PostImageUrl,
+                PostAuthorName = p.PostAuthorName,
+                PostLocation = p.PostLocation,
             }));
         }
         if (attachments.Count > 0)
@@ -301,6 +315,11 @@ public class CommunicationService : ICommunicationService
                         PlaceLongitude = a.PlaceLongitude,
                         PlacePrimaryType = a.PlacePrimaryType,
                         IsCommunityPlace = a.IsCommunityPlace,
+                        PostId = a.PostId,
+                        PostTitle = a.PostTitle,
+                        PostImageUrl = a.PostImageUrl,
+                        PostAuthorName = a.PostAuthorName,
+                        PostLocation = a.PostLocation,
                     }).ToList()
                     : new List<MessageAttachmentDto>(),
             });

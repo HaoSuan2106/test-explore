@@ -1,0 +1,79 @@
+armenia	Armenia
+august pine ridge	August Pine Ridge
+belize city	Belize City
+bella vista	Bella Vista
+belmopan	Belmopan
+benque viejo el carmen	Benque Viejo el Carmen
+billy white	Billy White
+bullet tree falls	Bullet Tree Falls
+burrell boom	Burrell Boom
+caledonia	Caledonia
+camelote	Camelote
+carmelita	Carmelita
+caye caulker	Caye Caulker
+chunox	Chunox
+concepcion	Concepcion
+corozal	Corozal
+cotton tree	Cotton Tree
+cowpen	Cowpen
+cristo rey	Cristo Rey
+dangriga	Dangriga
+esperanza	Esperanza
+guinea grass	Guinea Grass
+hattieville	Hattieville
+hope creek	Hope Creek
+hopkins	Hopkins
+independence and mango creek	Independence and Mango Creek
+indian creek	Indian Creek
+ladyville	Ladyville
+libertad	Libertad
+little belize	Little Belize
+lord’s bank	Lord’s Bank
+maskall	Maskall
+neuland	Neuland
+orange walk	Orange Walk
+paraiso	Paraiso
+patchchacan	Patchchacan
+placencia	Placencia
+pomona	Pomona
+progresso	Progresso
+punta gorda	Punta Gorda
+ranchito	Ranchito
+red bank village	Red Bank Village
+roaring creek	Roaring Creek
+san andres	San Andres
+san antonio	San Antonio
+san estevan	San Estevan
+san felipe	San Felipe
+san ignacio	San Ignacio
+san joaquin	San Joaquin
+san jose	San Jose
+san jose palmar	San Jose Palmar
+san jose soccoths	San Jose Soccoths
+san juan	San Juan
+san lazaro	San Lazaro
+san narciso	San Narciso
+san pablo	San Pablo
+san pedro	San Pedro
+san roman village	San Roman Village
+san victor	San Victor
+sand hill	Sand Hill
+santa cruz	Santa Cruz
+santa elena	Santa Elena
+santa familia	Santa Familia
+santa rosa village	Santa Rosa Village
+sarteneja	Sarteneja
+seine bight village	Seine Bight Village
+shipyard	Shipyard
+silk grass	Silk Grass
+spanish lookout	Spanish Lookout
+st. margaret	St. Margaret
+st. matthew's	St. Matthew's
+teakettle village	Teakettle Village
+trial farm	Trial Farm
+trio village	Trio Village
+unitedville	Unitedville
+valley of peace	Valley of Peace
+western paradise	Western Paradise
+xaibe	Xaibe
+yo creek	Yo Creek

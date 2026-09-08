@@ -1,0 +1,68 @@
+banket	Banket
+beatrice	Beatrice
+beitbridge	Beitbridge
+bindura	Bindura
+binga	Binga
+bulawayo	Bulawayo
+centenary	Centenary
+chakari	Chakari
+chegutu	Chegutu
+chimanimani	Chimanimani
+chinhoyi	Chinhoyi
+chipinge	Chipinge
+chiredzi	Chiredzi
+chirundu	Chirundu
+chitungwiza	Chitungwiza
+chivhu	Chivhu
+concession	Concession
+dete	Dete
+dorowa mining lease	Dorowa Mining Lease
+epworth	Epworth
+esigodini	Esigodini
+filabusi	Filabusi
+glendale	Glendale
+gokwe	Gokwe
+gwanda	Gwanda
+gweru	Gweru
+harare	Harare
+harare western suburbs	Harare Western Suburbs
+headlands	Headlands
+hwange	Hwange
+insiza	Insiza
+inyati	Inyati
+kadoma	Kadoma
+kamativi mine	Kamativi Mine
+kariba	Kariba
+karoi	Karoi
+kwekwe	Kwekwe
+lalapanzi	Lalapanzi
+lupane	Lupane
+macheke	Macheke
+marondera	Marondera
+mashava	Mashava
+masvingo	Masvingo
+mazowe	Mazowe
+mhangura	Mhangura
+mhangura mine	Mhangura Mine
+mount darwin	Mount Darwin
+mount hampden	Mount Hampden
+murewa	Murewa
+mutare	Mutare
+mutoko	Mutoko
+mvuma	Mvuma
+mvurwi	Mvurwi
+norton	Norton
+nyanga	Nyanga
+nyazura	Nyazura
+odzi	Odzi
+penhalonga	Penhalonga
+plumtree	Plumtree
+raffingora	Raffingora
+redcliff	Redcliff
+rusape	Rusape
+ruwa	Ruwa
+shamva	Shamva
+shangani	Shangani
+shurugwi	Shurugwi
+victoria falls	Victoria Falls
+zvishavane	Zvishavane

@@ -1,0 +1,102 @@
+acheritou	Acherítou
+achna	Áchna
+agios dometios	Ágios Dométios
+agios tychon	Ágios Týchon
+aglantzia	Aglantziá
+aigialousa	Aigialoúsa
+akaki	Akáki
+alampra	Alámpra
+aradippou	Aradíppou
+arediou	Aredioú
+argaka	Argáka
+astromeritis	Astromerítis
+athienou	Athíenou
+avgorou	Avgórou
+ayia napa	Ayia Napa
+chlorakas	Chlórakas
+dali	Dáli
+deryneia	Derýneia
+dhromolaxia	Dhromolaxia
+egkomi	Égkomi
+emba	Emba
+ergates	Ergátes
+erimi	Erími
+famagusta	Famagusta
+frenaros	Frénaros
+geri	Géri
+germasogeia	Germasógeia
+geroskipou	Geroskipou
+geroskipou (quarter)	Geroskípou (quarter)
+kakopetria	Kakopetriá
+kalo chorio	Kálo Chorió
+kato deftera	Káto Defterá
+kato lakatameia	Káto Lakatámeia
+kato polemidia	Káto Polemídia
+kato pyrgos	Káto Pýrgos
+kissonerga	Kissonerga
+kiti	Kíti
+klirou	Klírou
+kofinou	Kofínou
+kokkinotrimithia	Kokkinotrimithiá
+koloni	Koloni
+kolossi	Kolossi
+konia	Konia
+kornos	Kórnos
+kyperounta	Kyperoúnta
+kyrenia	Kyrenia
+lapithos	Lápithos
+larnaca	Larnaca
+lefka	Léfka
+lefkonoiko	Lefkónoiko
+leonarisso	Leonárisso
+limassol	Limassol
+liopetri	Liopétri
+livadia	Livádia
+lympia	Lýmpia
+lythrodontas	Lythrodóntas
+mammari	Mámmari
+meladeia	Meládeia
+meneou	Meneou
+meniko	Méniko
+mesogi	Mesógi
+morfou	Mórfou
+mosfiloti	Mosfilotí
+mouttagiaka	Mouttagiáka
+nicosia	Nicosia
+ormidhia	Ormidhia
+pachna	Páchna
+pano deftera	Páno Defterá
+pano polemidia	Páno Polemídia
+paphos	Paphos
+paralimni	Paralímni
+parekklisha	Parekklisha
+pegeia	Pégeia
+pelendri	Peléndri
+pera	Péra
+pergamos	Pérgamos
+peristerona	Peristeróna
+perivolia	Perivólia
+pissouri	Pissoúri
+polemi	Polémi
+polis	Pólis
+protaras	Protaras
+psevdas	Psevdás
+psimolofou	Psimolofou
+pyla	Pýla
+pyrgos	Pyrgos
+rizokarpaso	Rizokárpaso
+sotira	Sotíra
+strovolos	Stróvolos
+tala	Tála
+tersefanou	Tersefánou
+trachoni	Trachóni
+trikomo	Tríkomo
+troodos	Tróodos
+troulloi	Troúlloi
+tsada	Tsáda
+tsada - tremithousa - tala (borders)	Tsada - Tremithousa - Tala (Borders)
+tseri	Tséri
+voroklini	Voróklini
+xylofagou	Xylofágou
+xylotymbou	Xylotymbou
+ypsonas	Ýpsonas

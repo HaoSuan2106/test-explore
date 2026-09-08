@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 import 'package:explore_my/providers/hidden_place/review_provider.dart';
+import 'package:explore_my/utilities/error_message.dart';
 
 class CreateReviewUI extends StatefulWidget {
   final int initialRating;
@@ -179,9 +180,15 @@ class _CreateReviewUIState extends State<CreateReviewUI> {
     } catch (e) {
       if (!mounted) return;
 
+      // Never the raw exception: the user has no use for a DioException, and
+      // a connection failure has already offered them a retry by this point.
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text('Failed to post review: $e'),
+          content: Text(
+            isConnectionError(e)
+                ? kConnectionErrorMessage
+                : 'Failed to post review. Please try again.',
+          ),
         ),
       );
     } finally {

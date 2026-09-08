@@ -1,0 +1,119 @@
+abu zayyan	Abū Zayyān
+ajdabiya	Ajdabiya
+al abraq	Al Abraq
+al abyar	Al Abyār
+al ajaylat	Al Ajaylat
+al asabi‘ah	Al Aşābi‘ah
+al barakat	Al Barakāt
+al bardiyah	Al Bardīyah
+al bayda’	Al Bayḑā’
+al burayqah	Al Burayqah
+al ghurayfah	Al Ghurayfah
+al hawamid	Al Ḩawāmid
+al hurshah	Al Ḩurshah
+al jadid	Al Jadīd
+al jaghbub	Al Jaghbūb
+al jawf	Al Jawf
+al jumayl	Al Jumayl
+al khadra’	Al Khaḑrā’
+al khums	Al Khums
+al marj	Al Marj
+al mayah	Al Māyah
+al qatrun	Al Qaţrūn
+al qawasim	Al Qawāsim
+al qubbah	Al Qubbah
+al ‘awinat	Al ‘Awinat
+al ‘aziziyah	Al ‘Azīzīyah
+al-'aluas	Al-'Alūaṣ
+an nasiriyah	An Nāşirīyah
+aqar	Āqār
+ar rayayinah	Ar Rayāyinah
+ar rujban	Ar Rujbān
+ar-rahaibat	Ar-Raḥaībāt
+as sawani	As Sawānī
+at taj	At Tāj
+awjilah	Awjilah
+az zahra’	Az Zahrā’
+az zawiyah	Az Zāwīyah
+az zuwaytinah	Az Zuwaytīnah
+bani walid	Bani Walid
+barqin	Barqin
+benghazi	Benghazi
+bin jawwad	Bin Jawwād
+bi’r al ghanam	Bi’r al Ghanam
+brak	Brak
+daraj	Daraj
+darnah	Darnah
+daryanah	Daryānah
+ghadames	Ghadames
+gharyan	Gharyan
+ghat	Ghat
+hun	Hūn
+idri	Idrī
+jadu	Jādū
+jalu	Jālū
+janzur	Janzūr
+jardas al ‘abid	Jardas al ‘Abīd
+kabaw	Kābāw
+kambut	Kambūt
+kiklah	Kiklah
+maradah	Marādah
+martubah	Martūbah
+massah	Massah
+misratah	Misratah
+mizdah	Mizdah
+msalatah	Msalātah
+mukhayla	Mukhaylá
+murzuk	Murzuk
+nalut	Nālūt
+qaminis	Qamīnis
+qandulah	Qandūlah
+qarquzah	Qarqūzah
+qaryat al bayyadah	Qaryat al Bayyāḑah
+qaryat al qi‘an	Qaryat al Qī‘ān
+qaryat suluq	Qaryat Sulūq
+qaryat ‘umar al mukhtar	Qaryat ‘Umar al Mukhtār
+qasr abu hadi	Qasr Abu Hadi
+qasr al qarabulli	Qaşr al Qarabūllī
+qasr bin ghashir	Qaşr Bin Ghashīr
+qasr khiyar	Qaşr Khiyār
+qasr libiya	Qaşr Lībiyā
+qirah	Qīrah
+qirnadah	Qirnādah
+sabha	Sabha
+sabratah	Şabrātah
+samnu	Samnū
+shahhat	Shahhat
+sidi as sayd	Sīdī aş Şayd
+sidi bin zinah	Sīdī Bin Zīnah
+sinawin	Sīnāwin
+sirte	Sirte
+suknah	Sūknah
+sultan	Sulţān
+surman	Şurmān
+susah	Sūsah
+tajura’	Tājūrā’
+tamzawah	Tamzāwah
+taraghin	Tarāghin
+tarhuna	Tarhuna
+tazirbu	Tāzirbū
+tiji	Tījī
+tobruk	Tobruk
+tripoli	Tripoli
+tukrah	Tūkrah
+ubari	Ubari
+umm al aranib	Umm al Arānib
+umm ar rizam	Umm ar Rizam
+umm sa'ad	Umm Sā'ad
+waddan	Waddān
+wadi 'utbah	Wādī 'Utbah
+wardamah	Wardāmah
+wazin	Wāzin
+yafran	Yafran
+zaltan	Zalţan
+zawilah	Zawīlah
+zawiya	Zawiya
+zillah	Zillah
+zintan	Zintan
+zliten	Zliten
+zuwarah	Zuwarah

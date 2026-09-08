@@ -1,0 +1,548 @@
+aldeia nova	Aldeía Nova
+alfandega	Alfândega
+alto chicapa	Alto Chicapa
+alto cuito	Alto Cuito
+alto hama	Alto Hama
+ambiula	Ambiula
+amboiva	Amboíva
+ambriz	Ambriz
+andulo	Andulo
+assango	Assango
+atome	Atóme
+babaera	Babaera
+baia farta	Baía Farta
+bailundo	Bailundo
+baixo longa	Baixo Longa
+balombo	Balombo
+bambi	Bambi
+banga	Banga
+banza damba	Banza Damba
+barra do cuanza	Barra do Cuanza
+barra do dande	Barra do Dande
+bela vista	Bela Vista
+belize	Belize
+belo horizonte	Belo Horizonte
+bembe	Bembe
+benfica	Benfica
+bengo	Bengo
+benguela	Benguela
+bentiaba	Bentiaba
+beu	Béu
+bibala	Bibala
+bimbe	Bimbe
+bindo	Bindo
+biopio	Biópio
+boa entrada	Boa Entrada
+bocoio	Bocoio
+bolongongo	Bolongongo
+bolonguera	Bolonguera
+bom jesus	Bom Jesus
+bondo caila	Bondo Caíla
+botera	Botera
+buco	Buco
+buco zau	Buco Zau
+buela	Buela
+buenga-sul	Buenga-Sul
+bula atumba	Bula Atumba
+bungo	Bungo
+caala	Caála
+cabinda	Cabinda
+cabiri	Cabiri
+cabo ledo	Cabo Ledo
+cabolombo	Cabolombo
+cabombo	Cabombo
+cabuta	Cabuta
+cachimo	Cachimo
+cachingues	Cachingues
+cacimbas	Cacimbas
+cacolo	Cacolo
+cacoma	Cacoma
+caconda	Caconda
+cacongo	Cacongo
+cacuaco	Cacuaco
+cacula	Cacula
+caculama	Caculama
+caculo cabaca	Caculo Cabaça
+caculo cahango	Caculo Cahango
+cacuso	Cacuso
+cafunfo	Cafunfo
+cage mazumbo	Cage Mazumbo
+cahama	Cahama
+caianda	Caianda
+caiave	Caiave
+caieie	Caieie
+caimbambo	Caimbambo
+cainde	Cainde
+caiongo	Caiongo
+caita	Caita
+caitou	Caitou
+caiuera	Caiuera
+caiundo	Caiundo
+calai	Calai
+calandula	Calandula
+calima	Calima
+calonamba	Calonamba
+caluango	Caluango
+caluca	Caluca
+calucinga	Calucinga
+calulo	Calulo
+calumbo	Calumbo
+calunda	Calunda
+caluquembe	Caluquembe
+camabatela	Camabatela
+camacupa	Camacupa
+camama	Camama
+camame	Camame
+camanongue	Camanongue
+camatambo	Camatambo
+camaxilo	Camaxilo
+cambamba	Cambamba
+cambandua	Cambândua
+cambaxe	Cambaxe
+cambo suinginge	Cambo Suinginge
+camboio	Camboio
+cambondo	Cambondo
+cambuengo	Cambuengo
+cambundi	Cambundi
+cambundi catembo	Cambundi Catembo
+cameia	Cameia
+camissombo	Camissombo
+camucuio	Camucuio
+camuine	Camuine
+canacassala	Canacassala
+cangamba	Cangamba
+cangandala	Cangandala
+cangola	Cangola
+cangombe	Cangombe
+cangote	Cangote
+cangumbe	Cangumbe
+canhamela	Canhamela
+canhoca	Canhoca
+canjala	Canjala
+canzar	Canzar
+capaia	Capaia
+capangombe	Capangombe
+capelongo	Capelongo
+capenda camulemba	Capenda Camulemba
+capolo	Capolo
+capunda	Capunda
+capunda cavilongo	Capunda Cavilongo
+capupa	Capupa
+cariamba	Cariamba
+cariango	Cariango
+caribo	Caribo
+cassai-sul	Cassai-Sul
+cassamba	Cassamba
+cassanguidi	Cassanguidi
+cassanje	Cassanje
+cassanje calucala	Cassanje Calucala
+casseche	Casseche
+cassengo	Cassengo
+cassinga	Cassinga
+cassoneca	Cassoneca
+cassongo	Cassongo
+cassongue	Cassongue
+cassumbe	Cassumbe
+catabola	Catabola
+catata	Catata
+catchiungo	Catchiungo
+cateco cangola	Cateco Cangola
+catengue	Catengue
+catete	Catete
+catumbela	Catumbela
+caungula	Caungula
+cavunga	Cavunga
+caxicane	Caxicane
+caxinga	Caxinga
+caxito	Caxito
+cazage	Cazage
+cazenga	Cazenga
+cazombo	Cazombo
+cazuangongo	Cazuangongo
+cela	Cela
+cerca	Cêrca
+chela	Chela
+chiaca	Chiaca
+chiange	Chiange
+chibemba	Chibemba
+chibia	Chibia
+chicala	Chicala
+chicomba	Chicomba
+chicuma	Chicuma
+chicungo	Chicungo
+chiede	Chiéde
+chila	Chila
+chilata	Chilata
+chiluage	Chiluage
+chindumbo	Chindumbo
+chingo	Chingo
+chinguanja	Chinguanja
+chinguar	Chinguar
+chinhama	Chinhama
+chinjenje	Chinjenje
+chipeta	Chipeta
+chipindo	Chipindo
+chissamba	Chissamba
+chissuata	Chissuata
+chitado	Chitado
+chitato	Chitato
+chitembo	Chitembo
+chiuca	Chiuca
+chiume	Chiúme
+chivaulo	Chivaúlo
+chongoroi	Chongoroi
+conda	Conda
+conde	Condé
+cota	Cota
+coxe	Coxe
+cuale	Cuale
+cuangar	Cuangar
+cuango calumbo	Cuango Calumbo
+cuango-luzamba	Cuango-Luzamba
+cuanza	Cuanza
+cubal	Cubal
+cubal do lumbo	Cubal do Lumbo
+cuchi	Cuchi
+cucumbi	Cucumbi
+cuemba	Cuemba
+cuilo	Cuilo
+cuilo camboso	Cuilo Camboso
+cuilo futa	Cuilo Futa
+cuilo pombo	Cuilo Pombo
+cuima	Cuima
+cuimba	Cuímba
+cuito	Cuíto
+cuito cuanavale	Cuíto Cuanavale
+culamagia	Culamagia
+cumbira	Cumbira
+cunga dia samba	Cünga diá Samba
+cunga palanga	Cunga Palanga
+cunhinga	Cunhinga
+cunjamba	Cunjamba
+cunje	Cunje
+cunjo	Cunjo
+cusse	Cusse
+cutato	Cutato
+cutenda	Cutenda
+cutuile	Cutuile
+cuvango	Cuvango
+cuvelai	Cuvelai
+dala	Dala
+dala cachibo	Dala Cachibo
+damba	Damba
+dambi	Dambi
+dando	Dando
+dange ya menha	Dange ya Menha
+demba chio	Demba Chio
+dimuca	Dimuca
+dinde	Dinde
+dinge	Dinge
+dirico	Dirico
+dombe grande	Dombe Grande
+dombo wa zanga	Dombo wa Zanga
+dondo	Dondo
+dongo	Dongo
+dumba cambango	Dumba Cambango
+dumbi	Dumbi
+dundo	Dundo
+ebo	Ebo
+ecunna	Ecunna
+egito praia	Egito Praia
+evale	Evale
+funda	Funda
+gabela	Gabela
+galanga	Galanga
+galangue	Galangue
+gama	Gama
+gamba	Gamba
+ganda	Ganda
+gangula	Gangula
+golfe	Golfe
+golungo alto	Golungo Alto
+gombe	Gombe
+gungo	Gungo
+gungue	Gungue
+hengue	Hengue
+hoji ya henda	Hoji ya Henda
+hoque	Hoque
+huambo	Huambo
+huila	Huila
+humbe	Humbe
+humpata	Humpata
+iambala	Iambala
+icoca	Icoca
+impulo	Impulo
+ingombota	Ingombota
+inhuca	Inhuca
+iona	Iona
+iongo	Iongo
+jamba	Jamba
+jamba cueio	Jamba Cueio
+jamba mineira	Jamba Mineira
+jau	Jau
+kikolo	Kikolo
+kilamba	Kilamba
+kima kieza	Kima Kieza
+kiwaba nzoji	Kiwaba Nzoji
+kunda dya baze	Kunda dya Baze
+lago dilolo	Lago Dilolo
+lemba	Lemba
+lemboa	Lêmboa
+lepi	Lépi
+leua	Léua
+liambo	Liambo
+liangongo	Liangongo
+lobito	Lobito
+lola	Lola
+lombe	Lombe
+londuimbali	Londuimbali
+longa	Longa
+longonjo	Longonjo
+lonhe	Lonhe
+lovua	Lóvua
+lovua do zambeze	Lóvua do Zambeze
+luacano	Luacano
+luali	Luali
+luanda	Luanda
+luando	Luando
+luangue	Luangue
+luau	Luau
+lubalo	Lubalo
+lubango	Lubango
+lubia	Lúbia
+lucala	Lucala
+lucapa	Lucapa
+lucira	Lucira
+lucunga	Lucunga
+lucusse	Lucusse
+luena	Luena
+luengue	Luengue
+lufico	Lufico
+luia	Luia
+luiana	Luiana
+luinga	Luinga
+luma cassai	Luma Cassai
+lumbala	Lumbala
+lumbala caquengue	Lumbala Caquengue
+lumbala nguimbo	Lumbala Nguimbo
+lunge	Lunge
+lupire	Lupire
+luquembo	Luquembo
+luremo	Luremo
+lutembo	Lutembo
+lutuai	Lutuai
+luvaca	Luvaca
+luvemba	Luvemba
+luvo	Luvo
+luvuei	Luvuei
+mabaia	Mabaia
+mabubas	Mabubas
+maca mombolo	Maca Mombolo
+macocola	Macocola
+macolo	Macolo
+macondo	Macondo
+madimba	Madimba
+maianga	Maianga
+malanje	Malanje
+malembo	Malembo
+malengue	Malengue
+mamue	Mamué
+mangando	Mangando
+maquela do zombo	Maquela do Zombo
+marimba	Marimba
+massabi	Massabi
+massangano	Massangano
+massango	Massango
+massau	Massau
+matala	Matala
+mateus	Mateus
+maua	Máua
+maue	Maué
+mauengue	Mauengue
+mavengue	Mavengue
+mavinga	Mavinga
+mbanji ya ngola	Mbanji ya Ngola
+mbanza kongo	Mbanza Kongo
+mbave	Mbave
+menongue	Menongue
+micanda	Micanda
+miconje	Miconje
+milando	Milando
+milunga	Milunga
+moma	Moma
+mona quimbundo	Mona Quimbundo
+mongua	Môngua
+monte belo	Monte Belo
+mossamedes	Mossamedes
+mpala	Mpala
+muangueji	Muangueji
+mucaba	Mucaba
+muconda	Muconda
+mucope	Mucope
+mucusso	Mucusso
+mufuma	Mufuma
+muie	Muié
+muinha	Muinha
+mulenvos	Mulenvos
+mulondo	Mulondo
+mumbondo	Mumbondo
+mumbue	Mumbué
+mundundo	Mundundo
+munenga	Munenga
+mungo	Mungo
+munhango	Munhango
+mupa	Mupa
+muquixe	Muquixe
+muriege	Muriege
+mussende	Mussende
+musserra	Musserra
+mussulo	Mussulo
+mussuma mitete	Mussuma Mitete
+mussungue	Mussungue
+mutumbo	Mutumbo
+muvulege	Muvulege
+muxaluando	Muxaluando
+muxima	Muxima
+n'dalatando	N'dalatando
+n'zeto	N'zeto
+namacunde	Namacunde
+nana candundo	Nana Candundo
+nancova	Nancova
+naulila	Naulila
+navegantes	Navegantes
+necuto	Necuto
+negage	Negage
+negola	Negola
+nehone	Nehone
+nharea	Nharêa
+ninda	Ninda
+noqui	Nóqui
+nova esperanca	Nova Esperança
+nova vida	Nova Vida
+nsosso	Nsosso
+nzagi	Nzagi
+nzaji	Nzaji
+ombala yo mungu	Ombala yo Mungu
+oncocua	Oncócua
+ondjiva	Ondjiva
+otchindjau	Otchindjau
+palanca	Palanca
+pambangala	Pambangala
+pango aluquem	Pango Aluquém
+panguila	Panguíla
+paredes	Paredes
+pedra do feitico	Pedra do Feitiço
+piri	Piri
+porto amboim	Porto Amboim
+praia bebe	Praia Bebe
+pungo a ndongo	Pungo a Ndongo
+puri	Puri
+quela	Quela
+quelo	Quêlo
+quenha	Quenha
+quessua	Quêssua
+quiage	Quiage
+quiangombe	Quiangombe
+quibala	Quibala
+quibala norte	Quibala Norte
+quibaxe	Quibaxe
+quibocolo	Quibocolo
+quicabo	Quicabo
+quicombo	Quicombo
+quiculungo	Quiculungo
+quicunzo	Quicunzo
+quifangondo	Quifangondo
+quihita	Quihita
+quihuhu	Quihuhu
+quilenda	Quilenda
+quilengues	Quilengues
+quilombo dos dembos	Quilombo dos Dembos
+quilombo quia puto	Quilombo quía Puto
+quimbango	Quimbango
+quimbele	Quimbele
+quindeje	Quindeje
+quinguengue	Quinguengue
+quinzau	Quinzau
+quipedro	Quipedro
+quipeio	Quipeio
+quipungo	Quipungo
+quiquiemba	Quiquiemba
+quirima	Quirima
+quirimbo	Quirimbo
+quissecula	Quissecula
+quisseque	Quisseque
+quissongo	Quissongo
+quitapa	Quitapa
+quitexe	Quitexe
+quivuenga	Quivuenga
+quixico	Quixico
+quixinge	Quixinge
+ramiros	Ramiros
+rangel	Rangel
+ringoma	Ringoma
+rito	Rito
+rivungo	Rivungo
+sacandica	Sacandica
+sachinemuna	Sachinemuna
+sacomar	Sacomar
+samba	Samba
+samba caju	Samba Cajú
+samba lucala	Samba Lucala
+sambizanga	Sambizanga
+sambo	Sambo
+samboto	Samboto
+sande	Sande
+sanga	Sanga
+santa clara	Santa Clara
+sanza pombo	Sanza Pombo
+sao pedro da quilemba	São Pedro da Quilemba
+saurimo	Saurimo
+sautar	Sautar
+savate	Savate
+sende	Sende
+sequele	Sequele
+serra de canda	Serra de Canda
+sessa	Sessa
+soma cuanza	Soma Cuanza
+sombo	Sombo
+songo	Songo
+soqueco	Soqueco
+soyo	Soyo
+sumbe	Sumbe
+tabi	Tabi
+talatona	Talatona
+tando zinze	Tando Zinze
+tango	Tango
+tchicuaqueia	Tchicuaqueia
+tchimporo-yonde	Tchimporo-Yonde
+terreiro	Terreiro
+tomboco	Tombôco
+tombua	Tômbua
+uaba	Uaba
+uamba	Uamba
+uando mucaba	Uando Mucaba
+ucu seles	Ucu Seles
+ucua	Úcua
+ucuma	Ucuma
+uige	Uíge
+umpulo	Umpulo
+ussoque	Ussoque
+viana	Viana
+viangombe	Viangombe
+vila flor	Vila Flor
+virei	Virei
+vissati	Vissati
+vista alegre	Vista Alegre
+viti vivali	Viti Vivali
+waku kungo	Waku Kungo
+xa muteba	Xá Muteba
+xamavera	Xamavera
+xandel	Xandel
+xangongo	Xangongo
+xassengue	Xassengue
+xinge	Xinge
+xipundo	Xipundo
+zala	Zala
+zango	Zango
+zenza do itombe	Zenza do Itombe
+zone (zona) e	Zone (Zona) E

@@ -329,7 +329,17 @@ public class ManagePostService : IManagePostService
             UserId = currentUserId,
         };
 
-        await _repository.CreateSavedPostAsync(saved);
+        try
+        {
+            await _repository.CreateSavedPostAsync(saved);
+        }
+        catch (ConcurrentDuplicateException)
+        {
+            // A concurrent duplicate slipped past the pre-check above; the DB
+            // unique constraint rejected it. Save is idempotent — return the
+            // same outcome as the sequential already-saved path.
+            return new SavePostResponseDto { PostId = postId, IsSaved = true, Message = "Post already saved." };
+        }
 
         _logger.LogInformation("User {UserId} saved post {PostId}.", currentUserId, postId);
         return new SavePostResponseDto { PostId = postId, IsSaved = true, Message = "Post saved successfully." };

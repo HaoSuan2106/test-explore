@@ -1,0 +1,628 @@
+acacia bay	Acacia Bay
+addington	Addington
+ahipara	Ahipara
+aidanfield	Aidanfield
+akina	Akina
+albany	Albany
+alexandra	Alexandra
+alicetown	Alicetown
+allenton	Allenton
+amberley	Amberley
+andersons bay	Andersons Bay
+aotea	Aotea
+arakura	Arakura
+aranui	Aranui
+aro valley	Aro Valley
+arrowtown	Arrowtown
+arthurs point	Arthurs Point
+ascot park	Ascot Park
+ashburton	Ashburton
+ashhurst	Ashhurst
+atawhai	Atawhai
+auckland	Auckland
+avalon	Avalon
+avenal	Avenal
+avondale	Avondale
+avonhead	Avonhead
+avonside	Avonside
+awakeri	Awakeri
+awapuni	Awapuni
+awarua plains	Awarua Plains
+balaclava	Balaclava
+balclutha	Balclutha
+balmoral	Balmoral
+bay view	Bay View
+beach haven	Beach Haven
+beachlands	Beachlands
+beckenham	Beckenham
+belfast	Belfast
+bell block	Bell Block
+belmont	Belmont
+bethlehem	Bethlehem
+bexley	Bexley
+birchville	Birchville
+birkdale	Birkdale
+birkenhead	Birkenhead
+bishopdale	Bishopdale
+blenheim	Blenheim
+blockhouse bay	Blockhouse Bay
+bluff	Bluff
+botany downs	Botany Downs
+boulcott	Boulcott
+brighton	Brighton
+brightwater	Brightwater
+brockville	Brockville
+brooklyn	Brooklyn
+brown owl	Brown Owl
+browns bay	Browns Bay
+bryndwr	Bryndwr
+bucklands beach	Bucklands Beach
+bulls	Bulls
+burnham	Burnham
+burnside	Burnside
+burwood	Burwood
+cable bay	Cable Bay
+camborne	Camborne
+cambridge	Cambridge
+campbells bay	Campbells Bay
+cannons creek	Cannons Creek
+carterton	Carterton
+casebrook	Casebrook
+cashmere	Cashmere
+castlepoint	Castlepoint
+caversham	Caversham
+chatswood	Chatswood
+christchurch	Christchurch
+churton park	Churton Park
+clarks beach	Clarks Beach
+clarkville	Clarkville
+claudelands	Claudelands
+clevedon	Clevedon
+clifton	Clifton
+clive	Clive
+cloverlea	Cloverlea
+cockle bay	Cockle Bay
+colville	Colville
+concord	Concord
+coromandel	Coromandel
+corstorphine	Corstorphine
+crofton downs	Crofton Downs
+cromwell	Cromwell
+dairy flat	Dairy Flat
+dallington	Dallington
+dannevirke	Dannevirke
+darfield	Darfield
+dargaville	Dargaville
+days bay	Days Bay
+diamond harbour	Diamond Harbour
+drury	Drury
+dunedin	Dunedin
+ealing	Ealing
+east gore	East Gore
+east taieri	East Taieri
+eastbourne	Eastbourne
+eastern beach	Eastern Beach
+eden terrace	Eden Terrace
+edgecumbe	Edgecumbe
+ellerslie	Ellerslie
+eltham	Eltham
+enner glynn	Enner Glynn
+epsom	Epsom
+epuni	Epuni
+fairfield	Fairfield
+farm cove	Farm Cove
+favona	Favona
+featherston	Featherston
+fendalton	Fendalton
+fitzherbert	Fitzherbert
+fitzroy	Fitzroy
+flaxmere	Flaxmere
+forrest hill	Forrest Hill
+foxton	Foxton
+foxton beach	Foxton Beach
+frankleigh park	Frankleigh Park
+frankton	Frankton
+frankton junction	Frankton Junction
+freemans bay	Freemans Bay
+gate pa	Gate Pa
+georgetown	Georgetown
+geraldine	Geraldine
+gisborne	Gisborne
+gladstone	Gladstone
+glen innes	Glen Innes
+glendale	Glendale
+glendene	Glendene
+glendowie	Glendowie
+glengarry	Glengarry
+gleniti	Gleniti
+glenwood	Glenwood
+gore	Gore
+grafton	Grafton
+grasmere	Grasmere
+green bay	Green Bay
+green island	Green Island
+greenhithe	Greenhithe
+greerton	Greerton
+grenada north	Grenada North
+grenada village	Grenada Village
+grey lynn	Grey Lynn
+greymouth	Greymouth
+greytown	Greytown
+half moon bay	Half Moon Bay
+halfway bush	Halfway Bush
+halswell	Halswell
+hamilton	Hamilton
+hamilton east	Hamilton East
+hamilton west	Hamilton West
+hampstead	Hampstead
+hamurana	Hamurana
+hanmer springs	Hanmer Springs
+harewood	Harewood
+haruru	Haruru
+hastings	Hastings
+hataitai	Hataitai
+haumoana	Haumoana
+hauraki	Hauraki
+havelock north	Havelock North
+hawera	Hawera
+hawthorndale	Hawthorndale
+heathcote valley	Heathcote Valley
+hei hei	Hei Hei
+heidelberg	Heidelberg
+helensville	Helensville
+henderson	Henderson
+heretaunga	Heretaunga
+hicks bay	Hicks Bay
+highland park	Highland Park
+hikurangi	Hikurangi
+hillcrest	Hillcrest
+hillsborough	Hillsborough
+hokitika	Hokitika
+hokowhitu	Hokowhitu
+homai	Homai
+homedale	Homedale
+hoon hay	Hoon Hay
+hornby	Hornby
+houghton bay	Houghton Bay
+howick	Howick
+huntly	Huntly
+huntsbury	Huntsbury
+hurdon	Hurdon
+ilam	Ilam
+inglewood	Inglewood
+invercargill	Invercargill
+island bay	Island Bay
+jack's point	Jack's Point
+jerusalem	Jerusalem
+johnsonville	Johnsonville
+judea	Judea
+judgeford	Judgeford
+kaharoa	Kaharoa
+kaiapoi	Kaiapoi
+kaikohe	Kaikohe
+kaitaia	Kaitaia
+kaiti	Kaiti
+karaka bays	Karaka Bays
+karori	Karori
+karoro	Karoro
+katikati	Katikati
+kaukapakapa	Kaukapakapa
+kawakawa	Kawakawa
+kawerau	Kawerau
+kelburn	Kelburn
+kelson	Kelson
+kelston	Kelston
+kelvin grove	Kelvin Grove
+kenmure	Kenmure
+kennedys bush	Kennedys Bush
+kensington	Kensington
+kerikeri	Kerikeri
+kew	Kew
+khandallah	Khandallah
+kihikihi	Kihikihi
+kilbirnie	Kilbirnie
+kingsland	Kingsland
+kingswell	Kingswell
+kirwee	Kirwee
+kohimarama	Kohimarama
+konini	Konini
+kopuaranga	Kopuaranga
+kumeu	Kumeu
+ladbrooks	Ladbrooks
+lake hawea	Lake Hawea
+leeston	Leeston
+leigh	Leigh
+levin	Levin
+lincoln	Lincoln
+loburn	Loburn
+lower hutt	Lower Hutt
+lyall bay	Lyall Bay
+lynfield	Lynfield
+lynmouth	Lynmouth
+lyttelton	Lyttelton
+macandrew bay	Macandrew Bay
+mahora	Mahora
+mairehau	Mairehau
+maketu	Maketu
+manaia	Manaia
+mangapapa	Mangapapa
+mangawhai	Mangawhai
+mangawhai heads	Mangawhai Heads
+mangere	Mangere
+mangere east	Mangere East
+mangorei	Mangorei
+manukau city	Manukau City
+manurewa	Manurewa
+manurewa east	Manurewa East
+maori hill	Maori Hill
+maoribank	Maoribank
+mapua	Mapua
+maraenui	Maraenui
+maraetai	Maraetai
+maramarua	Maramarua
+marchwiel	Marchwiel
+martinborough	Martinborough
+marton	Marton
+marybank	Marybank
+maryhill	Maryhill
+massey	Massey
+massey east	Massey East
+masterton	Masterton
+matamata	Matamata
+mataura	Mataura
+maungaraki	Maungaraki
+maungatapere	Maungatapere
+maupuia	Maupuia
+mayfield	Mayfield
+mclaren park	McLaren Park
+meadowbank	Meadowbank
+mellons bay	Mellons Bay
+melrose	Melrose
+merivale	Merivale
+merrilands	Merrilands
+methven	Methven
+milford	Milford
+milson	Milson
+milton	Milton
+mission bay	Mission Bay
+moana	Moana
+moera	Moera
+moerewa	Moerewa
+monaco	Monaco
+morningside	Morningside
+mornington	Mornington
+morrinsville	Morrinsville
+mosgiel	Mosgiel
+motueka	Motueka
+moturoa	Moturoa
+mount cook	Mount Cook
+mount eden	Mount Eden
+mount maunganui	Mount Maunganui
+mount pleasant	Mount Pleasant
+mount victoria	Mount Victoria
+muriwai beach	Muriwai Beach
+murrays bay	Murrays Bay
+murupara	Murupara
+musselburgh	Musselburgh
+naenae	Naenae
+napier	Napier
+narrow neck	Narrow Neck
+nelson	Nelson
+nelson south	Nelson South
+netherby	Netherby
+new brighton	New Brighton
+new brighton north	New Brighton North
+new lynn	New Lynn
+new plymouth	New Plymouth
+new windsor	New Windsor
+newfield	Newfield
+newlands	Newlands
+newmarket	Newmarket
+newton	Newton
+newtown	Newtown
+ngaio	Ngaio
+ngaruawahia	Ngaruawahia
+ngatea	Ngatea
+ngongotaha	Ngongotaha
+ngunguru	Ngunguru
+normanby	Normanby
+normandale	Normandale
+north east valley	North East Valley
+north shore	North Shore
+northcote	Northcote
+northland	Northland
+northwood	Northwood
+oakura	Oakura
+oamaru	Oamaru
+ohakune	Ohakune
+ohinemutu	Ohinemutu
+ohope beach	Ohope Beach
+omokoroa	Omokoroa
+onehunga	Onehunga
+onekawa	Onekawa
+onepoto	Onepoto
+onerahi	Onerahi
+oneroa	Oneroa
+opaheke	Opaheke
+opawa	Opawa
+opoho	Opoho
+opotiki	Opotiki
+opua	Opua
+opunake	Opunake
+oranga	Oranga
+oratia	Oratia
+orewa	Orewa
+oriental bay	Oriental Bay
+oropi	Oropi
+ostend	Ostend
+otahuhu	Otahuhu
+otaki	Otaki
+otaki beach	Otaki Beach
+otangarei	Otangarei
+otara	Otara
+otatara	Otatara
+oteha valley	Oteha Valley
+otorohanga	Otorohanga
+otumoetai	Otumoetai
+owairaka	Owairaka
+owhiro bay	Owhiro Bay
+oxford	Oxford
+paekakariki	Paekakariki
+paeroa	Paeroa
+pahiatua	Pahiatua
+paihia	Paihia
+pakuranga	Pakuranga
+pakuranga heights	Pakuranga Heights
+palmerston	Palmerston
+palmerston north	Palmerston North
+panmure	Panmure
+papakowhai	Papakowhai
+papakura	Papakura
+papanui	Papanui
+paparangi	Paparangi
+papatoetoe	Papatoetoe
+papatowai	Papatowai
+parakai	Parakai
+paraparaumu	Paraparaumu
+paremata	Paremata
+paremoremo	Paremoremo
+parklands	Parklands
+parkside	Parkside
+parkway	Parkway
+parnell	Parnell
+patea	Patea
+patumahoe	Patumahoe
+pauanui	Pauanui
+pauatahanui	Pauatahanui
+pegasus	Pegasus
+petone	Petone
+picton	Picton
+piha	Piha
+pine hill	Pine Hill
+pinehaven	Pinehaven
+pirongia	Pirongia
+pleasant point	Pleasant Point
+plimmerton	Plimmerton
+point chevalier	Point Chevalier
+pokeno	Pokeno
+ponsonby	Ponsonby
+porirua	Porirua
+port chalmers	Port Chalmers
+portobello	Portobello
+prebbleton	Prebbleton
+pukekohe east	Pukekohe East
+pukerua bay	Pukerua Bay
+putaruru	Putaruru
+queenstown	Queenstown
+queenwood	Queenwood
+raetihi	Raetihi
+raglan	Raglan
+rahotu	Rahotu
+rakaia	Rakaia
+ramarama	Ramarama
+rangiora	Rangiora
+rangiriri	Rangiriri
+rapaura	Rapaura
+raumanga	Raumanga
+raumati beach	Raumati Beach
+raupunga	Raupunga
+raureka	Raureka
+ravensbourne	Ravensbourne
+rawene	Rawene
+red hill	Red Hill
+redcliffs	Redcliffs
+redwood	Redwood
+redwoodtown	Redwoodtown
+remuera	Remuera
+renwick	Renwick
+riccarton	Riccarton
+richmond	Richmond
+riverhead	Riverhead
+riverstone terraces	Riverstone Terraces
+riverton	Riverton
+rolleston	Rolleston
+rosebank	Rosebank
+rosedale	Rosedale
+roseneath	Roseneath
+roslyn	Roslyn
+rothesay bay	Rothesay Bay
+rotorua	Rotorua
+royal oak	Royal Oak
+ruakaka	Ruakaka
+runanga	Runanga
+russley	Russley
+saint clair	Saint Clair
+saint johns	Saint Johns
+saint kilda	Saint Kilda
+saint martins	Saint Martins
+saint marys bay	Saint Marys Bay
+sandringham	Sandringham
+sawyers bay	Sawyers Bay
+schnapper rock	Schnapper Rock
+seatoun	Seatoun
+seaview	Seaview
+shannon	Shannon
+shelly park	Shelly Park
+shiel hill	Shiel Hill
+shirley	Shirley
+silverdale	Silverdale
+silverstream	Silverstream
+snells beach	Snells Beach
+sockburn	Sockburn
+solway	Solway
+somerfield	Somerfield
+south dunedin	South Dunedin
+south new brighton	South New Brighton
+southbridge	Southbridge
+southshore	Southshore
+spotswood	Spotswood
+spreydon	Spreydon
+springlands	Springlands
+stoke	Stoke
+stokes valley	Stokes Valley
+stratford	Stratford
+strathern	Strathern
+strathmore park	Strathmore Park
+strowan	Strowan
+sumner	Sumner
+sunnyhills	Sunnyhills
+sunnyvale	Sunnyvale
+swannanoa	Swannanoa
+sydenham	Sydenham
+tahunanui	Tahunanui
+taihape	Taihape
+tainui	Tainui
+taipa	Taipa
+tairua	Tairua
+taita	Taita
+takaka	Takaka
+takanini	Takanini
+takapuna	Takapuna
+takaro	Takaro
+tamaki	Tamaki
+tamarau	Tamarau
+taneatua	Taneatua
+tangiteroria	Tangiteroria
+taradale	Taradale
+taumarunui	Taumarunui
+taupiri	Taupiri
+taupo	Taupo
+tauranga	Tauranga
+tawa	Tawa
+te anau	Te Anau
+te aro	Te Aro
+te aroha	Te Aroha
+te atatu peninsula	Te Atatu Peninsula
+te atatu south	Te Atatu South
+te awamutu	Te Awamutu
+te hapara	Te Hapara
+te kauwhata	Te Kauwhata
+te kuiti	Te Kuiti
+te papapa	Te Papapa
+te puke	Te Puke
+temple view	Temple View
+templeton	Templeton
+temuka	Temuka
+terrace end	Terrace End
+thames	Thames
+thorndon	Thorndon
+three kings	Three Kings
+tikipunga	Tikipunga
+timaru	Timaru
+tiniroto	Tiniroto
+tinwald	Tinwald
+titahi bay	Titahi Bay
+titirangi	Titirangi
+tokoroa	Tokoroa
+totara park	Totara Park
+tuakau	Tuakau
+turangi	Turangi
+twizel	Twizel
+unsworth heights	Unsworth Heights
+upper hutt	Upper Hutt
+upper riccarton	Upper Riccarton
+utuhina	Utuhina
+victoria	Victoria
+vogeltown	Vogeltown
+wadestown	Wadestown
+waharoa	Waharoa
+waiatarua	Waiatarua
+waihi	Waihi
+waihi beach	Waihi Beach
+waikanae	Waikanae
+waikawa	Waikawa
+waikiwi	Waikiwi
+waikouaiti	Waikouaiti
+waikowhai	Waikowhai
+waikuku beach	Waikuku Beach
+waima	Waima
+waimairi beach	Waimairi Beach
+waimataitai	Waimataitai
+waimate	Waimate
+waimate north	Waimate North
+waimauku	Waimauku
+wainoni	Wainoni
+wainui	Wainui
+wainuiomata	Wainuiomata
+waipawa	Waipawa
+waipu	Waipu
+wairau valley	Wairau Valley
+wairoa	Wairoa
+waitakere	Waitakere
+waitangi	Waitangi
+waitangirua	Waitangirua
+waitara	Waitara
+waitoa	Waitoa
+waiuku	Waiuku
+waiwhetu	Waiwhetu
+wakari	Wakari
+wakefield	Wakefield
+wallaceville	Wallaceville
+waltham	Waltham
+wanaka	Wanaka
+warkworth	Warkworth
+washdyke	Washdyke
+washington valley	Washington Valley
+waterloo	Waterloo
+waterview	Waterview
+watlington	Watlington
+wattle downs	Wattle Downs
+waverley	Waverley
+welbourn	Welbourn
+wellington	Wellington
+wellington central	Wellington Central
+wellsford	Wellsford
+west end	West End
+west eyreton	West Eyreton
+west harbour	West Harbour
+west melton	West Melton
+western heights	Western Heights
+westmere	Westmere
+westmorland	Westmorland
+weston	Weston
+westown	Westown
+westport	Westport
+whakarongo	Whakarongo
+whakatane	Whakatane
+whangamata	Whangamata
+whanganui	Whanganui
+whangaparaoa	Whangaparaoa
+whangarei	Whangarei
+whataupoko	Whataupoko
+whitby	Whitby
+whitford	Whitford
+whitianga	Whitianga
+wigram	Wigram
+wilton	Wilton
+windsor	Windsor
+windsor park	Windsor Park
+wingatui	Wingatui
+winton	Winton
+wiri	Wiri
+witherlea	Witherlea
+woburn	Woburn
+woodend	Woodend
+woodlands park	Woodlands Park
+woodridge	Woodridge
+woodville	Woodville
+yaldhurst	Yaldhurst

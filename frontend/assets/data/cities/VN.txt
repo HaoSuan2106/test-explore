@@ -1,0 +1,878 @@
+a luoi	A Lưới
+a ngo	A Ngo
+a roang hai	A Roàng Hai
+a rooi	A Rooi
+a tieng	A Tiêng
+a ting	A Ting
+a vuong	A Vương
+a xan	A Xan
+a yun pa	A Yun Pa
+ai tu	Ái Tử
+an ba	An Bá
+an bien	An Biên
+an chau	An Châu
+an duong	An Dương
+an ha	An Hà
+an hai	An Hải
+an hoa	An Hòa
+an khe	An Khê
+an lao	An Lão
+an nhon	An Nhơn
+an phu	An Phú
+an thi	Ân Thi
+an thoi	An Thới
+an trach	An Trạch
+anh son	Anh Son
+ap binh chanh	Ấp Bình Chánh
+ap binh chau	Ấp Bình Châu
+ap ho phong	Ấp Hô Phòng
+ap hoa thanh	Ấp Hòa Thanh
+ap long thanh	Ấp Long Thạnh
+ap long tho	Ấp Long Thọ
+ap mot	Ấp Một
+ap phu hoa	Ấp Phú Hòa
+ap phuoc tinh	Ấp Phước Tĩnh
+ap tan my	Ấp Tân Mỹ
+ap tan ngai	Ấp Tân Ngãi
+ap xuan son	Ấp Xuân Sơn
+ba	Ba
+ba chuc	Ba Chúc
+ba dinh	Ba Dinh
+ba don	Ba Đồn
+ba na	Bà Nà
+ba to	Ba Tơ
+ba tri	Ba Tri
+ba vi	Ba Vì
+bac ai	Bác Ái
+bac giang	Bắc Giang
+bac ha	Bắc Hà
+bac kan	Bắc Kạn
+bac lieu	Bạc Liêu
+bac lung	Bắc Lũng
+bac ninh	Bắc Ninh
+bac quang	Bắc Quang
+bac son	Bắc Sơn
+bac tu liem	Bắc Từ Liêm
+bac yen	Bắc Yên
+bach mai	Bạch Mai
+ban na hy	Bản Na Hỷ
+ban yen nhan	Bẩn Yên Nhân
+bang lung	Bằng Lũng
+bao loc	Bảo Lộc
+bat xat	Bát Xát
+ben cat	Bến Cát
+ben cau	Bến Cầu
+ben sung	Bến Sung
+ben thuy	Bến Thủy
+ben tre	Bến Tre
+bha le	Bha Lê
+bich chu	Bích Chu
+bich dong	Bích Động
+bien hoa	Biên Hòa
+bim son	Bỉm Sơn
+binh dai	Bình Đại
+binh gia	Bình Gia
+binh long	Bình Long
+binh minh	Bình Minh
+binh my	Bình Mỹ
+binh son	Bình Sơn
+binh thanh	Bình Thạnh
+binh thuy	Bình Thủy
+bo	Bo
+bo de	Bồ Đề
+boc bo	Bộc Bố
+bong son	Bồng Sơn
+bu dop	Bù Đốp
+bui xa	Bùi Xá
+buon ho	Buôn Hồ
+buon ma thuot	Buôn Ma Thuột
+buon trap	Buôn Trấp
+buon tur	Buôn Tur
+but son	Bút Sơn
+ca mau	Cà Mau
+cai dau	Cái Dầu
+cai doi vam	Cái Đôi Vàm
+cai lay	Cai Lậy
+cai nhum	Cái Nhum
+cai nuoc	Cái Nước
+cai rang	Cái Răng
+cai tau ha	Cái Tàu Hạ
+cam lam	Cam Lâm
+cam le	Cẩm Lệ
+cam lo	Cam Lộ
+cam pha	Cẩm Phả
+cam pha mines	Cẩm Phả Mines
+cam ranh	Cam Ranh
+cam thuy	Cẩm Thủy
+cam xuyen	Cẩm Xuyên
+can duoc	Cần Đước
+can gio	Cần Giờ
+can giuoc	Cần Giuộc
+can tho	Cần Thơ
+canh nang	Cành Nàng
+cao bang	Cao Bằng
+cao ky	Cao Ký
+cao lanh	Cao Lãnh
+cao phong	Cao Phong
+cao thuong	Cao Thượng
+cat ba	Cát Bà
+cau dien	Cầu Diễn
+cau giat	Cầu Giát
+cau giay	Cầu Giấy
+cau go	Cầu Gồ
+cau ke	Cầu Kè
+chau doc	Châu Đốc
+chau phong	Châu Phong
+chau thanh	Châu Thành
+chi lang	Chi Lăng
+chi linh	Chí Linh
+chi ne	Chi Nê
+chi thanh	Chí Thạnh
+chieng coi	Chiềng Cơi
+cho	Chờ
+cho chu	Chợ Chu
+cho gao	Chợ Gạo
+cho lach	Chợ Lách
+cho lau	Chợ Lầu
+cho lon	Chợ Lớn
+cho moi	Chợ Mới
+cho ra	Chợ Rã
+chon thanh	Chơn Thành
+chu	Chũ
+chu prong	Chư Prông
+chu se	Chư Sê
+chu ty	Chư Ty
+chua hang	Chùa Hang
+chuc son	Chúc Sơn
+ch’ om	Ch’ Ơm
+co do	Cờ Đỏ
+co do	Cổ Đô
+co le	Cổ Lễ
+co loa	Cổ Lóa
+co phuc	Cổ Phúc
+co to	Cô Tô
+con cuong	Con Cuông
+con dao	Côn Đảo
+con son	Côn Sơn
+cu chi	Củ Chi
+cu lao dung	Cù Lao Dung
+cua lo	Cửa Lô
+cua nam	Cửa Nam
+cung kiem	Cung Kiệm
+cung son	Củng Sơn
+da bac	Đà Bắc
+da lat	Ðà Lạt
+da nang	Da Nang
+da teh	Đạ Tẻh
+dai cuong	Đại Cường
+dai dong	Đại Đồng
+dai loc	Đại Lộc
+dai mo	Dại Mỗ
+dai nghia	Đại Nghĩa
+dai quang	Đại Quang
+dai tan	Đại Tân
+dak doa	Đăk Đoa
+dak glei	Đắk Glei
+dak ha	Đắk Hà
+dak mam	Đắk Mâm
+dak mil	Đắk Mil
+dak rve	Đắk Rve
+dak song	Đắk Song
+dak to	Đắk Tô
+dam doi	Đầm Dơi
+dan phuong	Đan Phượng
+dang	Dang
+dau tieng	Dầu Tiếng
+di an	Dĩ An
+di linh	Di Linh
+dich vong	Dịch Vọng
+diem dien	Diêm Điền
+dien ban	Điện Bàn
+dien bien dong	Điện Biên Đông
+dien bien phu	Dien Bien Phu
+dien khanh	Diên Khánh
+dien thanh	Diễn Thành
+dinh cong	Định Công
+dinh lap	Đình Lập
+dinh van	Đinh Văn
+do son	Đố Sơn
+doan hung	Đoan Hùng
+doi ngo	Đồi Ngô
+dong anh	Đông Anh
+dong da	Đống Đa
+dong ha	Ðông Hà
+dong hoi	Đồng Hới
+dong hung	Đông Hưng
+dong le	Đồng Lê
+dong loc	Đồng Lộc
+dong mo	Đồng Mỏ
+dong nai	Đồng Nai
+dong ngac	Đông Ngạc
+dong phu	Đông Phú
+dong son	Đông Sơn
+dong thanh	Đông Thành
+dong xoai	Đồng Xoài
+dong xuan	Đồng Xuân
+du	Đu
+duc pho	Đức Phổ
+duc phong	Đức Phong
+duc tho	Đức Thọ
+duc trong	Đưc Trọng
+duong dong	Dương Đông
+duong lam	Đường Lâm
+duong minh chau	Dương Minh Châu
+duong noi	Dương Nội
+duy xuyen	Duy Xuyên
+duyen hai	Duyên Hải
+ea drang	Ea Drăng
+ea h'leo	Ea H'Leo
+ea hiao	Ea Hiao
+ea kar	Ea Kar
+ea na	Ea Na
+ea po	Ea Pô
+ea sup	Ea Súp
+ea t’ling	Ea T’ling
+ecopark	Ecopark
+ga ri	Ga Ri
+ganh hao	Gành Hào
+gia binh	Gia Bình
+gia hanh	Gia Hanh
+gia lam	Gia Lâm
+gia loc	Gia Lộc
+gia nghia	Gia Nghĩa
+gia rai	Giá Rai
+gia ray	Gia Ray
+giang vo	Giảng Võ
+giao liem	Giáo Liêm
+gio linh	Gio Linh
+giong rieng	Giồng Riềng
+giong trom	Giồng Trôm
+go cong	Gò Công
+go dau	Gò Dầu
+go quao	Gò Quao
+go vap	Gò Vấp
+goi	Gôi
+ha dong	Hà Đông
+ha giang	Hà Giang
+ha hieu	Hạ Hiệu
+ha hoa	Hạ Hòa
+ha lam	Hà Lam
+ha long	Hạ Long
+ha tien	Hà Tiên
+ha tinh	Hà Tĩnh
+ha trung	Hà Trung
+hai ba trung	Hai Bà Trưng
+hai chau	Hải Châu
+hai duong	Hải Dương
+hai lang	Hải Lăng
+hai rieng	Hai Riêng
+haiphong	Haiphong
+ham ninh	Hàm Ninh
+hang tram	Hàng Trạm
+hanoi	Hanoi
+hat lot	Hát Lót
+hau loc	Hậu Lộc
+hau nghia	Hậu Nghĩa
+hiep duc	Hiệp Đức
+ho	Hồ
+ho chi minh city	Ho Chi Minh City
+ho xa	Hồ Xá
+hoa binh	Hòa Bình
+hoa cuong	Hòa Cường
+hoa hop	Hòa Hợp
+hoa mac	Hòa Mạc
+hoa thanh	Hòa Thành
+hoa vang	Hòa Vang
+hoai an	Hoài Ân
+hoan kiem	Hoàn Kiếm
+hoan lao	Hoàn Lão
+hoang cau	Hoang Cau
+hoang liet	Hoàng Liệt
+hoang mai	Hoàng Mai
+hoang sa	Hoàng Sa
+hoc mon	Hóc Môn
+hoi an	Hoi An
+hon dat	Hòn Đất
+hong bac	Hồng Bắc
+hong ha	Hồng Hạ
+hong kim	Hồng Kim
+hong linh	Hồng Lĩnh
+hong ngu	Hồng Ngự
+hong thai	Hồng Thái
+hong thuong	Hồng Thượng
+hong van	Hồng Vân
+hop hoa	Hợp Hòa
+hue	Huế
+hung ha	Hưng Hà
+hung hoa	Hưng Hóa
+hung my	Hưng Mỹ
+hung nguyen	Hưng Nguyên
+hung yen	Hưng Yên
+huong canh	Hương Canh
+huong khe	Hương Khê
+huong son	Hương Sơn
+huong thuy	Hương Thủy
+huong tra	Hương Trà
+huu lung	Hữu Lũng
+huyen bao lam	Huyện Bảo Lâm
+huyen lam ha	Huyện Lâm Hà
+huyen tung	Huyền Tụng
+huynh huu nghia	Huỳnh Hữu Nghĩa
+ia kha	Ia Kha
+ia pa	Ia Pa
+ich hau	Ich Hau
+it ong	Ít Ong
+jo ngay	Jơ Ngây
+k bang	K Bang
+ka dang	Ka Dăng
+ke sach	Kế Sách
+ke sat	Kẻ Sặt
+kep	Kép
+kham duc	Khâm Đức
+khanh hai	Khánh Hải
+khanh hoa	Khánh Hòa
+khanh loc	Khánh Lộc
+khanh vinh	Khánh Vĩnh
+khanh vinh yen	Khánh Vĩnh Yên
+khe sanh	Khe Sanh
+khe tre	Khe Tre
+khoai chau	Khoái Châu
+khuong dinh	Khương Đình
+kien an	Kiến An
+kien giang	Kiến Giang
+kien hai	Kiên Hải
+kien hung	Kiến Hưng
+kien luong	Kiên Lương
+kim bai	Kim Bài
+kim lien	Kim Liên
+kim loc	Kim Lộc
+kim son	Kim Sơn
+kim song truong	Kim Song Trường
+kim tan	Kim Tân
+kinh mon	Kinh Môn
+kon dong	Kon Dơng
+kon tum	Kon Tum
+kong chro	Kông Chro
+krong klang	Krông Klang
+krong kmar	Krông Kmar
+krong nang	Krông Năng
+ky anh	Kỳ Anh
+ky son	Kỳ Sơn
+la gi	La Gi
+lac duong	Lạc Dương
+lai cach	Lai Cách
+lai chau	Lai Châu
+lai thieu	Lái Thiêu
+lai vung	Lai Vung
+lam dot	Lâm Đớt
+lam thao	Lâm Thao
+lang	Lăng
+lang chanh	Lang Chánh
+lang co	Lăng Cô
+lang son	Lạng Sơn
+lang thuong	Láng Thượng
+lao bao	Lao Bảo
+lao cai	Lào Cai
+lao chai	Lao Chải
+lap thach	Lập Thạch
+lap vo	Lấp Vò
+lay nua	Lay Nưa
+lien chieu	Liên Chiểu
+lien huong	Liên Hương
+lien quan	Liên Quan
+lien son	Liên Sơn
+lieu de	Liễu Đề
+lieu giai	Liễu Giai
+lim	Lim
+linh dam	Linh Đàm
+linh nam	Lĩnh Nam
+loc binh	Lộc Bình
+loc ninh	Lộc Ninh
+loc thang	Lộc Thắng
+long bien	Long Bien
+long coc	Long Cốc
+long dien	Long Diền
+long ho	Long Hồ
+long khanh	Long Khánh
+long my	Long Mỹ
+long phu	Long Phú
+long thanh	Long Thành
+long xuyen	Long Xuyên
+lung cu	Lũng Cú
+lung ho	Lũng Hồ
+luong bang	Lương Bằng
+luong son	Lương Sơn
+ly son	Lý Sơn
+ma cooi	Mà Cooi
+ma da gui	Ma Đa Gui
+ma lam	Ma Lâm
+mai dich	Mai Dịch
+mang den	Măng Đen
+me	Me
+me linh	Mê Linh
+minh long	Minh Long
+minh luong	Minh Lương
+mo cay	Mỏ Cày
+mo duc	Mộ Đức
+moc chau	Mộc Châu
+mong cai	Móng Cái
+mot ngan	Một Ngàn
+mu cang chai	Mù Cang Chải
+mui ne	Mui Ne
+muong ang	Mường Ảng
+muong cha	Mường Chà
+muong chien	Mường Chiên
+muong khen	Mường Khến
+muong lat	Mường Lát
+muong lay	Mường Lay
+muong nhe	Mường Nhé
+muong xen	Mường Xén
+my hao	Mỹ Hào
+my khe	Mỹ Khê
+my lai	Mỹ Lại
+my loc	Mỹ Lộc
+my phuoc	Mỹ Phước
+my tho	Mỹ Tho
+my tho	Mỹ Thọ
+my xuyen	Mỹ Xuyên
+m’drak	M’Đrăk
+na lay	Na Lay
+na meo	Na Mèo
+na tau	Nà Tấu
+nam can	Năm Căn
+nam dan	Nam Đàn
+nam dinh	Nam Định
+nam giang	Nam Giang
+nam sach	Nam Sách
+nam vi	Nằm Vi
+nang mau	Nàng Mau
+neo	Neo
+nga bay	Ngã Bảy
+nga nam	Ngã Năm
+nga sau	Ngã Sáu
+nga son	Nga Sơn
+nghen	Nghèn
+nghi son	Nghi Sơn
+nghi xuan	Nghi Xuân
+nghia dan	Nghĩa Đàn
+nghia do	Nghĩa Đô
+nghia hanh	Nghĩa Hành
+nghia lo	Nghĩa Lộ
+ngo dong	Ngô Đồng
+ngoc hien	Ngọc Hiển
+ngoc hoi	Ngọc Hồi
+ngoc lac	Ngọc Lặc
+ngu hanh son	Ngũ Hành Sơn
+nguyen du	Nguyễn Du
+nha bang	Nhà Bàng
+nha be	Nhà Bè
+nha nam	Nhã Nam
+nha trang	Nha Trang
+nho quan	Nho Quan
+nhon trach	Nhơn Trạch
+nhu quynh	Như Quỳnh
+ninh binh	Ninh Bình
+ninh giang	Ninh Giang
+ninh hoa	Ninh Hòa
+nong cong	Nông Cống
+nong ha	Nong Hạ
+nong truong tran phu	Nông Trường Trần Phú
+nui deo	Núi Đèo
+nui doi	Núi Đối
+nui sap	Núi Sập
+nui thanh	Núi Thành
+o cho dua	Ô Chợ Dừa
+o mon	Ô Môn
+oc eo	Óc Eo
+ong do	Ông Do
+ong yen	Ông Yến
+pac miau	Pác Miầu
+phan rang-thap cham	Phan Rang-Tháp Chàm
+phan thiet	Phan Thiết
+phat diem	Phát Diệm
+pho chau	Phố Châu
+pho yen	Phổ Yên
+phong chau	Phong Châu
+phong dien	Phong Điền
+phong lang	Phổng Lăng
+phong thanh	Phong Thạnh
+phong tho	Phong Thổ
+phu cat	Phù Cát
+phu do	Phú Đô
+phu hoa	Phú Hòa
+phu khuong	Phú Khương
+phu loc	Phú Lộc
+phu ly	Phủ Lý
+phu my	Phù Mỹ
+phu my	Phú Mỹ
+phu ninh	Phù Ninh
+phu ninh	Phú Ninh
+phu phong	Phú Phong
+phu quoc	Phu Quoc
+phu quoc	Phú Quốc
+phu quy	Phú Quý
+phu thai	Phú Thái
+phu tho	Phú Thọ
+phu thong	Phủ Thông
+phu thuong	Phú Thương
+phu tuc	Phú Túc
+phu vang	Phú Vang
+phu xuyen	Phú Xuyên
+phu yen	Phù Yên
+phuc loi	Phúc Lợi
+phuc son	Phúc Sơn
+phuc tho	Phúc Thọ
+phuc trach	Phúc Trạch
+phuc yen	Phúc Yên
+phung	Phùng
+phung hiep	Phụng Hiệp
+phung nghia	Phụng Nghia
+phuoc an	Phước An
+phuoc dan	Phước Dân
+phuoc hoa	Phước Hòa
+phuong linh	Phương Linh
+plei kan	Plei Kần
+pleiku	Pleiku
+prao	Prao
+pu hong	Pú Hồng
+quan ba	Quận Ba
+quan bay	Quận Bảy
+quan binh thanh	Quận Bình Thạnh
+quan bon	Quận Bốn
+quan chin	Quận Chín
+quan duc thinh	Quận Đức Thịnh
+quan hai	Quận Hai
+quan hanh	Quán Hành
+quan hau	Quán Hàu
+quan hoa	Quan Hóa
+quan lao	Quán Lào
+quan lap vo	Quận Lấp Vò
+quan mot	Quận Một
+quan muoi	Quận Mười
+quan muoi mot	Quận Mười Một
+quan nam	Quận Năm
+quan phu nhuan	Quận Phú Nhuận
+quan sau	Quận Sáu
+quan son	Quan Sơn
+quan tan phu	Quận Tân Phú
+quang ha	Quảng Hà
+quang loc	Quang Lộc
+quang minh	Quang Minh
+quang ngai	Quảng Ngãi
+quang nham	Quảng Nhâm
+quang phu	Quảng Phú
+quang xuong	Quảng Xương
+quang yen	Quảng Yên
+que	Quế
+qui nhon	Qui Nhon
+quoc oai	Quốc Oai
+quy chau	Quỳ Châu
+quy dat	Quy Đạt
+quy hop	Quỳ Hợp
+quynh coi	Quỳnh Côi
+quynh loi	Quỳnh Lôi
+rach gia	Rạch Giá
+rach goc	Rạch Gốc
+rung thong	Rừng Thông
+sa dec	Sa Dec
+sa pa	Sa Pa
+sa phin	Sà Phìn
+sa rai	Sa Rài
+sa thay	Sa Thầy
+sam son	Sầm Sơn
+sang uy	Sằng Uỷ
+si ma cai	Si Ma Cai
+si pa phin	Si Pa Phìn
+sia	Sịa
+soc son	Sóc Sơn
+soc trang	Sóc Trăng
+son duong	Sơn Dương
+son ha	Sơn Hà
+son la	Sơn La
+son loc	Sơn Lộc
+son tay	Sơn Tây
+son thinh	Sơn Thịnh
+son thuy	Sơn Thủy
+son tinh	Sơn Tịnh
+son tra	Sơn Trà
+song cau	Sông Cầu
+song kon	Sông Kôn
+song loc	Song Lộc
+song ma	Sông Mã
+song thao	Sông Thao
+suoi nghe	Suối Nghệ
+tam binh	Tam Bình
+tam dao	Tam Đảo
+tam diep	Tam Điệp
+tam duong	Tam Đường
+tam giang	Tam Giang
+tam ky	Tam Kỳ
+tam vu	Tầm Vu
+tan an	Tân An
+tan bien	Tân Biên
+tan binh	Tân Bình
+tan chau	Tân Châu
+tan hiep	Tân Hiệp
+tan hoa	Tân Hòa
+tan hung	Tân Hưng
+tan ky	Tân Kỳ
+tan ninh	Tân Ninh
+tan phu	Tân Phú
+tan son	Tân Sơn
+tan thanh	Tân Thạnh
+tan tru	Tân Trụ
+tan tuc	Tân Túc
+tan uyen	Tân Uyên
+tan viet	Tân Việt
+tanh linh	Tánh Linh
+tay dang	Tây Đằng
+tay ho	Tây Hồ
+tay mo	Tây Mỗ
+tay ninh	Tây Ninh
+tay tra	Tây Trà
+tay tuu	Tây Tựu
+thach ha	Thạch Hà
+thai binh	Thái Bình
+thai hoa	Thái Hòa
+thai nguyen	Thái Nguyên
+than uyen	Than Uyên
+thang	Thắng
+thanh ba	Thanh Ba
+thanh binh	Thanh Bình
+thanh chuong	Thanh Chương
+thanh ha	Thanh Hà
+thanh hoa	Thanh Hóa
+thanh hoa	Thạnh Hóa
+thanh khe	Thanh Khê
+thanh liet	Thanh Liệt
+thanh loc	Thanh Lộc
+thanh luu	Thanh Lưu
+thanh mien	Thanh Miện
+thanh my	Thạnh Mỹ
+thanh ne	Thanh Nê
+thanh nguyen	Thanh Nguyên
+thanh pho ba ria	Thành Phố Bà Rịa
+thanh pho song cong	Thành phố Sông Công
+thanh pho uong bi	Thành Phố Uông Bí
+thanh phu	Thạnh Phú
+thanh son	Thanh Sơn
+thanh thuy	Thanh Thủy
+thanh xuan	Thanh Xuân
+thi tran ba che	Thị Trấn Ba Chẽ
+thi tran ba hang	Thị Trấn Ba Hàng
+thi tran bao lac	Thị Trấn Bảo Lạc
+thi tran binh lieu	Thị Trấn Bình Liêu
+thi tran binh minh	Thị Trấn Bình Minh
+thi tran cai rong	Thị Trấn Cái Rồng
+thi tran cao loc	Thị Trấn Cao Lộc
+thi tran dai tu	Thị Trấn Đại Từ
+thi tran dam ha	Thị Trấn Đầm Hà
+thi tran dat do	Thị Trấn Đất Đỏ
+thi tran dien bien	Thị Trấn Điện Biên
+thi tran dinh ca	Thị Trấn Đình Cả
+thi tran dong dang	Thị Trấn Đồng Đăng
+thi tran dong khe	Thị Trấn Đông Khê
+thi tran dong trieu	Thị Trấn Đông Triều
+thi tran dong van	Thị Trấn Đồng Văn
+thi tran ganh hao	Thị Trấn Gành Hào
+thi tran gia rai	Thị Trấn Giá Rai
+thi tran hoa binh	Thị Trấn Hòa Bình
+thi tran hung quoc	Thị Trấn Hùng Quốc
+thi tran khanh yen	Thị Trấn Khánh Yên
+thi tran lam son	Thị Trấn Lam Sơn
+thi tran long dien	Thị Trấn Long Điền
+thi tran mao khe	Thị Trấn Mạo Khê
+thi tran meo vac	Thị Trấn Mèo Vạc
+thi tran muong khuong	Thị Trấn Mường Khương
+thi tran muong te	Thị Trấn Mường Tè
+thi tran na duong	Thị Trấn Na Dương
+thi tran na hang	Thị Trấn Na Hang
+thi tran na sam	Thị Trấn Na Sầm
+thi tran ngai giao	Thị Trấn Ngải Giao
+thi tran ngan dua	Thị Trấn Ngan Dừa
+thi tran nguyen binh	Thị Trấn Nguyên Bình
+thi tran nuoc hai	Thị Trấn Nước Hai
+thi tran pho bang	Thị Trấn Phố Bảng
+thi tran pho lu	Thị Trấn Phố Lu
+thi tran pho rang	Thị Trấn Phố Ràng
+thi tran phu my	Thị Trấn Phú Mỹ
+thi tran phuoc buu	Thị Trấn Phước Bửu
+thi tran phuoc long	Thị Trấn Phước Long
+thi tran quang uyen	Thị Trấn Quảng Uyên
+thi tran sao vang	Thị Trấn Sao Vàng
+thi tran sin ho	Thị Trấn Sìn Hồ
+thi tran ta lung	Thị Trấn Tà Lùng
+thi tran tam son	Thị Trấn Tam Sơn
+thi tran tan yen	Thị Trấn Tân Yên
+thi tran thanh ha	Thị Trấn Thanh Hà
+thi tran thanh nhat	Thị Trấn Thanh Nhật
+thi tran that khe	Thị Trấn Thất Khê
+thi tran thong nong	Thị Trấn Thông Nông
+thi tran thuan chau	Thị Trấn Thuận Châu
+thi tran tien yen	Thị Trấn Tiên Yên
+thi tran tinh tuc	Thị Trấn Tĩnh Túc
+thi tran tram tau	Thị Trấn Trạm Tấu
+thi tran trung khanh	Thị Trấn Trùng Khánh
+thi tran tua chua	Thị Trấn Tủa Chùa
+thi tran tuan giao	Thị Trấn Tuần Giáo
+thi tran van du	Thị Trấn Vân Du
+thi tran vi xuyen	Thị Trấn Vị Xuyên
+thi tran viet lam	Thị Trấn Việt Lâm
+thi tran viet quang	Thị Trấn Việt Quang
+thi tran vinh loc	Thị Trấn Vĩnh Lộc
+thi tran vinh quang	Thị Trấn Vinh Quang
+thi tran vinh tuy	Thị Trấn Vĩnh Tuy
+thi tran xuan hoa	Thị Trấn Xuân Hoà
+thi tran yen binh	Thị Trấn Yên Bình
+thi tran yen minh	Thị Trấn Yên Minh
+thi tran yen the	Thị Trấn Yên Thế
+thi xa quang tri	thị xã Quảng Trị
+thien cam	Thiên Cầm
+thien loc	Thiên Lộc
+thien ton	Thiên Tồn
+tho chau	Thổ Châu
+tho tang	Thổ Tăng
+tho xuan	Thọ Xuân
+thoi binh	Thới Bình
+thoi lai	Thới Lai
+thon la vang chinh	Thôn La Vang Chinh
+thong nhat	Thống Nhất
+thot not	Thốt Nốt
+thu dau mot	Thủ Dầu Một
+thu duc	Thủ Đức
+thu muoi mot	Thứ Mười Một
+thu thua	Thủ Thừa
+thua	Thứa
+thuan an	Thuận An
+thuan nam	Thuận Nam
+thuan thanh	Thuận Thanh
+thuan thien	Thuần Thiện
+thuong cat	Thượng Cát
+thuong loc	Thượng Lộc
+thuong nga	Thường Nga
+thuong tin	Thường Tín
+thuong xuan	Thường Xuân
+thuy phuong	Thụy Phương
+tien hai	Tiền Hải
+tien lang	Tiên Lãng
+tien loc	Tiến Lộc
+tien phuoc	Tiên Phước
+tieu can	Tiểu Cần
+tinh bien	Tịnh Biên
+tinh gia	Tĩnh Gia
+to hap	Tô Hạp
+tr'hy	Tr'Hy
+tra bong	Trà Bồng
+tra cu	Trà Cú
+tra my	Trà My
+tra on	Trà Ôn
+tra que vegetable village	Tra Que Vegetable Village
+tra vinh	Trà Vinh
+trai khoai	Trại Khoai
+tram chim	Tràm Chim
+tran cao	Trần Cao
+tran van thoi	Trần Văn Thời
+trang bang	Trảng Bàng
+trang bom	Trảng Bom
+trau quy	Trâu Quỳ
+tri ton	Tri Tôn
+trieu khuc	Triều Khúc
+trieu son	Triệu Sơn
+troi	Trới
+troi	Trôi
+trung loc	Trung Lộc
+trung phung	Trung Phụng
+trung son	Trung Sơn
+truong loc	Trường Lộc
+truong son	Trường Sơn
+tu	Tư
+tu bong	Tu Bông
+tu ky	Tứ Kỳ
+tu nghia	Tư Nghĩa
+tu son	Từ Sơn
+tu trung	Tú Trưng
+tuan giao	Tuần Giáo
+tung loc	Tùng Lộc
+tuong mai	Tương Mai
+tuy hoa	Tuy Hòa
+tuy phuoc	Tuy Phước
+tuyen quang	Tuyên Quang
+u minh	U Minh
+van canh	Vân Canh
+van dien	Văn Điển
+van dinh	Vân Đình
+van gia	Vạn Giã
+van giang	Văn Giang
+van ha	Vạn Hà
+van quan	Văn Quan
+van thanh	Vạn Thạnh
+van tung	Vân Tùng
+vi thanh	Vị Thanh
+viet tri	Việt Trì
+viet yen	Việt Yên
+vinh	Vinh
+vinh an	Vĩnh An
+vinh binh	Vĩnh Bình
+vinh chau	Vĩnh Châu
+vinh hung	Vĩnh Hưng
+vinh loc	Vĩnh Lộc
+vinh long	Vĩnh Long
+vinh thanh	Vĩnh Thạnh
+vinh thuan	Vĩnh Thuận
+vinh tru	Vĩnh Trụ
+vinh tuong	Vĩnh Tường
+vinh tuy	Vĩnh Tuy
+vinh yen	Vĩnh Yên
+vinhomes ocean park	Vinhomes Ocean Park
+vinhomes royal city	Vinhomes Royal City
+vinhomes smart city	Vinhomes Smart City
+vinhomes times city	Vinhomes Times City
+vo xu	Võ Xu
+vu ban	Vụ Bản
+vu quang	Vũ Quang
+vu thu	Vũ Thư
+vung liem	Vũng Liêm
+vung tau	Vũng Tàu
+vuong	Vương
+vuong loc	Vượng Lộc
+xa an ngai	Xã An Ngãi
+xa binh gia	Xã Bình Giả
+xa da k'nang	Xã Đạ K'Nàng
+xa hoai duc	Xã Hoài Đức
+xa long hai	Xã Long Hải
+xa phuc tho	Xã Phúc Thọ
+xa tan ha	Xã Tân Hà
+xa tan thanh	Xã Tân Thanh
+xa tan van	Xã Tân Văn
+xom ben cui	Xóm Bến Củi
+xom cai nuoc	Xóm Cái Nước
+xom muoi lam	Xóm Mười Lăm
+xom my xuan	Xóm Mỹ Xuân
+xuan lac	Xuân Lạc
+xuan loc	Xuân Lộc
+xuan mai	Xuân Mai
+xuan son	Xuân Sơn
+xuan trung	Xuân Trùng
+xuan truong	Xuân Trường
+xuyen moc	Xuyên Mộc
+yen bai	Yên Bái
+yen binh	Yên Bình
+yen cat	Yên Cát
+yen chau	Yên Châu
+yen dinh	Yên Định
+yen hoa	Yên Hòa
+yen lac	Yến Lạc
+yen lac	Yên Lạc
+yen lap	Yên Lập
+yen loc	Yên Lộc
+yen my	Yên Mỹ
+yen nghia	Yên Nghĩa
+yen ninh	Yên Ninh
+yen phu	Yên Phụ
+yen phu	Yên Phú
+yen thanh	Yên Thành
+yen thinh	Yên Thịnh
+yen thuong	Yên Thượng
+yen vien	Yên Viên
+yen vinh	Yên Vinh
+za hung	Za Hung

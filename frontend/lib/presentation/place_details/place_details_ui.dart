@@ -3,12 +3,13 @@ import '../../models/foot_tracker/exploration_model.dart';
 import '../../models/hidden_place/recommended_place_model.dart';
 import '../../providers/hidden_place/hidden_place_provider.dart';
 import '../../widgets/app_feedback.dart';
+import '../../utilities/error_message.dart';
 import 'community_verification/place_report_sheet.dart';
 import 'create_review/create_review_ui.dart';
-import 'community_verification/community_verification_ui.dart';
 import '../navigation/app_navigation.dart';
 import '../hidden_place_discovery/hidden_place_discovery_ui.dart';
 import '../community/share_location/share_to_community_sheet.dart';
+import '../../providers/community/communication_provider.dart';
 import 'dart:convert';
 import 'package:provider/provider.dart';
 import '../../providers/hidden_place/review_provider.dart';
@@ -64,20 +65,22 @@ class _PlaceDetailUIState extends State<PlaceDetailUI> {
   bool get _hasUserVerified => _communityModel?.isVerifiedByCurrentUser
       ?? _localHasUserVerified;
 
-  bool get _isReportedClosed => _communityModel?.isReportedClosed
-      ?? _localIsReportedClosed;
-
   /// Local fallback for Google-place report state (provider does not track
   /// Google places). Initialized from the widget snapshot at build time.
   bool _localHasReported = false;
   bool _localHasUserVerified = false;
-  bool _localIsReportedClosed = false;
 
   /// True while the persisted report state is still being loaded from the
   /// backend (`hidden_place_suppression`). While true the Report Place button
   /// stays disabled so the user cannot accidentally submit a duplicate report
   /// before the button knows whether it is already reported.
   bool _isReportStatusLoading = true;
+
+  /// True while a Verify request started from the in-page Verification Status
+  /// section is in flight. Locks the Verify button so rapid taps cannot start
+  /// duplicate verification requests (same pattern as the report sheet's
+  /// `_submitting` guard).
+  bool _verifying = false;
 
   int _selectedTab = 0;
 
@@ -108,13 +111,40 @@ class _PlaceDetailUIState extends State<PlaceDetailUI> {
     // matter when the provider does not track this place (normal Google place).
     _localHasReported = widget.place.isReportedByCurrentUser;
     _localHasUserVerified = widget.place.isVerifiedByCurrentUser;
-    _localIsReportedClosed = widget.place.isReportedClosed;
 
-    _loadReportStatus();
+    // The persisted report status is fetched AFTER the Place Details screen has
+    // entered and rendered its first frame (post-frame callback), never before.
+    // Until that fetch resolves, _isReportStatusLoading stays true so the
+    // Report Place button remains disabled — the Explore snapshot's default
+    // false can never make it clickable before the real backend state is known.
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (mounted) _loadReportStatus();
+    });
+
     _loadMyReview();
     _loadReviews();
     //Added by Ian for favourite place
     _loadFavouriteStatus();
+  }
+
+  @override
+  void didUpdateWidget(covariant PlaceDetailUI oldWidget) {
+    super.didUpdateWidget(oldWidget);
+
+    // The Explore sheet reuses this State when the user taps a different place
+    // marker while the detail sheet is already open (same widget position, no
+    // key — initState does not re-run). Reset the report state for the newly
+    // selected place and re-fetch it after this frame renders.
+    final oldKey = oldWidget.place.recommendPlaceId ?? oldWidget.place.placeId;
+    final newKey = widget.place.recommendPlaceId ?? widget.place.placeId;
+    if (oldKey != newKey) {
+      _localHasReported = widget.place.isReportedByCurrentUser;
+      _localHasUserVerified = widget.place.isVerifiedByCurrentUser;
+      _isReportStatusLoading = true;
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (mounted) _loadReportStatus();
+      });
+    }
   }
 
   /// Loads the persisted report state from the backend (`hidden_place_suppression`)
@@ -124,35 +154,64 @@ class _PlaceDetailUIState extends State<PlaceDetailUI> {
   /// - Recommended place: the existing recommendation-details endpoint already
   ///   returns `isReportedByCurrentUser` (resolved via the canonical
   ///   recommend_place_id on the backend) — refresh the provider model and let the
-  ///   `_communityModel` getter pick it up.
+  ///   `_communityModel` getter pick it up. When the refresh fails but the
+  ///   provider still holds a model from an earlier visit, that cached model is
+  ///   the last state the backend actually sent, so it counts as KNOWN (state
+  ///   preservation); the getter already prefers it.
   /// - Normal Google place: no submission row exists, so check `hidden_place_suppression`
-  ///   directly with the Google place_id via the report-status endpoint.
+  ///   directly with the Google place_id via the report-status endpoint. The
+  ///   provider does not track Google places, so there is no cached state to
+  ///   preserve — a failed check leaves the status genuinely UNKNOWN.
   ///
-  /// Failure is safe: the flag flips false so the button becomes clickable, and the
-  /// existing 409-duplicate path still protects the user on submit.
+  /// UNKNOWN is NEVER treated as NOT_REPORTED: the loading flag only flips false
+  /// after a DEFINITE backend answer (reported true or false). While the state is
+  /// unknown the Report Place button stays disabled (and, for community places,
+  /// so does the Community Verification entry point). Closing and reopening the
+  /// screen retries the fetch; the existing 409-duplicate path remains as a
+  /// backend-side backstop.
   Future<void> _loadReportStatus() async {
     final provider = context.read<HiddenPlaceProvider>();
     final recommendPlaceId = widget.place.recommendPlaceId;
 
+    // null = UNKNOWN (fetch failed and nothing is preserved) — the button must
+    // stay disabled. Only a definite true/false may end the loading state.
+    bool? reported;
+
     if (recommendPlaceId != null) {
       // Recommended place — details endpoint already carries the state.
-      await provider.loadRecommendationDetails(recommendPlaceId);
+      final model = await provider.loadRecommendationDetails(recommendPlaceId)
+          // Refresh failed — fall back to the last state the backend sent
+          // (provider cache), if one exists. Same value `_communityModel`
+          // would surface, so flag and label can never disagree.
+          ?? provider.getPlaceById(recommendPlaceId);
+      reported = model?.isReportedByCurrentUser;
     } else {
       // Normal Google place — direct suppression check by Google place_id.
-      final reported = await provider.checkPlaceReportStatus(widget.place.placeId);
-      if (reported != null && mounted) {
-        setState(() {
-          _localHasReported = reported;
-          if (reported) {
-            _localIsReportedClosed = true;
-          }
-        });
-      }
+      reported = await provider.checkPlaceReportStatus(widget.place.placeId);
     }
 
-    if (mounted) {
-      setState(() => _isReportStatusLoading = false);
+    if (!mounted) return;
+
+    if (reported == null) {
+      // Status still UNKNOWN after the fetch: keep the button disabled rather
+      // than pretending the user has not reported. Tell the user why instead of
+      // leaving a silently dead button.
+      AppFeedback.show(
+        context,
+        message: 'Could not verify report status. Report stays disabled until it is known.',
+        isSuccess: false,
+      );
+      return;
     }
+
+    // Definite answer in hand — capture it into a final so the promoted
+    // non-null value is visible inside the setState closure.
+    final knownReported = reported;
+    setState(() {
+      _localHasReported = knownReported;
+      // KNOWN now (true or false) — only here may the button become enabled.
+      _isReportStatusLoading = false;
+    });
   }
 
   // Shows the compact title bar only after the original place
@@ -265,6 +324,15 @@ class _PlaceDetailUIState extends State<PlaceDetailUI> {
         _isFavourite = !wasFavourite;
         _isTogglingFavourite = false;
       });
+      ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(
+              wasFavourite
+                  ? 'Removed from favourites.'
+                  : 'Added to favourites.',
+            ),
+          ),
+      );
     } catch (e) {
       if (!mounted) return;
       setState(() => _isTogglingFavourite = false);
@@ -658,22 +726,43 @@ class _PlaceDetailUIState extends State<PlaceDetailUI> {
   }
 
   // ============================================================
-  // COMMUNITY / VERIFICATION STATUS
+  // COMMUNITY / VERIFICATION STATUS (IN-PAGE)
   // ============================================================
   // Shown ONLY for recommended (community) places — i.e. when
   // [PlaceData.recommendPlaceId] is non-null. For normal Google places
-  // this renders an empty box so no Community / Verification UI appears.
+  // this renders nothing.
   //
-  // The badge reflects the AGGREGATE community verification status
-  // ([PlaceData.isVerified]), which is deliberately kept separate from the
-  // current user's own vote ([PlaceData.isVerifiedByCurrentUser]) — the
-  // Community Verification screen handles the per-user vote/withdraw.
+  // Verification now lives DIRECTLY in Place Details (no separate
+  // Community Verification screen). The badge reflects the AUTHORITATIVE
+  // provider model when available (kept fresh by loadRecommendationDetails /
+  // castVote) and falls back to the Explore snapshot for first paint;
+  // per-user vote state uses _hasUserVerified which follows the same
+  // precedence. The AGGREGATE status ([isVerified]) is deliberately kept
+  // separate from the current user's own vote — never conflated.
+  //
+  // Actions:
+  //   • unverified place, no own vote → "Verify this place" (existing
+  //     provider castVote API; no new endpoint, no duplicated logic).
+  //   • user already voted → "Withdraw my verification" (castVote with
+  //     isVerify: false), available even on a VERIFIED place — the backend
+  //     keeps the aggregate status VERIFIED when a vote is withdrawn.
+  //   • VERIFIED place without own vote → no action (verification closed;
+  //     the backend would reject a new vote).
   Widget _buildVerificationStatus() {
     if (widget.place.recommendPlaceId == null) {
       return const SizedBox.shrink();
     }
 
-    final bool verified = widget.place.isVerified;
+    final bool verified = _communityModel?.isVerified
+        ?? widget.place.isVerified;
+    final bool hasOwnVote = _hasUserVerified;
+    // Verify is offered ONLY when the place is not yet verified and the user
+    // has not voted (a VERIFIED place no longer accepts votes; a second vote
+    // is not allowed). If the user HAS voted, the action becomes withdraw —
+    // that must remain available even on a VERIFIED place (the backend keeps
+    // the aggregate status VERIFIED when a vote is withdrawn).
+    final bool showVerify = !verified && !hasOwnVote;
+    final bool showWithdraw = hasOwnVote;
 
     return Padding(
       padding: const EdgeInsets.fromLTRB(20, 0, 20, 2),
@@ -687,35 +776,154 @@ class _PlaceDetailUIState extends State<PlaceDetailUI> {
             color: verified ? const Color(0xffb7e3c8) : const Color(0xffdddddd),
           ),
         ),
-        child: Row(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Icon(
-              verified ? Icons.verified_outlined : Icons.schedule,
-              size: 17,
-              color: verified ? const Color(0xff25a35a) : const Color(0xff666666),
-            ),
-            const SizedBox(width: 8),
-            Expanded(
-              child: Text(
-                verified ? 'Verified' : 'Not yet verified',
-                style: TextStyle(
-                  fontSize: 13,
-                  fontWeight: FontWeight.w500,
-                  color: verified ? const Color(0xff1d7a44) : const Color(0xff555555),
+            Row(
+              children: [
+                Icon(
+                  verified ? Icons.verified_outlined : Icons.shield_outlined,
+                  size: 17,
+                  color: verified ? const Color(0xff25a35a) : const Color(0xff666666),
                 ),
+                const SizedBox(width: 8),
+                Expanded(
+                  child: Text(
+                    verified ? 'Community verified' : 'Not yet verified',
+                    style: TextStyle(
+                      fontSize: 13,
+                      fontWeight: FontWeight.w500,
+                      color: verified ? const Color(0xff1d7a44) : const Color(0xff555555),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(height: 4),
+            Text(
+              verified
+                  ? 'This place has been verified by the community.'
+                  : 'Help the community confirm this place is accurate.',
+              style: const TextStyle(
+                fontSize: 11,
+                color: Color(0xff888888),
               ),
             ),
-            if (verified)
-              const Text(
-                'By the community',
-                style: TextStyle(
-                  fontSize: 11,
-                  color: Color(0xff888888),
+            if (showVerify) ...[
+              const SizedBox(height: 8),
+              SizedBox(
+                width: double.infinity,
+                height: 34,
+                child: OutlinedButton.icon(
+                  // Locks while a verify request is in flight: _verifyThisPlace
+                  // also re-checks _verifying, so rapid taps cannot start
+                  // duplicate requests.
+                  onPressed: _verifying ? null : _verifyThisPlace,
+                  icon: _verifying
+                      ? const SizedBox(
+                          width: 14,
+                          height: 14,
+                          child: CircularProgressIndicator(strokeWidth: 2),
+                        )
+                      : const Icon(Icons.shield_outlined, size: 15),
+                  label: Text(
+                    _verifying ? 'Verifying…' : 'Verify this place',
+                    style: const TextStyle(
+                      fontSize: 12.5,
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
+                  style: OutlinedButton.styleFrom(
+                    foregroundColor: accent,
+                    side: const BorderSide(color: accent),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                  ),
                 ),
               ),
+            ] else if (showWithdraw) ...[
+              const SizedBox(height: 8),
+              SizedBox(
+                width: double.infinity,
+                height: 34,
+                child: OutlinedButton.icon(
+                  // Withdraw must remain available even on a VERIFIED place:
+                  // the backend removes only this user's vote and keeps the
+                  // aggregate status VERIFIED. Same in-flight lock as Verify.
+                  onPressed: _verifying ? null : _withdrawMyVerification,
+                  icon: _verifying
+                      ? const SizedBox(
+                          width: 14,
+                          height: 14,
+                          child: CircularProgressIndicator(strokeWidth: 2),
+                        )
+                      : const Icon(Icons.shield_moon_outlined, size: 15),
+                  label: Text(
+                    _verifying ? 'Updating…' : 'Withdraw my verification',
+                    style: const TextStyle(
+                      fontSize: 12.5,
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
+                  style: OutlinedButton.styleFrom(
+                    foregroundColor: const Color(0xff666666),
+                    side: const BorderSide(color: Color(0xffcccccc)),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                  ),
+                ),
+              ),
+            ],
           ],
         ),
       ),
+    );
+  }
+
+  // Verify THIS place from within Place Details. Delegates to the existing
+  // provider castVote API (which refreshes the authoritative model via
+  // refreshPlace) — the section above re-renders from the fresh model.
+  Future<void> _verifyThisPlace() async {
+    final recommendPlaceId = widget.place.recommendPlaceId;
+    if (recommendPlaceId == null || _verifying) return;
+
+    setState(() => _verifying = true);
+    final provider = context.read<HiddenPlaceProvider>();
+    final ok = await provider.castVote(recommendPlaceId, isVerify: true);
+    if (!mounted) return;
+    setState(() => _verifying = false);
+
+    AppFeedback.show(
+      context,
+      message: ok
+          ? 'Thanks! Your verification has been recorded.'
+          : (provider.errorMessage ?? 'Failed to verify this place.'),
+      isSuccess: ok,
+    );
+  }
+
+  // Withdraw the current user's verification from within Place Details.
+  // Delegates to the same existing provider castVote API (isVerify: false).
+  // Allowed even when the aggregate status is VERIFIED — the backend removes
+  // only this user's vote and keeps the place VERIFIED.
+  Future<void> _withdrawMyVerification() async {
+    final recommendPlaceId = widget.place.recommendPlaceId;
+    if (recommendPlaceId == null || _verifying) return;
+
+    setState(() => _verifying = true);
+    final provider = context.read<HiddenPlaceProvider>();
+    final ok = await provider.castVote(recommendPlaceId, isVerify: false);
+    if (!mounted) return;
+    setState(() => _verifying = false);
+
+    AppFeedback.show(
+      context,
+      message: ok
+          ? 'Your verification has been withdrawn.'
+          : (provider.errorMessage ?? 'Failed to withdraw your verification.'),
+      isSuccess: ok,
     );
   }
 
@@ -724,14 +932,17 @@ class _PlaceDetailUIState extends State<PlaceDetailUI> {
   // =========================
 
   Widget _buildActions() {
-    final bool isCommunity =
-        widget.place.recommendPlaceId != null;
-
-    // Report Place is shown for BOTH place kinds. For a recommended place it
-    // appears NEXT TO Community (recommended places keep Community /
-    // Verification and gain Report Place). The button is disabled while the
-    // persisted report state is still loading, so the user cannot submit a
-    // duplicate report before the button knows whether it is already reported.
+    // Report Place ownership (UI ownership rule):
+    //
+    //   ALL place types (normal Google AND recommended community places)
+    //     → Report is a top-level action button here in Place Details.
+    //     → Verification for community places lives in the in-page
+    //       Verification Status section (_buildVerificationStatus);
+    //       there is NO separate Community action button anymore.
+    //
+    // The button is disabled while the persisted report state is still loading,
+    // so the user cannot submit a duplicate report before the button knows
+    // whether it is already reported.
     final reportButton = _actionButton(
       _hasReported
           ? Icons.check
@@ -768,15 +979,7 @@ class _PlaceDetailUIState extends State<PlaceDetailUI> {
 
           const SizedBox(width: 6),
 
-          if (isCommunity) ...[
-            _actionButton(
-              Icons.verified_outlined,
-              'Community',
-            ),
-            const SizedBox(width: 6),
-            reportButton,
-          ] else
-            reportButton,
+          reportButton,
         ],
       ),
     );
@@ -801,66 +1004,12 @@ class _PlaceDetailUIState extends State<PlaceDetailUI> {
           onTap: enabled
               ? () async {
             // ============================================================
-            // COMMUNITY
-            // Only community recommendations can open verification.
-            // ============================================================
-            if (text == 'Community') {
-              final recommendPlaceId =
-                  widget.place.recommendPlaceId;
-
-              // Normal Google place cannot enter Community Verification.
-              if (recommendPlaceId == null) {
-                return;
-              }
-
-              // debugPrint(
-              //   'COMMUNITY VERIFICATION DATA: '
-              //       'place_id=${widget.place.placeId}, '
-              //       'recommend_place_id=$recommendPlaceId, '
-              //       'submission_id=$recommendPlaceId',
-              // );
-
-              // Community verification uses recommend_place_id,
-              // NOT Google place_id.
-              final result =
-              await AppNavigation.toCommunityVerification(
-                context,
-                placeId: recommendPlaceId,
-                placeStatus: widget.place.isVerified
-                    ? CommunityPlaceStatus.verified
-                    : CommunityPlaceStatus.unverified,
-                userVote: _hasUserVerified
-                    ? CommunityUserVote.verify
-                    : CommunityUserVote.none,
-                placeName: widget.place.title,
-                recommendedBy: widget.place.recommendedBy,
-                hasReported: _hasReported,
-                isReportedClosed: _isReportedClosed,
-              );
-
-              // Sync current user's verification state after returning.
-              // Prefer the provider's authoritative model (which was refreshed
-              // by the child's castVote call) over the raw result, so that any
-              // server-side enforcement (e.g. minimum voting period) is reflected.
-              if (!mounted) return;
-
-              if (result != null) {
-                final provider = context.read<HiddenPlaceProvider>();
-                final fresh = provider.getPlaceById(recommendPlaceId);
-                setState(() {
-                  _localHasUserVerified = fresh?.isVerifiedByCurrentUser
-                      ?? (result == CommunityUserVote.verify);
-                });
-              }
-
-              return;
-            }
-
-            // ============================================================
             // REPORT PLACE (both Google and recommended places)
             // The sheet posts to /reports which the backend resolves: a
             // recommended place's submission GUID maps to its canonical
             // recommend_place_id; a Google place_id is used directly.
+            // Verification is NOT here anymore — it lives in the in-page
+            // Verification Status section above the photos.
             // ============================================================
             if (text == 'Report Place') {
               await _openPlaceReportSheet();
@@ -905,7 +1054,15 @@ class _PlaceDetailUIState extends State<PlaceDetailUI> {
             // Communication module.
             // ============================================================
             if (text == 'Share') {
-              await ShareToCommunitySheet.show(context, place: widget.place);
+              await ShareToCommunitySheet.show(
+                context,
+                previewTitle: widget.place.title,
+                onShare: (communityId) => context.read<CommunicationProvider>().shareLocationToCommunity(
+                      communityId,
+                      sharedPlaceRequestFromPlaceData(widget.place),
+                    ),
+                failureMessage: 'Failed to share this location.',
+              );
               return;
             }
 
@@ -989,8 +1146,6 @@ class _PlaceDetailUIState extends State<PlaceDetailUI> {
     // Report succeeded.
     setState(() {
       _localHasReported = true;
-      _localIsReportedClosed =
-          result.placeStatus == 'REPORTED_CLOSED';
     });
 
     AppFeedback.show(
@@ -1009,6 +1164,41 @@ class _PlaceDetailUIState extends State<PlaceDetailUI> {
     // 1. ONE system/Google photo.
     if (widget.place.imageUrl.isNotEmpty) {
       photoUrls.add(widget.place.imageUrl);
+    }
+
+    // 1b. Recommendation photos carried in photosJson (G-01 fix companion).
+    //
+    // PlaceData.photosJson is the raw JSON-array string used by the community
+    // flows (the backend serializes the recommendation's public image URLs
+    // with System.Text.Json.JsonSerializer.Serialize — see
+    // HiddenPlaceContributionService.SubmitAsync; the My Recommended Places
+    // path now passes it through _openPlaceDetails). Decode it defensively and
+    // append the URLs, deduped against the list. Only absolute http(s) URLs
+    // are accepted — Google places carry photo REFERENCES (not URLs) in this
+    // field, and they must keep rendering from imageUrl alone.
+    final photosJsonRaw = widget.place.photosJson;
+    if (photosJsonRaw != null && photosJsonRaw.isNotEmpty) {
+      try {
+        final decoded = jsonDecode(photosJsonRaw);
+        if (decoded is List) {
+          for (final entry in decoded) {
+            final url = entry?.toString() ?? '';
+            if (url.isEmpty || photoUrls.contains(url)) continue;
+
+            final uri = Uri.tryParse(url);
+            if (uri == null ||
+                !uri.hasScheme ||
+                (uri.scheme != 'http' && uri.scheme != 'https')) {
+              continue;
+            }
+
+            photoUrls.add(url);
+          }
+        }
+      } catch (_) {
+        // Malformed photosJson must never break the photo section — fall back
+        // to the imageUrl/review-photo sources already collected.
+      }
     }
 
     // 2. Photos from ACTIVE user reviews only.
@@ -2402,7 +2592,9 @@ class _PlaceDetailUIState extends State<PlaceDetailUI> {
                                                   ).showSnackBar(
                                                     SnackBar(
                                                       content: Text(
-                                                        'Failed to delete review: $e',
+                                                        isConnectionError(e)
+                                                            ? kConnectionErrorMessage
+                                                            : 'Failed to delete review. Please try again.',
                                                       ),
                                                     ),
                                                   );

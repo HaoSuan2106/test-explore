@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:provider/provider.dart';
@@ -8,8 +10,7 @@ import '../../../widgets/app_button.dart';
 import '../../../widgets/content_constraint.dart';
 import '../../../providers/hidden_place/hidden_place_provider.dart';
 import '../../models/hidden_place/recommended_place_model.dart';
-import '../hidden_place_discovery/hidden_place_discovery_ui.dart'
-    hide AppColors;
+import '../hidden_place_discovery/hidden_place_discovery_ui.dart';
 import '../navigation/app_navigation.dart';
 import '../place_details/place_details_ui.dart';
 
@@ -21,6 +22,11 @@ class MyRecommendedPlacesScreen extends StatefulWidget {
 }
 
 class _MyRecommendedPlacesScreenState extends State<MyRecommendedPlacesScreen> {
+  /// True while a manual/pull refresh triggered from this screen is running.
+  /// The provider keeps the loaded list visible during refresh, so this only
+  /// drives the thin inline indicator.
+  bool _isRefreshing = false;
+
   @override
   void initState() {
     super.initState();
@@ -29,6 +35,53 @@ class _MyRecommendedPlacesScreenState extends State<MyRecommendedPlacesScreen> {
         context.read<HiddenPlaceProvider>().loadMyRecommendations();
       }
     });
+  }
+
+  /// Reloads the place list through the EXISTING canonical loader
+  /// (`HiddenPlaceProvider.loadMyRecommendations`). No second loading system,
+  /// no duplicate API call — refresh simply awaits the same method the screen
+  /// and its Retry / withdraw flows already use.
+  ///
+  /// Returns the content-aware refresh outcome so pull-to-refresh and the
+  /// refresh button can show the correct toast ("Updated successfully" /
+  /// "Already up to date" / error) based on a real data comparison — never
+  /// on HTTP success alone.
+  Future<RecommendationRefreshOutcome> _reloadPlaces() async {
+    if (_isRefreshing) {
+      return RecommendationRefreshOutcome.unchanged;
+    }
+    setState(() => _isRefreshing = true);
+    try {
+      return await context
+          .read<HiddenPlaceProvider>()
+          .refreshMyRecommendationsWithFeedback();
+    } finally {
+      if (mounted) setState(() => _isRefreshing = false);
+    }
+  }
+
+  /// Shows the toast matching a finished refresh outcome (spec Part 14 —
+  /// short wording, no dialogs). Errors keep the previously loaded list
+  /// visible (the provider never clears it on failure).
+  void _showRefreshToast(RecommendationRefreshOutcome outcome) {
+    if (!mounted) return;
+    switch (outcome) {
+      case RecommendationRefreshOutcome.changed:
+        AppFeedback.show(context, message: 'Updated successfully', isSuccess: true);
+      case RecommendationRefreshOutcome.unchanged:
+        AppFeedback.show(context, message: 'Already up to date', isSuccess: true);
+      case RecommendationRefreshOutcome.error:
+        AppFeedback.show(context,
+            message: "Couldn't refresh. Please try again.", isSuccess: false);
+    }
+  }
+
+  Future<void> _onPullToRefresh() async {
+    final outcome = await _reloadPlaces();
+
+    if (!mounted) return;
+
+    _showRefreshToast(outcome);
   }
 
   @override
@@ -61,12 +114,12 @@ class _MyRecommendedPlacesScreenState extends State<MyRecommendedPlacesScreen> {
               // Stats header (always visible, not in the scrollable list).
               Padding(
                 padding: const EdgeInsets.fromLTRB(
-                    AppSpacing.containerMargin, AppSpacing.containerMargin,
+                    AppSpacing.containerMargin, AppSpacing.stackSm,
                     AppSpacing.containerMargin, 0),
                 child: Container(
-                padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 12),
+                padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 12),
                 decoration: BoxDecoration(
-                  color: AppColors.surfaceCard,
+                  color: AppColors.surface,
                   borderRadius: AppRadii.roundedLg,
                   border: Border.all(color: AppColors.outline),
                 ),
@@ -88,12 +141,39 @@ class _MyRecommendedPlacesScreenState extends State<MyRecommendedPlacesScreen> {
                 ),
               ),
               ),
-              const SizedBox(height: AppSpacing.stackLg),
+              // Thin inline indicator for button-triggered refreshes; the
+              // loaded list stays fully visible beneath it.
+              if (_isRefreshing)
+                const Padding(
+                  padding: EdgeInsets.only(top: 2),
+                  child: LinearProgressIndicator(minHeight: 2),
+                ),
+              const SizedBox(height: AppSpacing.stackMd),
               Padding(
                 padding: const EdgeInsets.symmetric(
                     horizontal: AppSpacing.containerMargin),
-                child: Text('Your Place Submissions',
-                    style: AppTypography.headlineMd.copyWith(fontSize: 16)),
+                child: Row(
+                  children: [
+                    Text('Your Place Submissions',
+                        style: AppTypography.headlineMd.copyWith(fontSize: 16)),
+                    const Spacer(),
+                    // Compact manual refresh control (~36px, matching the
+                    // Post Feed compact-control principles).
+                    IconButton(
+                      tooltip: 'Refresh',
+                      onPressed: _isRefreshing
+                          ? null
+                          : () async =>
+                              _showRefreshToast(await _reloadPlaces()),
+                      icon: const Icon(Icons.refresh, size: 20),
+                      color: AppColors.primary,
+                      visualDensity: VisualDensity.compact,
+                      constraints: const BoxConstraints(
+                          minWidth: 36, minHeight: 36),
+                      padding: EdgeInsets.zero,
+                    ),
+                  ],
+                ),
               ),
               const SizedBox(height: AppSpacing.stackSm),
               // Lazy list of place cards.
@@ -188,6 +268,22 @@ class _MyRecommendedPlacesScreenState extends State<MyRecommendedPlacesScreen> {
 
     final photos = place.photosJson ?? const <String>[];
 
+    // G-01 fix: pass the FULL photo list to Place Details, not just photo 1.
+    //
+    // photosJson on the list model is a List<String> of public image URLs (the
+    // backend serializes RecommendPlace.PhotosJson with
+    // System.Text.Json.JsonSerializer.Serialize — see
+    // HiddenPlaceContributionService.SubmitAsync). PlaceData.photosJson is the
+    // raw JSON string field carried by the working Explore Map path
+    // (hidden_place_discovery_ui.dart _toPlaceData), and Place Details' photo
+    // sources read it with the SAME jsonDecode + is List contract (see
+    // place_details_ui.dart _getPlacePhotoUrls / _parseOpeningHoursJson).
+    // jsonEncode here reproduces that established representation exactly — no
+    // new format is invented. photos.first stays on imageUrl so the collage's
+    // primary tile keeps its URL even when _getPlacePhotoUrls is not reached,
+    // and dedupe in _getPlacePhotoUrls prevents double-counting photo 1.
+    final photosJson = photos.isNotEmpty ? jsonEncode(photos) : null;
+
     // Route the recommendation's Place Details screen through GoRouter +
     // typed AppNavigation (P6.1). The list model's id IS the community
     // submission id (UUID) — the recommend_place_id the Place Details UI keys
@@ -217,7 +313,7 @@ class _MyRecommendedPlacesScreenState extends State<MyRecommendedPlacesScreen> {
         phoneNumber: null,
         websiteUri: null,
         googleMapsUri: null,
-        photosJson: null,
+        photosJson: photosJson,
         regularOpeningHoursJson: null,
       ),
       reviewTargetType: PlaceReviewTargetType.system,
@@ -273,6 +369,9 @@ class _MyRecommendedPlacesScreenState extends State<MyRecommendedPlacesScreen> {
 
   /// Lazy-rendered list of the user's recommendation cards (loading / error /
   /// empty states share the same scroll area so the stats header stays put).
+  /// Every settled state (loaded / empty / error) is wrapped in a
+  /// [RefreshIndicator] so pulling down always offers a reload through the
+  /// existing canonical loader.
   Widget _buildPlacesList(HiddenPlaceProvider placeProvider) {
     final places = placeProvider.userRecommendations;
     if (placeProvider.isLoading && places.isEmpty) {
@@ -282,22 +381,45 @@ class _MyRecommendedPlacesScreenState extends State<MyRecommendedPlacesScreen> {
       );
     }
     if (placeProvider.errorMessage != null && places.isEmpty) {
-      return _buildLoadErrorState(placeProvider.errorMessage!);
+      // `return` is required — without it this branch is dead code and a
+      // failed first load falls through to the empty state, hiding the
+      // error message + Retry from the user.
+      return RefreshIndicator(
+        onRefresh: _onPullToRefresh,
+        child: ListView(
+          physics: const AlwaysScrollableScrollPhysics(),
+          children: [_buildLoadErrorState(placeProvider.errorMessage!)],
+        ),
+      );
     }
     if (places.isEmpty) {
-      return _buildEmptyPlacesState();
+      return RefreshIndicator(
+        onRefresh: () async =>
+            _showRefreshToast(await _reloadPlaces()),
+        child: ListView(
+          physics: const AlwaysScrollableScrollPhysics(),
+          children: [_buildEmptyPlacesState()],
+        ),
+      );
     }
-    return ListView.builder(
-      padding: const EdgeInsets.fromLTRB(
-        AppSpacing.containerMargin,
-        0,
-        AppSpacing.containerMargin,
-        AppSpacing.stackLg,
-      ),
-      itemCount: places.length,
-      itemBuilder: (context, i) => Padding(
-        padding: const EdgeInsets.only(bottom: AppSpacing.stackMd),
-        child: _buildPlaceCard(context, places[i]),
+    // Loaded state: the SAME wrapper as the empty/error states so EVERY
+    // pull-to-refresh path shows the outcome toast (changed / unchanged /
+    // error). _reloadPlaces alone would refresh silently — no feedback.
+    return RefreshIndicator(
+      onRefresh: _onPullToRefresh,
+      child: ListView.builder(
+        physics: const AlwaysScrollableScrollPhysics(),
+        padding: const EdgeInsets.fromLTRB(
+          AppSpacing.containerMargin,
+          0,
+          AppSpacing.containerMargin,
+          AppSpacing.stackLg,
+        ),
+        itemCount: places.length,
+        itemBuilder: (context, i) => Padding(
+          padding: const EdgeInsets.only(bottom: AppSpacing.stackMd),
+          child: _buildPlaceCard(context, places[i]),
+        ),
       ),
     );
   }
@@ -366,7 +488,7 @@ class _MyRecommendedPlacesScreenState extends State<MyRecommendedPlacesScreen> {
             'Submitted on ${place.submittedAt.toLocal().day}/${place.submittedAt.toLocal().month}/${place.submittedAt.toLocal().year}',
             style: AppTypography.labelSm,
           ),
-          const Divider(height: 24),
+          const Divider(height: 16),
           Row(
             children: [
               Expanded(
@@ -374,7 +496,7 @@ class _MyRecommendedPlacesScreenState extends State<MyRecommendedPlacesScreen> {
                   text: 'Edit',
                   icon: Icons.edit_outlined,
                   variant: AppButtonVariant.outline,
-                  height: 40,
+                  height: 36,
                   onPressed: isUnderVoting
                       ? () {
                           AppNavigation.toEditRecommendation(
@@ -389,8 +511,10 @@ class _MyRecommendedPlacesScreenState extends State<MyRecommendedPlacesScreen> {
                   text: 'Withdraw',
                   icon: Icons.remove_circle_outline,
                   variant: AppButtonVariant.outline,
-                  height: 40,
-                  onPressed: (isUnderVoting || place.isVerified) && !place.isWithdrawn
+                  height: 36,
+                  // Same gate as Edit: only UNDER_VOTING submissions may be
+                  // withdrawn from the list — a VERIFIED place is locked.
+                  onPressed: isUnderVoting && !place.isWithdrawn
                       ? () => _confirmWithdraw(context, place.id, place.name)
                       : null,
                 ),

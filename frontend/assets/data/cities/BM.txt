@@ -1,0 +1,11 @@
+devonshire parish	Devonshire Parish
+hamilton	Hamilton
+hamilton parish	Hamilton Parish
+paget parish	Paget Parish
+pembroke parish	Pembroke Parish
+saint george	Saint George
+sandys parish	Sandys Parish
+smith's parish	Smith's Parish
+southampton parish	Southampton Parish
+st george's parish	St George's Parish
+warwick parish	Warwick Parish

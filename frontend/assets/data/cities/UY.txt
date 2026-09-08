@@ -1,0 +1,133 @@
+25 de agosto	25 de Agosto
+25 de mayo	25 de Mayo
+acegua	Aceguá
+aguas corrientes	Aguas Corrientes
+aigua	Aiguá
+alejandro gallinal	Alejandro Gallinal
+artigas	Artigas
+atlantida	Atlántida
+baltasar brum	Baltasar Brum
+barra de carrasco	Barra de Carrasco
+barros blancos	Barros Blancos
+belen	Belén
+bella union	Bella Unión
+blanquillo	Blanquillo
+canelones	Canelones
+cardal	Cardal
+cardona	Cardona
+carmelo	Carmelo
+castillos	Castillos
+casupa	Casupá
+cebollati	Cebollatí
+chui	Chui
+colonia del sacramento	Colonia del Sacramento
+colonia nicolich	Colonia Nicolich
+colonia valdense	Colonia Valdense
+costa azul	Costa Azul
+cuareim	Cuareim
+curtina	Curtina
+delta del tigre	Delta del Tigre
+dolores	Dolores
+durazno	Durazno
+ecilda paullier	Ecilda Paullier
+empalme olmos	Empalme Olmos
+estacion porvenir	Estación Porvenir
+florencio sanchez	Florencio Sánchez
+florida	Florida
+fraile muerto	Fraile Muerto
+fray bentos	Fray Bentos
+general enrique martinez	General Enrique Martínez
+guichon	Guichón
+isidoro noblia	Isidoro Noblía
+joaquin suarez	Joaquín Suárez
+jose batlle y ordonez	José Batlle y Ordóñez
+jose enrique rodo	José Enrique Rodó
+jose pedro varela	José Pedro Varela
+juan l. lacaze	Juan L. Lacaze
+juanico	Juanicó
+la floresta	La Floresta
+la paloma	La Paloma
+la paz	La Paz
+las piedras	Las Piedras
+las toscas	Las Toscas
+lascano	Lascano
+libertad	Libertad
+los cerrillos	Los Cerrillos
+maldonado	Maldonado
+marindia	Marindia
+mariscala	Mariscala
+melo	Melo
+mercedes	Mercedes
+migues	Migues
+minas	Minas
+minas de corrales	Minas de Corrales
+montes	Montes
+montevideo	Montevideo
+nueva helvecia	Nueva Helvecia
+nueva palmira	Nueva Palmira
+nuevo berlin	Nuevo Berlín
+ombues de lavalle	Ombúes de Lavalle
+pajas blancas	Pajas Blancas
+palmitas	Palmitas
+pan de azucar	Pan de Azúcar
+pando	Pando
+paso de carrasco	Paso de Carrasco
+paso de los toros	Paso de los Toros
+paysandu	Paysandú
+piedras coloradas	Piedras Coloradas
+piriapolis	Piriápolis
+porvenir	Porvenir
+progreso	Progreso
+pueblo centenario	Pueblo Centenario
+pueblo sequeira	Pueblo Sequeira
+puimayen	Puimayen
+punta del este	Punta del Este
+puntas de valdez	Puntas de Valdéz
+quebracho	Quebracho
+rafael perazza	Rafael Perazza
+rio branco	Río Branco
+rivera	Rivera
+rocha	Rocha
+rodriguez	Rodríguez
+rosario	Rosario
+salinas	Salinas
+salto	Salto
+san antonio	San Antonio
+san bautista	San Bautista
+san carlos	San Carlos
+san felix	San Félix
+san gregorio de polanco	San Gregorio de Polanco
+san jacinto	San Jacinto
+san javier	San Javier
+san jose de mayo	San José de Mayo
+san ramon	San Ramón
+santa bernardina	Santa Bernardina
+santa catalina	Santa Catalina
+santa clara de olimar	Santa Clara de Olimar
+santa lucia	Santa Lucía
+santa rosa	Santa Rosa
+santa teresa	Santa Teresa
+santiago vazquez	Santiago Vázquez
+sarandi del yi	Sarandí del Yi
+sarandi grande	Sarandí Grande
+sauce	Sauce
+soca	Soca
+solis de mataojo	Solís de Mataojo
+tacuarembo	Tacuarembó
+tala	Tala
+tambores	Tambores
+tarariras	Tarariras
+toledo	Toledo
+tomas gomensoro	Tomás Gomensoro
+tranqueras	Tranqueras
+treinta y tres	Treinta y Tres
+trinidad	Trinidad
+tupambae	Tupambaé
+velazquez	Velázquez
+vergara	Vergara
+vichadero	Vichadero
+villa constitucion	Villa Constitución
+villa del carmen	Villa del Carmen
+villa sara	Villa Sara
+villa soriano	Villa Soriano
+young	Young

@@ -678,6 +678,17 @@ namespace ExploreMy.Api.Application.HiddenPlace.DiscoverHiddenPlace;
 /// fetching from Google Places API and saving results belong in a separate client/repository that
 /// calls into this service (e.g. via IHiddenPlaceService in the Facade folder).
 /// </summary>
+/// <summary>
+/// Every review count and rating in the live class below is read through
+/// PlaceCandidate.EffectiveUserRatingCount / EffectiveRating, NOT through the raw Google fields.
+/// Those pool Google's numbers with our own app's reviews of the same place, so a place our users
+/// have rated is judged on everything known about it rather than on Google alone - see those two
+/// properties for how the pooling is weighted. With no app reviews they return the Google numbers
+/// unchanged, which makes this an extension of the original behaviour rather than a re-tuning of it.
+///
+/// Community (user-recommended) places do NOT come through here. They have no Google data at all, so
+/// every comparison this class makes is undefined for them - see CommunityPlaceScorer.
+/// </summary>
 public class DiscoverHiddenPlaceService : IDiscoverHiddenPlaceService
 {
     public IReadOnlyList<HiddenPlaceResult> Discover(
@@ -710,7 +721,7 @@ public class DiscoverHiddenPlaceService : IDiscoverHiddenPlaceService
         // rather than one review count for everything.
         var reviewCeilings = BuildReviewCeilings(referencePool, options);
         var survivors = referencePool
-            .Where(place => place.UserRatingCount <= reviewCeilings.For(place.PrimaryType))
+            .Where(place => place.EffectiveUserRatingCount <= reviewCeilings.For(place.PrimaryType))
             .ToList();
         if (survivors.Count == 0)
         {
@@ -718,7 +729,7 @@ public class DiscoverHiddenPlaceService : IDiscoverHiddenPlaceService
         }
 
         // Fallback comparison pool for local groups that are too small to judge fairly on their own.
-        var globalMaxReviewCount = referencePool.Max(p => p.UserRatingCount);
+        var globalMaxReviewCount = referencePool.Max(p => p.EffectiveUserRatingCount);
 
         var localGroups = referencePool
             .GroupBy(p => BuildGroupKey(p, options.LocalGroupGridSizeDegrees))
@@ -731,11 +742,11 @@ public class DiscoverHiddenPlaceService : IDiscoverHiddenPlaceService
             var group = localGroups[BuildGroupKey(place, options.LocalGroupGridSizeDegrees)];
 
             var comparisonMax = group.Count >= options.MinGroupSizeForLocalComparison
-                ? group.Max(p => p.UserRatingCount)
+                ? group.Max(p => p.EffectiveUserRatingCount)
                 : globalMaxReviewCount;
 
-            var popularityNorm = NormalizeReviewCount(place.UserRatingCount, comparisonMax);
-            var ratingNorm = NormalizeRating(place.Rating, options.MinRating);
+            var popularityNorm = NormalizeReviewCount(place.EffectiveUserRatingCount, comparisonMax);
+            var ratingNorm = NormalizeRating(place.EffectiveRating, options.MinRating);
 
             var hiddenScore =
                 options.PopularityWeight * (1 - popularityNorm) +
@@ -767,7 +778,7 @@ public class DiscoverHiddenPlaceService : IDiscoverHiddenPlaceService
         return results
             .Where(r => r.HiddenScore >= options.MinHiddenScore)
             .OrderByDescending(r => r.HiddenScore)
-            .ThenBy(r => r.Place.UserRatingCount)
+            .ThenBy(r => r.Place.EffectiveUserRatingCount)
             .ThenBy(r => r.Place.PlaceId, StringComparer.Ordinal)
             .ToList();
     }
@@ -790,7 +801,7 @@ public class DiscoverHiddenPlaceService : IDiscoverHiddenPlaceService
         options ??= new DiscoverHiddenPlaceOptions();
 
         return PassesBaseQualityChecks(place, options)
-               && place.UserRatingCount <= options.MaxUserRatingCount;
+               && place.EffectiveUserRatingCount <= options.MaxUserRatingCount;
     }
 
     /// <summary>
@@ -807,10 +818,10 @@ public class DiscoverHiddenPlaceService : IDiscoverHiddenPlaceService
         if (!options.AllowedBusinessStatuses.Contains(place.BusinessStatus))
             return false;
 
-        if (place.Rating is null || place.Rating < options.MinRating)
+        if (place.EffectiveRating is null || place.EffectiveRating < options.MinRating)
             return false;
 
-        if (place.UserRatingCount < options.MinUserRatingCount)
+        if (place.EffectiveUserRatingCount < options.MinUserRatingCount)
             return false;
 
         if (options.ChainBrandKeywords.Any(keyword =>
@@ -858,7 +869,7 @@ public class DiscoverHiddenPlaceService : IDiscoverHiddenPlaceService
         double absoluteCeiling = options.MaxUserRatingCount;
 
         double CeilingFor(IEnumerable<PlaceCandidate> places) => Math.Min(
-            Percentile(places.Select(p => p.UserRatingCount).OrderBy(n => n).ToList(),
+            Percentile(places.Select(p => p.EffectiveUserRatingCount).OrderBy(n => n).ToList(),
                        options.MaxUserRatingPercentile),
             absoluteCeiling);
 
@@ -951,6 +962,14 @@ public class DiscoverHiddenPlaceService : IDiscoverHiddenPlaceService
         Longitude = (decimal)p.Place.Longitude,
         PrimaryType = p.Place.PrimaryType,
         Description = p.Place.Description,
+        // Persistence-audit fix (J-class): the canonical row already stores these three
+        // (recommended_places.price_level / business_status / photo_json — see
+        // HiddenPlaceContributionService.ToSummaryDto, which always carried them), but this
+        // discover-side projection omitted them, so GET /api/recommended-places/discover
+        // showed photos / price level / business status as missing although MySQL had them.
+        PriceLevel = p.Place.PriceLevel,
+        BusinessStatus = p.Place.BusinessStatus,
+        PhotosJson = p.Place.PhotosJson,
         Status = p.Status,
         VerificationCount = p.Verifications.Count,
         RequiredVerifications = RecommendedPlaceThresholds.RequiredVerifications,

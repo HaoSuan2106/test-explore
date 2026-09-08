@@ -47,13 +47,10 @@ public class SocialEngagementService : ISocialEngagementService
             throw new NotFoundException("Post not found.");
         }
 
-        // REQ: users must not comment on their own community post.
-        var post = await _repository.GetByIdAsync(postId, currentUserId)
-            ?? throw new NotFoundException("Post not found.");
-        if (post.AuthorId == currentUserId)
-        {
-            throw new ForbiddenException("You cannot comment on your own post.");
-        }
+        // Commenting is allowed for BOTH the post owner and normal users.
+        // The former owner restriction ("You cannot comment on your own post.")
+        // was removed by design decision — comment permission is identical for
+        // owner and non-owner; only edit/delete remain owner-only.
 
         // REQ: reporters with an active report on this post are view-only.
         if (await _repository.HasActiveReportAsync(postId, currentUserId))
@@ -203,13 +200,23 @@ public class SocialEngagementService : ISocialEngagementService
             else
             {
                 // Add the reaction
-                await _repository.CreateReactionAsync(new PostReaction
+                try
                 {
-                    PostId = postId,
-                    UserId = currentUserId,
-                    ReactionType = request.ReactionType,
-                    Status = PostReactionStatus.Active,
-                });
+                    await _repository.CreateReactionAsync(new PostReaction
+                    {
+                        PostId = postId,
+                        UserId = currentUserId,
+                        ReactionType = request.ReactionType,
+                        Status = PostReactionStatus.Active,
+                    });
+                }
+                catch (ConcurrentDuplicateException)
+                {
+                    // A concurrent toggle slipped past the active-reaction check;
+                    // the DB unique constraint rejected the second insert. Surface
+                    // the already-reacted state instead of a raw 500.
+                    throw new ConflictException("You have already reacted to this post.");
+                }
             }
         }
 
@@ -282,7 +289,17 @@ public class SocialEngagementService : ISocialEngagementService
             Status = PostReportStatus.Active,
         };
 
-        await _repository.CreateReportAsync(report);
+        try
+        {
+            await _repository.CreateReportAsync(report);
+        }
+        catch (ConcurrentDuplicateException)
+        {
+            // A concurrent duplicate slipped past the pre-check above; the DB
+            // unique constraint rejected it. Return the same outcome as the
+            // sequential duplicate path instead of a raw 500.
+            throw new ConflictException("You have already reported this post.");
+        }
 
         var count = await _repository.GetActiveReportCountAsync(postId);
 

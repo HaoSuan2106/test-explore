@@ -1,0 +1,751 @@
+andrijasevci	Andrijaševci
+antunovac	Antunovac
+babina greda	Babina Greda
+babino polje	Babino Polje
+bakar	Bakar
+bale	Bale
+banjol	Banjol
+barban	Barban
+barbat	Barbat
+barilovic	Barilović
+baska	Baška
+baska voda	Baška Voda
+bebrina	Bebrina
+bedekovcina	Bedekovčina
+bedenica	Bedenica
+bednja	Bednja
+beli manastir	Beli Manastir
+belica	Belica
+belisce	Belišće
+benkovac	Benkovac
+berek	Berek
+beretinec	Beretinec
+bestovje	Bestovje
+bibinje	Bibinje
+bijelo brdo	Bijelo Brdo
+bilice	Bilice
+bilje	Bilje
+biograd na moru	Biograd na Moru
+biskupija	Biskupija
+bistrinci	Bistrinci
+bizovac	Bizovac
+bjelovar	Bjelovar
+blato	Blato
+bobota	Bobota
+bogdanovci	Bogdanovci
+bol	Bol
+borovo	Borovo
+bosiljevo	Bosiljevo
+bosnjaci	Bošnjaci
+brckovljani	Brckovljani
+brdovec	Brdovec
+bregana	Bregana
+brela	Brela
+brestovac	Brestovac
+brezje	Brezje
+breznica	Breznica
+breznicki hum	Breznički Hum
+bribir	Bribir
+brijesce	Briješće
+brijest	Brijest
+brinje	Brinje
+brnaze	Brnaze
+brod moravice	Brod Moravice
+brodarica	Brodarica
+brodic	Brodić
+brodski stupnik	Brodski Stupnik
+brodski varos	Brodski Varoš
+brtonigla	Brtonigla
+budasevo	Budaševo
+budinscina	Budinšćina
+budrovci	Budrovci
+buje	Buje
+bukovlje	Bukovlje
+busevec	Buševec
+buzdohanj	Buzdohanj
+buzet	Buzet
+buzin	Buzin
+cabar	Čabar
+cacinci	Čačinci
+cadavica	Čađavica
+caglin	Čaglin
+cakovec	Čakovec
+cavle	Čavle
+cavtat	Cavtat
+cazma	Čazma
+ceminac	Čeminac
+centar	Centar
+cepin	Čepin
+ceric	Cerić
+cerna	Cerna
+cernik	Cernik
+cerovlje	Cerovlje
+cestica	Cestica
+cetingrad	Cetingrad
+cibaca	Čibača
+cista provo	Cista Provo
+civljane	Civljane
+cres	Cres
+crikvenica	Crikvenica
+crnac	Crnac
+dakovo	Đakovo
+dalj	Dalj
+darda	Darda
+daruvar	Daruvar
+davor	Davor
+dekanovec	Dekanovec
+delekovec	Ðelekovec
+delnice	Delnice
+desinic	Desinić
+dezanovac	Dežanovac
+dicmo kraj	Dicmo Kraj
+dobrinj	Dobrinj
+dobrodol	Dobrodol
+dolus	Doluš
+domasinec	Domašinec
+donja bistra	Donja Bistra
+donja dubrava	Donja Dubrava
+donja lomnica	Donja Lomnica
+donja moticina	Donja Motičina
+donja pusca	Donja Pušća
+donja stubica	Donja Stubica
+donja voca	Donja Voća
+donje ladanje	Donje Ladanje
+donji andrijevci	Donji Andrijevci
+donji kraljevec	Donji Kraljevec
+donji kukuruzari	Donji Kukuruzari
+donji lapac	Donji Lapac
+donji miholjac	Donji Miholjac
+donji muc	Donji Muć
+donji prolozac	Donji Proložac
+donji seget	Donji Seget
+donji stupnik	Donji Stupnik
+donji vidovec	Donji Vidovec
+donji vinjani	Donji Vinjani
+dragalic	Dragalić
+draganici	Draganići
+dramalj	Dramalj
+draz	Draž
+drazice	Dražice
+drenje	Drenje
+drenova	Drenova
+drenovci	Drenovci
+drnis	Drniš
+drnje	Drnje
+dubac-varsan	Dubac-Varsan
+dubrava	Dubrava
+dubravica	Dubravica
+dubrovnik	Dubrovnik
+duce	Duće
+duga resa	Duga Resa
+dugi rat	Dugi Rat
+dugo selo	Dugo Selo
+dugopolje	Dugopolje
+dulovac	Ðulovac
+durdenovac	Ðurđenovac
+durdevac	Đurđevac
+durmanec	Ðurmanec
+dvor	Dvor
+erdut	Erdut
+ernestinovo	Ernestinovo
+ervenik	Ervenik
+farkasevac	Farkaševac
+fazana	Fažana
+ferdinandovac	Ferdinandovac
+fericanci	Feričanci
+funtana	Funtana
+fuzine	Fužine
+galizana	Galižana
+galovac	Galovac
+garcin	Garčin
+garesnica	Garešnica
+generalski stol	Generalski Stol
+glavice	Glavice
+glavina donja	Glavina Donja
+glina	Glina
+gola	Gola
+gorican	Goričan
+gorjani	Gorjani
+gornja bistra	Gornja Bistra
+gornja rijeka	Gornja Rijeka
+gornja stubica	Gornja Stubica
+gornja vrba	Gornja Vrba
+gornjaki	Gornjaki
+gornje jesenje	Gornje Jesenje
+gornje vratno	Gornje Vratno
+gornji bogicevci	Gornji Bogičevci
+gornji kneginec	Gornji Kneginec
+gornji mihaljevec	Gornji Mihaljevec
+gornji stupnik	Gornji Stupnik
+gornji vinjani	Gornji Vinjani
+gospic	Gospić
+grabovci	Grabovci
+gracac	Gračac
+gracisce	Gračišće
+gradac	Gradac
+gradec	Gradec
+gradici	Gradići
+gradina	Gradina
+gradiste	Gradište
+greda	Greda
+grljevac	Grljevac
+grohote	Grohote
+groznjan	Grožnjan
+grubisno polje	Grubišno Polje
+gundinci	Gundinci
+gunja	Gunja
+hercegovac	Hercegovac
+hlebine	Hlebine
+hodosan	Hodošan
+horvati	Horvati
+hrasce turopoljsko	Hrašće Turopoljsko
+hrascica	Hrašćica
+hrascina	Hrašćina
+hreljin	Hreljin
+hrvace	Hrvace
+hrvatska dubica	Hrvatska Dubica
+hrvatska kostajnica	Hrvatska Kostajnica
+hrvatski leskovac	Hrvatski Leskovac
+hum na sutli	Hum na Sutli
+hvar	Hvar
+ilok	Ilok
+imotski	Imotski
+ivanec	Ivanec
+ivanic-grad	Ivanić-Grad
+ivanja reka	Ivanja Reka
+ivankovo	Ivankovo
+ivanovac	Ivanovac
+ivanovec	Ivanovec
+ivanska	Ivanska
+jablanovec	Jablanovec
+jadranovo	Jadranovo
+jagodnjak	Jagodnjak
+jakovlje	Jakovlje
+jaksic	Jakšić
+jalkovec	Jalkovec
+jalzabet	Jalžabet
+janjina	Janjina
+jankomir	Jankomir
+jarmina	Jarmina
+jasenovac	Jasenovac
+jastrebarsko	Jastrebarsko
+jelenje	Jelenje
+jelisavac	Jelisavac
+jelsa	Jelsa
+jesenice	Jesenice
+jezdovec	Ježdovec
+josipdol	Josipdol
+josipovac	Josipovac
+kali	Kali
+kalinovac	Kalinovac
+kalnik	Kalnik
+kamanje	Kamanje
+kamen	Kamen
+kamenmost	Kamenmost
+kampor	Kampor
+kanfanar	Kanfanar
+kapela	Kapela
+kaptol	Kaptol
+karlobag	Karlobag
+karlovac	Karlovac
+karojba	Karojba
+kasina	Kašina
+kastav	Kastav
+kastel gomilica	Kaštel Gomilica
+kastel kambelovac	Kaštel Kambelovac
+kastel luksic	Kaštel Lukšić
+kastel novi	Kaštel Novi
+kastel stafilic	Kaštel Štafilić
+kastel stari	Kaštel Stari
+kastel sucurac	Kaštel Sućurac
+kastelir	Kaštelir
+kerestinec	Kerestinec
+kijevo	Kijevo
+kistanje	Kistanje
+klakar	Klakar
+klana	Klana
+klanjec	Klanjec
+klenovnik	Klenovnik
+klepece selo	Klepeće Selo
+klinca sela	Klinča Sela
+klis	Klis
+klostar ivanic	Kloštar Ivanić
+klostar podravski	Kloštar Podravski
+knezevi vinogradi	Kneževi Vinogradi
+knin	Knin
+kolan	Kolan
+komiza	Komiža
+komletinci	Komletinci
+koncanica	Končanica
+konjscina	Konjšćina
+kopcevec	Kopčevec
+koprivnica	Koprivnica
+koprivnicki bregi	Koprivnički Bregi
+koprivnicki ivanec	Koprivnički Ivanec
+korcula	Korčula
+korenica	Korenica
+koska	Koška
+kostrena	Kostrena
+kosute	Košute
+kotoriba	Kotoriba
+kozinscak	Kozinščak
+kraljevec kupinecki	Kraljevec Kupinečki
+kraljevec na sutli	Kraljevec na Sutli
+kraljevica	Kraljevica
+krapina	Krapina
+krapinske toplice	Krapinske Toplice
+krasic	Krašić
+krasica	Krasica
+kravarsko	Kravarsko
+krc bosiljevski	Krč Bosiljevski
+kriz	Križ
+krizevci	Križevci
+krk	Krk
+krnjak	Krnjak
+krsan	Kršan
+kucan gornji	Kućan Gornji
+kucan marof	Kućan Marof
+kuce	Kuče
+kucine	Kučine
+kukljica	Kukljica
+kula norinska	Kula Norinska
+kumrovec	Kumrovec
+kursanec	Kuršanec
+kutina	Kutina
+kutjevo	Kutjevo
+labin	Labin
+ladimirevci	Ladimirevci
+lanisce	Lanišće
+lasinja	Lasinja
+lastovo	Lastovo
+lecevica	Lećevica
+legrad	Legrad
+lekenik	Lekenik
+lepoglava	Lepoglava
+levanjska varos	Levanjska Varoš
+liberpolis	Liberpolis
+licki osik	Lički Osik
+lipik	Lipik
+liposcaki	Lipošćaki
+lipovljani	Lipovljani
+lisane ostrovicke	Lišane Ostrovičke
+liznjan	Ližnjan
+ljubescica	Ljubešćica
+lobor	Lobor
+lokve	Lokve
+lokvicic	Lokvičič
+lopar	Lopar
+lopatinec	Lopatinec
+lovas	Lovas
+lovinac	Lovinac
+lovran	Lovran
+lovrec	Lovreć
+lucko	Lučko
+ludbreg	Ludbreg
+lugarski breg	Lugarski Breg
+luka vrbovecka	Luka Vrbovečka
+lukac	Lukač
+lukarisce	Lukarišće
+lukavec	Lukavec
+lumbarda	Lumbarda
+lupoglav	Lupoglav
+mace	Mače
+mackovec	Mačkovec
+magadenovac	Magadenovac
+majur	Majur
+makarska	Makarska
+mala subotica	Mala Subotica
+mali bukovec	Mali Bukovec
+mali losinj	Mali Lošinj
+malinska	Malinska
+marcana	Marčana
+marcelji	Marčelji
+marija bistrica	Marija Bistrica
+marija gorica	Marija Gorica
+marina	Marina
+marinici	Marinići
+marjanci	Marjanci
+markovac nasicki	Markovac Našički
+markovac trojstveni	Markovac Trojstveni
+markusica	Markušica
+martijanec	Martijanec
+martinska ves	Martinska Ves
+marusevec	Maruševec
+matulji	Matulji
+mavrinci	Mavrinci
+medulin	Medulin
+metkovic	Metković
+micevec	Mičevec
+mihovljan	Mihovljan
+mikleus	Mikleuš
+milanovac	Milanovac
+milna	Milna
+mirkovci	Mirkovci
+mladenici	Mladenići
+mlini	Mlini
+mliniste	Mlinište
+mokosica	Mokošica
+molve	Molve
+moscenica	Mošćenica
+moscenicka draga	Mošćenička Draga
+motovun	Motovun
+mraclin	Mraclin
+mravince	Mravince
+mreznicke poljice	Mrežničke Poljice
+mrkopalj	Mrkopalj
+mursko sredisce	Mursko Središće
+murter	Murter
+naglici	Naglići
+nasice	Našice
+nedelisce	Nedelišće
+nedeljanec	Nedeljanec
+nedescina	Nedeščina
+negoslavci	Negoslavci
+nerezisce	Nerežišće
+netretic	Netretić
+nijemci	Nijemci
+nin	Nin
+njivice	Njivice
+nova bukovica	Nova Bukovica
+nova gradiska	Nova Gradiška
+nova kapela	Nova Kapela
+nova mokosica	Nova Mokošica
+nova raca	Nova Rača
+novaki	Novaki
+novalja	Novalja
+novi golubovec	Novi Golubovec
+novi marof	Novi Marof
+novi vinodolski	Novi Vinodolski
+novi zagreb	Novi Zagreb
+novigrad	Novigrad
+novigrad podravski	Novigrad Podravski
+novo cice	Novo Čiče
+novo selo rok	Novo Selo Rok
+novo virje	Novo Virje
+novoselec	Novoselec
+novska	Novska
+nustar	Nuštar
+obrovac	Obrovac
+odra	Odra
+odranski obrez	Odranski Obrež
+ogulin	Ogulin
+oklaj	Oklaj
+okrug gornji	Okrug Gornji
+okucani	Okučani
+omis	Omiš
+omisalj	Omišalj
+opatija	Opatija
+oprisavci	Oprisavci
+oprtalj	Oprtalj
+opuzen	Opuzen
+orahovica	Orahovica
+orebic	Orebić
+orehovica	Orehovica
+oresje	Orešje
+oriovac	Oriovac
+orisje	Orišje
+orle	Orle
+oroslavje	Oroslavje
+osijek	Osijek
+ostarije	Oštarije
+otocac	Otočac
+otok	Otok
+otric-seoci	Otrić-Seoci
+ozalj	Ozalj
+pag	Pag
+pakostane	Pakoštane
+pakrac	Pakrac
+palit	Palit
+parag	Parag
+pasman	Pašman
+pazin	Pazin
+peklenica	Peklenica
+perusic	Perušić
+peteranec	Peteranec
+petlovac	Petlovac
+petrijanec	Petrijanec
+petrijevci	Petrijevci
+petrinja	Petrinja
+petrovsko	Petrovsko
+pican	Pićan
+pirovac	Pirovac
+pisarovina	Pisarovina
+piskorevci	Piškorevci
+pitomaca	Pitomača
+plaski	Plaški
+pleternica	Pleternica
+ploce	Ploče
+pobri	Pobri
+podbablje gornje	Podbablje Gornje
+podcrkavlje	Podcrkavlje
+podgora	Podgora
+podgorac	Podgorač
+podhum	Podhum
+podravska moslavina	Podravska Moslavina
+podravske sesvete	Podravske Sesvete
+podrebar	Podrebar
+podstrana	Podstrana
+podstrana - miljevac	Podstrana - Miljevac
+podstrana - sita	Podstrana - Sita
+podstrana - zminjaca	Podstrana - Žminjača
+podturen	Podturen
+podvinje	Podvinje
+pojatno	Pojatno
+pokupsko	Pokupsko
+polaca	Polača
+policnik	Poličnik
+poljanica bistranska	Poljanica Bistranska
+popovac	Popovac
+popovaca	Popovača
+porec	Poreč
+posedarje	Posedarje
+postira	Postira
+postranje	Postranje
+povljana	Povljana
+pozega	Požega
+predavac	Predavac
+pregrada	Pregrada
+preko	Preko
+prelog	Prelog
+preseka	Preseka
+prgomet	Prgomet
+pribislavec	Pribislavec
+pridraga	Pridraga
+prigorje brdovecko	Prigorje Brdovečko
+primorski dolac	Primorski Dolac
+primosten	Primošten
+privlaka	Privlaka
+prosinec	Prosinec
+pucak	Pucak
+pucisca	Pučišća
+pula	Pula
+punat	Punat
+punitovci	Punitovci
+puscine	Pušćine
+rab	Rab
+rabac	Rabac
+radoboj	Radoboj
+rakitje	Rakitje
+rakov potok	Rakov Potok
+rakovec	Rakovec
+rakovica	Rakovica
+rasa	Raša
+rasinja	Rasinja
+ravna gora	Ravna Gora
+razanac	Ražanac
+reka	Reka
+remetinec	Remetinec
+repusnica	Repušnica
+resetari	Rešetari
+retkovci	Retkovci
+rezovac	Rezovac
+ribnik	Ribnik
+rijeka	Rijeka
+rogoznica	Rogoznica
+rokovci	Rokovci
+rovinj	Rovinj
+rovinjsko selo	Rovinjsko Selo
+rovisce	Rovišće
+rubesi	Rubeši
+rude	Rude
+rugvica	Rugvica
+runovic	Runović
+ruscica	Ruščica
+ruzic	Ružić
+saborsko	Saborsko
+sali	Sali
+samobor	Samobor
+sandrovac	Šandrovac
+sarsoni	Saršoni
+sarvas	Sarvaš
+satnica dakovacka	Satnica Ðakovačka
+savska ves	Savska Ves
+seget vranjica	Seget Vranjica
+sela zakanjska	Sela Žakanjska
+selca	Selca
+selce	Selce
+selci dakovacki	Selci Ðakovački
+selnica	Selnica
+semeljci	Semeljci
+senj	Senj
+senkovec	Šenkovec
+sestanovac	Šestanovac
+sesvete	Sesvete
+severin	Severin
+sibenik	Šibenik
+sibinj	Sibinj
+sigetec	Sigetec
+sikirevci	Sikirevci
+sinj	Sinj
+sirac	Sirač
+sisak	Sisak
+sisan	Šišan
+skabrnje	Škabrnje
+skrad	Skrad
+skradin	Skradin
+skrljevo	Škrljevo
+slano	Slano
+slatina	Slatina
+slavonski brod	Slavonski Brod
+slavonski kobas	Slavonski Kobaš
+slavonski samac	Slavonski Šamac
+slobodnica	Slobodnica
+slunj	Slunj
+smokvica	Smokvica
+sodolovci	Šodolovci
+sokolovac	Sokolovac
+solin	Solin
+sopje	Sopje
+spisic-bukovica	Špišić-Bukovica
+split	Split
+sracinec	Sračinec
+srebreno	Srebreno
+srinjine	Srinjine
+sroki	Sroki
+stankovci	Stankovci
+stara gradiska	Stara Gradiška
+stari grad	Stari Grad
+stari jankovci	Stari Jankovci
+stari mikanovci	Stari Mikanovci
+starigrad	Starigrad
+staro petrovo selo	Staro Petrovo Selo
+stefanje	Štefanje
+stitar	Štitar
+stobrec	Stobreč
+ston	Ston
+strahoninec	Strahoninec
+strigova	Štrigova
+strizivojna	Strizivojna
+strmec	Strmec
+strozanac - donji	Strožanac - Donji
+stubicke toplice	Stubičke Toplice
+sucuraj	Sućuraj
+suhopolje	Suhopolje
+sukosan	Sukošan
+sunja	Sunja
+supetar	Supetar
+sutivan	Sutivan
+sveta marija	Sveta Marija
+sveta nedjelja	Sveta Nedjelja
+sveti durd	Sveti Ðurđ
+sveti filip i jakov	Sveti Filip i Jakov
+sveti ilija	Sveti Ilija
+sveti ivan zabno	Sveti Ivan Žabno
+sveti ivan zelina	Sveti Ivan Zelina
+sveti kriz zacretje	Sveti Križ Začretje
+sveti lovrec	Sveti Lovreč
+sveti martin na muri	Sveti Martin na Muri
+sveti petar orehovec	Sveti Petar Orehovec
+sveti petar u sumi	Sveti Petar u Šumi
+svetvincenat	Svetvinčenat
+tar	Tar
+tenja	Tenja
+tinjan	Tinjan
+tisno	Tisno
+tkon	Tkon
+tompojevci	Tompojevci
+topusko	Topusko
+tordinci	Tordinci
+tounj	Tounj
+tovarnik	Tovarnik
+tribunj	Tribunj
+trilj	Trilj
+trnava	Trnava
+trnovec bartolovecki	Trnovec Bartolovečki
+trogir	Trogir
+trpanj	Trpanj
+trpinja	Trpinja
+tucepi	Tučepi
+tuhelj	Tuhelj
+turanj	Turanj
+turjaci	Turjaci
+udbina	Udbina
+ugljan	Ugljan
+umag	Umag
+unesic	Unešić
+valbandon	Valbandon
+valpovo	Valpovo
+varazdin	Varaždin
+varazdin breg	Varaždin Breg
+varazdinske toplice	Varaždinske Toplice
+vela luka	Vela Luka
+velika	Velika
+velika gorica	Velika Gorica
+velika kopanica	Velika Kopanica
+velika ludina	Velika Ludina
+velika mlaka	Velika Mlaka
+velika ostrna	Velika Ostrna
+velika pisanica	Velika Pisanica
+velika trnovitica	Velika Trnovitica
+veliki bukovec	Veliki Bukovec
+veliki grdevac	Veliki Grđevac
+veliki prokop	Veliki Prokop
+veliko polje	Veliko Polje
+veliko selce	Veliko Selce
+veliko trgovisce	Veliko Trgovišće
+veliko trojstvo	Veliko Trojstvo
+veprinac	Veprinac
+vidovci	Vidovci
+vidovec	Vidovec
+viljevo	Viljevo
+vinez	Vinež
+vinica	Vinica
+vinkovci	Vinkovci
+vir	Vir
+virje	Virje
+virovitica	Virovitica
+vis	Vis
+viskovci	Viškovci
+viskovo	Viškovo
+visnjan - visignano	Višnjan - Visignano
+visnjevac	Višnjevac
+visoko	Visoko
+vizinada	Vižinada
+vladislavci	Vladislavci
+vlaka	Vlaka
+vocin	Voćin
+vodice	Vodice
+vodinci	Vođinci
+vodnjan	Vodnjan
+vojnic	Vojnić
+voloder	Voloder
+vranjic	Vranjic
+vratisinec	Vratišinec
+vrbanja	Vrbanja
+vrbje	Vrbje
+vrbnik	Vrbnik
+vrbovec	Vrbovec
+vrbovsko	Vrbovsko
+vrginmost	Vrginmost
+vrgorac	Vrgorac
+vrhovine	Vrhovine
+vrlika	Vrlika
+vrpolje	Vrpolje
+vrsar	Vrsar
+vrsi	Vrsi
+vucilcevo	Vučilčevo
+vuka	Vuka
+vukovar	Vukovar
+zabok	Zabok
+zadar	Zadar
+zadvarje	Zadvarje
+zadvorsko	Zadvorsko
+zagorska sela	Zagorska Sela
+zagreb	Zagreb
+zagvozd	Zagvozd
+zakanje	Žakanje
+zapresic	Zaprešić
+zaton	Zaton
+zdenci	Zdenci
+zdenci brdovecki	Zdenci Brdovečki
+zdralovi	Ždralovi
+zemunik donji	Zemunik Donji
+zlatar	Zlatar
+zlatar bistrica	Zlatar bistrica
+zmijavci	Zmijavci
+zminj	Žminj
+zrinski topolovac	Zrinski Topolovac
+zrnovnica	Žrnovnica
+zrnovo	Žrnovo
+zumberak	Žumberak
+zupanja	Županja

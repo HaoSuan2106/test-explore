@@ -1,0 +1,145 @@
+ad disah	Ad Dīsah
+adhruh	Adhruḩ
+adir	Adir
+al azraq ash shamali	Al Azraq ash Shamālī
+al faysaliyah	Al Fayşalīyah
+al fuhays	Al Fuḩayş
+al hamra’	Al Ḩamrā’
+al hasa	Al Ḩasā
+al hashimiyah	Al Hāshimīyah
+al hisn	Al Ḩişn
+al husayniyah	Al Ḩusaynīyah
+al jafr	Al Jafr
+al jizah	Al Jīzah
+al jubayhah	Al Jubayhah
+al juwayyidah	Al Juwayyidah
+al karamah	Al Karāmah
+al khalidiyah	Al Khālidīyah
+al khinzirah	Al Khinzīrah
+al kittah	Al Kittah
+al mastabah	Al Maşţabah
+al mazar al janubi	Al Mazār al Janūbī
+al mazar ash shamali	Al Mazār ash Shamālī
+al mughayyir	Al Mughayyir
+al murayghah	Al Murayghah
+al muwaqqar	Al Muwaqqar
+al qasr	Al Qaşr
+al qatranah	Al Qaţrānah
+al quwayrah	Al Quwayrah
+al ‘abdalli	Al ‘Abdallī
+al ‘arid	Al ‘Arīḑ
+amman	Amman
+aqaba	Aqaba
+ar rabbah	Ar Rabbah
+ar ramtha	Ar Ramthā
+ar rishah	Ar Rīshah
+ar rusayfah	Ar Ruşayfah
+ar ruwayshid	Ar Ruwayshid
+as salt	As Salţ
+as subayhi	Aş Şubayḩī
+ash shajarah	Ash Shajarah
+ash shawbak	Ash Shawbak
+ash shunah al janubiyah	Ash Shūnah al Janūbīyah
+ash shunah ash shamaliyah	Ash Shūnah ash Shamālīyah
+ash-shubak	Ash-Shūbak
+at tafilah	Aţ Ţafīlah
+at tayyibah	Aţ Ţayyibah
+at turrah	Aţ Ţurrah
+at-taybeh	At-Taybeh
+aydun	Aydūn
+ayl	Ayl
+az zulayl	Az̧ Z̧ulayl
+balila	Balīlā
+bal‘ama	Bal‘amā
+bayt idis	Bayt Īdis
+bayt yafa	Bayt Yāfā
+birayn	Bīrayn
+burma	Burmā
+busayra	Buşayrā
+dayr abu sa‘id	Dayr Abū Sa‘īd
+dayr al kahf	Dayr al Kahf
+dayr yusuf	Dayr Yūsuf
+dayr ‘alla	Dayr ‘Allā
+dhiban	Dhībān
+fuqu‘	Fuqū‘
+ghawr al mazra‘ah	Ghawr al Mazra‘ah
+hakama	Ḩakamā
+halawah	Ḩalāwah
+hatim	Ḩātim
+hawsha	Ḩawshā
+hayy al bunayyat	Ḩayy al Bunayyāt
+hayy al quwaysimah	Ḩayy al Quwaysimah
+hayy khilda	Ḩayy Khildā
+hisban	Ḩisbān
+irbid	Irbid
+jarash	Jarash
+jawa	Jāwā
+judita	Judita
+juraynah	Juraynah
+kafr abil	Kafr Abīl
+kafr asad	Kafr Asad
+kafr sawm	Kafr Sawm
+karak city	Karak City
+kharja	Kharjā
+khuraybat as suq	Khuraybat as Sūq
+kitim	Kitim
+kufrinjah	Kufrinjah
+kurayyimah	Kurayyimah
+ma'an	Ma'an
+madaba	Mādabā
+mafraq	Mafraq
+mahis	Māḩiş
+malka	Malkā
+manshiyat bani hasan	Manshīyat Banī Ḩasan
+marj al hamam	Marj Al Hamam
+ma‘in	Mā‘īn
+mulayh	Mulayḩ
+muthallath al azraq	Muthallath al Azraq
+muthallath jami‘at al al bayt	Muthallath Jāmi‘at Āl al Bayt
+muthallath sabha	Muthallath Şabḩā
+na‘ur	Nā‘ūr
+qafqafa	Qafqafā
+qir moav	Qīr Moāv
+qumaym	Qumaym
+rasun	Rāsūn
+raymun	Raymūn
+rehab	Rehab
+rujm ash shami al gharbi	Rujm ash Shāmī al Gharbī
+rukban	Rukban
+russeifa	Russeifa
+ruwaished	Ruwaished
+sabha	Şabḩā
+safi	Safi
+sahab	Saḩāb
+saham al kaffarat	Saḩam al Kaffārāt
+sakhrah	Şakhrah
+sakib	Sakib
+sal	Sāl
+sama as sirhan	Samā as Sirḩān
+samma	Şammā
+samma ar rawsan	Sammā ar Rawsān
+sarfa	Şarfā
+suf	Sūf
+suwaylih	Ṣuwayliḥ
+tala bay	Tala Bay
+tibnah	Tibnah
+umm al basatin	Umm al Basātīn
+umm al jimal	Umm al Jimāl
+umm al qittayn	Umm al Qiţţayn
+umm ar rasas	Umm ar Raşāş
+umm as summaq	Umm as Summāq
+umm qays	Umm Qays
+wadi as sir	Wādī as Sīr
+wadi musa	Wādī Mūsá
+waqqas	Waqqāş
+yarqa	Yarqā
+zahar	Zaḩar
+zarqa	Zarqa
+‘ajlun	‘Ajlūn
+‘allan	‘Allān
+‘anjarah	‘Anjarah
+‘ayn al basha	‘Ayn al Bāshā
+‘ayn janna	‘Ayn Jannā
+‘ayy	‘Ayy
+‘irjan	‘Irjān
+‘izra	‘Izrā

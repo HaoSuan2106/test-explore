@@ -3,6 +3,7 @@ import '../hidden_place_discovery/hidden_place_discovery_ui.dart';
 import '../community/chat_room/communication_ui.dart';
 import '../account/account_page_ui.dart';
 import '../post_review/post/post_ui.dart';
+import 'app_navigation.dart';
 import 'custom_nav_bar.dart';
 
 /// The app shell. Holds the persistent bottom nav and swaps tab content.
@@ -25,8 +26,14 @@ class _MainPageState extends State<MainPage> {
   /// system back (clearing the search), so MainPage must not switch tabs.
   bool _postSearchActive = false;
 
-  late final List<Widget> _tabs = [
-    const HiddenPlaceDiscoveryUI(),
+  /// Built per build (a getter, not a `late final` field) so the Explore
+  /// tab can capture [context] for the Create Place callback, which opens
+  /// the existing Recommend New Place wizard via the app's navigation layer.
+  List<Widget> get _tabs => [
+    HiddenPlaceDiscoveryUI(
+      onCreatePlace: () => AppNavigation.toRecommendPlace(context),
+    ),
+    // const CommunicationUI(),
     const CommunicationUI(),
     PostUI(onSearchActiveChanged: (active) {
       if (mounted && active != _postSearchActive) {
@@ -64,7 +71,23 @@ class _MainPageState extends State<MainPage> {
         }
       },
       child: Scaffold(
-        body: IndexedStack(index: _selectedIndex, children: _tabs),
+        // TickerMode per tab: a hidden tab's tickers stop ticking (the pulse
+        // controller in HiddenPlaceDiscoveryUI repeats forever, and its
+        // AnimatedBuilder rebuilt the GoogleMap every frame even while the
+        // tab was invisible inside the IndexedStack). enabled follows
+        // _selectedIndex, so the active tab animates normally and returning
+        // to a tab resumes its tickers - the tab itself stays mounted and
+        // keeps all state.
+        body: IndexedStack(
+          index: _selectedIndex,
+          children: [
+            for (var i = 0; i < _tabs.length; i++)
+              TickerMode(
+                enabled: i == _selectedIndex,
+                child: _tabs[i],
+              ),
+          ],
+        ),
         bottomNavigationBar: CustomNavBar(
           selectedIndex: navIndex,
           onTap: _onNavTap,

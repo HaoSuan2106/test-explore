@@ -13,6 +13,8 @@ import '../../../providers/community/communication_provider.dart';
 import '../../hidden_place_discovery/hidden_place_discovery_ui.dart' show PlaceData;
 import '../../place_details/place_details_ui.dart';
 import '../participant_list/participant_list_ui.dart';
+import '../../navigation/app_navigation.dart';
+import '../../../providers/post_review/post_provider.dart';
 
 const Color _kOrange = Color(0xFFFF7148);
 const Color _kTitleDark = Color(0xFF0F172A);
@@ -83,7 +85,9 @@ class _ChatRoomUiState extends State<ChatRoomUi> {
     } catch (e) {
       // Most commonly a missing gallery-access permission on Android <13, or no
       // gallery app available at all — image_picker throws a PlatformException.
-      _showError('Could not open the gallery: $e');
+      // The exception text itself is for the log, not the user.
+      debugPrint('[ChatRoom] gallery picker failed: $e');
+      _showError('Could not open the gallery. Check the app\'s photo permission.');
       return;
     }
     if (picked == null) return; // user backed out of the picker — not an error
@@ -477,6 +481,30 @@ void _openSharedPlace(BuildContext context, MessageAttachmentModel attachment) {
   ));
 }
 
+/// A shared post bubble tapped in chat needs no client-side reconstruction —
+/// unlike Places, PostDetailsScreen already self-fetches its own data by id
+/// on open (see /post/details/:postId's GoRoute). But that also means a post
+/// deleted after it was shared (Post module soft-deletes: Status = Deleted)
+/// would otherwise only be discovered after navigating there. This checks
+/// first — a read-only call to the Post module's own existing lookup,
+/// already used elsewhere (EditPostScreen) — so a dead share tells the user
+/// right away instead of opening into an error screen.
+Future<void> _openSharedPost(BuildContext context, MessageAttachmentModel attachment) async {
+  if (attachment.postId == null) return;
+
+  final post = await context.read<PostProvider>().fetchPostById(attachment.postId!);
+  if (!context.mounted) return;
+
+  if (post == null) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(content: Text('This post is no longer available.')),
+    );
+    return;
+  }
+
+  AppNavigation.toPostDetails(context, postId: attachment.postId!);
+}
+
 /// Hosts [PlaceDetailUI] for a place tapped in chat. PlaceDetailUI is a sheet
 /// designed to sit inside a Scaffold — every other caller either embeds it as
 /// a Scaffold's body or, like PlaceDetailMapScreen ("a minimal map + place
@@ -583,6 +611,58 @@ class _AttachmentView extends StatelessWidget {
                         const SizedBox(height: 2),
                         Text(
                           attachment.placeAddress!,
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                          style: const TextStyle(fontSize: 11, color: Colors.black54),
+                        ),
+                      ],
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+      );
+    }
+
+    if (attachment.type == 'PostShare') {
+      return Padding(
+        padding: const EdgeInsets.only(top: 6),
+        child: GestureDetector(
+          onTap: () => _openSharedPost(context, attachment),
+          child: Container(
+            width: 220,
+            decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(10)),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                if (attachment.postImageUrl != null)
+                  ClipRRect(
+                    borderRadius: const BorderRadius.vertical(top: Radius.circular(10)),
+                    child: Image.network(attachment.postImageUrl!, height: 100, width: double.infinity, fit: BoxFit.cover),
+                  ),
+                Padding(
+                  padding: const EdgeInsets.all(8),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Row(
+                        children: [
+                          const Icon(Icons.article_outlined, size: 14, color: _kOrange),
+                          const SizedBox(width: 4),
+                          const Text('Shared post', style: TextStyle(fontSize: 10, color: Colors.black54)),
+                        ],
+                      ),
+                      const SizedBox(height: 2),
+                      Text(attachment.postTitle ?? 'Community post',
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                          style: const TextStyle(fontWeight: FontWeight.w700, color: Colors.black87)),
+                      if (attachment.postAuthorName != null || attachment.postLocation != null) ...[
+                        const SizedBox(height: 2),
+                        Text(
+                          [attachment.postAuthorName, attachment.postLocation].whereType<String>().join(' · '),
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
                           style: const TextStyle(fontSize: 11, color: Colors.black54),

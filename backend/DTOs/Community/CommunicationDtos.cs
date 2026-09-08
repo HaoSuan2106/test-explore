@@ -60,7 +60,7 @@ public class ParticipantDto
 public class MessageAttachmentDto
 {
     public int AttachmentId { get; set; }
-    public string Type { get; set; } = string.Empty; // "Image" | "PlaceShare"
+    public string Type { get; set; } = string.Empty; // "Image" | "PlaceShare" | "PostShare"
     public string? MediaUrl { get; set; }
     public string? PlaceId { get; set; }
     public string? PlaceName { get; set; }
@@ -71,6 +71,11 @@ public class MessageAttachmentDto
     public double? PlaceLongitude { get; set; }
     public string? PlacePrimaryType { get; set; }
     public bool IsCommunityPlace { get; set; }
+    public string? PostId { get; set; }
+    public string? PostTitle { get; set; }
+    public string? PostImageUrl { get; set; }
+    public string? PostAuthorName { get; set; }
+    public string? PostLocation { get; set; }
 }
 
 public class MessageDto
@@ -104,6 +109,16 @@ public class SharedPlaceDto
     public bool IsCommunityPlace { get; set; }
 }
 
+public class SharedPostDto
+{
+    [Required]
+    public string PostId { get; set; } = string.Empty;
+    public string PostTitle { get; set; } = string.Empty;
+    public string? PostImageUrl { get; set; }
+    public string? PostAuthorName { get; set; }
+    public string? PostLocation { get; set; }
+}
+
 public class SendMessageRequestDto
 {
     [Required]
@@ -118,6 +133,8 @@ public class SendMessageRequestDto
     public List<string>? ImageUrls { get; set; }
 
     public List<SharedPlaceDto>? SharedPlaces { get; set; }
+
+    public List<SharedPostDto>? SharedPosts { get; set; }
 }
 
 public class SearchMessagesRequestDto

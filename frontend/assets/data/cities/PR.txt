@@ -1,0 +1,215 @@
+aceitunas	Aceitunas
+adjuntas	Adjuntas
+aguada	Aguada
+aguadilla	Aguadilla
+aguas buenas	Aguas Buenas
+aguas claras	Aguas Claras
+aguilita	Aguilita
+aibonito	Aibonito
+anasco	Añasco
+animas	Animas
+anton ruiz	Antón Ruiz
+arecibo	Arecibo
+arroyo	Arroyo
+bairoa	Bairoa
+bajadero	Bajadero
+bajandas	Bajandas
+barahona	Barahona
+barceloneta	Barceloneta
+barranquitas	Barranquitas
+bartolo	Bartolo
+bayamon	Bayamón
+bayamon	Bayamon
+benitez	Benitez
+boqueron	Boquerón
+boqueron	Boqueron
+brenas	Brenas
+buena vista	Buena Vista
+bufalo	Bufalo
+caban	Caban
+cabo rojo	Cabo Rojo
+cacao	Cacao
+caguas	Caguas
+campanilla	Campanilla
+campo rico	Campo Rico
+camuy	Camuy
+candelaria	Candelaria
+candelaria arenas	Candelaria Arenas
+candelero arriba	Candelero Arriba
+canovanas	Canovanas
+capitanejo	Capitanejo
+carolina	Carolina
+carrizales	Carrizales
+catano	Cataño
+cayey	Cayey
+cayuco	Cayuco
+ceiba	Ceiba
+celada	Celada
+central aguirre	Central Aguirre
+ciales	Ciales
+cidra	Cidra
+coamo	Coamo
+coco	Coco
+comerio	Comerío
+comunas	Comunas
+coqui	Coquí
+corazon	Corazón
+corcovado	Corcovado
+corozal	Corozal
+coto laurel	Coto Laurel
+coto norte	Coto Norte
+culebra	Culebra
+daguao	Daguao
+dorado	Dorado
+duque	Duque
+el mango	El Mangó
+el negro	El Negro
+el ojo	El Ojo
+eleanor roosevelt	Eleanor Roosevelt
+emajagua	Emajagua
+esperanza	Esperanza
+espino	Espino
+estancias de florida	Estancias de Florida
+fajardo	Fajardo
+florida	Florida
+franquez	Franquez
+fuig	Fuig
+g. l. garcia	G. L. Garcia
+galateo	Galateo
+garrochales	Garrochales
+guanica	Guánica
+guayabal	Guayabal
+guayama	Guayama
+guayanilla	Guayanilla
+guaynabo	Guaynabo
+gurabo	Gurabo
+h. rivera colon	H. Rivera Colon
+hatillo	Hatillo
+hato candal	Hato Candal
+hormigueros	Hormigueros
+humacao	Humacao
+imbery	Imbery
+indios	Indios
+ingenio	Ingenio
+isabel segunda	Isabel Segunda
+isabela	Isabela
+jagual	Jagual
+jauca	Jauca
+jayuya	Jayuya
+jobos	Jobos
+juana diaz	Juana Díaz
+juncal	Juncal
+juncos	Juncos
+la alianza	La Alianza
+la dolores	La Dolores
+la fermina	La Fermina
+la luisa	La Luisa
+la parguera	La Parguera
+la playa	La Playa
+la plena	La Plena
+lajas	Lajas
+lamboglia	Lamboglia
+lares	Lares
+las marias	Las Marias
+las marias	Las Marías
+las ochenta	Las Ochenta
+las ollas	Las Ollas
+las piedras	Las Piedras
+levittown	Levittown
+liborio negron torres	Liborio Negron Torres
+lluveras	Lluveras
+loiza	Loíza
+los llanos	Los Llanos
+luis llorens torres	Luis Llorens Torres
+luis m. cintron	Luis M. Cintron
+luquillo	Luquillo
+luyando	Luyando
+magas arriba	Magas Arriba
+manati	Manatí
+maria antonia	Maria Antonia
+mariano colon	Mariano Colón
+maricao	Maricao
+martorell	Martorell
+maunabo	Maunabo
+mayaguez	Mayagüez
+miranda	Miranda
+moca	Moca
+monserrate	Monserrate
+monte grande	Monte Grande
+mora	Mora
+morovis	Morovis
+mucarabones	Mucarabones
+naguabo	Naguabo
+naranjito	Naranjito
+olimpo	Olimpo
+orocovis	Orocovis
+pajaros	Pájaros
+palmarejo	Palmarejo
+palmas	Palmas
+palmer	Palmer
+palo seco	Palo Seco
+palomas	Palomas
+parcelas la milagrosa	Parcelas La Milagrosa
+parcelas nuevas	Parcelas Nuevas
+parcelas penuelas	Parcelas Peñuelas
+pastos	Pastos
+patillas	Patillas
+pena pobre	Peña Pobre
+penuelas	Peñuelas
+piedra gorda	Piedra Gorda
+playa fortuna	Playa Fortuna
+playita	Playita
+playita cortada	Playita Cortada
+pole ojea	Pole Ojea
+ponce	Ponce
+potala pastillo	Potala Pastillo
+pueblito del rio	Pueblito del Rio
+puerto real	Puerto Real
+punta santiago	Punta Santiago
+quebrada	Quebrada
+quebradillas	Quebradillas
+rafael capo	Rafael Capo
+rafael gonzalez	Rafael Gonzalez
+rafael hernandez	Rafael Hernandez
+ramos	Ramos
+rincon	Rincón
+rio blanco	Río Blanco
+rio canas abajo	Río Cañas Abajo
+rio grande	Río Grande
+rio lajas	Río Lajas
+rosa sanchez	Rosa Sanchez
+sabana	Sabana
+sabana eneas	Sabana Eneas
+sabana grande	Sabana Grande
+sabana hoyos	Sabana Hoyos
+sabana seca	Sabana Seca
+salinas	Salinas
+san antonio	San Antonio
+san german	San Germán
+san isidro	San Isidro
+san jose	San José
+san juan	San Juan
+san lorenzo	San Lorenzo
+san sebastian	San Sebastián
+santa barbara	Santa Barbara
+santa clara	Santa Clara
+santa isabel	Santa Isabel
+santo domingo	Santo Domingo
+stella	Stella
+suarez	Suárez
+sumidero	Sumidero
+tallaboa	Tallaboa
+tallaboa alta	Tallaboa Alta
+tierras nuevas poniente	Tierras Nuevas Poniente
+toa alta	Toa Alta
+toa baja	Toa Baja
+trujillo alto	Trujillo Alto
+utuado	Utuado
+vazquez	Vázquez
+vega alta	Vega Alta
+vega baja	Vega Baja
+vieques	Vieques
+villalba	Villalba
+yabucoa	Yabucoa
+yauco	Yauco
+yaurel	Yaurel

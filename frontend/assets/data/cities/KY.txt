@@ -1,0 +1,67 @@
+ally land	Ally Land
+battle ground	Battle Ground
+belford estates	Belford Estates
+birch tree hill	Birch Tree Hill
+blakes	Blakes
+bodden town	Bodden Town
+botabano	Botabano
+breakers	Breakers
+breezy castle	Breezy Castle
+brinkleys	Brinkleys
+cayman palms	Cayman Palms
+channel land	Channel Land
+colliers	Colliers
+coral gables	Coral Gables
+creek	Creek
+dog city	Dog City
+driftwood village	Driftwood Village
+dusty place	Dusty Place
+east end	East End
+frank sound	Frank Sound
+further ground	Further Ground
+george town	George Town
+gun bay	Gun Bay
+half moon bay	Half Moon Bay
+half way ground	Half Way Ground
+half way pond	Half Way Pond
+hell	Hell
+high rock	High Rock
+high rock estates	High Rock Estates
+hutland	Hutland
+little cayman	Little Cayman
+lower valley	Lower Valley
+midland acres	Midland Acres
+molusca heights	Molusca Heights
+mount pleasant	Mount Pleasant
+newlands	Newlands
+north side	North Side
+north sound estates	North Sound Estates
+north ward	North Ward
+old man bay	Old Man Bay
+old stores	Old Stores
+omega gardens	Omega Gardens
+pease bay	Pease Bay
+pedro	Pedro
+prospect	Prospect
+prospect park	Prospect Park
+red bay estate	Red Bay Estate
+rock hole	Rock Hole
+rum point	Rum Point
+saint james	Saint James
+sand bluff	Sand Bluff
+savannah	Savannah
+savannah acres	Savannah Acres
+seven miles	Seven Miles
+spotts	Spotts
+the common	The Common
+the moorings	The Moorings
+the mountain	The Mountain
+tibbetts turn	Tibbetts Turn
+town hall crescent	Town Hall Crescent
+tropical gardens	Tropical Gardens
+upper land	Upper Land
+vicksville	Vicksville
+water ground	Water Ground
+watering place	Watering Place
+west bay	West Bay
+whitehall estates	Whitehall Estates

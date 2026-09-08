@@ -150,43 +150,19 @@ class _EditCommentBottomSheetState extends State<EditCommentBottomSheet> {
                   return;
                 }
                 setState(() => _isSaving = true);
-                final success = await context
-                    .read<PostProvider>()
+                final provider = context.read<PostProvider>();
+                final success = await provider
                     .editComment(widget.commentId, content);
                 setState(() => _isSaving = false);
                 if (!context.mounted) return;
                 if (success) {
                   Navigator.of(context).pop();
                 } else {
-                  AppFeedback.show(context, message: 'Failed to update the comment. Please try again.', isSuccess: false);
+                  AppFeedback.show(context, message: provider.errorMessage ?? 'Failed to update the comment. Please try again.', isSuccess: false);
                 }
               },
             ),
           ],
-        ),
-      ),
-    );
-  }
-}
-
-class EditCommentScreen extends StatelessWidget {
-  final String commentId;
-  final String? initialContent;
-
-  const EditCommentScreen({
-    super.key,
-    required this.commentId,
-    this.initialContent,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: AppColors.background,
-      body: SafeArea(
-        child: EditCommentBottomSheet(
-          commentId: commentId,
-          initialContent: initialContent,
         ),
       ),
     );

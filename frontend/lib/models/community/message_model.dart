@@ -12,10 +12,15 @@ class MessageAttachmentModel {
     this.placeLongitude,
     this.placePrimaryType,
     this.isCommunityPlace = false,
+    this.postId,
+    this.postTitle,
+    this.postImageUrl,
+    this.postAuthorName,
+    this.postLocation,
   });
 
   final int attachmentId;
-  final String type; // 'Image' | 'PlaceShare'
+  final String type; // 'Image' | 'PlaceShare' | 'PostShare'
   final String? mediaUrl;
 
   // Real place identifiers (a Google Place ID, or a recommended place's
@@ -38,6 +43,15 @@ class MessageAttachmentModel {
   /// rather than a Google Place ID — drives PlaceDetailUI's Community button.
   final bool isCommunityPlace;
 
+  /// Post share snapshot (type == 'PostShare'), just enough to render a
+  /// preview bubble in chat — tapping it navigates to
+  /// AppNavigation.toPostDetails(postId), which self-fetches the rest.
+  final String? postId;
+  final String? postTitle;
+  final String? postImageUrl;
+  final String? postAuthorName;
+  final String? postLocation;
+
   factory MessageAttachmentModel.fromJson(Map<String, dynamic> json) => MessageAttachmentModel(
     attachmentId: json['attachmentId'] as int,
     type: json['type'] as String,
@@ -51,6 +65,11 @@ class MessageAttachmentModel {
     placeLongitude: (json['placeLongitude'] as num?)?.toDouble(),
     placePrimaryType: json['placePrimaryType'] as String?,
     isCommunityPlace: json['isCommunityPlace'] as bool? ?? false,
+    postId: json['postId'] as String?,
+    postTitle: json['postTitle'] as String?,
+    postImageUrl: json['postImageUrl'] as String?,
+    postAuthorName: json['postAuthorName'] as String?,
+    postLocation: json['postLocation'] as String?,
   );
 }
 
@@ -133,6 +152,30 @@ class SharedPlaceRequest {
   };
 }
 
+class SharedPostRequest {
+  const SharedPostRequest({
+    required this.postId,
+    required this.postTitle,
+    this.postImageUrl,
+    this.postAuthorName,
+    this.postLocation,
+  });
+
+  final String postId;
+  final String postTitle;
+  final String? postImageUrl;
+  final String? postAuthorName;
+  final String? postLocation;
+
+  Map<String, dynamic> toJson() => {
+    'postId': postId,
+    'postTitle': postTitle,
+    'postImageUrl': postImageUrl,
+    'postAuthorName': postAuthorName,
+    'postLocation': postLocation,
+  };
+}
+
 class SendMessageRequest {
   const SendMessageRequest({
     required this.communityId,
@@ -140,6 +183,7 @@ class SendMessageRequest {
     this.replyToMessageId,
     this.imageUrls,
     this.sharedPlaces,
+    this.sharedPosts,
   });
 
   final int communityId;
@@ -147,6 +191,7 @@ class SendMessageRequest {
   final int? replyToMessageId;
   final List<String>? imageUrls;
   final List<SharedPlaceRequest>? sharedPlaces;
+  final List<SharedPostRequest>? sharedPosts;
 
   Map<String, dynamic> toJson() => {
     'communityId': communityId,
@@ -154,5 +199,6 @@ class SendMessageRequest {
     'replyToMessageId': replyToMessageId,
     'imageUrls': imageUrls,
     'sharedPlaces': sharedPlaces?.map((p) => p.toJson()).toList(),
+    'sharedPosts': sharedPosts?.map((p) => p.toJson()).toList(),
   };
 }

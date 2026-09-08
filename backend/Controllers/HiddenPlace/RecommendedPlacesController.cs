@@ -284,10 +284,14 @@ public class RecommendedPlacesController : ControllerBase
     // Place Reports (anonymous) — storage: hidden_place_suppression
     // ============================================================
 
-    /// <summary>Supported PLACE report reasons (NOT post-report reasons).</summary>
-    [HttpGet("report-reasons")]
-    public IActionResult GetReportReasons()
-        => Ok(new { reasons = PlaceReportReasons.All });
+    // NOTE: the former GET /report-reasons endpoint was removed. Report
+    // reasons are SYSTEM-DEFINED fixed values (PlaceReportReasons in
+    // Domain/Entities/PlaceSubmission.cs) — there is no admin management and
+    // no database lookup, so serving them over HTTP served constants the
+    // frontend already ships. The authoritative list lives in
+    // PlaceReportReasons.All; the frontend mirrors it in
+    // lib/utilities/place_report_reasons.dart and the submit endpoint
+    // validates against the fixed list.
 
     /// <summary>
     /// Returns whether the CURRENT authenticated user has already reported the given place.

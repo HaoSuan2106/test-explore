@@ -1,0 +1,305 @@
+abs	Abs
+ad dahi	Aḑ Ḑaḩī
+ad dali‘	Aḑ Ḑāli‘
+ad dann	Ad Dann
+ad dil‘	Aḑ Ḑil‘
+ad dimnah	Ad Dimnah
+ad dis ash sharqiyah	Ad Dīs ash Sharqīyah
+ad durayhimi	Ad Durayhimī
+aden	Aden
+ahl mohammed bin ahmed	Ahl Mohammed bin Ahmed
+ahwar	Aḩwar
+al ahad	Al Aḩad
+al aqta‘	Al Aqţa‘
+al batinah	Al Bāţinah
+al bayda	Al Bayda
+al bilad	Al Bilād
+al burayqah	Al Burayqah
+al ghayl	Al Ghayl
+al ghaylah	Al Ghaylah
+al ghayzah	Al Ghayz̧ah
+al habilayn	Al Ḩabīlayn
+al hadiyah	Al Ḩadīyah
+al hajab	Al Ḩajab
+al hamdi	Al Ḩamdī
+al harf	Al Ḩarf
+al harjah	Al Ḩarjah
+al hashwah	Al Ḩashwah
+al hayfah	Al Ḩayfah
+al hazm	Al Ḩazm
+al hijrah	Al Hijrah
+al hudaydah	Al Ḩudaydah
+al humaydat	Al Ḩumaydāt
+al husayn	Al Ḩusayn
+al husun	Al Ḩuşūn
+al jabin	Al Jabīn
+al jamimah	Al Jamīmah
+al jarrahi	Al Jarrāḩī
+al jawl	Al Jawl
+al jum‘ah	Al Jum‘ah
+al jurbah	Al Jurbah
+al khamis	Al Khamīs
+al khaniq	Al Khāniq
+al kharab	Al Kharāb
+al khawkhah	Al Khawkhah
+al khirab	Al Khirāb
+al luhayyah	Al Luḩayyah
+al madakisha	Al Madakisha
+al madan	Al Madān
+al madid	Al Madīd
+al madu	Al Madu
+al mafud	Al Māfūd
+al maghrabah	Al Maghrabah
+al mahabishah	Al Maḩābishah
+al mahfid	Al Maḩfid
+al mahjal	Al Maḩjal
+al mahwit	Al Maḩwīt
+al makhadir	Al Makhādir
+al malahit	Al Malāḩīţ
+al mansurah	Al Manşūrah
+al mansuriyah	Al Manşūrīyah
+al marawi‘ah	Al Marāwi‘ah
+al masaliyah	Al Masālīyah
+al mashaf	Al Mashāf
+al maslub	Al Maşlūb
+al matun	Al Matūn
+al mayfa’ah	Al Mayfa’ah
+al ma‘alla’	Al Ma‘allā’
+al ma‘udah	Āl Ma‘ūdah
+al miftah	Al Miftāḩ
+al mighlaf	Al Mighlāf
+al milah	Al Milāḩ
+al mirwah	Al Mirwāḩ
+al misrakh	Al Misrākh
+al munirah	Al Munīrah
+al musaymir	Al Musaymīr
+al nashmah	Al Nashmah
+al qabyal	Al Qabyal
+al qaflah	Al Qaflah
+al qanawis	Al Qanāwiş
+al qatan	Al Qaţan
+al qurayshiyah	Al Qurayshīyah
+al qurh	Al Qurḩ
+al shiruj	Al Shirūj
+al wuday‘	Al Wuday‘
+al ‘abr	Al ‘Abr
+al ‘amud	Al ‘Amūd
+al ‘aqabah	Al ‘Aqabah
+al ‘aqir	Al ‘Āqir
+al ‘ashshah	Al ‘Ashshah
+al ‘awabil	Al ‘Awābil
+al ‘ayn	Al ‘Ayn
+al ‘inan	Al ‘Inān
+al ‘udayn	Al ‘Udayn
+al ‘ulayb	Al ‘Ulayb
+al ‘urrah	Al ‘Urrah
+al-khasha upper	AL-khashā upper
+al-medy village, قرية المدي	Al-Medy Village, قرية المدي
+an nadirah	An Nādirah
+an najd	An Najd
+an nasirah	An Nāşirah
+an nazir	An Naz̧īr
+ar radmah	Ar Raḑmah
+ar ramadi	Ar Ramādī
+ar rawd	Ar Rawḑ
+ar rawdah	Ar Rawḑah
+ar rawnah	Ar Rawnah
+ar raydah	Ar Raydah
+ar rida’i	Ar Riḑā’ī
+ar rubu‘	Ar Rubū‘
+ar rujum	Ar Rujum
+as saddah	As Saddah
+as safaqayn	Aş Şafaqayn
+as salasil	As Salāsil
+as salif	Aş Şalīf
+as salw	Aş Şalw
+as sararah	Aş Şarārah
+as sawadiyah	As Sawādīyah
+as sawma‘ah	Aş Şawma‘ah
+as sayyani	As Sayyānī
+as sa‘id	Aş Şa‘īd
+as sudah	As Sūdah
+as sukhnah	As Sukhnah
+as suq al jadid	As Sūq al Jadīd
+as suwayda	As Suwaydā
+asdas	Asdās
+ash shaghadirah	Ash Shaghādirah
+ash shahil	Ash Shāhil
+ash sharyah	Ash Sharyah
+ash shatt	Ash Shaţţ
+ash shawati	Ash Shawātī
+ash shaykh ‘uthman	Ash Shaykh ‘Uthmān
+ash shihr	Ash Shiḩr
+ash shuqayrah	Ash Shuqayrah
+aslam	Aslam
+at tahaluf	At Taḩāluf
+at talh	Aţ Ţalḩ
+at tawahi	At Tawāhī
+at tawilah	Aţ Ţawīlah
+at tuhayta’	At Tuḩaytā’
+at turbah	At Turbah
+ataq	Ataq
+az zahir	Az Zāhir
+az zali‘ah	Az̧ Z̧alī‘ah
+az zaydiyah	Az Zaydīyah
+az zuhrah	Az Zuhrah
+bajil	Bājil
+bani al ‘awwam	Banī al ‘Awwām
+bani an nahari	Banī an Nahārī
+bani bakr	Banī Bakr
+bani hujjaj	Banī Ḩujjāj
+baqim as suq	Bāqim as Sūq
+bayhan	Bayḩān
+bayt al faqih	Bayt al Faqīh
+bayt marran	Bayt Marrān
+bayt ‘adhaqah	Bayt ‘Adhāqah
+bidbadah	Bidbadah
+bi’r hat	Bi’r Ḩāt
+burum	Burūm
+cpf	CPF
+crater	Crater
+dahasuways	Daḩasuways
+dar an nasir	Dār an Nāşir
+dawran	Ḑawrān
+dawran ad daydah	Ḑawrān ad Daydah
+dhamar	Dhamār
+dhaybin	Dhaybīn
+dhi as sufal	Dhī as Sufāl
+dhi jalal	Dhī Jalāl
+dhi na‘im	Dhī Nā‘im
+dhubab	Dhubāb
+ghayl ba wazir	Ghayl Bā Wazīr
+hababah	Ḩabābah
+habban	Ḩabbān
+habil al jabr	Ḩabīl al Jabr
+habil ar raydah	Ḩabīl ar Raydah
+habur	Ḩabūr
+hadadah	Ḩadādah
+hadibu	Hadibu
+hajar al masha’ikh	Ḩajar al Mashā’ikh
+hajjah	Ḩajjah
+hammam damt	Ḩammām Damt
+hammam ‘ali	Ḩammām ‘Alī
+harad	Ḩaraḑ
+harib	Ḩarīb
+haswayn	Ḩaşwayn
+hawf	Ḩawf
+hawrah	Ḩawrah
+haydan	Ḩaydān
+hayfan	Ḩayfān
+hays	Ḩays
+hazm al ‘udayn	Ḩazm al ‘Udayn
+hisn bani sa‘d	Ḩişn Banī Sa‘d
+huraydah	Ḩurayḑah
+huth	Ḩūth
+ibb	Ibb
+jadder cemetery	Jadder Cemetery
+jawf al maqbabah	Jawf al Maqbābah
+jawl al majma‘	Jawl al Majma‘
+jayshan	Jayshān
+ja‘ar	Ja‘ār
+jiblah	Jiblah
+jihanah	Jiḩānah
+juban	Juban
+judaydah	Judaydah
+khamir	Khamir
+khawr maksar	Khawr Maksar
+khawrah	Khawrah
+khayran	Khayrān
+khimar	Khimār
+kilmia	Kilmia
+kirsh	Kirsh
+kitaf	Kitāf
+kuhlan ‘affar	Kuḩlān ‘Affār
+kushar	Kushar
+kusmah	Kusmah
+ku‘aydinah	Ku‘aydinah
+lahij	Laḩij
+lawdar	Lawdar
+ma'rib	Ma'rib
+mabyan	Mabyan
+madghil	Madghil
+madinat lab‘us	Madīnat Lab‘ūs
+mafhaq	Mafḩaq
+majz	Majz
+majzar	Majzar
+manakhah	Manākhah
+maqbanah	Maqbanah
+marbat	Marbāţ
+markaz al marir	Markaz al Marīr
+markaz bilad at ta‘am	Markaz Bilād aţ Ţa‘ām
+markaz mudhaykirah	Markaz Mudhaykirah
+maswarah	Maswarah
+matarah	Maţarah
+matnah	Matnah
+matwah	Matwaḩ
+mawiyah	Māwiyah
+mawza‘	Mawza‘
+mayfa‘ah	Mayfa‘ah
+ma‘bar	Ma‘bar
+midi	Mīdī
+milah	Milāḩ
+minwakh	Minwakh
+mocha	Mocha
+mudiyah	Mūdīyah
+mukalla	Mukalla
+mukayras	Mukayrās
+mustaba’	Mustabā’
+najd al jama‘i	Najd al Jamā‘ī
+nisab	Nişāb
+qalansiyah	Qalansīyah
+qaryat ad da‘is	Qaryat ad Da‘īs
+qaryat al qabil	Qaryat al Qābil
+qa‘tabah	Qa‘ţabah
+qishn	Qishn
+rada‘	Radā‘
+rahabah	Raḩabah
+rajuzah	Rajūzah
+rasad	Raşad
+raydah	Raydah
+rihab	Riḩāb
+riqab	Riqāb
+rudum	Ruḑūm
+rumah	Rumāh
+sa'dah	Sa'dah
+sah	Sāh
+sahar	Saḩar
+sahhab	Saḩḩab
+sanaa	Sanaa
+sana’	Şanā’
+saqayn	Sāqayn
+sayhut	Sayḩūt
+sayyan	Sayyān
+shaharat al ghis	Shahārat al Ghīs
+sharas	Sharas
+shibam	Shibām
+shihan as sufla	Shiḩan as Suflá
+sif	Şīf
+sirar	Sirār
+suhayl shibam	Suḩayl Shibām
+suq al khamis	Sūq al Khamīs
+suq ar rubu‘	Sūq ar Rubū‘
+suq shamar	Sūq Shamar
+suq sibah	Sūq Sibāḩ
+suq sirwah	Sūq Şirwāḩ
+suwayr	Şuwayr
+taiz	Taiz
+tarim	Tarim
+tawr al bahah	Ţawr al Bāḩah
+thamud	Thamūd
+village of alamrah	Village of ALAMRAH
+wadarah	Waḑarah
+washhah	Washḩah
+wa‘lan	Wa‘lān
+yarim	Yarīm
+yufrus	Yufrus
+zabah	Z̧abah
+zabid	Zabīd
+zakhim	Zakhim
+zalmah al ‘ulya	Z̧almah al ‘Ulyā
+zarajah	Zarājah
+zinjibar	Zinjibār
+‘amd	‘Amd
+‘amran	‘Amrān
+‘ubal	‘Ubāl
+‘usaylan	‘Usaylān

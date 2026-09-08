@@ -8,6 +8,7 @@ import '../../providers/auth_profile/profile_provider.dart';
 import '../../widgets/animated_tap_button.dart';
 import '../../widgets/app_feedback.dart';
 import '../authentication/registration/verify_email_ui.dart';
+import 'city_picker_sheet.dart';
 
 const Color _kPrimaryOrange = Color(0xFFFF7148);
 const Color _kAccentOrange = Color(0xFFAB3510);
@@ -37,7 +38,16 @@ class _ManageProfileUiState extends State<ManageProfileUi> {
   late final TextEditingController _cityController;
   final ImagePicker _imagePicker = ImagePicker();
   String? _selectedGender;
-  String? _profilePictureUrl;
+
+  /// A photo the user picked but hasn't saved yet. Held here — not uploaded —
+  /// until Save Changes, so backing out of the screen leaves the account's
+  /// picture untouched.
+  File? _pendingPhoto;
+
+  /// Set when the user chose "Remove Current Photo". Same deal: nothing is
+  /// deleted server-side until Save Changes.
+  bool _pendingPhotoRemoval = false;
+
   bool _isUpdatingPhoto = false;
   bool _isSaving = false;
   bool _isRequestingEmailChange = false;
@@ -60,7 +70,6 @@ class _ManageProfileUiState extends State<ManageProfileUi> {
     );
     _cityController = TextEditingController(text: profile?.city ?? '');
     _selectedGender = profile?.gender;
-    _profilePictureUrl = profile?.profilePictureUrl;
     _verifiedEmail = profile?.email ?? '';
     _originalUsername = _usernameController.text;
     _originalAge = _ageController.text;
@@ -68,11 +77,24 @@ class _ManageProfileUiState extends State<ManageProfileUi> {
     _originalGender = _selectedGender;
   }
 
+  bool get _hasPhotoChange => _pendingPhoto != null || _pendingPhotoRemoval;
+
   bool get _hasChanges =>
+      _hasPhotoChange ||
       _usernameController.text.trim() != _originalUsername.trim() ||
       _ageController.text.trim() != _originalAge.trim() ||
       _cityController.text.trim() != _originalCity.trim() ||
       _selectedGender != _originalGender;
+
+  /// Whether there is a picture to remove — the pending one if the user just
+  /// picked it, otherwise whatever the account currently has (unless removal
+  /// is already staged).
+  bool get _hasPhoto {
+    if (_pendingPhoto != null) return true;
+    if (_pendingPhotoRemoval) return false;
+    final url = context.read<ProfileProvider>().profile?.profilePictureUrl;
+    return url != null && url.isNotEmpty;
+  }
 
   /// [_hasChanges] plus an in-progress (unverified) email edit, which the
   /// Save Changes button doesn't cover but leaving the page would still lose.
@@ -181,6 +203,22 @@ class _ManageProfileUiState extends State<ManageProfileUi> {
     }
   }
 
+  /// Opens the country-then-city picker and stores the choice as
+  /// "City, Country". Free typing is deliberately not offered: the field
+  /// feeds place-based features, so it has to be a real, unambiguous city.
+  Future<void> _pickCity() async {
+    // Re-open on the country the saved value already names, so editing
+    // "Kuala Lumpur, Malaysia" doesn't start again from the country list.
+    final saved = _cityController.text;
+    final comma = saved.lastIndexOf(',');
+    final country = comma == -1 ? null : saved.substring(comma + 1).trim();
+
+    final city = await showCityPicker(context, initialCountryName: country);
+    if (city == null || !mounted) return;
+
+    setState(() => _cityController.text = city.label);
+  }
+
   /// UC103 C2 — profile information validation. Returns the first problem
   /// found, or null when every field is acceptable.
   String? _validateProfile() {
@@ -222,6 +260,13 @@ class _ManageProfileUiState extends State<ManageProfileUi> {
 
     setState(() => _isSaving = true);
     final profileProvider = context.read<ProfileProvider>();
+
+    // The staged photo goes first: both halves write to the same profile
+    // record, and doing the upload last would overwrite the fields below with
+    // the response from before they were saved.
+    final photoError = await _savePhotoChange();
+    if (!mounted) return;
+
     final city = _cityController.text.trim();
     final success = await profileProvider.updateProfile(
       username: username,
@@ -242,13 +287,17 @@ class _ManageProfileUiState extends State<ManageProfileUi> {
         _originalGender = _selectedGender;
       }
     });
+
+    // The photo is reported on its own: it can fail while the rest of the
+    // profile saves fine, and "updated successfully" would be a lie then.
+    final message = !success
+        ? (profileProvider.errorMessage ??
+            'Failed to update your profile. Please try again.')
+        : photoError ?? 'Profile updated successfully.';
     AppFeedback.show(
       context,
-      message: success
-          ? 'Profile updated successfully.'
-          : (profileProvider.errorMessage ??
-                'Failed to update your profile. Please try again.'),
-      isSuccess: success,
+      message: message,
+      isSuccess: success && photoError == null,
     );
   }
 
@@ -389,15 +438,17 @@ class _ManageProfileUiState extends State<ManageProfileUi> {
         borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
       ),
       builder: (_) => _ProfilePhotoSheet(
-        onTakePhoto: () => _pickAndUploadImage(ImageSource.camera),
-        onChooseFromGallery: () => _pickAndUploadImage(ImageSource.gallery),
-        onRemovePhoto: _removePhoto,
-        hasPhoto: _profilePictureUrl != null && _profilePictureUrl!.isNotEmpty,
+        onTakePhoto: () => _pickImage(ImageSource.camera),
+        onChooseFromGallery: () => _pickImage(ImageSource.gallery),
+        onRemovePhoto: _stagePhotoRemoval,
+        hasPhoto: _hasPhoto,
       ),
     );
   }
 
-  Future<void> _pickAndUploadImage(ImageSource source) async {
+  /// Picks a photo and shows it straight away, but only stages it — the
+  /// upload happens in [_onSaveChanges].
+  Future<void> _pickImage(ImageSource source) async {
     final picked = await _imagePicker.pickImage(
       source: source,
       maxWidth: 1024,
@@ -405,51 +456,60 @@ class _ManageProfileUiState extends State<ManageProfileUi> {
     );
     if (picked == null || !mounted) return;
 
+    setState(() {
+      _pendingPhoto = File(picked.path);
+      _pendingPhotoRemoval = false;
+    });
+  }
+
+  /// Stages the removal. Nothing is deleted until Save Changes; picking a new
+  /// photo first simply supersedes this.
+  void _stagePhotoRemoval() {
+    setState(() {
+      _pendingPhoto = null;
+      _pendingPhotoRemoval = true;
+    });
+  }
+
+  /// Applies the staged photo change. Returns the error to report, or null on
+  /// success / when there was nothing staged.
+  Future<String?> _savePhotoChange() async {
+    if (!_hasPhotoChange) return null;
+
+    final profileProvider = context.read<ProfileProvider>();
     setState(() => _isUpdatingPhoto = true);
-    final success = await context.read<ProfileProvider>().updateProfilePicture(
-      File(picked.path),
-    );
-    if (!mounted) return;
+
+    final photo = _pendingPhoto;
+    final success = photo != null
+        ? await profileProvider.updateProfilePicture(photo)
+        : await profileProvider.removeProfilePicture();
+    if (!mounted) return null;
 
     setState(() {
       _isUpdatingPhoto = false;
       if (success) {
-        _profilePictureUrl = context
-            .read<ProfileProvider>()
-            .profile
-            ?.profilePictureUrl;
+        _pendingPhoto = null;
+        _pendingPhotoRemoval = false;
       }
     });
 
-    if (!success) {
-      AppFeedback.show(context,
-          message: 'Failed to update profile photo.', isSuccess: false);
-    }
-  }
-
-  Future<void> _removePhoto() async {
-    setState(() => _isUpdatingPhoto = true);
-    final success = await context
-        .read<ProfileProvider>()
-        .removeProfilePicture();
-    if (!mounted) return;
-
-    setState(() {
-      _isUpdatingPhoto = false;
-      if (success) _profilePictureUrl = null;
-    });
-
-    if (!success) {
-      AppFeedback.show(context,
-          message: 'Failed to remove profile photo.', isSuccess: false);
-    }
+    if (success) return null;
+    return photo != null
+        ? 'Failed to update profile photo.'
+        : 'Failed to remove profile photo.';
   }
 
   @override
   Widget build(BuildContext context) {
-    // Locally cached copy when there is one, remote URL otherwise. Watched so
+    // What to draw in the avatar. A staged pick/removal wins so the user sees
+    // their choice immediately, even though nothing has been uploaded yet;
+    // otherwise it's the locally cached copy, or the remote URL. Watched so
     // the picture refreshes as soon as a new upload finishes downloading.
-    final avatarImage = context.watch<ProfileProvider>().avatarImage;
+    final savedAvatar = context.watch<ProfileProvider>().avatarImage;
+    final pendingPhoto = _pendingPhoto;
+    final ImageProvider? avatarImage = _pendingPhotoRemoval
+        ? null
+        : (pendingPhoto != null ? FileImage(pendingPhoto) : savedAvatar);
 
     return PopScope(
       canPop: false,
@@ -740,9 +800,12 @@ class _ManageProfileUiState extends State<ManageProfileUi> {
                       const SizedBox(height: 20),
                       const _FieldLabel('City'),
                       const SizedBox(height: 8),
-                      _ProfileField(
-                        controller: _cityController,
-                        icon: Icons.location_on_outlined,
+                      _CityField(
+                        value: _cityController.text,
+                        onTap: _pickCity,
+                        onClear: _cityController.text.isEmpty
+                            ? null
+                            : () => setState(_cityController.clear),
                       ),
                       const SizedBox(height: 32),
                       AnimatedBuilder(
@@ -870,6 +933,67 @@ class _ProfileField extends StatelessWidget {
             ),
           ),
         ],
+      ),
+    );
+  }
+}
+
+/// The City row: not a text field, but a tap target that opens the
+/// country-then-city picker, with a clear button for emptying an optional
+/// field the user no longer wants filled in.
+class _CityField extends StatelessWidget {
+  const _CityField({
+    required this.value,
+    required this.onTap,
+    required this.onClear,
+  });
+
+  final String value;
+  final VoidCallback onTap;
+  final VoidCallback? onClear;
+
+  @override
+  Widget build(BuildContext context) {
+    final isEmpty = value.isEmpty;
+
+    return AnimatedTapButton(
+      onTap: onTap,
+      borderRadius: BorderRadius.circular(12),
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(12),
+          border: Border.all(color: _kInputBorder),
+        ),
+        child: Row(
+          children: [
+            const Icon(Icons.location_on_outlined, size: 18, color: _kMuted),
+            const SizedBox(width: 12),
+            Expanded(
+              child: Text(
+                isEmpty ? 'Select your city' : value,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                style: GoogleFonts.plusJakartaSans(
+                  fontSize: 14,
+                  color: isEmpty ? const Color(0xFFB6BECC) : _kTitleDark,
+                ),
+              ),
+            ),
+            if (onClear != null)
+              AnimatedTapButton(
+                onTap: onClear,
+                borderRadius: BorderRadius.circular(16),
+                child: const Padding(
+                  padding: EdgeInsets.only(left: 8),
+                  child: Icon(Icons.close, size: 16, color: _kMuted),
+                ),
+              )
+            else
+              const Icon(Icons.keyboard_arrow_down, size: 20, color: _kMuted),
+          ],
+        ),
       ),
     );
   }

@@ -1,6 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using ExploreMy.Api.Persistence.DbContext;
 using ExploreMy.Api.Common.Helpers;
+using ExploreMy.Api.Common.Exceptions;
 using HiddenPlaceEntity = ExploreMy.Api.Domain.Entities.HiddenPlace;
 using ExploreMy.Api.Domain.Entities;
 
@@ -224,27 +225,35 @@ public class HiddenPlaceMySqlRepository : IHiddenPlaceRepository
     }
 
     /// <summary>
-    /// Inserts the canonical place row first, then the submission row referencing it, in a single
-    /// transaction (PART K: place before submission).
-    /// Contract: place_submissions.created_at/updated_at store Malaysia wall-clock via the explicit
-    /// Asia/Kuala_Lumpur timezone (MalaysiaTime.Now) — never the server OS timezone and never a
-    /// hard-coded +8h offset. Both fields are stamped from the SAME captured instant.
+    /// Inserts the canonical place row, the shared-module <c>places</c> row and the
+    /// submission row in a single transaction (PART K: place before submission).
+    /// Contract: place_submissions.created_at/updated_at store UTC (DateTime.UtcNow) like every
+    /// other app table; the API layer converts UTC → Malaysia +08:00 on the way out
+    /// (MalaysiaLocalDateTimeConverter). Both fields are stamped from the SAME captured instant.
+    /// New Add architecture rule: <c>places.place_id == recommended_places.recommend_place_id</c> —
+    /// the service passes the canonical id down as the Place.PlaceId; no second ID is minted.
+    /// The three inserts are tracked on the same DbContext and committed with ONE
+    /// SaveChangesAsync (EF Core implicit transaction): either all three rows exist or none do.
     /// </summary>
-    public async Task CreateSubmissionAsync(RecommendPlace place, PlaceSubmission submission)
+    public async Task CreateSubmissionAsync(RecommendPlace place, PlaceSubmission submission, Place placeRecord)
     {
         try
         {
-            var now = MalaysiaTime.Now;
+            var now = DateTime.UtcNow;
             submission.CreatedAt = now;
             submission.UpdatedAt = now;
+            placeRecord.PlaceId = place.RecommendPlaceId; // SAME id as recommended_places (rule §0)
+            placeRecord.CreatedAt = now;
+            placeRecord.UpdatedAt = now;
             _context.RecommendPlaces.Add(place);
+            _context.Places.Add(placeRecord);
             submission.RecommendPlaceId = place.RecommendPlaceId;
             _context.PlaceSubmissions.Add(submission);
             await _context.SaveChangesAsync();
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "Database error while creating recommended place.");
+            _logger.LogError(ex, "Database error while creating recommended place with shared places row.");
             throw;
         }
     }
@@ -253,8 +262,8 @@ public class HiddenPlaceMySqlRepository : IHiddenPlaceRepository
     {
         try
         {
-            // Malaysia wall-clock via explicit Asia/Kuala_Lumpur; created_at is untouched by EF.
-            submission.UpdatedAt = MalaysiaTime.Now;
+            // UTC per the storage contract; created_at is untouched by EF.
+            submission.UpdatedAt = DateTime.UtcNow;
             _context.PlaceSubmissions.Update(submission);
             await _context.SaveChangesAsync();
         }
@@ -276,8 +285,8 @@ public class HiddenPlaceMySqlRepository : IHiddenPlaceRepository
     {
         try
         {
-            // Malaysia wall-clock via explicit Asia/Kuala_Lumpur; created_at is untouched by EF.
-            submission.UpdatedAt = MalaysiaTime.Now;
+            // UTC per the storage contract; created_at is untouched by EF.
+            submission.UpdatedAt = DateTime.UtcNow;
             _context.RecommendPlaces.Update(place);
             _context.PlaceSubmissions.Update(submission);
             await _context.SaveChangesAsync();
@@ -307,21 +316,6 @@ public class HiddenPlaceMySqlRepository : IHiddenPlaceRepository
         }
     }
 
-    public async Task<PlaceSubmissionVerification?> GetAnyVerificationAsync(string submissionId, int userId)
-    {
-        try
-        {
-            return await _context.PlaceSubmissionVerifications
-                .FirstOrDefaultAsync(v => v.SubmissionId == submissionId
-                                          && v.UserId == userId);
-        }
-        catch (Exception ex)
-        {
-            _logger.LogError(ex, "Database error while loading any verification of user {UserId} for place {SubmissionId}.", userId, submissionId);
-            throw;
-        }
-    }
-
     public async Task CreateVerificationAsync(PlaceSubmissionVerification verification)
     {
         try
@@ -330,23 +324,16 @@ public class HiddenPlaceMySqlRepository : IHiddenPlaceRepository
             _context.PlaceSubmissionVerifications.Add(verification);
             await _context.SaveChangesAsync();
         }
+        catch (DbUpdateException)
+        {
+            // UNIQUE(submission_id, user_id) caught a concurrent duplicate — surface a
+            // specific marker so the service layer can return the graceful
+            // "already verified" outcome instead of a raw 500.
+            throw new ConcurrentDuplicateException();
+        }
         catch (Exception ex)
         {
             _logger.LogError(ex, "Database error while creating verification.");
-            throw;
-        }
-    }
-
-    public async Task UpdateVerificationAsync(PlaceSubmissionVerification verification)
-    {
-        try
-        {
-            _context.PlaceSubmissionVerifications.Update(verification);
-            await _context.SaveChangesAsync();
-        }
-        catch (Exception ex)
-        {
-            _logger.LogError(ex, "Database error while updating verification {VerificationId}.", verification.VerificationId);
             throw;
         }
     }

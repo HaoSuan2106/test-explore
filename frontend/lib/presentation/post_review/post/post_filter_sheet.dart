@@ -89,21 +89,27 @@ class PostFilterSheet extends StatefulWidget {
     required this.onApply,
   });
 
-  static Future<void> show(
-    BuildContext context, {
-    required FeedFilter current,
-    required ValueChanged<FeedFilter> onApply,
-  }) {
-    return showModalBottomSheet(
-      context: context,
-      isScrollControlled: true,
-      backgroundColor: AppColors.background,
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(AppRadii.xl)),
+static Future<void> show(
+  BuildContext context, {
+  required FeedFilter current,
+  required ValueChanged<FeedFilter> onApply,
+}) {
+  return showModalBottomSheet(
+    context: context,
+    isScrollControlled: true,
+    requestFocus: false,
+    backgroundColor: AppColors.background,
+    shape: const RoundedRectangleBorder(
+      borderRadius: BorderRadius.vertical(
+        top: Radius.circular(AppRadii.xl),
       ),
-      builder: (_) => PostFilterSheet(current: current, onApply: onApply),
-    );
-  }
+    ),
+    builder: (_) => PostFilterSheet(
+      current: current,
+      onApply: onApply,
+    ),
+  );
+}
 
   @override
   State<PostFilterSheet> createState() => _PostFilterSheetState();
@@ -124,6 +130,9 @@ class _PostFilterSheetState extends State<PostFilterSheet> {
 
   @override
   Widget build(BuildContext context) {
+    // The sheet body is scrollable: on short screens selecting Popularity
+    // adds the range slider and the Column used to overflow, pushing the
+    // Apply Filter button off-screen where it could not be tapped.
     return SafeArea(
       child: Padding(
         padding: const EdgeInsets.fromLTRB(
@@ -132,10 +141,11 @@ class _PostFilterSheetState extends State<PostFilterSheet> {
           AppSpacing.containerMargin,
           20,
         ),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
+        child: SingleChildScrollView(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
@@ -178,11 +188,15 @@ class _PostFilterSheetState extends State<PostFilterSheet> {
               text: 'Apply Filter',
               icon: Icons.filter_alt_outlined,
               onPressed: () {
+                FocusScope.of(context).unfocus();
+
                 Navigator.of(context).pop();
+
                 widget.onApply(_selection);
               },
             ),
           ],
+          ),
         ),
       ),
     );

@@ -1,0 +1,198 @@
+bansko	Bansko
+batinci	Batinci
+bedinje	Bedinje
+belcista	Belčišta
+beranci	Beranci
+berovo	Berovo
+bistrica	Bistrica
+bitola	Bitola
+blatec	Blatec
+bogdanci	Bogdanci
+bogomila	Bogomila
+bogovinje	Bogovinje
+bojane	Bojane
+bosilovo	Bosilovo
+brvenica	Brvenica
+bucin	Bučin
+bukovik	Bukovik
+bulacani	Bulacani
+butel	Butel
+cair	Čair
+capari	Capari
+caska	Čaška
+cegrane	Cegrane
+celopek	Čelopek
+centar zupa	Centar Župa
+cesinovo	Češinovo
+chucher-sandevo	Chucher-Sandevo
+cresevo	Cresevo
+crniliste	Crnilište
+debar	Debar
+delcevo	Delcevo
+delogozda	Delogožda
+demir hisar	Demir Hisar
+demir kapija	Demir Kapija
+desovo	Desovo
+dobarce	Dobarce
+dobri dol	Dobri Dol
+dobroste	Dobrošte
+dobrusevo	Dobruševo
+dolna banjica	Dolna Banjica
+dolneni	Dolneni
+dolno kolicani	Dolno Količani
+dolno orizari	Dolno Orizari
+dolno palciste	Dolno Palčište
+dolno srpci	Dolno Srpci
+dracevo	Dračevo
+drugovo	Drugovo
+dzepciste	Džepčište
+forino	Forino
+gevgelija	Gevgelija
+gjorce petro	Gjorče Petro
+golema recica	Golema Rečica
+gorno orizari	Gorno Orizari
+gorobinci	Gorobinci
+gostivar	Gostivar
+gradec	Gradec
+gradsko	Gradsko
+grcec	Grčec
+grncari	Grnčari
+gurgurnica	Gurgurnica
+ilinden	Ilinden
+ilovica	Ilovica
+ivankovci	Ivankovci
+izvor	Izvor
+jakimovo	Jakimovo
+jankovec	Jankovec
+jegunovce	Jegunovce
+kadino	Kadino
+kamenjane	Kamenjane
+kanatlarci	Kanatlarci
+karbinci	Karbinci
+kavadarci	Kavadarci
+kicevo	Kičevo
+kisela voda	Kisela Voda
+kochani	Kochani
+konce	Konče
+kondovo	Kondovo
+kosel	Kosel
+krani	Krani
+kratovo	Kratovo
+kriva palanka	Kriva Palanka
+krivogashtani	Krivogashtani
+krusevo	Krusevo
+krusopek	Krušopek
+kuklis	Kuklis
+kukurecani	Kukurečani
+kumanovo	Kumanovo
+labunista	Labunista
+larce	Larce
+lazani	Lažani
+lipkovo	Lipkovo
+lisicani	Lisičani
+ljubin	Ljubin
+logovardi	Logovardi
+lojane	Lojane
+lozovo	Lozovo
+lukovo	Lukovo
+makedonska kamenica	Makedonska Kamenica
+makedonski brod	Makedonski Brod
+marino	Marino
+markov grad	Markov Grad
+matejce	Matejce
+meseista	Mešeišta
+miladinovci	Miladinovci
+miletino	Miletino
+miravci	Miravci
+mislesevo	Mislesevo
+mogila	Mogila
+monospitovo	Monospitovo
+morani	Morani
+murtino	Murtino
+negotino	Negotino
+neraste	Nerašte
+novaci	Novaci
+novo selo	Novo Selo
+oblesevo	Oblesevo
+obrsani	Obršani
+ognjaci	Ognjaci
+ohrid	Ohrid
+oktisi	Oktisi
+oraovica	Oraovica
+orashac	Orashac
+orizari	Orizari
+otlja	Otlja
+pehcevo	Pehčevo
+pirava	Pirava
+pirok	Pirok
+plasnica	Plasnica
+podares	Podareš
+poroj	Poroj
+prilep	Prilep
+probishtip	Probishtip
+prsovce	Pršovce
+radishani	Radishani
+radolista	Radolista
+radovis	Radovis
+rankovce	Rankovce
+resen	Resen
+romanovci	Romanovci
+rosoman	Rosoman
+rostusa	Rostusa
+rusinovo	Rusinovo
+samokov	Samokov
+saraj	Saraj
+sedlarevo	Sedlarevo
+sekirnik	Sekirnik
+selce	Selce
+shtip	Shtip
+sipkovica	Šipkovica
+skopje	Skopje
+slatino	Slatino
+slepce	Slepče
+sopiste	Sopište
+sopotnica	Sopotnica
+srbica	Srbica
+srbinovo	Srbinovo
+sredno konjari	Sredno Konjari
+star dojran	Star Dojran
+stojakovo	Stojakovo
+strelci	Strelci
+strimnica	Strimnica
+struga	Struga
+strumica	Strumica
+studenicani	Studeničani
+susica	Sušica
+suto orizare	Šuto Orizare
+sveti nikole	Sveti Nikole
+tearce	Tearce
+tetovo	Tetovo
+topolcani	Topolčani
+tuin	Tuin
+usje	Usje
+vaksince	Vaksince
+valandovo	Valandovo
+vasilevo	Vasilevo
+vatasa	Vataša
+veles	Veles
+velesta	Velesta
+veljusa	Veljusa
+vevcani	Vevčani
+vinica	Vinica
+vladimirovo	Vladimirovo
+vranestica	Vraneštica
+vrapciste	Vrapčište
+vratnica	Vratnica
+vrutok	Vrutok
+zajas	Zajas
+zelenikovo	Zelenikovo
+zelino	Zelino
+zitose	Žitoše
+zletovo	Zletovo
+zrnovci	Zrnovci
+арачиново	Арачиново
+идризово	Идризово
+петровец	Петровец
+слупчане	Слупчане
+старо нагоричане	Старо Нагоричане
+јурумлери	Јурумлери

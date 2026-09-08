@@ -1,6 +1,5 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import '../../../theme/app_theme.dart';
 import '../../../widgets/app_header.dart';
@@ -15,6 +14,9 @@ import '../post_review/post/edit_post_screen.dart';
 import '../../../utils/time_format.dart';
 import '../../../widgets/app_feedback.dart';
 import '../../../widgets/content_constraint.dart';
+import '../community/share_location/share_to_community_sheet.dart';
+import '../../../providers/community/communication_provider.dart';
+import '../../../models/community/message_model.dart';
 
 class PostDetailsScreen extends StatefulWidget {
   final String postId;
@@ -76,7 +78,10 @@ class _PostDetailsScreenState extends State<PostDetailsScreen>
       FocusScope.of(context).unfocus();
       AppFeedback.show(context, message: 'Comment added successfully.');
     } else {
-      AppFeedback.show(context, message: 'Failed to add the comment. Please try again.', isSuccess: false);
+      AppFeedback.show(context,
+          message: provider.errorMessage ??
+              'Failed to add the comment. Please try again.',
+          isSuccess: false);
     }
   }
 
@@ -100,39 +105,49 @@ class _PostDetailsScreenState extends State<PostDetailsScreen>
               // Full-screen loading while the deletion runs (shared
               // status architecture), then land on the Post Deleted
               // success screen.
+              final postProvider = context.read<PostProvider>();
+              // Double-tap protection: a delete is already running with its
+              // own loading screen — do not stack a second one (§9).
+              if (postProvider.isDeleting) return;
               AppNavigation.toStatusLoading(
                 context,
                 heading: 'Deleting Post',
                 message:
                     'We are safely deleting your post. Please wait a moment.',
               );
-              final success = await context.read<PostProvider>().deletePost(widget.postId);
+              final success = await postProvider.deletePost(widget.postId);
               if (!context.mounted) return;
+              // Wait one frame so the pushed loading route is actually
+              // materialized before popping (same reasoning as the feed
+              // flow). A fast resolve otherwise pops while the push is still
+              // in flight: the pop then removes the DETAILS page instead of
+              // the loading screen, and the loading screen lands afterwards
+              // and stays stuck on the stack.
+              await WidgetsBinding.instance.endOfFrame;
+              if (!context.mounted) return;
+              // D-05: close the loading screen, show the green success
+              // banner, then pop the Post Details screen so the user
+              // returns to the screen they came from (feed / My Activity).
+              // Pops go through the router: a raw Navigator.pop can race the
+              // pushed loading page and remove the wrong route (the reported
+              // loop). The banner is presented via the root overlay, so it
+              // survives the navigation pops. Delete is owner-only, so a
+              // reported-post (reporter) detail context can never reach
+              // this flow, and no forced redirect into My Reports happens.
+              AppNavigation.popTopRoute(context); // leave loading screen
+              AppFeedback.show(context,
+                message: success
+                    ? 'Post deleted successfully.'
+                    : (postProvider.errorMessage ??
+                        'Failed to delete the post. Please try again.'),
+                isSuccess: success,
+              );
               if (success) {
-                // D-05: close the loading screen, show the green success
-                // banner, then pop the Post Details screen so the user
-                // returns to the screen they came from (feed / My Activity).
-                // The banner is presented via the root ScaffoldMessenger, so
-                // it survives the navigation pops. Delete is owner-only, so
-                // a reported-post (reporter) detail context can never reach
-                // this flow, and no forced redirect into My Reports happens.
-                Navigator.of(context).pop(); // leave loading screen
-                AppFeedback.show(context,
-                  message: 'Post deleted successfully.',
-                  isSuccess: true,
-                );
-                final navigator = Navigator.of(context);
-                if (navigator.canPop()) {
-                  navigator.pop(); // leave Post Details
-                } else {
+                if (AppNavigation.canPop(context)) {
+                  AppNavigation.popTopRoute(context); // leave Post Details
+                } else if (context.mounted) {
                   AppNavigation.toMain(context); // fallback: no back route
                 }
-              } else {
-                Navigator.of(context).pop(); // leave loading screen
-                AppFeedback.show(context,
-                  message: 'Failed to delete the post. Please try again.',
-                  isSuccess: false,
-                );
               }
             },
             child: Text('Delete', style: AppTypography.labelLg.copyWith(color: AppColors.error)),
@@ -231,7 +246,8 @@ class _PostDetailsScreenState extends State<PostDetailsScreen>
           message: isSaved ? 'Post saved.' : 'Post unsaved.', isSuccess: true);
     } else {
       AppFeedback.show(context,
-          message: 'Failed to update the saved state. Please try again.',
+          message: context.read<PostProvider>().errorMessage ??
+              'Failed to update the saved state. Please try again.',
           isSuccess: false);
     }
   }
@@ -240,13 +256,28 @@ class _PostDetailsScreenState extends State<PostDetailsScreen>
   /// dependency in Phase 1).
   Future<void> _sharePost() async {
     final post = context.read<PostProvider>().getPostById(widget.postId);
-    final text = post == null
-        ? 'Check out this community post on ExploreMY!'
-        : 'Check out "${post.title}" at ${post.location} on ExploreMY!';
-    await Clipboard.setData(ClipboardData(text: text));
-    if (!mounted) return;
-    AppFeedback.show(context,
-        message: 'Post details copied to clipboard.', isSuccess: true);
+    if (post == null) {
+      AppFeedback.show(context,
+          message: 'Post details are still loading — try again in a moment.',
+          isSuccess: false);
+      return;
+    }
+
+    await ShareToCommunitySheet.show(
+      context,
+      previewTitle: post.title.isNotEmpty ? post.title : post.location,
+      onShare: (communityId) => context.read<CommunicationProvider>().sharePostToCommunity(
+            communityId,
+            SharedPostRequest(
+              postId: post.id,
+              postTitle: post.title.isNotEmpty ? post.title : post.location,
+              postImageUrl: post.imageUrl.isEmpty ? null : post.imageUrl,
+              postAuthorName: post.authorName,
+              postLocation: post.location,
+            ),
+          ),
+      failureMessage: 'Failed to share this post.',
+    );
   }
 
   @override
@@ -347,11 +378,13 @@ class _PostDetailsScreenState extends State<PostDetailsScreen>
           ),
         ],
       ),
-      bottomNavigationBar: isOwner
-          ? _buildOwnerBottomBar()
-          : post.isReportedByCurrentUser
-              ? _buildReportedBottomBar()
-              : _buildBottomComposer(),
+      bottomNavigationBar: post.isReportedByCurrentUser
+          ? _buildReportedBottomBar()
+          // Comment permission is identical for owner and normal user — the
+          // composer (like button + comment input + send) is shown to BOTH.
+          // The former owner-only bottom bar that read "You cannot comment
+          // on your own post." was removed; commenting is owner-allowed now.
+          : _buildBottomComposer(),
       body: SafeArea(
         child: ContentConstraint(
           maxWidth: 800,
@@ -762,7 +795,16 @@ class _PostDetailsScreenState extends State<PostDetailsScreen>
     // Read (not watch): the screen build() already subscribes to the profile
     // userId, so per-comment watch subscriptions are unnecessary rebuilds.
     final currentUserId = context.read<ProfileProvider>().profile?.userId.toString();
-    // Owner of comment can Edit/Delete
+    final post = context.read<PostProvider>().getPostById(widget.postId);
+
+    // COMMENT OWNER = the user who owns the post.
+    // This is intentionally different from isCommentOwner below, which means
+    // the current logged-in user owns the comment and may Edit/Delete it.
+    final isPostOwnerComment =
+        post != null &&
+        comment.authorId.toString() == post.authorId.toString();
+
+    // Owner of comment can Edit/Delete.
     final isCommentOwner = comment.authorId.toString() == currentUserId;
 
     return Row(
@@ -792,14 +834,46 @@ class _PostDetailsScreenState extends State<PostDetailsScreen>
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Flexible(
-                      child: Text(
-                        comment.authorName,
-                        overflow: TextOverflow.ellipsis,
-                        style: AppTypography.labelLg.copyWith(
-                          fontWeight: FontWeight.w700,
-                          color: AppColors.textPrimary,
-                        ),
+                    Expanded(
+                      child: Row(
+                        children: [
+                          Flexible(
+                            child: Text(
+                              comment.authorName,
+                              overflow: TextOverflow.ellipsis,
+                              style: AppTypography.labelLg.copyWith(
+                                fontWeight: FontWeight.w700,
+                                color: AppColors.textPrimary,
+                              ),
+                            ),
+                          ),
+                          if (isPostOwnerComment) ...[
+                            const SizedBox(width: 6),
+                            Container(
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 7,
+                                vertical: 2,
+                              ),
+                              decoration: BoxDecoration(
+                                color: const Color(0xFFE8F5E9),
+                                borderRadius: BorderRadius.circular(6),
+                                border: Border.all(
+                                  color: const Color(0xFF66BB6A),
+                                  width: 1,
+                                ),
+                              ),
+                              child: const Text(
+                                'OWNER',
+                                style: TextStyle(
+                                  fontSize: 10,
+                                  fontWeight: FontWeight.w800,
+                                  color: Color(0xFF2E7D32),
+                                  letterSpacing: 0.4,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ],
                       ),
                     ),
                     const SizedBox(width: 8),
@@ -852,7 +926,8 @@ class _PostDetailsScreenState extends State<PostDetailsScreen>
               AppFeedback.show(context,
                 message: success
                     ? 'Comment deleted successfully.'
-                    : 'Failed to delete the comment. Please try again.',
+                    : context.read<PostProvider>().errorMessage ??
+                        'Failed to delete the comment. Please try again.',
                 isSuccess: success,
               );
             },
@@ -929,7 +1004,10 @@ class _PostDetailsScreenState extends State<PostDetailsScreen>
       _likeAnimController.forward(from: 0);
       _showLikeToast(context, liked: !wasLiked);
     } else {
-      AppFeedback.show(context, message: 'Failed to update the reaction. Please try again.', isSuccess: false);
+      AppFeedback.show(context,
+          message: context.read<PostProvider>().errorMessage ??
+              'Failed to update the reaction. Please try again.',
+          isSuccess: false);
     }
   }
 
@@ -940,46 +1018,10 @@ class _PostDetailsScreenState extends State<PostDetailsScreen>
         message: liked ? 'You liked this post!' : 'You unliked this post.');
   }
 
-  /// Bottom bar for the post owner: keeps the like action but hides the
-  /// comment input (users must not comment on their own post).
-  Widget _buildOwnerBottomBar() {
-    final postProvider = context.read<PostProvider>();
-    final post = postProvider.getPostById(widget.postId);
-    final isLiked = post?.isLiked ?? false;
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: AppSpacing.containerMargin, vertical: 10),
-      decoration: const BoxDecoration(
-        color: AppColors.background,
-        boxShadow: AppShadows.navElevation,
-        border: Border(top: BorderSide(color: AppColors.outline, width: 0.8)),
-      ),
-      child: SafeArea(
-        top: false,
-        child: Row(
-          children: [
-            IconButton(
-              icon: Icon(
-                isLiked ? Icons.favorite : Icons.favorite_border,
-                color: const Color(0xFFF05D38),
-                size: 24,
-              ),
-              onPressed: _toggleLike,
-            ),
-            const SizedBox(width: AppSpacing.stackSm),
-            Expanded(
-              child: Text(
-                'You cannot comment on your own post.',
-                style: AppTypography.bodyMd.copyWith(color: AppColors.textSecondary),
-                overflow: TextOverflow.ellipsis,
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  /// Bottom bar for the reporter: like button disabled + view-only message.
+  /// Bottom bar for a user with an active report on this post: like button
+  /// disabled + view-only message (existing report behavior, unchanged).
+  /// Owners no longer get a separate bar — they use the same comment
+  /// composer as everyone else.
   Widget _buildReportedBottomBar() {
     final postProvider = context.read<PostProvider>();
     final post = postProvider.getPostById(widget.postId);

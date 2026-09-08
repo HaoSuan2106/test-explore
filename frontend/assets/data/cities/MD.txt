@@ -1,0 +1,91 @@
+anenii noi	Anenii Noi
+balti	Bălţi
+basarabeasca	Basarabeasca
+bender	Bender
+bilicenii vechi	Bilicenii Vechi
+biruinta	Biruinţa
+blijnii hutor	Blijnii Hutor
+briceni	Briceni
+bucovat	Bucovăţ
+bugeac	Bugeac
+cahul	Cahul
+calarasi	Călăraşi
+camenca	Camenca
+cantemir	Cantemir
+causeni	Căuşeni
+ceadir-lunga	Ceadîr-Lunga
+chisinau	Chisinau
+chitcani	Chiţcani
+cimislia	Cimişlia
+ciorescu	Ciorescu
+cislita-prut	Cîşliţa-Prut
+cocieri	Cocieri
+codru	Codru
+comisarovca noua	Comisarovca Nouă
+comrat	Comrat
+congaz	Congaz
+crasnoe	Crasnoe
+cremenciug	Cremenciug
+cricova	Cricova
+criuleni	Criuleni
+dancu	Dancu
+dnestrovsc	Dnestrovsc
+dolna	Dolna
+donduseni	Donduşeni
+drochia	Drochia
+dubasari	Dubăsari
+durlesti	Durleşti
+edinet	Edineţ
+falesti	Fălești
+floresti	Floreşti
+ghindesti	Ghindești
+giurgiulesti	Giurgiuleşti
+glodeni	Glodeni
+gura bicului	Gura Bîcului
+hincesti	Hînceşti
+hryhoriopol	Hryhoriopol
+ialoveni	Ialoveni
+iargara	Iargara
+leova	Leova
+lunga	Lunga
+maiac	Maiac
+marculesti	Mărculeşti
+merenii noi	Merenii Noi
+mindresti	Mîndreşti
+nezavertailovca	Nezavertailovca
+nisporeni	Nisporeni
+ocnita	Ocniţa
+orhei	Orhei
+otaci	Otaci
+palanca	Palanca
+pervomaisc	Pervomaisc
+plopi	Plopi
+poganesti	Pogăneşti
+popestii de sus	Popeştii de Sus
+rezina	Rezina
+ribnita	Rîbniţa
+riscani	Rîşcani
+saharna	Saharna
+satul-nou	Satul-Nou
+singera	Sîngera
+singerei	Sîngerei
+slobozia	Slobozia
+soldanesti	Şoldăneşti
+soroca	Soroca
+stauceni	Stăuceni
+stefan voda	Ştefan Vodă
+straseni	Strășeni
+taraclia	Taraclia
+tarigrad	Ţarigrad
+telenesti	Teleneşti
+tiraspol	Tiraspol
+tiraspolul nou	Tiraspolul Nou
+tvardita	Tvardița
+ucrainca	Ucrainca
+ungheni	Ungheni
+ustia	Ustia
+vadul lui voda	Vadul lui Vodă
+varnita	Varniţa
+vatra	Vatra
+visniovca	Vişniovca
+vulcanesti	Vulcăneşti

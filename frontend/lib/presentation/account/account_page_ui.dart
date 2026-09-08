@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import '../authentication/login/login_ui.dart';
 import '../exploration/exploration_ui.dart';
 import '../manage_profile/change_password_ui.dart';
 import '../manage_profile/manage_profile_ui.dart';
@@ -204,10 +203,14 @@ class _AccountUIState extends State<AccountUI> {
                                 // not just the profile, so the next person to
                                 // sign in on this device sees none of it.
                                 clearSessionScopedProviders(context);
-                                Navigator.of(context).pushAndRemoveUntil(
-                                  MaterialPageRoute(builder: (context) => const LoginUi()),
-                                      (route) => false,
-                                );
+                                // Must go through the router. A raw
+                                // pushAndRemoveUntil(LoginUi) puts an imperative
+                                // route on top of GoRouter's own navigator while
+                                // GoRouter still believes the location is /main —
+                                // so the context.go('/main') after the next login
+                                // is a no-op and the user stays stuck on Login
+                                // until the app is restarted.
+                                AppNavigation.toLogin(context);
                               }),
                             ],
                           ),

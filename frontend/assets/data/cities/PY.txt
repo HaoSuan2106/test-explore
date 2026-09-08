@@ -1,0 +1,150 @@
+abai	Abaí
+acahay	Acahay
+altos	Altos
+antequera	Antequera
+aregua	Areguá
+arroyos y esteros	Arroyos y Esteros
+asuncion	Asunción
+atyra	Atyrá
+ayolas	Ayolas
+belen	Belén
+bella vista	Bella Vista
+benjamin aceval	Benjamín Aceval
+buena vista	Buena Vista
+caacupe	Caacupé
+caaguazu	Caaguazú
+caapucu	Caapucú
+caazapa	Caazapá
+capiata	Capiatá
+capiibary	Capiibary
+capitan bado	Capitán Bado
+capitan miranda	Capitán Miranda
+capitan pablo lagerenza	Capitán Pablo Lagerenza
+caraguatay	Caraguatay
+carapegua	Carapeguá
+carayao	Carayaó
+carlos antonio lopez	Carlos Antonio López
+carmelo peralta	Carmelo Peralta
+carmen del parana	Carmen del Paraná
+cerrito	Cerrito
+chore	Chore
+ciudad del este	Ciudad del Este
+colonia general alfredo stroessner	Colonia General Alfredo Stroessner
+colonia mauricio jose troche	Colonia Mauricio José Troche
+colonia menno	Colonia Menno
+colonia neuland	Colonia Neuland
+colonia nueva germania	Colonia Nueva Germania
+colonia san lorenzo	Colonia San Lorenzo
+concepcion	Concepción
+coronel martinez	Coronel Martínez
+coronel oviedo	Coronel Oviedo
+corpus christi	Corpus Christi
+doctor cecilio baez	Doctor Cecilio Báez
+doctor juan eulogio estigarribia	Doctor Juan Eulogio Estigarribia
+doctor juan leon mallorquin	Doctor Juan León Mallorquín
+doctor juan manuel frutos	Doctor Juan Manuel Frutos
+edelira	Edelira
+emboscada	Emboscada
+encarnacion	Encarnación
+eusebio ayala	Eusebio Ayala
+fernando de la mora	Fernando de la Mora
+filadelfia	Filadelfia
+fram	Fram
+fuerte olimpo	Fuerte Olimpo
+fulgencio yegros	Fulgencio Yegros
+general artigas	General Artigas
+general elizardo aquino	General Elizardo Aquino
+general eugenio a. garay	General Eugenio A. Garay
+general higinio morinigo	General Higinio Morínigo
+general jose eduvigis diaz	General José Eduvigis Díaz
+general jose maria delgado	General José María Delgado
+guajayvi	Guajayvi
+guarambare	Guarambaré
+hohenau	Hohenau
+horqueta	Horqueta
+independencia	Independencia
+isla pucu	Isla Pucú
+ita	Itá
+itacurubi de la cordillera	Itacurubí de la Cordillera
+itacurubi del rosario	Itacurubí del Rosario
+itakyry	Itakyry
+itape	Itapé
+itaugua	Itauguá
+iturbe	Iturbe
+jesus	Jesús
+katuete	Katueté
+la colmena	La Colmena
+la paloma del espiritu santo	La Paloma del Espíritu Santo
+lambare	Lambaré
+lima	Lima
+limpio	Limpio
+loma plata	Loma Plata
+los cedrales	Los Cedrales
+mariano roque alonso	Mariano Roque Alonso
+mbocayaty	Mbocayaty
+mbutuy	Mbutuý
+mbuyapey	Mbuyapey
+minga pora	Minga Porá
+nanawa	Nanawa
+naranjal	Naranjal
+natalicio talavera	Natalicio Talavera
+natalio	Natalio
+nemby	Nemby
+nueva esperanza	Nueva Esperanza
+nueva italia	Nueva Italia
+obligado	Obligado
+paraguari	Paraguarí
+pedro juan caballero	Pedro Juan Caballero
+pilar	Pilar
+pirapo	Pirapó
+pirayu	Pirayú
+piribebuy	Piribebuy
+presidente franco	Presidente Franco
+puerto bahia negra	Puerto Bahía Negra
+puerto mayor otano	Puerto Mayor Otaño
+puerto rosario	Puerto Rosario
+puerto vallemi	Puerto Vallemí
+quiindy	Quiindy
+repatriacion	Repatriación
+salto del guaira	Salto del Guairá
+san alberto	San Alberto
+san antonio	San Antonio
+san bernardino	San Bernardino
+san cosme y damian	San Cosme y Damián
+san isidro de curuguaty	San Isidro de Curuguaty
+san joaquin	San Joaquín
+san jose de los arroyos	San José de los Arroyos
+san juan bautista	San Juan Bautista
+san juan del parana	San Juan del Paraná
+san juan nepomuceno	San Juan Nepomuceno
+san lorenzo	San Lorenzo
+san miguel	San Miguel
+san patricio	San Patricio
+san pedro de ycuamandyyu	San Pedro de Ycuamandyyú
+san pedro del parana	San Pedro del Paraná
+santa elena	Santa Elena
+santa maria	Santa María
+santa rita	Santa Rita
+santa rosa	Santa Rosa
+santiago	Santiago
+sapucai	Sapucaí
+tacuati	Tacuatí
+tobati	Tobatí
+tomas romero pereira	Tomás Romero Pereira
+trinidad	Trinidad
+union	Unión
+villa choferes del chaco sub-urbano	Villa Choferes del Chaco Sub-urbano
+villa elisa	Villa Elisa
+villa florida	Villa Florida
+villa hayes	Villa Hayes
+villa ygatimi	Villa Ygatimí
+villarrica	Villarrica
+villeta	Villeta
+yaguaron	Yaguarón
+yataity del norte	Yataity del Norte
+yby yau	Yby Yaú
+ybycui	Ybycuí
+yguazu	Yguazú
+yhu	Yhú
+ypacarai	Ypacarai
+yuty	Yuty

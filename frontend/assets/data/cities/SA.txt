@@ -1,0 +1,155 @@
+abha	Abha
+abqaiq	Abqaiq
+abu ‘arish	Abū ‘Arīsh
+ad darb	Ad Darb
+ad dawadimi	Ad Dawādimī
+ad dilam	Ad Dilam
+ad dir‘iyah	Ad Dir‘īyah
+adh dhibiyah	Adh Dhibiyah
+afif	Afif
+ain albaraha	Ain AlBaraha
+al artawiyah	Al Arţāwīyah
+al awjam	Al Awjām
+al bada’i‘ al wusta	Al Badā’i‘ al Wusţá
+al bahah	Al Bahah
+al battaliyah	Al Baţţālīyah
+al bukayriyah	Al Bukayrīyah
+al fuwayliq	Al Fuwayliq
+al hada	Al Hadā
+al hayathim	Al Hayāthim
+al hufuf	Al Hufūf
+al hulwah	Al Ḩulwah
+al jafr	Al Jafr
+al jaradiyah	Al Jarādīyah
+al jubayl	Al Jubayl
+al jubaylah	Al Jubaylah
+al jumum	Al Jumūm
+al ju‘aymah	Al Ju‘aymah
+al khabra’	Al Khabrā’
+al khafji	Al Khafjī
+al kharj	Al Kharj
+al khurmah	Al Khurmah
+al lith	Al Līth
+al majaridah	Al Majāridah
+al majma‘ah	Al Majma‘ah
+al markaz	Al Markaz
+al mash‘iliyah	Al Mash‘ilīyah
+al mindak	Al Mindak
+al mithnab	Al Mithnab
+al mubarraz	Al Mubarraz
+al mulayda’	Al Mulaydā’
+al munayzilah	Al Munayzilah
+al mutayrifi	Al Muţayrifī
+al muwayh	Al Muwayh
+al qarah	Al Qārah
+al qatif	Al Qaţīf
+al qurayn	Al Qurayn
+al wadi‘ah	Al Wadī‘ah
+al wajh	Al Wajh
+al ‘aqiq	Al ‘Aqīq
+al ‘awwamiyah	Al ‘Awwāmīyah
+al ‘uyaynah	Al ‘Uyaynah
+al-`ula	Al-`Ula
+an nimas	An Nimas
+ar rass	Ar Rass
+ar rayn	Ar Rayn
+arar	Arar
+as saffaniyah	As Saffānīyah
+as sulayyil	As Sulayyil
+ash shafa	Ash Shafā
+ash shamli	Ash Shamli
+ash shuqayri	Ash Shuqayrī
+ash-shaqiq	Ash-Shaqīq
+at taraf	Aţ Ţaraf
+at tubi	At Tūbī
+ayn ibn fuhayd	Ayn Ibn Fuhayd
+az zabyah	Az̧ Z̧abyah
+az zulfi	Az Zulfī
+badr al-janub	Badr al-Janūb
+badr hunayn	Badr Ḩunayn
+baljurashi	Baljurashi
+baq‘a’	Baq‘ā’
+bariq	Bariq
+buraydah	Buraydah
+damad	Ḑamad
+dammam	Dammam
+dhahaban	Dhahabān
+dhahran	Dhahran
+duba	Duba
+dukhnah	Dukhnah
+farasan	Farasān
+fayfa’	Fayfā’
+ha'il	Ha'il
+habuna	Ḩabūnā
+hafar al-batin	Hafar Al-Batin
+haql	Ḩaql
+hawtah bani tamim	Ḥawṭah Banī Tamīm
+jeddah	Jeddah
+jizan	Jizan
+julayjilah	Julayjilah
+khamis mushait	Khamis Mushait
+khaybar	Khaybar
+khobar	Khobar
+khubash	Khubāsh
+khulays	Khulayş
+king abdullah city	King Abdullah City
+king faisal military city	King Faisal Military City
+king khalid military city	King Khalid Military City
+layla	Laylá
+madinah	Madinah
+mahd adh dhahab	Mahd adh Dhahab
+makkah	Makkah
+marat	Marāt
+misliyah	Mislīyah
+mizhirah	Mizhirah
+mulayjah	Mulayjah
+najran	Najrān
+qaisumah	Qaisumah
+qal‘at bishah	Qal‘at Bīshah
+qibah	Qibah
+qurayyat	Qurayyat
+rabigh	Rābigh
+rahimah	Raḩīmah
+ranyah	Ranyah
+ras tanura	Ras Tanura
+riyad al khabra’	Riyāḑ al Khabrā’
+riyadh	Riyadh
+rumah	Rumāḩ
+sabt alalayah	Sabt Alalayah
+sabya	Şabyā
+safwa	Şafwá
+sajir	Sājir
+sakakah	Sakakah
+samitah	Şāmitah
+sarat ‘abidah	Sarāt ‘Abīdah
+sayhat	Sayhāt
+shaqra	Shaqra
+shokhaib	shokhaibٍ
+sultanah	Sulţānah
+suwayr	Şuwayr
+tabalah	Tabālah
+tabuk	Tabuk
+tanumah	Tanūmah
+tarut	Tārūt
+tathlith	Tathlīth
+tayma’	Taymā’
+ta’if	Ta’if
+thuqbah	Thuqbah
+thuwal	Thuwal
+tubarjal	Ţubarjal
+tumayr	Tumayr
+turabah	Turabah
+turaif	Turaif
+turayf	Ţurayf
+turubah	Turubah
+udhailiyah	Udhailiyah
+umluj	Umluj
+umm as sahik	Umm as Sāhik
+unaizah	Unaizah
+wed alnkil	Wed Alnkil
+yadamah	Yadamah
+yanbu	Yanbu
+‘inak	‘Inak
+‘irqah	‘Irqah
+‘uqlat as suqur	‘Uqlat aş Şuqūr
+‘uyun al jiwa’	‘Uyūn al Jiwā’

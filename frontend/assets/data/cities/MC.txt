@@ -1,0 +1,10 @@
+fontvieille	Fontvieille
+jardin exotique	Jardin Exotique
+la condamine	La Condamine
+la rousse	La Rousse
+larvotto	Larvotto
+monaco	Monaco
+monaco-ville	Monaco-Ville
+moneghetti	Moneghetti
+monte-carlo	Monte-Carlo
+saint-roman	Saint-Roman

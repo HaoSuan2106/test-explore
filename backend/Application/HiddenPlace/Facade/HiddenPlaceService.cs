@@ -7,6 +7,7 @@ using ExploreMy.Api.DataAccess.Repositories.HiddenPlace;
 using ExploreMy.Api.Domain.Entities;
 using ExploreMy.Api.DTOs.HiddenPlace;
 using HiddenPlaceEntity = ExploreMy.Api.Domain.Entities.HiddenPlace;
+using System.Text.Json;
 
 namespace ExploreMy.Api.Application.HiddenPlace.Facade;
 
@@ -53,6 +54,8 @@ public class HiddenPlaceService : IHiddenPlaceService
     private readonly IPlacePhotoService _placePhotoService;
     private readonly IHiddenPlaceSuppressionRepository _suppressionRepository;
     private readonly IReviewService _reviewService;
+    private readonly IReviewPhotoRepository _reviewPhotoRepository;
+    private readonly IReviewRepository _reviewRepository;
 
     public HiddenPlaceService(
         IPlacesApiClient placesApiClient,
@@ -62,9 +65,13 @@ public class HiddenPlaceService : IHiddenPlaceService
         IHiddenPlaceContributionService contribution,
         IPlacePhotoService placePhotoService,
         IHiddenPlaceSuppressionRepository suppressionRepository,
-        IReviewService reviewService)
+        IReviewService reviewService,
+        IReviewPhotoRepository reviewPhotoRepository,
+        IReviewRepository reviewRepository)
     {
         _reviewService = reviewService;
+        _reviewPhotoRepository = reviewPhotoRepository;
+        _reviewRepository = reviewRepository;
         _placesApiClient = placesApiClient;
         _hiddenPlaceRepository = hiddenPlaceRepository;
         _discoverHiddenPlaceService = discoverHiddenPlaceService;
@@ -129,6 +136,12 @@ public class HiddenPlaceService : IHiddenPlaceService
                 request.Latitude, request.Longitude, c.Latitude, c.Longitude) <= request.RadiusMeters)
             .ToList();
 
+        // Our own reviews, folded into the candidates BEFORE scoring. They belong to the algorithm's
+        // inputs, not to presentation: the quality gate and both halves of HiddenScore read the
+        // pooled numbers (PlaceCandidate.EffectiveRating / EffectiveUserRatingCount), so a place our
+        // users rate highly can now clear a gate Google's rating alone would have failed.
+        await AttachAppReviewStatsAsync(candidates);
+
         var results = _discoverHiddenPlaceService.Discover(candidates);
 
         _logger.LogInformation(
@@ -143,11 +156,15 @@ public class HiddenPlaceService : IHiddenPlaceService
 
         var response = results.Select(result => MapToResponseDto(result, photos)).ToList();
 
-        // Community picks are appended, never interleaved. Their ordering key would have to be
-        // HiddenScore, and they do not have one - the score is computed from Google review counts,
-        // which a user submission has none of. Giving them a made-up score to sort by would put them
-        // in a position that means nothing; putting them after the ranked list says plainly "these
-        // are extra, and they are ordered by newest".
+        // Whatever Google had no picture for, our own reviewers may have photographed. Applied
+        // after the Google pass and only to what it left empty, so a real place photo always wins.
+        await ApplyReviewPhotoFallbackAsync(response);
+
+        // Community picks are appended, never interleaved - now ranked among themselves by
+        // CommunityPlaceScorer rather than merely by date. Still not merged into the Google ranking:
+        // the two scores land on the same 0-1 scale but are not the same measurement (one is a
+        // position in a local review-count distribution, the other is verification plus our own
+        // ratings), and sorting them against each other would read as a comparison nobody computed.
         response.AddRange(await GetVerifiedCommunityPlacesAsync(request));
 
         return response;
@@ -203,11 +220,56 @@ public class HiddenPlaceService : IHiddenPlaceService
             var reportCounts = await _suppressionRepository.GetReportCountsByRecommendedPlaceIdsAsync(
                 visible.Select(x => x.Place.RecommendPlaceId).ToList());
 
-            return visible
+            var publishable = visible
                 .Where(x => !reportCounts.TryGetValue(x.Place.RecommendPlaceId, out var reports)
                     || reports < RecommendedPlaceThresholds.HideThreshold)
-                .Select(x => MapCommunityToResponseDto(x.Place, x.Latitude, x.Longitude))
                 .ToList();
+
+            // The only rating a community place can have: ours. Google has never heard of it.
+            var reviewStats = await LoadCommunityReviewStatsAsync(
+                publishable.Select(x => x.Place.RecommendPlaceId).ToList());
+
+            // Ranked among themselves by CommunityPlaceScorer instead of by submission date, which
+            // ordered a five-times-verified, well-reviewed place below whatever was typed in most
+            // recently. Ties fall back to verification count (more people vouched for it), then to
+            // newest, then to the submission id purely so the same search returns the same order.
+            var scored = publishable
+                .Select(x =>
+                {
+                    reviewStats.TryGetValue(x.Place.RecommendPlaceId, out var stats);
+
+                    return new
+                    {
+                        x.Place,
+                        x.Latitude,
+                        x.Longitude,
+                        Score = CommunityPlaceScorer.Score(
+                            x.Place.Verifications.Count,
+                            stats?.ReviewCount ?? 0,
+                            stats?.AverageRating)
+                    };
+                })
+                .OrderByDescending(x => x.Score.HiddenScore)
+                .ThenByDescending(x => x.Place.Verifications.Count)
+                .ThenByDescending(x => x.Place.CreatedAt)
+                .ThenBy(x => x.Place.SubmissionId, StringComparer.Ordinal)
+                .ToList();
+
+            var items = scored
+                .Select(x => MapCommunityToResponseDto(x.Place, x.Latitude, x.Longitude, x.Score))
+                .ToList();
+
+            // The recommender's own photos are already on the DTO by this point; this covers the
+            // recommendations submitted without any. Keyed through submission id -> recommend_place
+            // id, because those are the two different ids the DTO and a review use for one place.
+            await ApplyCommunityReviewPhotoFallbackAsync(
+                items,
+                publishable.ToDictionary(
+                    x => x.Place.SubmissionId,
+                    x => x.Place.RecommendPlaceId,
+                    StringComparer.Ordinal));
+
+            return items;
         }
         catch (Exception ex)
         {
@@ -216,31 +278,243 @@ public class HiddenPlaceService : IHiddenPlaceService
         }
     }
 
-    private static HiddenPlaceResponseItemDto MapCommunityToResponseDto(
-        PlaceSubmission place, double latitude, double longitude) => new()
+    /// <summary>
+    /// Folds our own users' reviews into the candidates, so the algorithm scores every place on what
+    /// this app knows about it and not only on what Google does.
+    ///
+    /// One batched read for the whole search rather than a lookup per place - a dense search carries
+    /// hundreds of candidates, and this sits directly in front of the map load.
+    ///
+    /// Never throws. Without these numbers the Effective* properties fall back to the plain Google
+    /// values, so a failure here costs the ranking some nuance and costs the user nothing.
+    /// </summary>
+    private async Task AttachAppReviewStatsAsync(IReadOnlyList<PlaceCandidate> candidates)
+    {
+        if (candidates.Count == 0)
         {
-            // The submission id stands in for a Google place id. It is a GUID, so it cannot collide with
-            // a real one, and the client only ever uses this field as an identity key.
+            return;
+        }
+
+        try
+        {
+            var stats = await _reviewRepository.GetStatsByGooglePlaceIdsAsync(
+                candidates.Select(candidate => candidate.PlaceId).Distinct(StringComparer.Ordinal).ToList());
+
+            if (stats.Count == 0)
+            {
+                return;
+            }
+
+            foreach (var candidate in candidates)
+            {
+                if (!stats.TryGetValue(candidate.PlaceId, out var stat))
+                {
+                    continue;
+                }
+
+                candidate.AppReviewCount = stat.ReviewCount;
+                candidate.AppRating = stat.AverageRating;
+            }
+
+            _logger.LogInformation(
+                "{Reviewed}/{Candidates} candidate(s) carry reviews written in this app; those are scored on both sources.",
+                stats.Count, candidates.Count);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Could not read our own review stats; scoring this search on Google data alone.");
+        }
+    }
+
+    /// <summary>
+    /// Gives a picture to the Google places that came back without one, borrowed from a review
+    /// somebody wrote about that same place.
+    ///
+    /// Google has no photo for a large share of what this endpoint returns - obscurity is the whole
+    /// selection criterion, and obscure places are exactly the ones nobody has photographed for
+    /// Google. Those cards showed a placeholder even when one of our own users had been there and
+    /// posted pictures with their review; the pictures were already in our bucket.
+    ///
+    /// Only fills gaps. A place with a Google photo keeps it, because that image was chosen (and
+    /// paid for) as the place's own picture, while a review photo is one visitor's snapshot.
+    ///
+    /// Never throws, for the same reason EnsurePhotosAsync doesn't: the search has already
+    /// succeeded by this point, and a missing picture must not turn it into an error.
+    /// </summary>
+    private async Task ApplyReviewPhotoFallbackAsync(List<HiddenPlaceResponseItemDto> items)
+    {
+        var missing = items.Where(item => string.IsNullOrWhiteSpace(item.PhotoUrl)).ToList();
+        if (missing.Count == 0)
+        {
+            return;
+        }
+
+        try
+        {
+            var covers = await _reviewPhotoRepository.GetCoverPhotosByGooglePlaceIdsAsync(
+                missing.Select(item => item.PlaceId).ToList());
+
+            var filled = 0;
+            foreach (var item in missing)
+            {
+                if (!covers.TryGetValue(item.PlaceId, out var cover))
+                {
+                    continue;
+                }
+
+                item.PhotoUrl = cover.PhotoUrl;
+                item.PhotoAttribution = cover.Attribution;
+                filled++;
+            }
+
+            _logger.LogInformation(
+                "{Filled}/{Missing} place(s) without a Google photo got one from a user review.",
+                filled, missing.Count);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Could not read review photos; those places stay without a picture.");
+        }
+    }
+
+    /// <summary>
+    /// Our own review counts and averages for a batch of community places, keyed by
+    /// recommend_place_id.
+    ///
+    /// Swallows failures and returns an empty map instead of letting them reach the caller's catch,
+    /// which would drop every community place from the search. Without stats each place still
+    /// scores - CommunityPlaceScorer falls back to its verification count - so the cost of a failure
+    /// here is a coarser ordering, not a missing section.
+    /// </summary>
+    private async Task<Dictionary<string, PlaceReviewStats>> LoadCommunityReviewStatsAsync(
+        IReadOnlyCollection<string> recommendPlaceIds)
+    {
+        try
+        {
+            return await _reviewRepository.GetStatsByRecommendPlaceIdsAsync(recommendPlaceIds);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Could not read review stats for community places; ranking them on verifications alone.");
+            return new Dictionary<string, PlaceReviewStats>(StringComparer.Ordinal);
+        }
+    }
+
+    /// <summary>
+    /// Same fallback as the Google one, for community places recommended without a photo.
+    ///
+    /// Separate method because the two halves identify a place differently: a community DTO's
+    /// PlaceId is the SUBMISSION id, while a review stores the canonical recommend_place id, so the
+    /// lookup has to go through <paramref name="recommendPlaceIdBySubmissionId"/>. This is the same
+    /// id mismatch that silently broke the suppression filter.
+    ///
+    /// Has its own try/catch rather than relying on the caller's: GetVerifiedCommunityPlacesAsync
+    /// answers a failure by dropping EVERY community place from the search, which is far too high a
+    /// price for a missing picture.
+    /// </summary>
+    private async Task ApplyCommunityReviewPhotoFallbackAsync(
+        List<HiddenPlaceResponseItemDto> items,
+        IReadOnlyDictionary<string, string> recommendPlaceIdBySubmissionId)
+    {
+        var missing = items.Where(item => string.IsNullOrWhiteSpace(item.PhotoUrl)).ToList();
+        if (missing.Count == 0)
+        {
+            return;
+        }
+
+        try
+        {
+            var wanted = missing
+                .Select(item => recommendPlaceIdBySubmissionId.TryGetValue(item.PlaceId, out var id) ? id : null)
+                .Where(id => !string.IsNullOrWhiteSpace(id))
+                .Select(id => id!)
+                .ToList();
+
+            if (wanted.Count == 0)
+            {
+                return;
+            }
+
+            var covers = await _reviewPhotoRepository.GetCoverPhotosByRecommendPlaceIdsAsync(wanted);
+            if (covers.Count == 0)
+            {
+                return;
+            }
+
+            var filled = 0;
+            foreach (var item in missing)
+            {
+                if (!recommendPlaceIdBySubmissionId.TryGetValue(item.PlaceId, out var recommendPlaceId)
+                    || !covers.TryGetValue(recommendPlaceId, out var cover))
+                {
+                    continue;
+                }
+
+                item.PhotoUrl = cover.PhotoUrl;
+                item.PhotoAttribution = cover.Attribution;
+                filled++;
+            }
+
+            _logger.LogInformation(
+                "{Filled}/{Missing} community place(s) without a submitted photo got one from a user review.",
+                filled, missing.Count);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Could not read review photos for community places; they stay without a picture.");
+        }
+    }
+
+    private static HiddenPlaceResponseItemDto MapCommunityToResponseDto(
+    PlaceSubmission place, double latitude, double longitude, CommunityPlaceScore score)
+    {
+        string? photoUrl = null;
+
+        if (!string.IsNullOrWhiteSpace(place.Place!.PhotosJson))
+        {
+            try
+            {
+                var photos = JsonSerializer.Deserialize<List<string>>(
+                    place.Place.PhotosJson);
+
+                photoUrl = photos?.FirstOrDefault();
+            }
+            catch (JsonException)
+            {
+                // Invalid PhotosJson - leave PhotoUrl as null.
+            }
+        }
+
+        return new HiddenPlaceResponseItemDto
+        {
             PlaceId = place.SubmissionId,
-            Name = place.Place!.Name,
-            PrimaryType = MapCategoryToPlaceType(place.Place!.PrimaryType),
+            Name = place.Place.Name,
+            PrimaryType = MapCategoryToPlaceType(place.Place.PrimaryType),
             Latitude = latitude,
             Longitude = longitude,
 
-            // Left empty rather than faked. Rating, review count, HiddenScore and FormattedAddress all
-            // describe how many strangers on Google have been somewhere - a question a community
-            // submission has no answer to. Source is what tells the client to stop reading them.
             FormattedAddress = null,
             Rating = null,
             UserRatingCount = 0,
-            HiddenScore = 0,
+
+            // Scored, not zeroed. These used to be hard 0, which is why community places could only
+            // be ordered by date: there was nothing else to sort on. CommunityPlaceScorer answers
+            // the same question from what a recommendation does have - verifications, and our own
+            // reviews. Comparable in scale to a Google HiddenScore, but not the same measurement,
+            // which is why these are still appended after the ranked list rather than merged in.
+            HiddenScore = score.HiddenScore,
+            ObscurityScore = score.ObscurityScore,
+            QualityScore = score.QualityScore,
+
+            // Community photos are stored as our own Supabase URLs.
+            PhotosJson = place.Place.PhotosJson,
+            PhotoUrl = photoUrl,
+            PhotoAttribution = null,
 
             Source = HiddenPlaceSource.Community,
-
-            // VERIFIED or UNDER_VOTING - the client needs the difference to draw an unverified pin as
-            // the unconfirmed claim it is.
             CommunityStatus = place.Status
         };
+    }
 
     /// <summary>
     /// Translates a submission's category ("Scenic Point") into the Places API type string the app

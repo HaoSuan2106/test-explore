@@ -1,0 +1,16 @@
+basseterre	Basseterre
+cayon	Cayon
+charlestown	Charlestown
+cotton ground	Cotton Ground
+dieppe bay town	Dieppe Bay Town
+fig tree	Fig Tree
+market shop	Market Shop
+middle island	Middle Island
+monkey hill	Monkey Hill
+newcastle	Newcastle
+nicola town	Nicola Town
+old road town	Old Road Town
+sadlers	Sadlers
+saint paul’s	Saint Paul’s
+sandy point town	Sandy Point Town
+trinity	Trinity

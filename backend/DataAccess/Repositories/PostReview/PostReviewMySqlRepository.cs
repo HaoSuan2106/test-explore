@@ -1,3 +1,5 @@
+using System.Linq.Expressions;
+using ExploreMy.Api.Common.Exceptions;
 using ExploreMy.Api.Domain.Entities;
 using ExploreMy.Api.Persistence.DbContext;
 using Microsoft.EntityFrameworkCore;
@@ -17,6 +19,16 @@ public class PostReviewMySqlRepository : IPostReviewRepository
 
     // ---------------- Posts ----------------
 
+    /// <summary>
+    /// EF-translatable predicate: the post has an ACTIVE report submitted by
+    /// the current user ("reported by current user" — NOT "someone reported
+    /// it"). The schema allows duplicate reports per (post, reporter), but
+    /// Any() is an EXISTS — duplicates cannot double-count or leak through.
+    /// Kept next to the feed query it mirrors; reused by the repository tests.
+    /// </summary>
+    internal static Expression<Func<Post, bool>> ReportedByCurrentUser(int currentUserId)
+        => p => p.Reports.Any(r => r.ReporterId == currentUserId && r.Status == PostReportStatus.Active);
+
     public async Task<List<Post>> GetFeedAsync(int currentUserId, PostFeedSort sort, int? minEngagement, int? maxEngagement, int page, int pageSize)
     {
         try
@@ -24,11 +36,14 @@ public class PostReviewMySqlRepository : IPostReviewRepository
             // Saved feed: only posts the current user saved, ordered by the
             // saved record's CreatedAt (newest save first). Queried directly
             // via a save-relationship filter (no per-post Saves.Any projection).
+            // A reported-by-me post disappears from here too — only the
+            // Reported filter may show it (save-then-report is legal).
             if (sort == PostFeedSort.Saved)
             {
                 var savedQuery = _context.Posts
                     .Where(p => p.Status == PostStatus.Active
-                                && _context.UserSavedPosts.Any(s => s.UserId == currentUserId && s.PostId == p.PostId))
+                                && _context.UserSavedPosts.Any(s => s.UserId == currentUserId && s.PostId == p.PostId)
+                                && !p.Reports.Any(r => r.ReporterId == currentUserId && r.Status == PostReportStatus.Active))
                     .OrderByDescending(p => _context.UserSavedPosts
                         .Where(s => s.UserId == currentUserId && s.PostId == p.PostId)
                         .Select(s => s.CreatedAt)
@@ -47,8 +62,15 @@ public class PostReviewMySqlRepository : IPostReviewRepository
                 return savedPosts;
             }
 
+            // Report-constraint ordering (order of operations is mandatory):
+            // the "NOT reported by current user" predicate is composed FIRST,
+            // then sorting, then Skip/Take. MySQL therefore eliminates the
+            // reported rows before ORDER BY and LIMIT/OFFSET — pages contain
+            // only eligible posts (no empty/skipped pages, no client-side
+            // removal) and _feedHasMore reflects the filtered dataset.
             IQueryable<Post> query = _context.Posts
                 .Where(p => p.Status == PostStatus.Active)
+                .Where(p => !p.Reports.Any(r => r.ReporterId == currentUserId && r.Status == PostReportStatus.Active))
                 .Include(p => p.Author)
                 .Include(p => p.Images)
                 .Include(p => p.Reactions)
@@ -85,6 +107,9 @@ public class PostReviewMySqlRepository : IPostReviewRepository
 
     /// <summary>
     /// Posts the current user has an ACTIVE comment on (My Activity → Commented).
+    /// Report-constraint first: a post the current user reported is excluded
+    /// BEFORE ordering and Skip/Take — only the Reported filter may show it
+    /// (comment-then-report is legal; the comment row itself is preserved).
     /// </summary>
     public async Task<List<Post>> GetPostsCommentedByAsync(int userId, int page, int pageSize)
     {
@@ -92,7 +117,8 @@ public class PostReviewMySqlRepository : IPostReviewRepository
         {
             var commentedPosts = await _context.Posts
                 .Where(p => p.Status == PostStatus.Active
-                            && p.Comments.Any(c => c.AuthorId == userId && c.Status == PostCommentStatus.Active))
+                            && p.Comments.Any(c => c.AuthorId == userId && c.Status == PostCommentStatus.Active)
+                            && !p.Reports.Any(r => r.ReporterId == userId && r.Status == PostReportStatus.Active))
                 .Include(p => p.Author)
                 .Include(p => p.Images)
                 .Include(p => p.Reactions)
@@ -143,6 +169,9 @@ public class PostReviewMySqlRepository : IPostReviewRepository
 
     /// <summary>
     /// Posts the current user has an ACTIVE like on (My Activity → Liked).
+    /// Report-constraint first: a post the current user reported is excluded
+    /// BEFORE ordering and Skip/Take — only the Reported filter may show it
+    /// (like-then-report is legal; the reaction row itself is preserved).
     /// </summary>
     public async Task<List<Post>> GetPostsLikedByAsync(int userId, int page, int pageSize)
     {
@@ -150,7 +179,8 @@ public class PostReviewMySqlRepository : IPostReviewRepository
         {
             var likedPosts = await _context.Posts
                 .Where(p => p.Status == PostStatus.Active
-                            && p.Reactions.Any(r => r.UserId == userId && r.Status == PostReactionStatus.Active))
+                            && p.Reactions.Any(r => r.UserId == userId && r.Status == PostReactionStatus.Active)
+                            && !p.Reports.Any(r => r.ReporterId == userId && r.Status == PostReportStatus.Active))
                 .Include(p => p.Author)
                 .Include(p => p.Images)
                 .Include(p => p.Reactions)
@@ -186,6 +216,9 @@ public class PostReviewMySqlRepository : IPostReviewRepository
 
             IQueryable<Post> queryable = _context.Posts
                 .Where(p => p.Status == PostStatus.Active
+                            // Search is a normal feed surface: reported-by-me
+                            // posts stay hidden here as well, before Skip/Take.
+                            && !p.Reports.Any(r => r.ReporterId == currentUserId && r.Status == PostReportStatus.Active)
                             && (p.Title != null && p.Title.Contains(trimmed)
                                 || p.Description.Contains(trimmed)
                                 || _context.Places.Any(pl => pl.PlaceId == p.TaggedPlaceId && pl.Name.Contains(trimmed))
@@ -446,6 +479,13 @@ public class PostReviewMySqlRepository : IPostReviewRepository
             _context.PostReactions.Add(reaction);
             await _context.SaveChangesAsync();
         }
+        catch (DbUpdateException)
+        {
+            // UNIQUE(post_id, user_id) caught a concurrent duplicate — surface a
+            // specific marker so the service layer can return a graceful outcome
+            // instead of a raw 500.
+            throw new ConcurrentDuplicateException();
+        }
         catch (Exception ex)
         {
             _logger.LogError(ex, "Database error while creating reaction.");
@@ -490,6 +530,12 @@ public class PostReviewMySqlRepository : IPostReviewRepository
             report.CreatedAt = DateTime.UtcNow;
             _context.PostReports.Add(report);
             await _context.SaveChangesAsync();
+        }
+        catch (DbUpdateException)
+        {
+            // UNIQUE(post_id, reporter_id) caught a concurrent duplicate — surface a
+            // specific marker so the service layer can return 409 instead of a raw 500.
+            throw new ConcurrentDuplicateException();
         }
         catch (Exception ex)
         {
@@ -604,6 +650,13 @@ public class PostReviewMySqlRepository : IPostReviewRepository
             savedPost.CreatedAt = DateTime.UtcNow;
             _context.UserSavedPosts.Add(savedPost);
             await _context.SaveChangesAsync();
+        }
+        catch (DbUpdateException)
+        {
+            // UNIQUE(post_id, user_id) caught a concurrent duplicate — surface a
+            // specific marker so the service layer can return the idempotent
+            // already-saved outcome instead of a raw 500.
+            throw new ConcurrentDuplicateException();
         }
         catch (Exception ex)
         {

@@ -1,0 +1,118 @@
+aboso	Aboso
+aburi	Aburi
+accra	Accra
+adenta	Adenta
+aflao	Aflao
+agogo	Agogo
+ahwiaa	Ahwiaa
+akatsi	Akatsi
+akim oda	Akim Oda
+akim swedru	Akim Swedru
+akropong	Akropong
+akwatia	Akwatia
+amanfrom	Amanfrom
+anloga	Anloga
+anyinam	Anyinam
+apam	Apam
+asamankese	Asamankese
+ashaiman	Ashaiman
+assin foso	Assin Foso
+atebubu	Atebubu
+atronie	Atronie
+atsiaman	Atsiaman
+awoshi	Awoshi
+bawku	Bawku
+bechem	Bechem
+begoro	Begoro
+bekwai	Bekwai
+berekum	Berekum
+bibiani	Bibiani
+bimbila	Bimbila
+bolgatanga	Bolgatanga
+buduburam	Buduburam
+cape coast	Cape Coast
+dambai	Dambai
+damongo	Damongo
+domaa-ahenkro	Domaa-Ahenkro
+dome	Dome
+duayaw-nkwanta	Duayaw-Nkwanta
+dunkwa	Dunkwa
+dzodze	Dzodze
+effiduase	Effiduase
+ejura	Ejura
+elmina	Elmina
+elubo	Elubo
+esim	Esim
+foso	Foso
+gbawe	Gbawe
+goaso	Goaso
+ho	Ho
+hohoe	Hohoe
+japekrom	Japekrom
+jirapa	Jirapa
+kade	Kade
+kasoa	Kasoa
+keta	Keta
+kete krachi	Kete Krachi
+kibi	Kibi
+kintampo	Kintampo
+koforidua	Koforidua
+konongo	Konongo
+kpandae	Kpandae
+kpandu	Kpandu
+kumasi	Kumasi
+larabanga	Larabanga
+lashibi	Lashibi
+mampong	Mampong
+mamponteng	Mamponteng
+mandela	Mandela
+mankesim	Mankesim
+medina estates	Medina Estates
+mim	Mim
+mpraeso	Mpraeso
+mumford	Mumford
+nalerigu	Nalerigu
+navrongo	Navrongo
+new achimota	New Achimota
+new tafo	New Tafo
+nkawkaw	Nkawkaw
+nkoranza	Nkoranza
+nsawam	Nsawam
+nsoatre	Nsoatre
+nungua	Nungua
+obuase	Obuase
+odumase krobo	Odumase Krobo
+osu	Osu
+prestea	Prestea
+sakumona	Sakumona
+salaga	Salaga
+saltpond	Saltpond
+saman	Saman
+savelugu	Savelugu
+sawla	Sawla
+sefwi	Sefwi
+sefwi wiawso	Sefwi Wiawso
+sekondi	Sekondi
+sekondi-takoradi	Sekondi-Takoradi
+shama junction	Shama Junction
+suhum	Suhum
+sunyani	Sunyani
+swedru	Swedru
+tafo	Tafo
+taifa	Taifa
+takoradi	Takoradi
+tamale	Tamale
+tarkwa	Tarkwa
+techiman	Techiman
+tema	Tema
+tema new town	Tema New Town
+tepa	Tepa
+teshi old town	Teshi Old Town
+twifu praso	Twifu Praso
+wa	Wa
+wankyi	Wankyi
+wassa-akropong	Wassa-Akropong
+winneba	Winneba
+yegyi	Yegyi
+yendi	Yendi
+zonno	Zonno

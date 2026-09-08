@@ -23,7 +23,6 @@ import '../recommend_new_place/recommend_review_screen.dart';
 import '../recommend_new_place/recommendation_success_screen.dart';
 import '../recommend_new_place/recommend_place_draft.dart';
 import '../post_review/status/status_feedback_screen.dart';
-import '../place_details/community_verification/community_verification_ui.dart';
 import '../place_details/place_detail_args.dart';
 import '../place_details/place_details_ui.dart';
 import '../place_details/create_review/create_review_args.dart';
@@ -220,22 +219,6 @@ final GoRouter appRouter = GoRouter(
       builder: (context, state) {
         final args = state.extra as ReportReviewArgs;
         return ReportReviewUI(reviewId: args.reviewId);
-      },
-    ),
-    GoRoute(
-      path: '/place/community-verification',
-      name: 'community-verification',
-      builder: (context, state) {
-        final args = state.extra as CommunityVerificationArgs;
-        return CommunityVerificationUI(
-          placeId: args.placeId,
-          placeStatus: args.placeStatus,
-          userVote: args.userVote,
-          placeName: args.placeName,
-          recommendedBy: args.recommendedBy,
-          hasReported: args.hasReported,
-          isReportedClosed: args.isReportedClosed,
-        );
       },
     ),
     GoRoute(

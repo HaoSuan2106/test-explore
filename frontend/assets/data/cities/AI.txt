@@ -1,0 +1,14 @@
+blowing point village	Blowing Point Village
+east end village	East End Village
+farrington	Farrington
+george hill	George Hill
+island harbour	Island Harbour
+north hill village	North Hill Village
+north side	North Side
+sandy ground village	Sandy Ground Village
+sandy hill	Sandy Hill
+south hill village	South Hill Village
+stoney ground	Stoney Ground
+the quarter	The Quarter
+the valley	The Valley
+west end village	West End Village

@@ -326,9 +326,7 @@ class _RouteNavigationActiveScreenState extends State<RouteNavigationActiveScree
               },
             ),
           ),
-          // TEMP: lets you preview every alt-flow dialog without live
-          // GPS/API logic. Remove once real triggers call these directly.
-          const Positioned(top: 40, right: 16, child: _DebugDialogMenu()),
+
         ],
       ),
     );
@@ -405,39 +403,6 @@ class _NavigationInfoCard extends StatelessWidget {
           ),
         ],
       ),
-    );
-  }
-}
-
-class _DebugDialogMenu extends StatelessWidget {
-  const _DebugDialogMenu();
-
-  @override
-  Widget build(BuildContext context) {
-    return PopupMenuButton<String>(
-      icon: const Icon(Icons.bug_report, color: Colors.black45),
-      onSelected: (value) {
-        switch (value) {
-          case 'deviation':
-            showRouteDeviationDialog(context);
-            break;
-          case 'gps':
-            showGpsUnavailableDialog(context);
-            break;
-          case 'already':
-            showAlreadyAtDestinationDialog(context);
-            break;
-          case 'arrived':
-            showArrivalSuccessDialog(context);
-            break;
-        }
-      },
-      itemBuilder: (context) => const [
-        PopupMenuItem(value: 'deviation', child: Text('Preview: Route deviation')),
-        PopupMenuItem(value: 'gps', child: Text('Preview: GPS unavailable')),
-        PopupMenuItem(value: 'already', child: Text('Preview: Already at destination')),
-        PopupMenuItem(value: 'arrived', child: Text('Preview: Arrival success')),
-      ],
     );
   }
 }

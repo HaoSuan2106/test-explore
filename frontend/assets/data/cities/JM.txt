@@ -1,0 +1,101 @@
+above rocks	Above Rocks
+albert town	Albert Town
+alexandria	Alexandria
+alligator pond	Alligator Pond
+anchovy	Anchovy
+annotto bay	Annotto Bay
+balaclava	Balaclava
+bamboo	Bamboo
+barbican	Barbican
+barrett town	Barrett Town
+bath	Bath
+bethel town	Bethel Town
+black river	Black River
+bluefields	Bluefields
+bog walk	Bog Walk
+buff bay	Buff Bay
+bull savannah	Bull Savannah
+cambridge	Cambridge
+cascade	Cascade
+chapelton	Chapelton
+clarks town	Clarks Town
+coleyville	Coleyville
+constant spring	Constant Spring
+dalvey	Dalvey
+darliston	Darliston
+discovery bay	Discovery Bay
+duncans	Duncans
+easington	Easington
+ewarton	Ewarton
+falmouth	Falmouth
+gayle	Gayle
+golden grove	Golden Grove
+gordon town	Gordon Town
+grange hill	Grange Hill
+half way tree	Half Way Tree
+hayes	Hayes
+hope bay	Hope Bay
+islington	Islington
+kellits	Kellits
+kingston	Kingston
+lacovia	Lacovia
+limit	Limit
+linstead	Linstead
+lionel town	Lionel Town
+little london	Little London
+lluidas vale	Lluidas Vale
+lucea	Lucea
+maggotty	Maggotty
+malvern	Malvern
+manchioneal	Manchioneal
+mandeville	Mandeville
+maroon town	Maroon Town
+mavis bank	Mavis Bank
+may pen	May Pen
+mona heights	Mona Heights
+moneague	Moneague
+montego bay	Montego Bay
+moore town	Moore Town
+morant bay	Morant Bay
+mountain view gardens	Mountain View Gardens
+nain	Nain
+negril	Negril
+new kingston	New Kingston
+ocho rios	Ocho Rios
+old harbour	Old Harbour
+old harbour bay	Old Harbour Bay
+oracabessa	Oracabessa
+orange bay	Orange Bay
+penwood	Penwood
+petersfield	Petersfield
+point hill	Point Hill
+port antonio	Port Antonio
+port maria	Port Maria
+port royal	Port Royal
+portmore	Portmore
+porus	Porus
+quickstep	Quickstep
+race course	Race Course
+richmond	Richmond
+riversdale	Riversdale
+rocky point	Rocky Point
+runaway bay	Runaway Bay
+saint ann’s bay	Saint Ann’s Bay
+sandy bay	Sandy Bay
+santa cruz	Santa Cruz
+savanna-la-mar	Savanna-la-Mar
+seaforth	Seaforth
+sherwood content	Sherwood Content
+siloah	Siloah
+southfield	Southfield
+spanish town	Spanish Town
+stony hill	Stony Hill
+torrington park	Torrington Park
+tower hill	Tower Hill
+trinity ville	Trinity Ville
+ulster spring	Ulster Spring
+wakefield	Wakefield
+whitehouse	Whitehouse
+whithorn	Whithorn
+williamsfield	Williamsfield
+yallahs	Yallahs

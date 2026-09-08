@@ -1,0 +1,475 @@
+abadou	Abadou
+ac-cahrij	Aç-çahrij
+ad darwa	Ad Darwa
+adar	Adar
+adassil	Adassil
+afourer	Afourer
+agadir	Agadir
+agadir melloul	Agadir Melloul
+agdz	Agdz
+aghbala	Aghbala
+aghbalou n sardane	Aghbalou N Sardane
+aghmat	Aghmat
+agourai	Agouraï
+aguelmous	Aguelmous
+ahfir	Ahfir
+ain aicha	Ain Aicha
+ain attig	Aïn Attig
+ain beni mathar	Aïn Beni Mathar
+ain cheggag	Aïn Cheggag
+ain dourij	Ain Dourij
+ain el aouda	Ain El Aouda
+ain erreggada	Ain Erreggada
+ain harrouda	Aïn Harrouda
+ain jemaa	Aïn Jemaa
+ain karma	Ain Karma
+ain leuh	Aïn Leuh
+ain taoujdat	Aïn Taoujdat
+ait khallouf	Ait Khallouf
+ait lous	Aït Lous
+ait melloul	Ait Melloul
+ait ouaoumana	Aït Ouaoumana
+ait ourir	Ait Ourir
+ait yazza	Ait Yazza
+ajdir	Ajdir
+akhfennir	Akhfennir
+akka	Akka
+aklim	Aklim
+aknoul	Aknoul
+al aaroui	Al Aaroui
+al brouj	Al Brouj
+al fqih ben calah	Al Fqih Ben Çalah
+al hoceima	Al Hoceïma
+al machouar - stinia	Al Machouar - Stinia
+al m’aziz	Al M’aziz
+al qbab	Al Qbab
+almis du guigou	Almis du Guigou
+almis marmoucha	Almis Marmoucha
+alnif	Alnif
+amalou	Amalou
+amersid	Amersid
+amerzgane	Amerzgane
+amizmiz	Amizmiz
+amouguer	Amouguer
+anergui	Anergui
+aoufous	Aoufous
+aoulouz	Aoulouz
+aourir	Aourir
+aousserd	Aousserd
+ar rommani	Ar Rommani
+arazane	Arazane
+arbaa laaounate	Arbaa Laaounate
+arbaoua	Arbaoua
+arfoud	Arfoud
+argana	Argana
+asilah	Asilah
+asni	Asni
+assa	Assa
+assads	Assads
+assoul	Assoul
+azemmour	Azemmour
+azgour	Azgour
+azilal	Azilal
+azla	Azla
+azrou	Azrou
+bab taza	Bab Taza
+bejaad	Bejaâd
+bellaa	Bellaa
+ben ahmed	Ben Ahmed
+ben guerir	Ben Guerir
+ben jerrar	Ben Jerrar
+ben qarrich	Ben Qarrich
+ben taieb	Ben Taieb
+beni enzar	Beni Enzar
+beni mellal	Beni Mellal
+beni yakhlef	Beni Yakhlef
+benslimane	Benslimane
+berkane	Berkane
+berrechid	Berrechid
+bhalil	Bhalil
+bigoudine	Bigoudine
+bir jdid	Bir Jdid
+bni bouayach	Bni Bouayach
+bni drar	Bni Drar
+bni hadifa	Bni Hadifa
+bni tajjit	Bni Tajjit
+bou fekrane	Bou Fekrane
+bou izakarn	Bou Izakarn
+bouabout	Bouabout
+bouarfa	Bouarfa
+bouarouss	Bouarouss
+boubker	Boubker
+boudenib	Boudenib
+bouderbala	Bouderbala
+boudinar	Boudinar
+bouizazarene ihaddadene	Bouizazarene Ihaddadene
+boujniba	Boujniba
+boukhalef	Boukhalef
+bouknadel	Bouknadel
+boulaouane	Boulaouane
+boulemane	Boulemane
+boumalne dades	Boumalne Dades
+boumia	Boumia
+boureit	Boureït
+bouskoura	Bouskoura
+bouznika	Bouznika
+bou’nane	Bou’nane
+brikcha	Brikcha
+bzou	Bzou
+cap negro ii	Cap Negro II
+casablanca	Casablanca
+chefchaouen	Chefchaouen
+chichaoua	Chichaoua
+dakhla	Dakhla
+dar bouazza	Dar Bouazza
+dar chaoui	Dar Chaoui
+dar kebdani	Dar Kebdani
+dar ould zidouh	Dar Ould Zidouh
+dchira el jihadia	Dchira El Jihadia
+debdou	Debdou
+demnate	Demnate
+derdara	Derdara
+dhar souk	Dhar Souk
+douar el caid el gueddari	Douar el Caïd el Gueddari
+douar sidi bouafif	Douar Sidi Bouafif
+douar toulal	Douar Toulal
+driouch	Driouch
+echemmaia est	Echemmaia Est
+el aioun	El Aïoun
+el akarta	El Akarta
+el gara	El Gara
+el guerdane	El Guerdane
+el hajeb	El Hajeb
+el harhoura	El Harhoura
+el jadida	El Jadida
+el kelaa des srarhna	El Kelaa des Srarhna
+el ksiba	El Ksiba
+el mansouria	El Mansouria
+el menzel	El Menzel
+el ouatia	El Ouatia
+errachidia	Errachidia
+essaouira	Essaouira
+essekhinat	Essekhinat
+ezzhiliga	Ezzhiliga
+fam el hisn	Fam El Hisn
+fes	Fes
+fes al bali	Fès al Bali
+fezna	Fezna
+fifi	Fifi
+figuig	Figuig
+fnidek	Fnidek
+foum jam’a	Foum Jam’a
+foum zguid	Foum Zguid
+galaz	Galaz
+ghafsai	Ghafsaï
+ghouazi	Ghouazi
+goulmima	Goulmima
+gourrama	Gourrama
+guelmim	Guelmim
+gueltat zemmour	Gueltat Zemmour
+guenfouda	Guenfouda
+guercif	Guercif
+gueznaia	Gueznaia
+guisser	Guisser
+had abdallah rhiat	Had Abdallah Rhiat
+had beni chiker	Had Beni Chiker
+had bouhssoussen	Had Bouhssoussen
+had hrara	Had Hrara
+had kourt	Had Kourt
+had oulad zbair	Had Oulad Zbair
+had soualem	Had Soualem
+haj kaddour	Haj Kaddour
+hassi berkane	Hassi Berkane
+hattane	Hattane
+idmine	Idmine
+ifrane	Ifrane
+ighram	Ighram
+ighram laalam	Ighram Laalam
+iguidi	Iguidi
+imi-n-tanout	Imi-n-Tanout
+imider	Imider
+imilchil	Imilchil
+imlili	Imlili
+imouzzer des marmoucha	Imouzzer des Marmoucha
+imouzzer kandar	Imouzzer Kandar
+imzouren	Imzouren
+inezgane	Inezgane
+issaguen	Issaguen
+isseksi	Isseksi
+itzer	Itzer
+jamaat shaim	Jamaat Shaim
+jebel tiskaouine	Jebel Tiskaouine
+jebha	Jebha
+jem’at oulad ’abbou	Jem’at Oulad ’Abbou
+jerada	Jerada
+jorf	Jorf
+kahf nssar	Kahf Nssar
+kantina	Kantina
+karia	Karia
+karia ba mohamed	Karia Ba Mohamed
+kariat arkmane	Kariat Arkmane
+kasba tadla	Kasba Tadla
+kassita	Kassita
+kelaat mgouna	Kelaat Mgouna
+kenitra	Kenitra
+kerrouchen	Kerrouchen
+khemis sahel	Khemis Sahel
+khemisset	Khemisset
+khenichet-sur ouerrha	Khenichet-sur Ouerrha
+khenifra	Khenifra
+khouribga	Khouribga
+korouna	Korouna
+ksar el kebir	Ksar El Kebir
+laattaouia	Laâttaouia
+lahraouyine	Lahraouyine
+lake lalla takerkoust	Lake Lalla Takerkoust
+lakhsas	Lakhsas
+lalla mimouna	Lalla Mimouna
+laouamra	Laouamra
+larache	Larache
+lemhaya	Lemhaya
+loudaya	Loudaya
+lqoliaa	Lqoliaa
+m'nabha	M'Nabha
+madagh	Madagh
+marrakesh	Marrakesh
+martil	Martil
+matmata	Matmata
+mdiq	Mdiq
+mechouar de casablanca	Méchouar de Casablanca
+mechouar-kasba	Méchouar-Kasba
+mechraa bel ksiri	Mechraa Bel Ksiri
+mediouna	Mediouna
+mehdya	Mehdya
+meknes	Meknes
+mellila	Mellila
+melqa el ouidane	Melqa el Ouidane
+mers el kheir	Mers El Kheir
+messeied	Messeïed
+mhamid	Mhamid
+midar	Midar
+midelt	Midelt
+mirleft	Mirleft
+missour	Missour
+mohammedia	Mohammedia
+mokrisset	Mokrisset
+mosquee	Mosquée
+moulay abdallah	Moulay Abdallah
+moulay ali cherif	Moulay Ali Cherif
+moulay bou ’azza	Moulay Bou ’azza
+moulay bouchta	Moulay Bouchta
+moulay bousselham	Moulay Bousselham
+moulay brahim	Moulay Brahim
+moulay driss zerhoun	Moulay Driss Zerhoun
+moulay yacoub	Moulay Yacoub
+mrirt	Mrirt
+my drarga	My Drarga
+n'zalat	N'zalat
+nador	Nador
+naima	Naima
+new fes	New Fes
+oadar temsia	Oadar Temsia
+oualidia	Oualidia
+ouaouizeght	Ouaouizeght
+ouaoula	Ouaoula
+ouarzazate	Ouarzazate
+oued amlil	Oued Amlil
+oued el himer	Oued el Himer
+oued laou	Oued Laou
+oued zem	Oued Zem
+ouezzane	Ouezzane
+ouijjane	Ouijjane
+ouislane	Ouislane
+oujda	Oujda
+oukaimedene	Oukaïmedene
+oulad amrane	Oulad Amrane
+oulad ayad	Oulad Ayad
+oulad barhil	Oulad Barhil
+oulad daoud	Oulad Daoud
+oulad el rhadabne	Oulad El Rhadabne
+oulad embarek	Oulad Embarek
+oulad frej	Oulad Frej
+oulad m'rah	Oulad M'Rah
+oulad said	Oulad Saïd
+oulad tayeb	Oulad Tayeb
+oulad teima	Oulad Teïma
+oulad yaich	Oulad Yaïch
+oulmes	Oulmes
+ounagha	Ounagha
+ourtzagh	Ourtzagh
+outat oulad al haj	Outat Oulad Al Haj
+rabat	Rabat
+ras el ain	Ras El Aïn
+ras el ma	Ras el Ma
+ras kebdana	Ras Kebdana
+ratba	Ratba
+recani	Reçani
+reggada	Reggada
+riah	Riah
+ribat al khayr	Ribat Al Khayr
+rich	Rich
+rislane	Rislane
+rouadi	Rouadi
+sabaa aiyoun	Sabaa Aiyoun
+saddina	Saddina
+safi	Safi
+saidia	Saidia
+sale	Salé
+sale al jadida	Salé Al Jadida
+sebt bni garfett	Sebt Bni Garfett
+sebt el maarif	Sebt El Maarif
+sebt gzoula	Sebt Gzoula
+sebt jahjouh	Sebt Jahjouh
+sefrou	Sefrou
+selouane	Selouane
+senada	Senada
+settat	Settat
+setti fatma	Setti Fatma
+sidi abdallah	Sidi Abdallah
+sidi abdallah ghiat	Sidi Abdallah Ghiat
+sidi ahmed	Sidi Ahmed
+sidi ali ben hamdouche	Sidi Ali Ben Hamdouche
+sidi allal el bahraoui	Sidi Allal El Bahraoui
+sidi allal tazi	Sidi Allal Tazi
+sidi amar	Sidi Amar
+sidi bennour	Sidi Bennour
+sidi bibi	Sidi Bibi
+sidi bou lanouar	Sidi Bou Lanouar
+sidi bou othmane	Sidi Bou Othmane
+sidi bousber	Sidi Bousber
+sidi bouzid	Sidi Bouzid
+sidi harazem	Sidi Harazem
+sidi ifni	Sidi Ifni
+sidi jaber	Sidi Jaber
+sidi kacem	Sidi Kacem
+sidi lamine	Sidi Lamine
+sidi lmokhtar	Sidi Lmokhtar
+sidi moussa	Sidi Moussa
+sidi rahal	Sidi Rahal
+sidi rahhal	Sidi Rahhal
+sidi redouane	Sidi Redouane
+sidi slimane	Sidi Slimane
+sidi slimane echcharaa	Sidi Slimane Echcharaa
+sidi smai’il	Sidi Smai’il
+sidi taibi	Sidi Taibi
+sidi yahia el gharb	Sidi Yahia El Gharb
+sidi yahya ou saad	Sidi Yahya Ou Saad
+sidi yahya zaer	Sidi Yahya Zaer
+sidi zouine	Sidi Zouine
+sidi ’addi	Sidi ’Addi
+skhirate	Skhirate
+skhour rehamna	Skhour Rehamna
+skoura	Skoura
+smara	Smara
+smimou	Smimou
+souk el arba des ait baha	Souk El Arba Des Aït Baha
+souk el arbaa	Souk El Arbaa
+souk et tnine jorf el mellah	Souk et Tnine Jorf el Mellah
+souq al had	Souq al Had
+souq al had bradya	Souq Al Had Bradya
+souq at tlata des loulad	Souq at Tlata des Loulad
+souq khmis ait yadine	Souq Khmis Aït Yadine
+souq larb’a al gharb	Souq Larb’a al Gharb
+souq sebt oulad nemma	Souq Sebt Oulad Nemma
+tabant	Tabant
+tabia	Tabia
+tabouda	Tabouda
+tabount	Tabount
+tadrart	Tadrart
+tafersit	Tafersit
+tafetachte	Tafetachte
+tafraout	Tafraout
+taghazout	Taghazout
+tah	Tah
+tahannout	Tahannout
+tahla	Tahla
+taineste	Taïneste
+talat-n-ya’qoub	Talat-n-Ya’qoub
+taliouine	Taliouine
+talmest	Talmest
+talsint	Talsint
+talzemt	Talzemt
+tamallalt	Tamallalt
+tamanar	Tamanar
+tamansourt	Tamansourt
+tamassint	Tamassint
+tameslouht	Tameslouht
+tamesna	Tamesna
+tamorot	Tamorot
+tamri	Tamri
+tan-tan	Tan-Tan
+tanalt	Tanalt
+tangier	Tangier
+taouima	Taouima
+taouloukoult	Taouloukoult
+taounate	Taounate
+taounza	Taounza
+taourirt	Taourirt
+tarfaya	Tarfaya
+targuist	Targuist
+tarhjicht	Tarhjicht
+taroudant	Taroudant
+tarsouat	Tarsouat
+tassila	Tassila
+tata	Tata
+taza	Taza
+tazarine	Tazarine
+tazemmourt	Tazemmourt
+taznakht	Taznakht
+tazouta	Tazouta
+telouet	Telouet
+temara	Temara
+tendrara	Tendrara
+teroual	Teroual
+tetouan	Tétouan
+tiddas	Tiddas
+tidili mesfioua	Tidili Mesfioua
+tiflet	Tiflet
+tifni	Tifni
+tighza	Tighza
+tilmi	Tilmi
+timahdit	Timahdit
+timezgadiouine	Timezgadiouine
+timezgana	Timezgana
+timoulilt	Timoulilt
+tinajdad	Tinajdad
+tine biougra	Tine Biougra
+tinghir	Tinghir
+tiouli	Tiouli
+tiout	Tiout
+tirhanimine	Tirhanimîne
+tirhassaline	Tirhassaline
+tissa	Tissa
+tit mellil	Tit Mellil
+tizgane	Tizgane
+tizguine	Tizguine
+tizi ouzli	Tizi Ouzli
+tiznit	Tiznit
+tiztoutine	Tiztoutine
+tlet el hanchane	Tlet El Hanchane
+tlet ighoud	Tlet Ighoud
+tlet sidi bouguedra	Tlet Sidi Bouguedra
+tmourghout	Tmourghout
+tnine sidi lyamani	Tnine Sidi Lyamani
+touama	Touama
+touarga	Touarga
+touissite	Touissite
+tounfit	Tounfit
+youssoufia	Youssoufia
+za bougrine	Za Bougrine
+zag	Zag
+zagora	Zagora
+zaio	Zaïo
+zaouia ait ishak	Zaouïa Aït Ishak
+zawit al bour	Zawit Al Bour
+zawyat an nwacer	Zawyat an Nwaçer
+zawyat ech cheikh	Zawyat ech Cheïkh
+zayda	Zayda
+zeghanghane	Zeghanghane
+zemamra	Zemamra
+zerarda	Zerarda
+zerkten	Zerkten
+zinat	Zinat
+zirara	Zirara
+zoualet	Zoualet
+zoumi	Zoumi

@@ -1,0 +1,217 @@
+amir timur	Amir Timur
+andijon	Andijon
+angren	Angren
+asaka	Asaka
+bag‘dod	Bag‘dod
+baliqchi	Baliqchi
+bekobod	Bekobod
+bektemir	Bektemir
+beruniy	Beruniy
+beruniy shahri	Beruniy Shahri
+beshariq	Beshariq
+beshkent	Beshkent
+beshkent shahri	Beshkent Shahri
+beshrabot	Beshrabot
+bog'don	Bog'don
+bog’ot	Bog’ot
+boysun	Boysun
+bo‘ka	Bo‘ka
+bo‘ston shahri	Bo‘ston Shahri
+bukhara	Bukhara
+buloqboshi	Buloqboshi
+bulung’ur shahri	Bulung’ur Shahri
+burchmulla	Burchmulla
+charxin	Charxin
+chelak	Chelak
+chilanzar	Chilanzar
+chimboy shahri	Chimboy Shahri
+chinobod	Chinobod
+chinoz	Chinoz
+chirchiq	Chirchiq
+chiroqchi	Chiroqchi
+chiroqchi shahri	Chiroqchi Shahri
+chortoq	Chortoq
+chortoq shahri	Chortoq Shahri
+chust	Chust
+dahbed	Dahbed
+dang‘ara	Dang‘ara
+dardoq	Dardoq
+dashtobod	Dashtobod
+denov	Denov
+do’stlik shahri	Do’stlik Shahri
+druzhba	Druzhba
+eskiarab	Eskiarab
+fergana	Fergana
+gagarin shahri	Gagarin Shahri
+galaosiyo shahri	Galaosiyo Shahri
+gazli	Gazli
+guliston	Guliston
+gurlan	Gurlan
+g‘azalkent	G‘azalkent
+g‘ozg‘on	G‘ozg‘on
+g‘uzor	G‘uzor
+g‘uzor shahri	G‘uzor Shahri
+g’allaorol shahri	G’allaorol Shahri
+g’ijduvon shahri	G’ijduvon Shahri
+g’oliblar qishlog’i	G’oliblar Qishlog’i
+hamza	Hamza
+haqqulobod	Haqqulobod
+hazorasp	Hazorasp
+hazratishoh	Hazratishoh
+ibrat	Ibrat
+ishtixon shahri	Ishtixon Shahri
+iskandar	Iskandar
+izboskan	Izboskan
+jalolquduq	Jalolquduq
+jizzax	Jizzax
+jomboy shahri	Jomboy Shahri
+jondor shaharchasi	Jondor Shaharchasi
+juma shahri	Juma Shahri
+karakalpakiya	Karakalpakiya
+karakul’	Karakul’
+karmana shahri	Karmana Shahri
+kattaqo’rg’on shahri	Kattaqo’rg’on Shahri
+kegeyli shahar	Kegeyli Shahar
+kirguli	Kirguli
+kitob	Kitob
+kitob shahri	Kitob Shahri
+kogon shahri	Kogon Shahri
+konimex	Konimex
+koson	Koson
+koson shahri	Koson Shahri
+kosonsoy	Kosonsoy
+kosonsoy shahri	Kosonsoy Shahri
+kuyganyor	Kuyganyor
+kyzyldzhar	Kyzyldzhar
+langar	Langar
+loyish shaharchasi	Loyish Shaharchasi
+manghit	Manghit
+mang‘it shahri	Mang‘it Shahri
+marg‘ilon	Marg‘ilon
+marhamat	Marhamat
+mo‘ynoq shahri	Mo‘ynoq Shahri
+muborak	Muborak
+muborak shahri	Muborak Shahri
+mug‘lon shahar	Mug‘lon Shahar
+muynoq	Mŭynoq
+namangan	Namangan
+navbahor	Navbahor
+navoiy	Navoiy
+nishon tumani	Nishon Tumani
+novyy turtkul’	Novyy Turtkul’
+nukus	Nukus
+nurobod shahri	Nurobod Shahri
+nurota	Nurota
+nurota shahri	Nurota Shahri
+ohangaron	Ohangaron
+olmaliq	Olmaliq
+olot shahri	Olot Shahri
+oltiariq	Oltiariq
+oltinko‘l	Oltinko‘l
+oqmang‘it	Oqmang‘it
+oqoltin	Oqoltin
+oqqo‘rg‘on	Oqqo‘rg‘on
+oqtosh	Oqtosh
+oqtosh shahri	Oqtosh Shahri
+oxunboboyev	Oxunboboyev
+oyim	Oyim
+parkent	Parkent
+paxtakor shahri	Paxtakor Shahri
+paxtaobod	Paxtaobod
+payariq shahri	Payariq Shahri
+payshamba shahri	Payshamba Shahri
+piskent	Piskent
+pop	Pop
+pop shahri	Pop Shahri
+poytug‘	Poytug‘
+po‘loti	Po‘loti
+qamashi shahri	Qamashi Shahri
+qanliko‘l	Qanliko‘l
+qarshi	Qarshi
+qibray	Qibray
+qizilcha	Qizilcha
+qiziltepa	Qiziltepa
+qiziltepa shahri	Qiziltepa Shahri
+qorako‘l shahri	Qorako‘l Shahri
+qorao‘zak	Qorao‘zak
+qorashina	Qorashina
+qorasuv	Qorasuv
+qorovul	Qorovul
+qorovulbozor	Qorovulbozor
+qorovulbozor shahri	Qorovulbozor Shahri
+qozonketkan	Qozonketkan
+qo‘ng‘irot shahri	Qo‘ng‘irot Shahri
+qo‘qon	Qo‘qon
+qo‘rg‘ontepa	Qo‘rg‘ontepa
+qo’shko’pir	Qo’shko’pir
+qo’shrabod	Qo’shrabod
+qunghirot	Qŭnghirot
+quva	Quva
+quvasoy	Quvasoy
+ravon	Ravon
+rishton	Rishton
+romitan shahri	Romitan Shahri
+salor	Salor
+samarkand	Samarkand
+sergeli	Sergeli
+shahrisabz	Shahrisabz
+shahrisabz shahri	Shahrisabz Shahri
+shahrixon	Shahrixon
+shofirkon shahri	Shofirkon Shahri
+shohimardon	Shohimardon
+shovot	Shovot
+sho‘rchi	Sho‘rchi
+sho‘rsuv	Sho‘rsuv
+shumanay	Shumanay
+shumanay shahri	Shumanay Shahri
+sirdaryo	Sirdaryo
+sultonobod	Sultonobod
+tashkent	Tashkent
+taxtako‘pir	Taxtako‘pir
+tinchlik	Tinchlik
+tirmiz	Tirmiz
+tomdibuloq	Tomdibuloq
+toshbuloq	Toshbuloq
+toshloq	Toshloq
+toyloq qishlog’i	Toyloq Qishlog’i
+to‘rqao‘rg‘on	To‘rqao‘rg‘on
+to‘rtko‘l shahri	To‘rtko‘l Shahri
+turagurghon shahri	Tŭragŭrghon Shahri
+tuytepa	Tŭytepa
+uchko‘prik	Uchko‘prik
+uchkuduk	Uchkuduk
+uchquduq shahri	Uchquduq Shahri
+uchqurghon shahri	Uchqŭrghon Shahri
+uchtepa qishlog’i	Uchtepa Qishlog’i
+urganch	Urganch
+urgut shahri	Urgut Shahri
+urtaowul	Ŭrtaowul
+usmat shaharchasi	Usmat Shaharchasi
+uychi	Uychi
+vobkent shahri	Vobkent Shahri
+vodil	Vodil
+xiva	Xiva
+xonobod	Xonobod
+xonqa	Xonqa
+xo‘jaobod	Xo‘jaobod
+xo‘jayli shahri	Xo‘jayli Shahri
+yakkabog‘ shahri	Yakkabog‘ Shahri
+yangi marg‘ilon	Yangi Marg‘ilon
+yangi mirishkor	Yangi Mirishkor
+yangi-nishon shahri	Yangi-Nishon Shahri
+yangiariq	Yangiariq
+yangibozor	Yangibozor
+yangibozor qishlog’i	Yangibozor Qishlog’i
+yangiobod	Yangiobod
+yangiqo‘rg‘on	Yangiqo‘rg‘on
+yangirabot	Yangirabot
+yangiyer	Yangiyer
+yangiyul	Yangiyŭl
+yaypan	Yaypan
+yozyovon	Yozyovon
+yunusobod	Yunusobod
+zafar	Zafar
+zafarobod shaharchasi	Zafarobod Shaharchasi
+zarbdor shaharchasi	Zarbdor Shaharchasi
+ziyodin shaharchasi	Ziyodin Shaharchasi
+zomin shaharchasi	Zomin Shaharchasi

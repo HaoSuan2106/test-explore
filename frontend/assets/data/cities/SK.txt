@@ -1,0 +1,561 @@
+abraham	Abraham
+abraham	Abrahám
+aleksince	Alekšince
+andovce	Andovce
+bab	Báb
+badin	Badín
+bahon	Báhoň
+bajc	Bajč
+banov	Bánov
+banovce nad bebravou	Bánovce nad Bebravou
+banska bela	Banská Belá
+banska bystrica	Banská Bystrica
+banska stiavnica	Banská Štiavnica
+bardejov	Bardejov
+batorove kosihy	Bátorove Kosihy
+bela nad cirochou	Belá nad Cirochou
+beladice	Beladice
+belusa	Beluša
+bernolakovo	Bernolákovo
+biely kostol	Biely Kostol
+bina	Bíňa
+blatne	Blatné
+bohdanovce nad trnavou	Bohdanovce nad Trnavou
+bojnice	Bojnice
+boleraz	Boleráz
+bolesov	Bolešov
+borsky mikulas	Borský Mikuláš
+borsky svaty jur	Borský Svätý Jur
+bosaca	Bošáca
+bosany	Bošany
+branc	Branč
+bratislava	Bratislava
+bratislava - vajnory	Bratislava - Vajnory
+brekov	Brekov
+brezno	Brezno
+brezova pod bradlom	Brezová pod Bradlom
+brodske	Brodské
+brusno	Brusno
+budmerice	Budmerice
+bystrany	Bystrany
+bytca	Bytča
+cabaj-capor	Cabaj-Čápor
+cachtice	Čachtice
+cadca	Čadca
+cakajovce	Čakajovce
+calovec	Čalovec
+cana	Čaňa
+cary	Čáry
+casta	Častá
+cata	Čata
+cataj	Čataj
+cecejovce	Čečejovce
+cechynce	Čechynce
+celadice	Čeľadice
+cenkovce	Čenkovce
+cerova	Cerová
+chminianska nova ves	Chminianska Nová Ves
+chocholna-velcice	Chocholná-Velčice
+chorvatsky grob	Chorvátsky Grob
+chorvatsky grob - cierna voda	Chorvátsky Grob - Čierna Voda
+cicov	Číčov
+cierna voda	Čierna Voda
+cierne	Čierne
+cierne klacany	Čierne Kľačany
+cierny balog	Čierny Balog
+cifer	Cífer
+cigel	Cigeľ
+cilizska radvan	Čilizská Radvaň
+dedinka pri dunaji	Dedinka pri Dunaji
+detva	Detva
+devin	Devín
+devinska nova ves	Devínska Nová Ves
+diakovce	Diakovce
+dlhe diely	Dlhé diely
+dobsina	Dobšiná
+dohnany	Dohňany
+dojc	Dojč
+dolany	Doľany
+dolna breznica	Dolná Breznica
+dolna streda	Dolná Streda
+dolna suca	Dolná Súča
+dolne kockovce	Dolné Kočkovce
+dolne obdokovce	Dolné Obdokovce
+dolne oresany	Dolné Orešany
+dolny kubin	Dolný Kubín
+dolny stal	Dolný Štál
+domasa	Domaša
+drietoma	Drietoma
+dubnica nad vahom	Dubnica nad Váhom
+dubova	Dubová
+dubravka	Dúbravka
+dudince	Dudince
+dulovce	Dulovce
+dunajska luzna	Dunajská Lužná
+dunajska streda	Dunajská Streda
+dvory nad zitavou	Dvory nad Žitavou
+farna	Farná
+filakovo	Fiľakovo
+fricovce	Fričovce
+gabcikovo	Gabčíkovo
+gajary	Gajary
+galanta	Galanta
+gbelce	Gbelce
+gbely	Gbely
+gelnica	Gelnica
+gerlachov	Gerlachov
+giraltovce	Giraltovce
+golianovo	Golianovo
+hajske	Hájske
+hamuliakovo	Hamuliakovo
+handlova	Handlová
+hanusovce nad toplou	Hanušovce nad Topľou
+harichovce	Harichovce
+hazlin	Hažlín
+hertnik	Hertník
+hlohovec	Hlohovec
+hnusta	Hnúšťa
+holic	Holíč
+holice	Holice
+horna kralova	Horná Kráľová
+horna poruba	Horná Poruba
+horna poton	Horná Potôň
+horna suca	Horná Súča
+horne oresany	Horné Orešany
+horne saliby	Horné Saliby
+horne srnie	Horné Srnie
+horny bar	Horný Bar
+horny vadicov	Horný Vadičov
+hostie	Hostie
+hranovnica	Hranovnica
+hrinova	Hriňová
+hrnciarovce nad parnou	Hrnčiarovce nad Parnou
+hrochot	Hrochoť
+hruba borsa	Hrubá Borša
+hruby sur	Hrubý Šúr
+hrustin	Hruštín
+humenne	Humenné
+huncovce	Huncovce
+hurbanovo	Hurbanovo
+hviezdoslavov	Hviezdoslavov
+hybe	Hybe
+ilava	Ilava
+imel	Imeľ
+ivanka pri dunaji	Ivanka pri Dunaji
+ivanka pri nitre	Ivanka pri Nitre
+ivanovce	Ivanovce
+iza	Iža
+jablonec	Jablonec
+jablonove	Jablonové
+jakubov	Jakubov
+jarok	Jarok
+jarovce	Jarovce
+jarovnice	Jarovnice
+jasov	Jasov
+jelenec	Jelenec
+jelka	Jelka
+jelsava	Jelšava
+kalinkovo	Kalinkovo
+kalna	Kálna
+kamenica nad cirochou	Kamenica nad Cirochou
+kamenicna	Kameničná
+kamenin	Kamenín
+kamenny most	Kamenný Most
+kanianka	Kanianka
+karlova ves	Karlova Ves
+kavecany	Kavečany
+kecerovce	Kecerovce
+kezmarok	Kežmarok
+klacno	Kľačno
+klasov	Klasov
+klenovec	Klenovec
+klokocov	Klokočov
+klusov	Kľušov
+kolarovice	Kolárovice
+kolarovo	Kolárovo
+kolinany	Kolíňany
+kolta	Kolta
+komarno	Komárno
+komjatice	Komjatice
+komjatna	Komjatná
+kopcany	Kopčany
+kos	Koš
+koseca	Košeca
+kosecke podhradie	Košecké Podhradie
+kosice	Košice
+kostoliste	Kostolište
+kostolne kracany	Kostolné Kračany
+kotesova	Kotešová
+kovacova	Kováčová
+kralova nad vahom	Kráľová nad Váhom
+kralova pri senci	Kráľová pri Senci
+kralovicove kracany	Kráľovičove Kračany
+kralovsky chlmec	Kráľovský Chlmec
+krasnany	Krasňany
+krasno nad kysucou	Krásno nad Kysucou
+krasnohorske podhradie	Krásnohorské Podhradie
+kremnica	Kremnica
+krizovany nad dudvahom	Krížovany nad Dudváhom
+krompachy	Krompachy
+krupina	Krupina
+kruzlov	Kružlov
+kuchyna	Kuchyňa
+kurima	Kurima
+kutniky	Kútniky
+kuty	Kúty
+kvetoslavov	Kvetoslavov
+kysucke nove mesto	Kysucké Nové Mesto
+kysucky lieskovec	Kysucký Lieskovec
+lab	Láb
+ladce	Ladce
+laksarska nova ves	Lakšárska Nová Ves
+lamac	Lamač
+lazany	Lazany
+lazy pod makytou	Lazy pod Makytou
+lednicke rovne	Lednické Rovne
+lehnice	Lehnice
+lehota	Lehota
+lehota pod vtacnikom	Lehota pod Vtáčnikom
+lenartov	Lenartov
+lendak	Lendak
+leopoldov	Leopoldov
+levice	Levice
+levoca	Levoča
+liesek	Liesek
+lietava	Lietava
+likavka	Likavka
+limbach	Limbach
+lipany	Lipany
+liptovske sliace	Liptovské Sliače
+liptovsky hradok	Liptovský Hrádok
+liptovsky mikulas	Liptovský Mikuláš
+lomnicka	Lomnička
+lozorno	Lozorno
+lubica	Ľubica
+lubietova	Ľubietová
+lubotice	Ľubotice
+lucenec	Lučenec
+lucky	Lúčky
+lukacovce	Lukáčovce
+luzianky	Lužianky
+lysa pod makytou	Lysá pod Makytou
+machulince	Machulince
+majcichov	Majcichov
+makov	Makov
+mala mana	Malá Maňa
+malachov	Malachov
+malacky	Malacky
+malcov	Malcov
+male levare	Malé Leváre
+malinovo	Malinovo
+maly lapas	Malý Lapáš
+marcelova	Marcelová
+margecany	Margecany
+marianka	Marianka
+markusovce	Markušovce
+marsova-rasov	Maršová-Rašov
+martin	Martin
+medne	Medné
+medzev	Medzev
+medzibrod	Medzibrod
+medzilaborce	Medzilaborce
+michal na ostrove	Michal na Ostrove
+michalovce	Michalovce
+mikusovce	Mikušovce
+miloslavov	Miloslavov
+mnichova lehota	Mnichova Lehota
+moca	Moča
+mocenok	Močenok
+modra	Modra
+modrany	Modrany
+modry kamen	Modrý Kameň
+mojmirovce	Mojmírovce
+moldava nad bodvou	Moldava nad Bodvou
+moravske lieskove	Moravské Lieskové
+moravsky svaty jan	Moravský Svätý Ján
+mosovce	Mošovce
+most pri bratislave	Most pri Bratislave
+mutne	Mútne
+muzla	Mužla
+myjava	Myjava
+nalepkovo	Nálepkovo
+namestovo	Námestovo
+nana	Nána
+neded	Neded
+nedozery-brezany	Nedožery-Brezany
+nemce	Nemce
+nemsova	Nemšová
+neslusa	Nesluša
+nesvady	Nesvady
+nitra	Nitra
+nitrianske hrnciarovce	Nitrianske Hrnčiarovce
+nitrianske pravno	Nitrianske Pravno
+nizna	Nižná
+nova bana	Nová Baňa
+nova bystrica	Nová Bystrica
+nova dedinka	Nová Dedinka
+nova dubnica	Nová Dubnica
+nova lesna	Nová Lesná
+nova lubovna	Nová ľubovňa
+nova ves nad zitavou	Nová Ves nad Žitavou
+novaky	Nováky
+nove mesto nad vahom	Nové Mesto nad Váhom
+nove sady	Nové Sady
+nove zamky	Nové Zámky
+novot	Novoť
+obid	Obid
+obyce	Obyce
+ochodnica	Ochodnica
+ohrady	Ohrady
+okoc	Okoč
+okolicna na ostrove	Okoličná na Ostrove
+olesna	Olešná
+omsenie	Omšenie
+opatovce nad nitrou	Opatovce nad Nitrou
+oravska lesna	Oravská Lesná
+oravska polhora	Oravská Polhora
+oravske vesele	Oravské Veselé
+oravsky podzamok	Oravský Podzámok
+orechova poton	Orechová Potôň
+oscadnica	Oščadnica
+palarikovo	Palárikovo
+papradno	Papradno
+partizanske	Partizánske
+pata	Pata
+pavlovce nad uhom	Pavlovce nad Uhom
+petrova ves	Petrova Ves
+petrovice	Petrovice
+petrzalka	Petržalka
+pezinok	Pezinok
+piestany	Piešťany
+plavecky stvrtok	Plavecký Štvrtok
+plevnik-drienove	Plevník-Drienové
+podbrezova	Podbrezová
+podhorany	Podhorany
+podolinec	Podolínec
+podunajske biskupice	Podunajské Biskupice
+podvysoka	Podvysoká
+pohranice	Pohranice
+pohronsky ruskov	Pohronský Ruskov
+polomka	Polomka
+poltar	Poltár
+poniky	Poniky
+poprad	Poprad
+poruba	Poruba
+povazska bystrica	Považská Bystrica
+povina	Povina
+prakovce	Prakovce
+pravenec	Pravenec
+predmier	Predmier
+presov	Prešov
+pribeta	Pribeta
+pribylina	Pribylina
+prievidza	Prievidza
+pruske	Pruské
+pruzina	Pružina
+puchov	Púchov
+puste ulany	Pusté Úľany
+rabca	Rabča
+radola	Radoľa
+radosovce	Radošovce
+rajec	Rajec
+rajecke teplice	Rajecké Teplice
+rakova	Raková
+rakusy	Rakúsy
+reca	Reca
+revuca	Revúca
+richnava	Richnava
+rimavska sobota	Rimavská Sobota
+risnovce	Rišňovce
+rohovce	Rohovce
+rohoznik	Rohožník
+rosina	Rosina
+rovinka	Rovinka
+roznava	Rožňava
+rudina	Rudina
+rudinska	Rudinská
+rudnany	Rudňany
+rusovce	Rusovce
+ruzindol	Ružindol
+ruzomberok	Ružomberok
+sabinov	Sabinov
+sahy	Šahy
+sajdikove humence	Šajdíkove Humence
+sala	Šaľa
+samorin	Šamorín
+sastin-straze	Šaštín-Stráže
+secovce	Sečovce
+sekule	Sekule
+selce	Selce
+selec	Selec
+selice	Selice
+senec	Senec
+senica	Senica
+senkvice	Šenkvice
+sered	Sereď
+skalica	Skalica
+skalite	Skalité
+skalka nad vahom	Skalka nad Váhom
+sladkovicovo	Sládkovičovo
+sliac	Sliač
+slovenska lupca	Slovenská Ľupča
+slovenske nove mesto	Slovenské Nové Mesto
+slovensky grob	Slovenský Grob
+sl’azany	Sl’ažany
+smizany	Smižany
+smolenice	Smolenice
+sneznica	Snežnica
+snina	Snina
+soblahov	Soblahov
+sobotiste	Sobotište
+sobrance	Sobrance
+sokolce	Sokolce
+sokolniky	Sokolníky
+solosnica	Sološnica
+soporna	Šoporňa
+spisska bela	Spišská Belá
+spisska nova ves	Spišská Nová Ves
+spisska sobota	Spisska Sobota
+spisska stara ves	Spišská Stará Ves
+spisske podhradie	Spišské Podhradie
+spisske vlachy	Spišské Vlachy
+spissky stiavnik	Spišský Štiavnik
+stara bystrica	Stará Bystrica
+stara lubovna	Stará Ľubovňa
+stara tura	Stará Turá
+stare mesto	Staré Mesto
+staskov	Staškov
+stefanov	Štefanov
+stiavnik	Štiavnik
+stitare	Štitáre
+strazske	Strážske
+strba	Štrba
+strekov	Strekov
+strezenice	Streženice
+stropkov	Stropkov
+studienka	Studienka
+stupava	Stupava
+sturovo	Štúrovo
+stvrtok na ostrove	Štvrtok na Ostrove
+sucany	Sučany
+sucha nad parnou	Suchá nad Parnou
+surany	Šurany
+svatoplukovo	Svätoplukovo
+svaty anton	Svätý Anton
+svaty jur	Svätý Jur
+svaty peter	Svätý Peter
+svedernik	Svederník
+svidnik	Svidník
+svinna	Svinná
+svit	Svit
+svodin	Svodín
+svrcinovec	Svrčinovec
+tekovske luzany	Tekovské Lužany
+tekovske nemce	Tekovské Nemce
+telgart	Telgárt
+teplicka nad vahom	Teplička nad Váhom
+terchova	Terchová
+tesarske mlynany	Tesárske Mlyňany
+tesedikovo	Tešedíkovo
+tisovec	Tisovec
+tlmace	Tlmače
+tomasov	Tomášov
+topolcany	Topoľčany
+topolcianky	Topoľčianky
+topolniky	Topoľníky
+tornala	Tornaľa
+trebisov	Trebišov
+trencianska turna	Trenčianska Turná
+trencianske jastrabie	Trenčianske Jastrabie
+trencianske stankovce	Trenčianske Stankovce
+trencianske teplice	Trenčianske Teplice
+trencin	Trenčín
+trhova hradska	Trhová Hradská
+trhoviste	Trhovište
+trnava	Trnava
+trnovec nad vahom	Trnovec nad Váhom
+trstena	Trstená
+trstice	Trstice
+trstin	Trstín
+turany	Turany
+turcianske teplice	Turčianske Teplice
+turen	Tureň
+turna nad bodvou	Turňa nad Bodvou
+turzovka	Turzovka
+tuzina	Tužina
+tvrdosin	Tvrdošín
+tvrdosovce	Tvrdošovce
+udavske	Udavské
+unin	Unín
+valaliky	Valaliky
+valaska	Valaská
+varin	Varín
+vechec	Vechec
+velka ida	Veľká Ida
+velke blahovo	Veľké Blahovo
+velke dvorniky	Veľké Dvorníky
+velke janikovce	Veľké Janíkovce
+velke kapusany	Veľké Kapušany
+velke levare	Veľké Leváre
+velke ludince	Veľké Ludince
+velke rovne	Veľké Rovné
+velke ulany	Veľké Úľany
+velke zaluzie	Veľké Zálužie
+velky biel	Veľký Biel
+velky cetin	Veľký Cetín
+velky krtis	Veľký Krtíš
+velky kyr	Veľký Kýr
+velky lapas	Veľký Lapáš
+velky meder	Veľký Meder
+velky saris	Veľký Šariš
+vesele	Veselé
+vinicne	Viničné
+vinne	Vinné
+vinosady	Vinosady
+visnove	Višňové
+vistuk	Vištuk
+vlcany	Vlčany
+vlkanova	Vlkanová
+voderady	Voderady
+vozokany	Vozokany
+vrable	Vráble
+vrakun	Vrakúň
+vrakuna	Vrakuňa
+vranov nad toplou	Vranov nad Topľou
+vrbov	Vrbov
+vrbove	Vrbové
+vrutky	Vrútky
+vycapy-opatovce	Výčapy-Opatovce
+vydrany	Vydrany
+vysne ruzbachy	Vyšné Ružbachy
+vysoka nad kysucou	Vysoká nad Kysucou
+vysoka pri morave	Vysoká pri Morave
+vysoke tatry	Vysoké Tatry
+zahorska ves	Záhorská Ves
+zakamenne	Zákamenné
+zakopcie	Zákopčie
+zalesie	Zálesie
+zamarovce	Zamarovce
+zamutov	Zámutov
+zarnovica	Žarnovica
+zavod	Závod
+zbehy	Zbehy
+zborov	Zborov
+zborov nad bystricou	Zborov nad Bystricou
+zdiar	Ždiar
+zehra	Žehra
+zeliezovce	Želiezovce
+zemianska olca	Zemianska Olča
+zemianske kostolany	Zemianske Kostoľany
+zemne	Zemné
+zemplinska siroka	Zemplínska Široká
+ziar nad hronom	Žiar nad Hronom
+ziharec	Žihárec
+zilina	Žilina
+zirany	Žirany
+zlate klasy	Zlaté Klasy
+zlate moravce	Zlaté Moravce
+zohor	Zohor
+zuberec	Zuberec
+zupcany	Župčany
+zvolen	Zvolen

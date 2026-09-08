@@ -1,0 +1,19 @@
+apatou	Apatou
+awala-yalimapo	Awala-Yalimapo
+cayenne	Cayenne
+grand-santi	Grand-Santi
+iracoubo	Iracoubo
+kourou	Kourou
+macouria	Macouria
+mana	Mana
+maripasoula	Maripasoula
+matoury	Matoury
+regina	Régina
+remire	Rémire
+remire-montjoly	Rémire-Montjoly
+residence arc-en-ciel	Résidence Arc-en-Ciel
+residence cogneau-larivot	Résidence Cogneau-Larivot
+roura	Roura
+saint-georges	Saint-Georges
+saint-laurent-du-maroni	Saint-Laurent-du-Maroni
+sinnamary	Sinnamary
